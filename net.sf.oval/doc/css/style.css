@@ -1,0 +1,73 @@
+body {
+  margin: 2em;
+  font-family: verdana, arial, sans-serif;
+} 
+
+hr { display: none }
+
+a:link, a:visited
+{
+	color:blue;
+}
+
+img 
+{
+  border:none;
+}
+
+/* page title */
+.article .titlepage .title
+{
+	color:green;
+    font-size: 2em;
+	border-bottom: 2px solid black;
+	padding-bottom:0.2em;
+}
+
+.author
+{
+	
+}
+
+.revhistory
+{
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+}
+
+.revhistory td,
+{
+	border: 1px solid black;
+}
+
+/* toc title */
+.toc p
+{
+	color:green;
+    font-size: 1.5em;
+	border-bottom: 1px solid black;
+	padding-bottom:0.2em;
+}
+
+/* toc entry */
+dt
+{
+    margin-left: 1em;
+	margin-bottom: 0.5em;
+}
+
+/* section title */
+.article .section .titlepage .title
+{
+	color:green;
+    font-size: 1.5em;
+	border-bottom: 1px solid black;
+	padding-bottom:0.2em;
+}
+
+.programlisting
+{
+	padding: 0.5em;
+	background-color: #DDDDDD;
+	border: 2px gray dotted;
+}

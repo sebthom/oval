@@ -1,0 +1,16 @@
+configuration:
+- provide a way to override the annotation based constraint configuration
+
+validation:
+- add auto validation when directly setting class fields
+
+integration:
+- evaluate if integrating with other validation packages (e.g. commons validator) makes any sense
+- interpret Hibernate Validator annotation
+- interpret EJB3 annotations, e.g.
+	@javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
+	@javax.persistence.OneToMay(optional=false)   => @net.sf.oval.constraints.NotNull
+	@javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
+	@javax.persistence.ManyToMany(optional=false) => @net.sf.oval.constraints.NotNull
+	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
+	@javax.persistence.Column(length=false)       => @net.sf.oval.constraints.Length

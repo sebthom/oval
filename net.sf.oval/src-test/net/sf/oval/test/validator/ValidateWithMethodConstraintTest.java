@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
+package net.sf.oval.test.validator;
+
+import java.util.List;
+
+import junit.framework.TestCase;
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import net.sf.oval.constraints.ValidateWithMethod;
+
+/**
+ * @author Sebastian Thomschke
+ * @version $Revision: 1.1 $
+ */
+public class ValidateWithMethodConstraintTest extends TestCase
+{
+	private static class TestEntity
+	{
+		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class)
+		public String name;
+
+		protected boolean isNameValid(String name)
+		{
+			if (name == null) return false;
+			if (name.length() == 0) return false;
+			if (name.length() > 4) return false;
+			return true;
+		}
+	}
+
+	public void testCheckByMethod()
+	{
+		final TestEntity t = new TestEntity();
+
+		List<ConstraintViolation> violations;
+
+		violations = Validator.validate(t);
+		assertTrue(violations.size() == 1);
+
+		t.name = "";
+		violations = Validator.validate(t);
+		assertTrue(violations.size() == 1);
+
+		t.name = "12345";
+		violations = Validator.validate(t);
+		assertTrue(violations.size() == 1);
+
+		t.name = "1234";
+		violations = Validator.validate(t);
+		assertTrue(violations.size() == 0);
+	}
+}

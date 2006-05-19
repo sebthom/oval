@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OVal - Object Validation Framework
+Bundle-SymbolicName: net.sf.oval;singleton:=true
+Bundle-Version: 0.5
+Bundle-Localization: plugin
+Bundle-Vendor: oval.sf.net
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.aspectj.runtime,
+ org.eclipse.core.runtime
+Export-Package: net.sf.oval,
+ net.sf.oval.annotations,
+ net.sf.oval.constraints,
+ net.sf.oval.contexts,
+ net.sf.oval.exceptions,
+ net.sf.oval.utils
+Import-Package: org.osgi.framework;version="1.3.0"
+Eclipse-BuddyPolicy: registered
+Eclipse-LazyStart: true
+Bundle-Activator: net.sf.oval.bundle.Activator
