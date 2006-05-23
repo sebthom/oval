@@ -2,6 +2,11 @@
 [+] Feature added.
 [*] Change.
 
+2006-??-?? v0.6
+===============
++ added french translation for the violation messages of the built-in constraints (provided by mimil)
++ added @InstanceOf constraint
+
 2006-04-27 v0.5
 ===============
 - net.sf.oval.Validator: Validation of inherited classes throws NullPointerException [ Bug 1461805 ]
