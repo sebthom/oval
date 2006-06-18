@@ -31,7 +31,7 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint
+@Constraint(check = NotSelfRefCheck.class)
 public @interface NotSelfRef
 {
 	/**

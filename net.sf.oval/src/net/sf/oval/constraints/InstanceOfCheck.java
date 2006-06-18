@@ -18,7 +18,7 @@ import net.sf.oval.AbstractCheck;
  * @author Sebastian Thomschke
  * @version $Revision: 1.6 $
  */
-public class InstanceOfCheck extends AbstractCheck<AssertTrue>
+public class InstanceOfCheck extends AbstractCheck<InstanceOf>
 {
 	private Class clazz;
 

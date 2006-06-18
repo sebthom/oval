@@ -31,7 +31,7 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint
+@Constraint(check = SizeCheck.class)
 public @interface Size
 {
 	int min() default 0;

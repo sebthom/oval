@@ -101,7 +101,45 @@ public class AddingConstraintsTest extends TestCase
 					new Class[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
+
+			// testing without constraint
+			try
+			{
+				TestEntity1 entity = new TestEntity1("blabla");
+				entity.setName(null);
+			}
+			catch (ConstraintsViolatedException e)
+			{
+				fail();
+			}
+
+			// adding a constraint
 			Validator.addCheck(setter, 0, notNullCheck);
+			try
+			{
+				TestEntity1 entity = new TestEntity1("blabla");
+				entity.setName(null);
+				fail();
+			}
+			catch (ConstraintsViolatedException e)
+			{
+				ConstraintViolation[] violations = e.getConstraintViolations();
+				assertTrue(violations.length == 1);
+				assertTrue(violations[0].getContext() instanceof MethodParameterContext);
+				assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			}
+
+			// removing the constraint
+			Validator.removeCheck(setter, 0, notNullCheck);
+			try
+			{
+				TestEntity1 entity = new TestEntity1("blabla");
+				entity.setName(null);
+			}
+			catch (ConstraintsViolatedException e)
+			{
+				fail();
+			}
 		}
 		catch (ConstraintAnnotationNotPresentException e)
 		{
@@ -116,20 +154,6 @@ public class AddingConstraintsTest extends TestCase
 		{
 			e.printStackTrace();
 			fail();
-		}
-
-		try
-		{
-			TestEntity1 entity = new TestEntity1("blabla");
-			entity.setName(null);
-			fail();
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations.length == 1);
-			assertTrue(violations[0].getContext() instanceof MethodParameterContext);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
 		}
 	}
 
@@ -144,7 +168,42 @@ public class AddingConstraintsTest extends TestCase
 					.getDeclaredConstructor(new Class[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
+
+			// testing without constraint
+			try
+			{
+				new TestEntity2(null);
+			}
+			catch (ConstraintsViolatedException e)
+			{
+				fail();
+			}
+
+			// adding a constraint
 			Validator.addCheck(constructor, 0, notNullCheck);
+			try
+			{
+				new TestEntity2(null);
+				fail();
+			}
+			catch (ConstraintsViolatedException e)
+			{
+				ConstraintViolation[] violations = e.getConstraintViolations();
+				assertTrue(violations.length == 1);
+				assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
+				assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			}
+
+			// removing the constraint
+			Validator.removeCheck(constructor, 0, notNullCheck);
+			try
+			{
+				new TestEntity2(null);
+			}
+			catch (ConstraintsViolatedException e)
+			{
+				fail();
+			}
 		}
 		catch (ConstraintAnnotationNotPresentException e)
 		{
@@ -159,19 +218,6 @@ public class AddingConstraintsTest extends TestCase
 		{
 			e.printStackTrace();
 			fail();
-		}
-
-		try
-		{
-			new TestEntity2(null);
-			fail();
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations.length == 1);
-			assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
 		}
 	}
 
@@ -188,11 +234,29 @@ public class AddingConstraintsTest extends TestCase
 			Field field = TestEntity3.class.getDeclaredField("name");
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
-			Validator.addCheck(field, notNullCheck);
 
-			List<ConstraintViolation> violations = Validator.validate(entity);
-			assertTrue(violations.size() == 1);
-			assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
+			// testing without constraint
+			{
+				List<ConstraintViolation> violations = Validator.validate(entity);
+				assertTrue(violations.size() == 0);
+			}
+
+			// adding a constraint
+			{
+				Validator.addCheck(field, notNullCheck);
+
+				List<ConstraintViolation> violations = Validator.validate(entity);
+				assertTrue(violations.size() == 1);
+				assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
+			}
+
+			// removing the constraint
+			{
+				Validator.removeCheck(field, notNullCheck);
+
+				List<ConstraintViolation> violations = Validator.validate(entity);
+				assertTrue(violations.size() == 0);
+			}
 		}
 		catch (SecurityException e)
 		{

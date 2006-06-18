@@ -13,7 +13,6 @@
 package net.sf.oval;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,27 +48,7 @@ public abstract class AbstractCheck<ConstraintAnnotation extends Annotation>
 			Method getMessage = constraintClazz.getDeclaredMethod("message", (Class[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
-		catch (IllegalArgumentException e)
-		{
-			LOG.log(Level.WARNING, "Cannot determine constraint error message based on annotation "
-					+ constraintClazz.getName(), e);
-		}
-		catch (NoSuchMethodException e)
-		{
-			LOG.log(Level.WARNING, "Cannot determine constraint error message based on annotation "
-					+ constraintClazz.getName(), e);
-		}
-		catch (IllegalAccessException e)
-		{
-			LOG.log(Level.WARNING, "Cannot determine constraint error message based on annotation "
-					+ constraintClazz.getName(), e);
-		}
-		catch (InvocationTargetException e)
-		{
-			LOG.log(Level.WARNING, "Cannot determine constraint error message based on annotation "
-					+ constraintClazz.getName(), e);
-		}
-		catch (SecurityException e)
+		catch (Exception e)
 		{
 			LOG.log(Level.WARNING, "Cannot determine constraint error message based on annotation "
 					+ constraintClazz.getName(), e);

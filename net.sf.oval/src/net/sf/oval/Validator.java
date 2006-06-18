@@ -24,8 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
@@ -45,11 +43,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  */
 public final class Validator
 {
-	static AnnotationCheckLoader annotationCheckLoader = new AnnotationCheckLoaderImpl();
-
 	private static final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
-
-	private static final Logger LOG = Logger.getLogger(Validator.class.getName());
 
 	private static final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
 	private static final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
@@ -63,14 +57,14 @@ public final class Validator
 	public static void addCheck(final Constructor constructor, final int parameterIndex,
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
-		Class clazz = constructor.getDeclaringClass();
+		final Class clazz = constructor.getDeclaringClass();
 		ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(constructor, parameterIndex, check);
 	}
 
 	public static void addCheck(final Field field, final Check check)
 	{
-		Class clazz = field.getDeclaringClass();
+		final Class clazz = field.getDeclaringClass();
 		ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(field, check);
 	}
@@ -78,7 +72,7 @@ public final class Validator
 	public static void addCheck(final Method method, final int parameterIndex, final Check check)
 			throws ConstraintAnnotationNotPresentException
 	{
-		Class clazz = method.getDeclaringClass();
+		final Class clazz = method.getDeclaringClass();
 		ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(method, parameterIndex, check);
 	}
@@ -106,31 +100,23 @@ public final class Validator
 		return true;
 	}
 
-	/**
-	 * @return the checkLoader
-	 */
-	public static AnnotationCheckLoader getAnnotationCheckLoader()
-	{
-		return annotationCheckLoader;
-	}
-
 	private static ClassChecks getClassChecks(final Class clazz)
 	{
-		ClassChecks classConstraints = checksByClass.get(clazz);
-		if (classConstraints == null)
+		ClassChecks checks = checksByClass.get(clazz);
+		if (checks == null)
 		{
 			synchronized (checksByClass)
 			{
-				classConstraints = checksByClass.get(clazz);
+				checks = checksByClass.get(clazz);
 
-				if (classConstraints == null)
+				if (checks == null)
 				{
-					classConstraints = new ClassChecks(clazz);
+					checks = new ClassChecks(clazz);
 				}
-				checksByClass.put(clazz, classConstraints);
+				checksByClass.put(clazz, checks);
 			}
 		}
-		return classConstraints;
+		return checks;
 	}
 
 	private static Object getFieldValue(final Object validatedObject, final Field field)
@@ -139,17 +125,11 @@ public final class Validator
 		try
 		{
 			if (!field.isAccessible()) field.setAccessible(true);
+
 			return field.get(validatedObject);
 		}
-		catch (IllegalArgumentException ex)
+		catch (Exception ex)
 		{
-			LOG.log(Level.SEVERE, "Accessing value of field " + field.getName() + "failed.", ex);
-			throw new AccessingFieldValueFailedException("Accessing value of field "
-					+ field.getName() + "failed.", validatedObject, new FieldContext(field), ex);
-		}
-		catch (IllegalAccessException ex)
-		{
-			LOG.log(Level.SEVERE, "Accessing value of field " + field.getName() + "failed.", ex);
 			throw new AccessingFieldValueFailedException("Accessing value of field "
 					+ field.getName() + "failed.", validatedObject, new FieldContext(field), ex);
 		}
@@ -164,10 +144,32 @@ public final class Validator
 		}
 		catch (Exception ex)
 		{
-			LOG.log(Level.SEVERE, "Executing getter method " + getter.getName() + " failed.", ex);
 			throw new InvokingGetterFailedException("Executing getter method " + getter.getName()
 					+ " failed.", validatedObject, new MethodReturnValueContext(getter), ex);
 		}
+	}
+
+	public static void removeCheck(final Constructor constructor, final int parameterIndex,
+			final Check check) throws ConstraintAnnotationNotPresentException
+	{
+		final Class clazz = constructor.getDeclaringClass();
+		ClassChecks checks = getClassChecks(clazz);
+		checks.removeCheck(constructor, parameterIndex, check);
+	}
+
+	public static void removeCheck(final Field field, final Check check)
+	{
+		final Class clazz = field.getDeclaringClass();
+		ClassChecks checks = getClassChecks(clazz);
+		checks.removeCheck(field, check);
+	}
+
+	public static void removeCheck(final Method method, final int parameterIndex, final Check check)
+			throws ConstraintAnnotationNotPresentException
+	{
+		final Class clazz = method.getDeclaringClass();
+		ClassChecks checks = getClassChecks(clazz);
+		checks.removeCheck(method, parameterIndex, check);
 	}
 
 	/**
@@ -214,14 +216,6 @@ public final class Validator
 		}
 
 		return MessageFormat.format(messageKey, args.toArray());
-	}
-
-	/**
-	 * @param checkLoader the checkLoader to set
-	 */
-	public static void setAnnotationCheckLoader(final AnnotationCheckLoader checkLoader)
-	{
-		Validator.annotationCheckLoader = checkLoader;
 	}
 
 	/**
@@ -331,37 +325,6 @@ public final class Validator
 	 * 
 	 * @return null if no violation, otherwise a list
 	 */
-	static List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
-			final MethodSignature methodSignature, final Object methodReturnValue)
-	{
-		final Method method = methodSignature.getMethod();
-
-		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-
-		final HashSet<Check> checks = cc.checksByMethod.get(method);
-
-		if (checks == null) return null;
-
-		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
-
-		for (final Check check : checks)
-		{
-			if (!check.isSatisfied(validatedObject, methodReturnValue))
-			{
-				final MethodReturnValueContext context = new MethodReturnValueContext(method);
-				final String errorMessage = renderMessage(context, methodReturnValue, check);
-				violations.add(new ConstraintViolation(errorMessage, validatedObject,
-						methodReturnValue, context, check));
-			}
-		}
-		return violations.size() == 0 ? null : violations;
-	}
-
-	/**
-	 * used by ConstraintsEnforcer
-	 * 
-	 * @return null if no violation, otherwise a list
-	 */
 	static List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
 			final MethodSignature methodSignature, final Object[] parameters)
 	{
@@ -396,6 +359,37 @@ public final class Validator
 								valueToValidate, context, check));
 					}
 				}
+			}
+		}
+		return violations.size() == 0 ? null : violations;
+	}
+
+	/**
+	 * used by ConstraintsEnforcer
+	 * 
+	 * @return null if no violation, otherwise a list
+	 */
+	static List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
+			final MethodSignature methodSignature, final Object methodReturnValue)
+	{
+		final Method method = methodSignature.getMethod();
+
+		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+
+		final HashSet<Check> checks = cc.checksByMethod.get(method);
+
+		if (checks == null) return null;
+
+		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+
+		for (final Check check : checks)
+		{
+			if (!check.isSatisfied(validatedObject, methodReturnValue))
+			{
+				final MethodReturnValueContext context = new MethodReturnValueContext(method);
+				final String errorMessage = renderMessage(context, methodReturnValue, check);
+				violations.add(new ConstraintViolation(errorMessage, validatedObject,
+						methodReturnValue, context, check));
 			}
 		}
 		return violations.size() == 0 ? null : violations;

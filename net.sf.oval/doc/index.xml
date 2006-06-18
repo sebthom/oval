@@ -186,7 +186,7 @@ if(exs.size()&gt;0)
 
     <para>By utilizing AspectJ OVal provides support for several 
     aspects of programming by contract, but is not a full blown 
-    programming by contract implementation. </para>
+    programming by contract implementation.</para>
 
     <para>With OVal you can</para>
 
@@ -243,11 +243,12 @@ if(exs.size()&gt;0)
 
       <para>Create a new aspect via <command>File -&gt; New -&gt; 
       Aspect</command> that extends the abstract aspect <command>
-      net.sf.oval.ValidationAspect</command>. When the new aspect is 
-      created the AspectJ builder will automatically weave the 
-      programming-by-contract related code into your classes annotated 
-      with <command>@net.sf.oval.annotations.Constrained</command> when 
-      they get compiled.</para>
+      net.sf.oval.ConstraintsEnforcerAspect</command>. When the new 
+      aspect is created the AspectJ builder will automatically weave 
+      the programming-by-contract related code into your classes 
+      annotated with <command>
+      @net.sf.oval.annotations.Constrained</command> when they get 
+      compiled.</para>
 
       <para>Now you can create all your business classes, add the 
       <command>@net.sf.oval.annotations.Constrained</command> 
@@ -619,32 +620,9 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
 
       <listitem>
 
-        <para>Create an annotation for your constraint that itself is 
-        annotated with <command>
-        @net.sf.oval.annotations.Constraint</command></para>
-
-        <programlisting>@Retention(RetentionPolicy.RUNTIME) 
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD}) 
-@net.sf.oval.annotations.Constraint 
-public @interface UpperCase 
-{ 
-    /** 
-     * message to be used for the ConstraintsViolatedException 
-     *  
-     * @see ConstraintsViolatedException 
-     */ 
-    String message() default &quot;must be upper case&quot;; 
-}</programlisting>
-      </listitem>
-
-      <listitem>
-
         <para>Create a check class that implements <command>
-        net.sf.oval.Check</command> or extends <command>
-        net.sf.oval.AbstractCheck</command>. The check class must be in 
-        the same package as your custom constraint annotation and must 
-        be named like your constraint with the appendix 
-        &quot;Check&quot;.</para>
+        net.sf.oval.AnnotationCheck</command> or extends <command>
+        net.sf.oval.AbstractCheck</command>.</para>
 
         <programlisting>public class UpperCaseCheck extends AbstractCheck&lt;UpperCase&gt; 
 { 
@@ -653,6 +631,27 @@ public @interface UpperCase
         String val = value.toString();
         return val.equals(val.toUpperCase()); 
     } 
+}</programlisting>
+      </listitem>
+
+      <listitem>
+
+        <para>Create an annotation for your constraint and annotated it 
+        with <command>@net.sf.oval.annotations.Constraint</command>. 
+        Specify your check class as value for parameter 
+        &quot;check&quot;.</para>
+
+        <programlisting>@Retention(RetentionPolicy.RUNTIME) 
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD}) 
+@net.sf.oval.annotations.Constraint(check = UpperCaseCheck.class) 
+public @interface UpperCase 
+{ 
+    /** 
+     * message to be used for the ConstraintsViolatedException 
+     *  
+     * @see ConstraintsViolatedException 
+     */ 
+    String message() default &quot;must be upper case&quot;; 
 }</programlisting>
       </listitem>
 

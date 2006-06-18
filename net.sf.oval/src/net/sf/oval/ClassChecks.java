@@ -30,6 +30,7 @@ import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
+import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.ReflectionException;
 
@@ -47,22 +48,66 @@ final class ClassChecks
 {
 	private static final Logger LOG = Logger.getLogger(ClassChecks.class.getName());
 
+	private static <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> loadCheck(
+			final ConstraintAnnotation constraintAnnotation, final OValContext context)
+			throws ReflectionException
+	{
+		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(
+				Constraint.class);
+		Class checkClass = constraint.check();
+
+		try
+		{
+			// instantiate the appropriate check for the found constraint
+			@SuppressWarnings("unchecked")
+			AnnotationCheck<ConstraintAnnotation> check = (AnnotationCheck<ConstraintAnnotation>) checkClass
+					.newInstance();
+			check.configure(constraintAnnotation);
+			return check;
+		}
+		catch (Exception e)
+		{
+			throw new ReflectionException("Cannot load check " + checkClass.getName(), e);
+		}
+	}
+
+	/**
+	 * checks on constructors' parameter values
+	 */
 	final HashMap<Constructor, HashMap<Integer, HashSet<Check>>> checksByConstructorParameter = new HashMap<Constructor, HashMap<Integer, HashSet<Check>>>();
+
+	/**
+	 * checks on fields' value
+	 */
 	final HashMap<Field, HashSet<Check>> checksByField = new HashMap<Field, HashSet<Check>>();
+
+	/**
+	 * checks on getter methods' return value
+	 */
 	final HashMap<Method, HashSet<Check>> checksByGetter = new HashMap<Method, HashSet<Check>>();
+
+	/**
+	 * checks on parameterized methods' return value
+	 */
 	final HashMap<Method, HashSet<Check>> checksByMethod = new HashMap<Method, HashSet<Check>>();
+
+	/**
+	 * checks on methods' parameter values
+	 */
 	final HashMap<Method, HashMap<Integer, HashSet<Check>>> checksByMethodParameter = new HashMap<Method, HashMap<Integer, HashSet<Check>>>();
 
 	final HashSet<Field> constrainedFields = new HashSet<Field>();
 	final HashSet<Method> constrainedGetters = new HashSet<Method>();
 	final HashSet<Method> constrainedMethods = new HashSet<Method>();
-	final HashSet<Constructor> constrainedParameterConstructors = new HashSet<Constructor>();
-	final HashSet<Method> constrainedParameterMethods = new HashSet<Method>();
+
+	final HashSet<Constructor> constrainedParameterizedConstructors = new HashSet<Constructor>();
+	final HashSet<Method> constrainedParameterizedMethods = new HashSet<Method>();
 
 	private final HashMap<Constructor, String[]> constructorParameterNames = new HashMap<Constructor, String[]>();
 	private final HashMap<Method, String[]> methodParameterNames = new HashMap<Method, String[]>();
 
 	final Constrained constrainedAnnotation;
+
 	final Class clazz;
 
 	@SuppressWarnings("unchecked")
@@ -104,6 +149,81 @@ final class ClassChecks
 		}
 	}
 
+	synchronized void addCheck(final Constructor constructor, final int parameterIndex,
+			final Check check) throws ConstraintAnnotationNotPresentException
+	{
+		// check of the @Constrained class level annotation is present
+		if (constrainedAnnotation == null)
+			throw new ConstraintAnnotationNotPresentException(
+					"Cannot apply constructor parameter constraints to class " + clazz.getName()
+							+ ".  @" + Constrained.class.getName() + " annotation not present.",
+					new ClassContext(clazz));
+
+		// retrieve the currently registered checks for all parameters of the specified constructor
+		HashMap<Integer, HashSet<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+				.get(constructor);
+		if (checksOfConstructorByParameter == null)
+		{
+			checksOfConstructorByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
+			constrainedParameterizedConstructors.add(constructor);
+		}
+
+		// retrieve the checks for the specified parameter
+		HashSet<Check> checksOfConstructorParameter = checksOfConstructorByParameter
+				.get(parameterIndex);
+		if (checksOfConstructorParameter == null)
+		{
+			checksOfConstructorParameter = new HashSet<Check>();
+			checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
+		}
+
+		checksOfConstructorParameter.add(check);
+	}
+
+	synchronized void addCheck(final Field field, final Check check)
+	{
+		HashSet<Check> checksOfField = checksByField.get(field);
+		if (checksOfField == null)
+		{
+			checksOfField = new HashSet<Check>();
+			checksByField.put(field, checksOfField);
+			constrainedFields.add(field);
+		}
+		checksOfField.add(check);
+	}
+
+	synchronized void addCheck(final Method method, final int parameterIndex, final Check check)
+			throws ConstraintAnnotationNotPresentException
+	{
+		// check of the @Constrained class level annotation is present 
+		if (constrainedAnnotation == null)
+			throw new ConstraintAnnotationNotPresentException(
+					"Cannot apply method parameter constraints to class " + clazz.getName()
+							+ ".  @" + Constrained.class.getName() + " annotation not present.",
+					new ClassContext(clazz));
+
+		// retrieve the currently registered checks for all parameters of the specified method
+		HashMap<Integer, HashSet<Check>> checksOfMethodByParameter = checksByMethodParameter
+				.get(method);
+		if (checksOfMethodByParameter == null)
+		{
+			checksOfMethodByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksByMethodParameter.put(method, checksOfMethodByParameter);
+			constrainedParameterizedMethods.add(method);
+		}
+
+		// retrieve the checks for the specified parameter
+		HashSet<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
+		if (checksOfMethodParameter == null)
+		{
+			checksOfMethodParameter = new HashSet<Check>();
+			checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
+		}
+
+		checksOfMethodParameter.add(check);
+	}
+
 	private String getParameterName(final Constructor constructor, final int parameterIndex)
 	{
 		final String parameters[] = constructorParameterNames.get(constructor);
@@ -118,6 +238,77 @@ final class ClassChecks
 		if (parameters != null && parameters.length > parameterIndex)
 			return parameters[parameterIndex];
 		return null;
+	}
+
+	synchronized void removeCheck(final Constructor constructor, final int parameterIndex,
+			final Check check) throws ConstraintAnnotationNotPresentException
+	{
+		// retrieve the currently registered checks for all parameters of the specified method
+		HashMap<Integer, HashSet<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+				.get(constructor);
+		if (checksOfConstructorByParameter == null) return;
+
+		{
+			checksOfConstructorByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
+			constrainedParameterizedConstructors.add(constructor);
+		}
+
+		// retrieve the checks for the specified parameter
+		HashSet<Check> checksOfConstructorParameter = checksOfConstructorByParameter
+				.get(parameterIndex);
+		if (checksOfConstructorParameter == null) return;
+
+		checksOfConstructorParameter.remove(check);
+
+		if (checksOfConstructorParameter.size() == 0)
+		{
+			checksOfConstructorByParameter.remove(parameterIndex);
+			if (checksOfConstructorByParameter.size() == 0)
+				constrainedParameterizedConstructors.remove(constructor);
+		}
+	}
+
+	synchronized void removeCheck(final Field field, final Check check)
+	{
+		HashSet<Check> checksOfField = checksByField.get(field);
+
+		if (checksOfField == null) return;
+
+		checksOfField.remove(check);
+		if (checksOfField.size() == 0)
+		{
+			checksByField.remove(field);
+			constrainedFields.remove(field);
+		}
+	}
+
+	synchronized void removeCheck(final Method method, final int parameterIndex, final Check check)
+			throws ConstraintAnnotationNotPresentException
+	{
+		// retrieve the currently registered checks for all parameters of the specified method
+		HashMap<Integer, HashSet<Check>> checksOfMethodByParameter = checksByMethodParameter
+				.get(method);
+		if (checksOfMethodByParameter == null) return;
+
+		{
+			checksOfMethodByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksByMethodParameter.put(method, checksOfMethodByParameter);
+			constrainedParameterizedMethods.add(method);
+		}
+
+		// retrieve the checks for the specified parameter
+		HashSet<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
+		if (checksOfMethodParameter == null) return;
+
+		checksOfMethodParameter.remove(check);
+
+		if (checksOfMethodParameter.size() == 0)
+		{
+			checksOfMethodByParameter.remove(parameterIndex);
+			if (checksOfMethodByParameter.size() == 0)
+				constrainedParameterizedMethods.remove(method);
+		}
 	}
 
 	private void setupChecksByConstructorParameters() throws ReflectionException, SecurityException
@@ -148,8 +339,7 @@ final class ClassChecks
 											+ clazz.getName() + ".  @"
 											+ Constrained.class.getName()
 											+ " annotation not present.", new ClassContext(clazz));
-						parameterChecks.add(Validator.annotationCheckLoader.loadCheck(annotation,
-								context));
+						parameterChecks.add(loadCheck(annotation, context));
 					}
 
 					/*
@@ -177,7 +367,7 @@ final class ClassChecks
 								parameterChecks.addAll(checks);
 							}
 						}
-						catch (NoSuchFieldException e)
+						catch (NoSuchFieldException ex)
 						{
 							LOG.warning("Cannot apply constraints of field <" + fieldName + "> to "
 									+ context + ". Field not found in class <" + clazz.getName()
@@ -190,7 +380,7 @@ final class ClassChecks
 			if (checksByConstructorParam.size() > 0)
 			{
 				checksByConstructorParameter.put(constructor, checksByConstructorParam);
-				constrainedParameterConstructors.add(constructor);
+				constrainedParameterizedConstructors.add(constructor);
 			}
 		}
 	}
@@ -209,13 +399,119 @@ final class ClassChecks
 				// check if the current annotation is a constraint annotation
 				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				{
-					fieldChecks.add(Validator.annotationCheckLoader.loadCheck(annotation, context));
+					fieldChecks.add(loadCheck(annotation, context));
 				}
 			}
 			if (fieldChecks.size() > 0)
 			{
 				constrainedFields.add(field);
 				checksByField.put(field, fieldChecks);
+			}
+		}
+	}
+
+	private void setupChecksByMethod() throws ReflectionException, SecurityException
+	{
+		// loop over all methods
+		for (final Method method : clazz.getDeclaredMethods())
+		{
+			// ensure the method has a return type
+			if (method.getReturnType() == Void.TYPE)
+			{
+				if (LOG.isLoggable(Level.FINE))
+					LOG
+							.fine("Constraints for methods "
+									+ method
+									+ " will be ignored, because methods without return type are not supported.");
+				continue;
+			}
+
+			final boolean isGetter = (method.getParameterTypes().length == 0)
+					&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+
+			if (!isGetter && constrainedAnnotation == null)
+			{
+				if (LOG.isLoggable(Level.FINE))
+					LOG
+							.fine("Return value constraints for parameterized method "
+									+ method
+									+ " will be ignored, because class is not annotated with @Constrained.");
+				continue;
+			}
+
+			final HashSet<Check> returnValueChecks = new HashSet<Check>();
+			final MethodReturnValueContext context = new MethodReturnValueContext(method);
+
+			// loop over all annotations
+			for (final Annotation annotation : method.getAnnotations())
+			{
+				// check if the current annotation is a constraint annotation
+				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
+					returnValueChecks.add(loadCheck(annotation, context));
+				}
+
+				/*
+				 * apply constraints of corresponding fields to parameters annotated with @FieldConstraint
+				 */
+				else if (annotation instanceof FieldConstraints)
+				{
+					final FieldConstraints fc = (FieldConstraints) annotation;
+					String fieldName = fc.value();
+					if (fieldName.length() == 0)
+					{
+						/*
+						 * calculate the fieldName based on the getXXX isXXX style getter method name
+						 */
+						fieldName = method.getName();
+
+						if (fieldName.startsWith("get") && fieldName.length() > 3)
+						{
+							fieldName = fieldName.substring(3);
+							if (fieldName.length() == 1)
+								fieldName = fieldName.toLowerCase();
+							else
+								fieldName = Character.toLowerCase(fieldName.charAt(0))
+										+ fieldName.substring(1);
+						}
+						else if (fieldName.startsWith("is") && fieldName.length() > 2)
+						{
+							fieldName = fieldName.substring(2);
+							if (fieldName.length() == 1)
+								fieldName = fieldName.toLowerCase();
+							else
+								fieldName = Character.toLowerCase(fieldName.charAt(0))
+										+ fieldName.substring(1);
+						}
+					}
+
+					try
+					{
+						final Field field = clazz.getDeclaredField(fieldName);
+						final HashSet<Check> checks = checksByField.get(field);
+						if (checks != null)
+						{
+							returnValueChecks.addAll(checks);
+						}
+					}
+					catch (final NoSuchFieldException ex)
+					{
+						LOG
+								.warning("Cannot apply constraints of field <" + fieldName
+										+ "> to " + context + ". Field not found in class <"
+										+ clazz.getName() + ">.");
+					}
+				}
+			}
+			if (returnValueChecks.size() > 0)
+			{
+				if (isGetter)
+				{
+					constrainedGetters.add(method);
+					checksByGetter.put(method, returnValueChecks);
+				}
+				constrainedMethods.add(method);
+				checksByMethod.put(method, returnValueChecks);
 			}
 		}
 	}
@@ -248,8 +544,7 @@ final class ClassChecks
 											+ clazz.getName() + ".  @"
 											+ Constrained.class.getName()
 											+ " annotation not present.", new ClassContext(clazz));
-						parameterChecks.add(Validator.annotationCheckLoader.loadCheck(annotation,
-								context));
+						parameterChecks.add(loadCheck(annotation, context));
 					}
 
 					/*
@@ -278,7 +573,7 @@ final class ClassChecks
 								parameterChecks.addAll(checks);
 							}
 						}
-						catch (NoSuchFieldException e)
+						catch (NoSuchFieldException ex)
 						{
 							LOG.warning("Cannot apply constraints of field <" + fieldName + "> to "
 									+ context + ". Field not found in class <" + clazz.getName()
@@ -291,7 +586,7 @@ final class ClassChecks
 			if (checksByMethodParam.size() > 0)
 			{
 				checksByMethodParameter.put(method, checksByMethodParam);
-				constrainedParameterMethods.add(method);
+				constrainedParameterizedMethods.add(method);
 			}
 
 			/*
@@ -362,11 +657,11 @@ final class ClassChecks
 						field = null;
 					}
 				}
-				catch (NoSuchFieldException e)
+				catch (NoSuchFieldException ex)
 				{
 					if (LOG.isLoggable(Level.FINE))
 					{
-						LOG.log(Level.FINE, "Field not found", e);
+						LOG.log(Level.FINE, "Field not found", ex);
 					}
 				}
 			}
@@ -382,113 +677,6 @@ final class ClassChecks
 								+ clazz.getName());
 					checksByMethodParam.get(0).addAll(checks);
 				}
-			}
-		}
-	}
-
-	private void setupChecksByMethod() throws ReflectionException, SecurityException
-	{
-		// loop over all methods
-		for (final Method method : clazz.getDeclaredMethods())
-		{
-			// ensure the method has a return type
-			if (method.getReturnType() == Void.TYPE)
-			{
-				if (LOG.isLoggable(Level.FINE))
-					LOG
-							.fine("Constraints for methods "
-									+ method
-									+ " will be ignored, because methods without return type are not supported.");
-				continue;
-			}
-
-			final boolean isGetter = (method.getParameterTypes().length == 0)
-					&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
-
-			if (!isGetter && constrainedAnnotation == null)
-			{
-				if (LOG.isLoggable(Level.FINE))
-					LOG
-							.fine("Return value constraints for parameterized method "
-									+ method
-									+ " will be ignored, because class is not annotated with @Constrained.");
-				continue;
-			}
-
-			final HashSet<Check> returnValueChecks = new HashSet<Check>();
-			final MethodReturnValueContext context = new MethodReturnValueContext(method);
-
-			// loop over all annotations
-			for (final Annotation annotation : method.getAnnotations())
-			{
-				// check if the current annotation is a constraint annotation
-				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
-				{
-					returnValueChecks.add(Validator.annotationCheckLoader.loadCheck(annotation,
-							context));
-				}
-
-				/*
-				 * apply constraints of corresponding fields to parameters annotated with @FieldConstraint
-				 */
-				else if (annotation instanceof FieldConstraints)
-				{
-					final FieldConstraints fc = (FieldConstraints) annotation;
-					String fieldName = fc.value();
-					if (fieldName.length() == 0)
-					{
-						/*
-						 * calculate the fieldName based on the getXXX isXXX style getter method name
-						 */
-						fieldName = method.getName();
-
-						if (fieldName.startsWith("get") && fieldName.length() > 3)
-						{
-							fieldName = fieldName.substring(3);
-							if (fieldName.length() == 1)
-								fieldName = fieldName.toLowerCase();
-							else
-								fieldName = Character.toLowerCase(fieldName.charAt(0))
-										+ fieldName.substring(1);
-						}
-						else if (fieldName.startsWith("is") && fieldName.length() > 2)
-						{
-							fieldName = fieldName.substring(2);
-							if (fieldName.length() == 1)
-								fieldName = fieldName.toLowerCase();
-							else
-								fieldName = Character.toLowerCase(fieldName.charAt(0))
-										+ fieldName.substring(1);
-						}
-					}
-
-					try
-					{
-						final Field field = clazz.getDeclaredField(fieldName);
-						final HashSet<Check> checks = checksByField.get(field);
-						if (checks != null)
-						{
-							returnValueChecks.addAll(checks);
-						}
-					}
-					catch (final NoSuchFieldException e)
-					{
-						LOG
-								.warning("Cannot apply constraints of field <" + fieldName
-										+ "> to " + context + ". Field not found in class <"
-										+ clazz.getName() + ">.");
-					}
-				}
-			}
-			if (returnValueChecks.size() > 0)
-			{
-				if (isGetter)
-				{
-					constrainedGetters.add(method);
-					checksByGetter.put(method, returnValueChecks);
-				}
-				constrainedMethods.add(method);
-				checksByMethod.put(method, returnValueChecks);
 			}
 		}
 	}
@@ -530,72 +718,5 @@ final class ClassChecks
 				}
 			}
 		}
-	}
-
-	synchronized void addCheck(final Field field, final Check check)
-	{
-		HashSet<Check> checks = checksByField.get(field);
-		if (checks == null)
-		{
-			checks = new HashSet<Check>();
-			checksByField.put(field, checks);
-			constrainedFields.add(field);
-		}
-		checks.add(check);
-	}
-
-	synchronized void addCheck(final Constructor constructor, final int parameterIndex,
-			final Check check) throws ConstraintAnnotationNotPresentException
-	{
-		if (constrainedAnnotation == null)
-			throw new ConstraintAnnotationNotPresentException(
-					"Cannot apply constructor parameter constraints to class " + clazz.getName()
-							+ ".  @" + Constrained.class.getName() + " annotation not present.",
-					new ClassContext(clazz));
-
-		HashMap<Integer, HashSet<Check>> checksByParameter = checksByConstructorParameter
-				.get(constructor);
-		if (checksByParameter == null)
-		{
-			checksByParameter = new HashMap<Integer, HashSet<Check>>();
-			checksByConstructorParameter.put(constructor, checksByParameter);
-			constrainedParameterConstructors.add(constructor);
-		}
-
-		HashSet<Check> parameterChecks = checksByParameter.get(parameterIndex);
-		if (parameterChecks == null)
-		{
-			parameterChecks = new HashSet<Check>();
-			checksByParameter.put(parameterIndex, parameterChecks);
-		}
-
-		parameterChecks.add(check);
-	}
-
-	synchronized void addCheck(final Method method, final int parameterIndex, final Check check)
-			throws ConstraintAnnotationNotPresentException
-	{
-		if (constrainedAnnotation == null)
-			throw new ConstraintAnnotationNotPresentException(
-					"Cannot apply method parameter constraints to class " + clazz.getName()
-							+ ".  @" + Constrained.class.getName() + " annotation not present.",
-					new ClassContext(clazz));
-
-		HashMap<Integer, HashSet<Check>> checksByParameter = checksByMethodParameter.get(method);
-		if (checksByParameter == null)
-		{
-			checksByParameter = new HashMap<Integer, HashSet<Check>>();
-			checksByMethodParameter.put(method, checksByParameter);
-			constrainedParameterMethods.add(method);
-		}
-
-		HashSet<Check> parameterChecks = checksByParameter.get(parameterIndex);
-		if (parameterChecks == null)
-		{
-			parameterChecks = new HashSet<Check>();
-			checksByParameter.put(parameterIndex, parameterChecks);
-		}
-
-		parameterChecks.add(check);
 	}
 }
