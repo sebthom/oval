@@ -3,15 +3,14 @@
  */
 package net.sf.oval;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.WeakHashMap;
 
 import net.sf.oval.exceptions.ConstraintsViolatedException;
-
-import org.aspectj.lang.reflect.ConstructorSignature;
-import org.aspectj.lang.reflect.MethodSignature;
 
 /**
  * @author Sebastian Thomschke
@@ -218,14 +217,36 @@ public final class ConstraintsEnforcer
 	/**
 	 * used by ConstraintsEnforcerAspect
 	 * 
+	 * @return true if valid, false if invalid
+	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
+	 */
+	public static boolean validate(final Object validatedObject, final boolean alwaysThrow)
+			throws ConstraintsViolatedException
+	{
+		final List<ConstraintViolation> violations = Validator.validate(validatedObject);
+		if (violations.size() > 0)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+					violations.toArray(new ConstraintViolation[violations.size()]));
+			notifyListeners(validatedObject, violationException);
+
+			if (alwaysThrow) throw violationException;
+			if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
+		}
+		return violations.size() == 0;
+	}
+
+	/**
+	 * used by ConstraintsEnforcerAspect
+	 * 
 	 * @throws ConstraintsViolatedException if any parameter is invalid
 	 */
-	static void validateConstructorParameters(final Object validatedObject,
-			final ConstructorSignature constructorSignature, final Object[] parameters)
+	public static void validateConstructorParameters(final Object validatedObject,
+			final Constructor constructor, final Object[] parameters)
 			throws ConstraintsViolatedException
 	{
 		final List<ConstraintViolation> violations = Validator.validateConstructorParameters(
-				validatedObject, constructorSignature, parameters);
+				validatedObject, constructor, parameters);
 
 		if (violations == null) return;
 
@@ -237,41 +258,16 @@ public final class ConstraintsEnforcer
 	}
 
 	/**
-	 * used by ConstraintsEnforcer
+	 * used by ConstraintsEnforcerAspect
 	 * 
 	 * @return true if valid, false if invalid
 	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
 	 */
-	static boolean validateMethodReturnValue(final Object validatedObject,
-			final MethodSignature methodSignature, final Object methodReturnValue)
-			throws ConstraintsViolatedException
-	{
-		final List<ConstraintViolation> violations = Validator.validateMethodReturnValue(
-				validatedObject, methodSignature, methodReturnValue);
-
-		if (violations == null) return true;
-
-		final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-				violations.toArray(new ConstraintViolation[violations.size()]));
-		notifyListeners(validatedObject, violationException);
-
-		if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
-
-		return false;
-	}
-
-	/**
-	 * used by ConstraintsEnforcer
-	 * 
-	 * @return true if valid, false if invalid
-	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
-	 */
-	static boolean validateMethodParameters(final Object validatedObject,
-			final MethodSignature methodSignature, final Object[] parameters)
-			throws ConstraintsViolatedException
+	public static boolean validateMethodParameters(final Object validatedObject,
+			final Method method, final Object[] parameters) throws ConstraintsViolatedException
 	{
 		final List<ConstraintViolation> violations = Validator.validateMethodParameters(
-				validatedObject, methodSignature, parameters);
+				validatedObject, method, parameters);
 
 		if (violations == null) return true;
 
@@ -290,20 +286,22 @@ public final class ConstraintsEnforcer
 	 * @return true if valid, false if invalid
 	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
 	 */
-	static boolean validate(final Object validatedObject, final boolean alwaysThrow)
+	public static boolean validateMethodReturnValue(final Object validatedObject,
+			final Method method, final Object methodReturnValue)
 			throws ConstraintsViolatedException
 	{
-		final List<ConstraintViolation> violations = Validator.validate(validatedObject);
-		if (violations.size() > 0)
-		{
-			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-					violations.toArray(new ConstraintViolation[violations.size()]));
-			notifyListeners(validatedObject, violationException);
+		final List<ConstraintViolation> violations = Validator.validateMethodReturnValue(
+				validatedObject, method, methodReturnValue);
 
-			if (alwaysThrow) throw violationException;
-			if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
-		}
-		return violations.size() == 0;
+		if (violations == null) return true;
+
+		final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+				violations.toArray(new ConstraintViolation[violations.size()]));
+		notifyListeners(validatedObject, violationException);
+
+		if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
+
+		return false;
 	}
 
 	private ConstraintsEnforcer()

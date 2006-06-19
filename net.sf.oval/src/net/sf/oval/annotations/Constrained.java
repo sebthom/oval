@@ -28,7 +28,7 @@ public @interface Constrained
 	/**
 	 * apply constraints specified for fields to the parameter value of the corresponding setter method
 	 * <br><br>
-	 * <b>Note:</b> This features requires AspectJ
+	 * <b>Note:</b> This features currently requires AspectJ
 	 */
 	boolean applyFieldConstraintsToSetter() default false;
 }

@@ -8,6 +8,8 @@
 + added french translation for the violation messages of the built-in constraints (provided by mimil)
 + added @InstanceOf constraint
 ~ simplified annotation check loading by introducing a check parameter to the @Constraint annotation that is used to specify the constraint check class
+~ refactored AspectJ related code into separate classes in the package net.sf.oval.aspectj to potentially support other AOP libraries later
+~ made the code to resolve the variables names of constructor and method parameters configurable via the ParameterNameResolver interface and the Validator.setParameterNameResolver(...) method
 
 Refactoring:
 - removed net.sf.oval.Validator.setAnnotationCheckLoader(AnnotationCheckLoader)

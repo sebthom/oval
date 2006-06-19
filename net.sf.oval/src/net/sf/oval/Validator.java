@@ -34,9 +34,6 @@ import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
 
-import org.aspectj.lang.reflect.ConstructorSignature;
-import org.aspectj.lang.reflect.MethodSignature;
-
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.10 $
@@ -47,6 +44,8 @@ public final class Validator
 
 	private static final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
 	private static final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
+
+	private static ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
 
 	static
 	{
@@ -237,10 +236,8 @@ public final class Validator
 	 * @return null if no violation, otherwise a list
 	 */
 	static List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
-			final ConstructorSignature constructorSignature, final Object[] parameters)
+			final Constructor constructor, final Object[] parameters)
 	{
-		final Constructor constructor = constructorSignature.getConstructor();
-		final String[] parameterNames = constructorSignature.getParameterNames();
 		final ClassChecks classConstraints = getClassChecks(constructor.getDeclaringClass());
 
 		final HashMap<Integer, HashSet<Check>> parameterChecks = classConstraints.checksByConstructorParameter
@@ -248,6 +245,7 @@ public final class Validator
 
 		if (parameterChecks == null) return null;
 
+		final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
 		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
 		for (int i = 0; i < parameters.length; i++)
 		{
@@ -326,11 +324,8 @@ public final class Validator
 	 * @return null if no violation, otherwise a list
 	 */
 	static List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
-			final MethodSignature methodSignature, final Object[] parameters)
+			final Method method, final Object[] parameters)
 	{
-		final Method method = methodSignature.getMethod();
-		final String[] parameterNames = methodSignature.getParameterNames();
-
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
 		final HashMap<Integer, HashSet<Check>> parameterChecks = cc.checksByMethodParameter
@@ -339,6 +334,7 @@ public final class Validator
 		// check if the method has any parameter checks at all
 		if (parameterChecks == null) return null;
 
+		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
 		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
 
 		for (int i = 0; i < parameters.length; i++)
@@ -370,10 +366,8 @@ public final class Validator
 	 * @return null if no violation, otherwise a list
 	 */
 	static List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
-			final MethodSignature methodSignature, final Object methodReturnValue)
+			final Method method, final Object methodReturnValue)
 	{
-		final Method method = methodSignature.getMethod();
-
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
 		final HashSet<Check> checks = cc.checksByMethod.get(method);
@@ -420,4 +414,14 @@ public final class Validator
 
 	private Validator()
 	{}
+
+	public static ParameterNameResolver getParameterNameResolver()
+	{
+		return parameterNameResolver;
+	}
+
+	public static void setParameterNameResolver(ParameterNameResolver parameterNameResolver)
+	{
+		Validator.parameterNameResolver = parameterNameResolver;
+	}
 }

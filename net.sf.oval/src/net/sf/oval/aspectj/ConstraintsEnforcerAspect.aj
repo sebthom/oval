@@ -10,11 +10,14 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval;
+package net.sf.oval.aspectj;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.oval.ConstraintsEnforcer;
+import net.sf.oval.ParameterNameResolverDefaultImpl;
+import net.sf.oval.Validator;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.PostValidateObject;
 import net.sf.oval.annotations.PreValidateObject;
@@ -29,6 +32,15 @@ import org.aspectj.lang.reflect.MethodSignature;
  */
 public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 {
+	public ConstraintsEnforcerAspect()
+	{
+		// in case the this ConstraintsEnforcerAspect is used we can also use the ParameterNameResolver that utilizes the AspectJ library
+		if (Validator.getParameterNameResolver() instanceof ParameterNameResolverDefaultImpl)
+		{
+			Validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		}
+	}
+
 	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect.class.getName());
 
 	/*
@@ -72,7 +84,8 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		final Object[] parameterValues = thisJoinPoint.getArgs();
 
-		ConstraintsEnforcer.validateConstructorParameters(TARGET, SIGNATURE, parameterValues);
+		ConstraintsEnforcer.validateConstructorParameters(TARGET, SIGNATURE.getConstructor(),
+				parameterValues);
 
 		return proceed();
 	}
@@ -90,8 +103,8 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		final Object[] parameterValues = thisJoinPoint.getArgs();
 
-		final boolean valid = ConstraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE,
-				parameterValues);
+		final boolean valid = ConstraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE
+				.getMethod(), parameterValues);
 
 		return valid ? proceed() : null;
 	}
@@ -125,7 +138,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		Object returnValue = proceed();
 
-		ConstraintsEnforcer.validateMethodReturnValue(TARGET, SIGNATURE, returnValue);
+		ConstraintsEnforcer.validateMethodReturnValue(TARGET, SIGNATURE.getMethod(), returnValue);
 
 		return returnValue;
 	}

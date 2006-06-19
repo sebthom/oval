@@ -16,7 +16,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -33,10 +32,6 @@ import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.ReflectionException;
-
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.reflect.ConstructorSignature;
-import org.aspectj.lang.reflect.MethodSignature;
 
 /**
  * This class holds information about all the constraints defined for a class
@@ -103,9 +98,6 @@ final class ClassChecks
 	final HashSet<Constructor> constrainedParameterizedConstructors = new HashSet<Constructor>();
 	final HashSet<Method> constrainedParameterizedMethods = new HashSet<Method>();
 
-	private final HashMap<Constructor, String[]> constructorParameterNames = new HashMap<Constructor, String[]>();
-	private final HashMap<Method, String[]> methodParameterNames = new HashMap<Method, String[]>();
-
 	final Constrained constrainedAnnotation;
 
 	final Class clazz;
@@ -132,16 +124,10 @@ final class ClassChecks
 
 		try
 		{
-			setupParamterNames();
-
 			setupChecksByField(); // field checks must be initiated first!
 			setupChecksByConstructorParameters();
 			setupChecksByMethodParameters();
 			setupChecksByMethod();
-		}
-		catch (final IllegalAccessException e)
-		{
-			throw new ReflectionException("Cannot load checks for class " + clazz.getName(), e);
 		}
 		catch (final SecurityException e)
 		{
@@ -224,22 +210,6 @@ final class ClassChecks
 		checksOfMethodParameter.add(check);
 	}
 
-	private String getParameterName(final Constructor constructor, final int parameterIndex)
-	{
-		final String parameters[] = constructorParameterNames.get(constructor);
-		if (parameters != null && parameters.length > parameterIndex)
-			return parameters[parameterIndex];
-		return null;
-	}
-
-	private String getParameterName(final Method method, final int parameterIndex)
-	{
-		final String parameters[] = methodParameterNames.get(method);
-		if (parameters != null && parameters.length > parameterIndex)
-			return parameters[parameterIndex];
-		return null;
-	}
-
 	synchronized void removeCheck(final Constructor constructor, final int parameterIndex,
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
@@ -318,11 +288,13 @@ final class ClassChecks
 		{
 			final HashMap<Integer, HashSet<Check>> checksByConstructorParam = new HashMap<Integer, HashSet<Check>>();
 			final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+			final String parameterNames[] = Validator.getParameterNameResolver().getParameterNames(
+					constructor);
 
 			// loop over all parameters of the current constructor
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final String parameterName = getParameterName(constructor, i);
+				final String parameterName = parameterNames[i];
 				final ConstructorParameterContext context = new ConstructorParameterContext(
 						constructor, i, parameterName);
 				final HashSet<Check> parameterChecks = new HashSet<Check>();
@@ -523,11 +495,13 @@ final class ClassChecks
 		{
 			final HashMap<Integer, HashSet<Check>> checksByMethodParam = new HashMap<Integer, HashSet<Check>>();
 			final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+			final String[] parameterNames = Validator.getParameterNameResolver().getParameterNames(
+					method);
 
 			// loop over all parameters of the current method
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final String parameterName = getParameterName(method, i);
+				final String parameterName = parameterNames[i];
 				final MethodParameterContext context = new MethodParameterContext(method, i,
 						parameterName);
 				final HashSet<Check> parameterChecks = new HashSet<Check>();
@@ -676,45 +650,6 @@ final class ClassChecks
 								+ fieldName + "> to setter <" + methodName + "> of class "
 								+ clazz.getName());
 					checksByMethodParam.get(0).addAll(checks);
-				}
-			}
-		}
-	}
-
-	private void setupParamterNames() throws IllegalArgumentException, IllegalAccessException,
-			SecurityException
-	{
-		for (final Field field : clazz.getDeclaredFields())
-		{
-			// search for static fields of type JoinPoint.StaticPart
-			if (((field.getModifiers() & Modifier.STATIC) != 0)
-					&& field.getType() == JoinPoint.StaticPart.class)
-			{
-				// access the StaticPart object
-				field.setAccessible(true);
-				final JoinPoint.StaticPart staticPart = (JoinPoint.StaticPart) field.get(null);
-				if (staticPart == null) break;
-
-				if (staticPart.getSignature() instanceof ConstructorSignature)
-				{
-					final ConstructorSignature sig = (ConstructorSignature) staticPart
-							.getSignature();
-					final String[] parameterNames = sig.getParameterNames();
-
-					final Constructor constr = sig.getConstructor();
-
-					if (parameterNames.length > 0)
-						constructorParameterNames.put(constr, parameterNames);
-				}
-				else if (staticPart.getSignature() instanceof MethodSignature)
-				{
-					final MethodSignature sig = (MethodSignature) staticPart.getSignature();
-					final String[] parameterNames = sig.getParameterNames();
-
-					final Method method = sig.getMethod();
-
-					if (parameterNames.length > 0)
-						methodParameterNames.put(method, parameterNames);
 				}
 			}
 		}

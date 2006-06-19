@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.test;
 
-import net.sf.oval.ConstraintsEnforcerAspect;
+import net.sf.oval.aspectj.ConstraintsEnforcerAspect;
 
 /**
  * @author Sebastian Thomschke

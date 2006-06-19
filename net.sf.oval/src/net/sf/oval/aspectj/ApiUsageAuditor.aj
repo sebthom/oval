@@ -1,7 +1,7 @@
 /*
  * Created on 06.04.2006
  */
-package net.sf.oval;
+package net.sf.oval.aspectj;
 
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.Constraint;
