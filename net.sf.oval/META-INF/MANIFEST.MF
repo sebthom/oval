@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OVal - Object Validation Framework
 Bundle-SymbolicName: net.sf.oval;singleton:=true
-Bundle-Version: 0.5
+Bundle-Version: 0.6
 Bundle-Localization: plugin
 Bundle-Vendor: oval.sf.net
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -10,6 +10,7 @@ Require-Bundle: org.aspectj.runtime,
  org.eclipse.core.runtime
 Export-Package: net.sf.oval,
  net.sf.oval.annotations,
+ net.sf.oval.aspectj,
  net.sf.oval.constraints,
  net.sf.oval.contexts,
  net.sf.oval.exceptions,
