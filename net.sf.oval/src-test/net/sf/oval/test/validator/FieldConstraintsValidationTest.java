@@ -31,6 +31,8 @@ import net.sf.oval.constraints.RegExCheck;
  */
 public class FieldConstraintsValidationTest extends TestCase
 {
+	private final static String REGEX_ZIP_CODE = "^[0-9]*$";
+
 	private static class Person
 	{
 		@NotNull
@@ -42,7 +44,7 @@ public class FieldConstraintsValidationTest extends TestCase
 		@NotNull
 		@Length(max = 6)
 		@NotEmpty
-		@RegEx(pattern = "^[0-9]*$")
+		@RegEx(pattern = REGEX_ZIP_CODE)
 		public String zipCode;
 	}
 
