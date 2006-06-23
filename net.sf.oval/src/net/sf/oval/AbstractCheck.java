@@ -17,8 +17,6 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.oval.contexts.OValContext;
-
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
@@ -29,7 +27,6 @@ public abstract class AbstractCheck<ConstraintAnnotation extends Annotation>
 {
 	private final static Logger LOG = Logger.getLogger(AbstractCheck.class.getName());
 
-	protected OValContext context;
 	protected ConstraintAnnotation constraintAnnotation;
 	protected String message;
 

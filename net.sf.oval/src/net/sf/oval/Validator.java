@@ -42,8 +42,8 @@ public final class Validator
 {
 	private static final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
-	private static final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
 	private static final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
+	private static final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
 
 	private static ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
 
@@ -57,14 +57,14 @@ public final class Validator
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = constructor.getDeclaringClass();
-		ClassChecks checks = getClassChecks(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(constructor, parameterIndex, check);
 	}
 
 	public static void addCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
-		ClassChecks checks = getClassChecks(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(field, check);
 	}
 
@@ -72,7 +72,7 @@ public final class Validator
 			throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
-		ClassChecks checks = getClassChecks(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(method, parameterIndex, check);
 	}
 
@@ -148,18 +148,23 @@ public final class Validator
 		}
 	}
 
+	public static ParameterNameResolver getParameterNameResolver()
+	{
+		return parameterNameResolver;
+	}
+
 	public static void removeCheck(final Constructor constructor, final int parameterIndex,
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = constructor.getDeclaringClass();
-		ClassChecks checks = getClassChecks(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.removeCheck(constructor, parameterIndex, check);
 	}
 
 	public static void removeCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
-		ClassChecks checks = getClassChecks(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.removeCheck(field, check);
 	}
 
@@ -167,7 +172,7 @@ public final class Validator
 			throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
-		ClassChecks checks = getClassChecks(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.removeCheck(method, parameterIndex, check);
 	}
 
@@ -217,6 +222,11 @@ public final class Validator
 		return MessageFormat.format(messageKey, args.toArray());
 	}
 
+	public static void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
+	{
+		Validator.parameterNameResolver = parameterNameResolver;
+	}
+
 	/**
 	 * validates the field and getter constrains of the given object
 	 * 
@@ -238,9 +248,9 @@ public final class Validator
 	static List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor constructor, final Object[] parameters)
 	{
-		final ClassChecks classConstraints = getClassChecks(constructor.getDeclaringClass());
+		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 
-		final HashMap<Integer, HashSet<Check>> parameterChecks = classConstraints.checksByConstructorParameter
+		final HashMap<Integer, HashSet<Check>> parameterChecks = cc.checksByConstructorParameter
 				.get(constructor);
 
 		if (parameterChecks == null) return null;
@@ -412,16 +422,9 @@ public final class Validator
 		validateObject(validatedObject, clazz.getSuperclass(), violations);
 	}
 
+	/**
+	 * private constructor
+	 */
 	private Validator()
 	{}
-
-	public static ParameterNameResolver getParameterNameResolver()
-	{
-		return parameterNameResolver;
-	}
-
-	public static void setParameterNameResolver(ParameterNameResolver parameterNameResolver)
-	{
-		Validator.parameterNameResolver = parameterNameResolver;
-	}
 }
