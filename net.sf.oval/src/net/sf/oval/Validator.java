@@ -156,6 +156,16 @@ public final class Validator
 		return parameterNameResolver;
 	}
 
+	/**
+	 * determines if the given object is currently validated in the current thread
+	 * @param object
+	 * @return
+	 */
+	public static boolean isCurrentlyValidated(Object object)
+	{
+		return currentlyValidatedObjects.getList().contains(object);
+	}
+
 	public static void removeCheck(final Constructor constructor, final int parameterIndex,
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
@@ -379,16 +389,6 @@ public final class Validator
 			}
 		}
 		return violations.size() == 0 ? null : violations;
-	}
-
-	/**
-	 * determines if the given object is currently validated in the current thread
-	 * @param object
-	 * @return
-	 */
-	public static boolean isObjectCurrentlyValidated(Object object)
-	{
-		return currentlyValidatedObjects.getList().contains(object);
 	}
 
 	/**
