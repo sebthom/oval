@@ -33,6 +33,7 @@ import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
+import net.sf.oval.utils.ThreadLocalList;
 
 /**
  * @author Sebastian Thomschke
@@ -40,6 +41,8 @@ import net.sf.oval.exceptions.InvokingGetterFailedException;
  */
 public final class Validator
 {
+	private static final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
+
 	private static final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
 	private static final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
@@ -235,9 +238,17 @@ public final class Validator
 	 */
 	public static List<ConstraintViolation> validate(final Object validatedObject)
 	{
-		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
-		validateObject(validatedObject, validatedObject.getClass(), violations);
-		return violations;
+		currentlyValidatedObjects.getList().add(validatedObject);
+		try
+		{
+			final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+			validateObject(validatedObject, validatedObject.getClass(), violations);
+			return violations;
+		}
+		finally
+		{
+			currentlyValidatedObjects.getList().remove(validatedObject);
+		}
 	}
 
 	/**
@@ -368,6 +379,16 @@ public final class Validator
 			}
 		}
 		return violations.size() == 0 ? null : violations;
+	}
+
+	/**
+	 * determines if the given object is currently validated in the current thread
+	 * @param object
+	 * @return
+	 */
+	public static boolean isObjectCurrentlyValidated(Object object)
+	{
+		return currentlyValidatedObjects.getList().contains(object);
 	}
 
 	/**
