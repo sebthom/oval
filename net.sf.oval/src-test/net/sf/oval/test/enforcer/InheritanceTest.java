@@ -14,6 +14,7 @@ package net.sf.oval.test.enforcer;
 
 import junit.framework.TestCase;
 import net.sf.oval.annotations.Constrained;
+import net.sf.oval.constraints.FieldConstraints;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
@@ -27,7 +28,7 @@ public class InheritanceTest extends TestCase
 	public static class SuperEntity
 	{
 		@NotNull
-		private String name;
+		protected String name;
 
 		/**
 		 * @return the name
@@ -49,7 +50,14 @@ public class InheritanceTest extends TestCase
 	@Constrained
 	public static class Entity extends SuperEntity
 	{
-
+		/**
+		 * @param name the name to set
+		 */
+		public void setName2(@FieldConstraints
+		String name)
+		{
+			this.name = name;
+		}
 	}
 
 	public void testInheritance()
@@ -62,8 +70,14 @@ public class InheritanceTest extends TestCase
 			fail("ConstraintViolationException should have been thrown");
 		}
 		catch (ConstraintsViolatedException ex)
-		{
+		{}
 
+		try
+		{
+			e.setName2(null);
+			fail("ConstraintViolationException should have been thrown");
 		}
+		catch (ConstraintsViolatedException ex)
+		{}
 	}
 }

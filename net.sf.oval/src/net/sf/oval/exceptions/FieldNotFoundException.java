@@ -10,26 +10,18 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
-
-import net.sf.oval.AbstractCheck;
-import net.sf.oval.contexts.OValContext;
+package net.sf.oval.exceptions;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.2 $
  */
-public class AssertFalseCheck extends AbstractCheck<AssertFalse>
+public class FieldNotFoundException extends OValException
 {
-	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context)
-	{
-		if (value == null) return true;
+	private static final long serialVersionUID = 1L;
 
-		if (value instanceof Boolean)
-		{
-			return !((Boolean) value).booleanValue();
-		}
-		return false;
+	public FieldNotFoundException(final String message)
+	{
+		super(message);
 	}
 }

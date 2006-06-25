@@ -15,6 +15,7 @@ package net.sf.oval.constraints;
 import java.lang.reflect.Method;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ReflectionException;
 
 /**
@@ -56,7 +57,8 @@ public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
 		return parameterType;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object value)
+	public boolean isSatisfied(final Object validatedObject, final Object value,
+			final OValContext context)
 	{
 		try
 		{

@@ -14,7 +14,6 @@ package net.sf.oval.test.enforcer;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.ConstraintsEnforcer.Mode;
 import net.sf.oval.annotations.Constrained;
@@ -61,7 +60,7 @@ public class PrePostValidateObjectTest extends TestCase
 
 	public void testConstructorValidationInNotifyListenersMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
 
 		try
 		{
@@ -90,7 +89,7 @@ public class PrePostValidateObjectTest extends TestCase
 
 	public void testConstructorValidationInThrowExceptionMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
 
 		try
 		{
@@ -120,10 +119,10 @@ public class PrePostValidateObjectTest extends TestCase
 	{
 		final TestEntity t = new TestEntity();
 
-		ConstraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, t);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, t);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		ConstraintsEnforcer.addListener(va, t);
+		TestEnforcerAspect.constraintsEnforcer.addListener(va, t);
 
 		try
 		{
@@ -156,7 +155,7 @@ public class PrePostValidateObjectTest extends TestCase
 
 	public void testMethodValidationInThrowExceptionMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
 
 		final TestEntity t = new TestEntity();
 

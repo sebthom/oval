@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval;
 
+import net.sf.oval.contexts.OValContext;
+
 /**
  * interface for classes that can check/validate if a single constraint is satisfied
  * 
@@ -41,9 +43,10 @@ public interface Check
 	 * 
 	 * @param validatedObject the object to validate the value against
 	 * @param value the property/parameter to validate
+	 * @param context the validation context
 	 * @return true if the property/parameter meets the check
 	 */
-	boolean isSatisfied(Object validatedObject, Object value);
+	boolean isSatisfied(Object validatedObject, Object value, OValContext context);
 
 	/**
 	 * sets the default message is displayed if a corresponding message key

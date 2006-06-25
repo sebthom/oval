@@ -19,7 +19,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.Validator;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
@@ -114,7 +113,7 @@ public class AddingConstraintsTest extends TestCase
 			}
 
 			// adding a constraint
-			Validator.addCheck(setter, 0, notNullCheck);
+			TestEnforcerAspect.validator.addCheck(setter, 0, notNullCheck);
 			try
 			{
 				TestEntity1 entity = new TestEntity1("blabla");
@@ -130,7 +129,7 @@ public class AddingConstraintsTest extends TestCase
 			}
 
 			// removing the constraint
-			Validator.removeCheck(setter, 0, notNullCheck);
+			TestEnforcerAspect.validator.removeCheck(setter, 0, notNullCheck);
 			try
 			{
 				TestEntity1 entity = new TestEntity1("blabla");
@@ -180,7 +179,7 @@ public class AddingConstraintsTest extends TestCase
 			}
 
 			// adding a constraint
-			Validator.addCheck(constructor, 0, notNullCheck);
+			TestEnforcerAspect.validator.addCheck(constructor, 0, notNullCheck);
 			try
 			{
 				new TestEntity2(null);
@@ -195,7 +194,7 @@ public class AddingConstraintsTest extends TestCase
 			}
 
 			// removing the constraint
-			Validator.removeCheck(constructor, 0, notNullCheck);
+			TestEnforcerAspect.validator.removeCheck(constructor, 0, notNullCheck);
 			try
 			{
 				new TestEntity2(null);
@@ -227,7 +226,7 @@ public class AddingConstraintsTest extends TestCase
 	public void testAddConstraintToField()
 	{
 		TestEntity3 entity = new TestEntity3(null);
-		assertTrue(Validator.validate(entity).size() == 0);
+		assertTrue(TestEnforcerAspect.validator.validate(entity).size() == 0);
 
 		try
 		{
@@ -237,24 +236,27 @@ public class AddingConstraintsTest extends TestCase
 
 			// testing without constraint
 			{
-				List<ConstraintViolation> violations = Validator.validate(entity);
+				List<ConstraintViolation> violations = TestEnforcerAspect.validator
+						.validate(entity);
 				assertTrue(violations.size() == 0);
 			}
 
 			// adding a constraint
 			{
-				Validator.addCheck(field, notNullCheck);
+				TestEnforcerAspect.validator.addCheck(field, notNullCheck);
 
-				List<ConstraintViolation> violations = Validator.validate(entity);
+				List<ConstraintViolation> violations = TestEnforcerAspect.validator
+						.validate(entity);
 				assertTrue(violations.size() == 1);
 				assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
 			}
 
 			// removing the constraint
 			{
-				Validator.removeCheck(field, notNullCheck);
+				TestEnforcerAspect.validator.removeCheck(field, notNullCheck);
 
-				List<ConstraintViolation> violations = Validator.validate(entity);
+				List<ConstraintViolation> violations = TestEnforcerAspect.validator
+						.validate(entity);
 				assertTrue(violations.size() == 0);
 			}
 		}

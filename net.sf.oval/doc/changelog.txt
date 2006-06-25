@@ -11,6 +11,9 @@
 ~ refactored AspectJ related code into separate classes in the package net.sf.oval.aspectj to potentially support other AOP libraries later
 ~ made the code to resolve the variables names of constructor and method parameters configurable via the ParameterNameResolver interface and the Validator.setParameterNameResolver(...) method
 + added @AssertValid constraint
+~ moved @FieldConstraints from package net.sf.annotations to net.sf.constraints
+~ @FieldConstraints constraint now also considers constraints added to fields during runtime via Validator.addCheck(...)
+~ changed all static methods of Validator and ConstraintsEnforcer to non-static to allow multiple validator instances at the same time being configured differently
 
 Refactoring:
 - removed net.sf.oval.Validator.setAnnotationCheckLoader(AnnotationCheckLoader)

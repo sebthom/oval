@@ -10,12 +10,15 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.annotations;
+package net.sf.oval.constraints;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import net.sf.oval.annotations.Constraint;
+import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
  * Applies the constraints of the specified field to the annotated parameter or getter method.
@@ -25,8 +28,16 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.METHOD})
+@Constraint(check = FieldConstraintsCheck.class)
 public @interface FieldConstraints
 {
+	/**
+	 * message to be used for the ContraintsViolatatedException
+	 * 
+	 * @see ConstraintsViolatedException
+	 */
+	String message() default "not used";
+
 	/**
 	 * @return name of the field. If not specified, the constraints of the field with the same name as the annotated constructor/method parameter are applied.
 	 */

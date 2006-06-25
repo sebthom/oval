@@ -114,10 +114,12 @@
 }</programlisting>
       <para>Example usage:</para>
 
-      <programlisting>BusinessObject bo = new BusinessObject(); // name is null
+      <programlisting>Validator validator = new Validator();
+
+BusinessObject bo = new BusinessObject(); // name is null
 
 // collect the violated constraints
-List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);
+List&lt;ConstraintViolation&gt; violations = validator.validate(bo);
 
 if(violations.size()&gt;0)
 {
@@ -166,7 +168,9 @@ if(violations.size()&gt;0)
 }</programlisting>
       <para>Example usage:</para>
 
-      <programlisting>BusinessObject bo = new BusinessObject(&quot;blabla&quot;);
+      <programlisting>Validator validator = new Validator();
+
+BusinessObject bo = new BusinessObject(&quot;blabla&quot;);
  
 // collect the violated constraints
 List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);

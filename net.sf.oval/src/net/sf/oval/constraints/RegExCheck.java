@@ -15,6 +15,7 @@ package net.sf.oval.constraints;
 import java.util.regex.Pattern;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -45,7 +46,8 @@ public class RegExCheck extends AbstractCheck<RegEx>
 		return pattern;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object value)
+	public boolean isSatisfied(final Object validatedObject, final Object value,
+			final OValContext context)
 	{
 		if (value == null) return true;
 

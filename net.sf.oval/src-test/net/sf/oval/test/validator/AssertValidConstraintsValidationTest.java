@@ -62,30 +62,32 @@ public class AssertValidConstraintsValidationTest extends TestCase
 
 	public void testFieldValidation()
 	{
+		final Validator validator = new Validator();
+
 		final Person p = new Person();
 		p.firstName = "John";
 		p.lastName = "Doe";
-		assertTrue(Validator.validate(p).size() == 0);
+		assertTrue(validator.validate(p).size() == 0);
 
 		final Address a = new Address();
 		a.street = "The Street";
 		a.city = "The City";
 		a.zipCode = "12345";
-		assertTrue(Validator.validate(a).size() == 0);
+		assertTrue(validator.validate(a).size() == 0);
 
 		// make the address invalid
 		a.zipCode = null;
-		assertTrue(Validator.validate(a).size() == 1);
+		assertTrue(validator.validate(a).size() == 1);
 
 		// associate the invalid address with the person check the person for validity
 		p.homeAddress = a;
-		List<ConstraintViolation> violations = Validator.validate(p);
+		List<ConstraintViolation> violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof AssertValidCheck);
 
 		// test circular dependencies
 		a.contact = p;
-		violations = Validator.validate(p);
+		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof AssertValidCheck);
 	}

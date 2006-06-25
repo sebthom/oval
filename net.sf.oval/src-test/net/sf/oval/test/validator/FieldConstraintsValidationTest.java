@@ -50,28 +50,30 @@ public class FieldConstraintsValidationTest extends TestCase
 
 	public void testFieldValidation()
 	{
+		final Validator validator = new Validator();
+
 		// test @NotNull
 		final Person p = new Person();
-		List<ConstraintViolation> violations = Validator.validate(p);
+		List<ConstraintViolation> violations = validator.validate(p);
 		assertTrue(violations.size() == 3);
 
 		// test @Length(max=)
 		p.firstName = "Mike";
 		p.lastName = "Mahoney";
 		p.zipCode = "1234567";
-		violations = Validator.validate(p);
+		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof LengthCheck);
 
 		// test @NotEmpty
 		p.zipCode = "";
-		violations = Validator.validate(p);
+		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof NotEmptyCheck);
 
 		// test @RegEx
 		p.zipCode = "dffd34";
-		violations = Validator.validate(p);
+		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof RegExCheck);
 	}

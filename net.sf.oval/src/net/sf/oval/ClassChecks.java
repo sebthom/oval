@@ -23,13 +23,8 @@ import java.util.logging.Logger;
 
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.Constraint;
-import net.sf.oval.annotations.FieldConstraints;
+import net.sf.oval.constraints.FieldConstraintsCheck;
 import net.sf.oval.contexts.ClassContext;
-import net.sf.oval.contexts.ConstructorParameterContext;
-import net.sf.oval.contexts.FieldContext;
-import net.sf.oval.contexts.MethodParameterContext;
-import net.sf.oval.contexts.MethodReturnValueContext;
-import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.ReflectionException;
 
@@ -42,29 +37,6 @@ import net.sf.oval.exceptions.ReflectionException;
 final class ClassChecks
 {
 	private static final Logger LOG = Logger.getLogger(ClassChecks.class.getName());
-
-	private static <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> loadCheck(
-			final ConstraintAnnotation constraintAnnotation, final OValContext context)
-			throws ReflectionException
-	{
-		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(
-				Constraint.class);
-		Class checkClass = constraint.check();
-
-		try
-		{
-			// instantiate the appropriate check for the found constraint
-			@SuppressWarnings("unchecked")
-			AnnotationCheck<ConstraintAnnotation> check = (AnnotationCheck<ConstraintAnnotation>) checkClass
-					.newInstance();
-			check.configure(constraintAnnotation);
-			return check;
-		}
-		catch (Exception e)
-		{
-			throw new ReflectionException("Cannot load check " + checkClass.getName(), e);
-		}
-	}
 
 	/**
 	 * checks on constructors' parameter values
@@ -92,22 +64,25 @@ final class ClassChecks
 	final HashMap<Method, HashMap<Integer, HashSet<Check>>> checksByMethodParameter = new HashMap<Method, HashMap<Integer, HashSet<Check>>>();
 
 	final HashSet<Field> constrainedFields = new HashSet<Field>();
+
 	final HashSet<Method> constrainedGetters = new HashSet<Method>();
 	final HashSet<Method> constrainedMethods = new HashSet<Method>();
-
 	final HashSet<Constructor> constrainedParameterizedConstructors = new HashSet<Constructor>();
-	final HashSet<Method> constrainedParameterizedMethods = new HashSet<Method>();
 
+	final HashSet<Method> constrainedParameterizedMethods = new HashSet<Method>();
 	final Constrained constrainedAnnotation;
 
 	final Class clazz;
 
+	final Validator validator;
+
 	@SuppressWarnings("unchecked")
-	ClassChecks(final Class clazz) throws ReflectionException
+	ClassChecks(final Class clazz, final Validator validator) throws ReflectionException
 	{
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("Trying to load checks for class " + clazz);
 
 		this.clazz = clazz;
+		this.validator = validator;
 
 		constrainedAnnotation = (Constrained) clazz.getAnnotation(Constrained.class);
 
@@ -210,6 +185,28 @@ final class ClassChecks
 		checksOfMethodParameter.add(check);
 	}
 
+	private <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> loadCheck(
+			final ConstraintAnnotation constraintAnnotation) throws ReflectionException
+	{
+		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(
+				Constraint.class);
+		Class checkClass = constraint.check();
+
+		try
+		{
+			// instantiate the appropriate check for the found constraint
+			@SuppressWarnings("unchecked")
+			AnnotationCheck<ConstraintAnnotation> check = (AnnotationCheck<ConstraintAnnotation>) checkClass
+					.newInstance();
+			check.configure(constraintAnnotation);
+			return check;
+		}
+		catch (Exception e)
+		{
+			throw new ReflectionException("Cannot load check " + checkClass.getName(), e);
+		}
+	}
+
 	synchronized void removeCheck(final Constructor constructor, final int parameterIndex,
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
@@ -288,15 +285,10 @@ final class ClassChecks
 		{
 			final HashMap<Integer, HashSet<Check>> checksByConstructorParam = new HashMap<Integer, HashSet<Check>>();
 			final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
-			final String parameterNames[] = Validator.getParameterNameResolver().getParameterNames(
-					constructor);
 
 			// loop over all parameters of the current constructor
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final String parameterName = parameterNames[i];
-				final ConstructorParameterContext context = new ConstructorParameterContext(
-						constructor, i, parameterName);
 				final HashSet<Check> parameterChecks = new HashSet<Check>();
 
 				// loop over all annotations of the current parameter
@@ -311,40 +303,7 @@ final class ClassChecks
 											+ clazz.getName() + ".  @"
 											+ Constrained.class.getName()
 											+ " annotation not present.", new ClassContext(clazz));
-						parameterChecks.add(loadCheck(annotation, context));
-					}
-
-					/*
-					 * apply constraints of corresponding fields to parameters annotated with @FieldConstraint
-					 */
-					else if (annotation instanceof FieldConstraints)
-					{
-						final FieldConstraints fc = (FieldConstraints) annotation;
-						String fieldName = fc.value();
-						if (fieldName.length() == 0) fieldName = parameterName;
-
-						try
-						{
-							final Field field = clazz.getDeclaredField(fieldName);
-							final HashSet<Check> checks = checksByField.get(field);
-							if (checks != null)
-							{
-								if (constrainedAnnotation == null)
-									throw new ConstraintAnnotationNotPresentException(
-											"Cannot apply constructor parameter constraints to class "
-													+ clazz.getName() + ".  @"
-													+ Constrained.class.getName()
-													+ " annotation not present.", new ClassContext(
-													clazz));
-								parameterChecks.addAll(checks);
-							}
-						}
-						catch (NoSuchFieldException ex)
-						{
-							LOG.warning("Cannot apply constraints of field <" + fieldName + "> to "
-									+ context + ". Field not found in class <" + clazz.getName()
-									+ ">.");
-						}
+						parameterChecks.add(loadCheck(annotation));
 					}
 				}
 				if (parameterChecks.size() >= 0) checksByConstructorParam.put(i, parameterChecks);
@@ -362,7 +321,6 @@ final class ClassChecks
 		// loop over all fields
 		for (final Field field : clazz.getDeclaredFields())
 		{
-			final FieldContext context = new FieldContext(field);
 			final HashSet<Check> fieldChecks = new HashSet<Check>();
 
 			// loop over all annotations of the current field
@@ -371,7 +329,7 @@ final class ClassChecks
 				// check if the current annotation is a constraint annotation
 				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				{
-					fieldChecks.add(loadCheck(annotation, context));
+					fieldChecks.add(loadCheck(annotation));
 				}
 			}
 			if (fieldChecks.size() > 0)
@@ -398,8 +356,7 @@ final class ClassChecks
 				continue;
 			}
 
-			final boolean isGetter = (method.getParameterTypes().length == 0)
-					&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+			final boolean isGetter = isGetter(method);
 
 			if (!isGetter && constrainedAnnotation == null)
 			{
@@ -412,7 +369,6 @@ final class ClassChecks
 			}
 
 			final HashSet<Check> returnValueChecks = new HashSet<Check>();
-			final MethodReturnValueContext context = new MethodReturnValueContext(method);
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
@@ -420,59 +376,7 @@ final class ClassChecks
 				// check if the current annotation is a constraint annotation
 				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				{
-					returnValueChecks.add(loadCheck(annotation, context));
-				}
-
-				/*
-				 * apply constraints of corresponding fields to parameters annotated with @FieldConstraint
-				 */
-				else if (annotation instanceof FieldConstraints)
-				{
-					final FieldConstraints fc = (FieldConstraints) annotation;
-					String fieldName = fc.value();
-					if (fieldName.length() == 0)
-					{
-						/*
-						 * calculate the fieldName based on the getXXX isXXX style getter method name
-						 */
-						fieldName = method.getName();
-
-						if (fieldName.startsWith("get") && fieldName.length() > 3)
-						{
-							fieldName = fieldName.substring(3);
-							if (fieldName.length() == 1)
-								fieldName = fieldName.toLowerCase();
-							else
-								fieldName = Character.toLowerCase(fieldName.charAt(0))
-										+ fieldName.substring(1);
-						}
-						else if (fieldName.startsWith("is") && fieldName.length() > 2)
-						{
-							fieldName = fieldName.substring(2);
-							if (fieldName.length() == 1)
-								fieldName = fieldName.toLowerCase();
-							else
-								fieldName = Character.toLowerCase(fieldName.charAt(0))
-										+ fieldName.substring(1);
-						}
-					}
-
-					try
-					{
-						final Field field = clazz.getDeclaredField(fieldName);
-						final HashSet<Check> checks = checksByField.get(field);
-						if (checks != null)
-						{
-							returnValueChecks.addAll(checks);
-						}
-					}
-					catch (final NoSuchFieldException ex)
-					{
-						LOG
-								.warning("Cannot apply constraints of field <" + fieldName
-										+ "> to " + context + ". Field not found in class <"
-										+ clazz.getName() + ">.");
-					}
+					returnValueChecks.add(loadCheck(annotation));
 				}
 			}
 			if (returnValueChecks.size() > 0)
@@ -495,15 +399,10 @@ final class ClassChecks
 		{
 			final HashMap<Integer, HashSet<Check>> checksByMethodParam = new HashMap<Integer, HashSet<Check>>();
 			final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-			final String[] parameterNames = Validator.getParameterNameResolver().getParameterNames(
-					method);
 
 			// loop over all parameters of the current method
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final String parameterName = parameterNames[i];
-				final MethodParameterContext context = new MethodParameterContext(method, i,
-						parameterName);
 				final HashSet<Check> parameterChecks = new HashSet<Check>();
 
 				// loop over all annotations of the current parameter
@@ -518,41 +417,7 @@ final class ClassChecks
 											+ clazz.getName() + ".  @"
 											+ Constrained.class.getName()
 											+ " annotation not present.", new ClassContext(clazz));
-						parameterChecks.add(loadCheck(annotation, context));
-					}
-
-					/*
-					 * apply constraints of corresponding fields to parameters annotated with @FieldConstraint
-					 */
-					else if (annotation instanceof FieldConstraints)
-					{
-						final FieldConstraints fc = (FieldConstraints) annotation;
-						String fieldName = fc.value();
-						if (fieldName.length() == 0) fieldName = parameterName;
-
-						try
-						{
-							final Field field = clazz.getDeclaredField(fieldName);
-							final HashSet<Check> checks = checksByField.get(field);
-							if (checks != null)
-							{
-								if (constrainedAnnotation == null)
-									throw new ConstraintAnnotationNotPresentException(
-											"Cannot apply method parameter constraints to class "
-													+ clazz.getName() + ".  @"
-													+ Constrained.class.getName()
-													+ " annotation not present.", new ClassContext(
-													clazz));
-
-								parameterChecks.addAll(checks);
-							}
-						}
-						catch (NoSuchFieldException ex)
-						{
-							LOG.warning("Cannot apply constraints of field <" + fieldName + "> to "
-									+ context + ". Field not found in class <" + clazz.getName()
-									+ ">.");
-						}
+						parameterChecks.add(loadCheck(annotation));
 					}
 				}
 				if (parameterChecks.size() >= 0) checksByMethodParam.put(i, parameterChecks);
@@ -567,20 +432,17 @@ final class ClassChecks
 			 * applying field constraints to the parameter of setter methods 
 			 */
 
-			// check if field constraints need to get applied to the parameter of setter methods
+			// check if field constraints need to be applied to the parameter of setter methods
 			if (constrainedAnnotation == null
 					|| !constrainedAnnotation.applyFieldConstraintsToSetter()) continue;
 
-			final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+			// check if method is a setter
+			if (!isSetter(method)) continue;
 
-			// check if method has exactly one parameter
-			if (methodParameterTypes.length != 1) continue;
+			final Class< ? >[] methodParameterTypes = method.getParameterTypes();
 
 			final String methodName = method.getName();
 			final int methodNameLen = methodName.length();
-
-			// check if the method's name starts with setXXX
-			if (!methodName.startsWith("set") || methodNameLen <= 3) continue;
 
 			// check if a field with name xXX exists
 			String fieldName = methodName.substring(3, 4).toLowerCase();
@@ -640,18 +502,46 @@ final class ClassChecks
 				}
 			}
 
+			// check if a corresponding field has been found
 			if (field != null)
 			{
-				final HashSet<Check> checks = checksByField.get(field);
-				if (checks != null)
-				{
-					if (LOG.isLoggable(Level.FINE))
-						LOG.fine("Applying " + checks.size() + " constraint(s) defined for field <"
-								+ fieldName + "> to setter <" + methodName + "> of class "
-								+ clazz.getName());
-					checksByMethodParam.get(0).addAll(checks);
-				}
+				FieldConstraintsCheck check = new FieldConstraintsCheck();
+				check.setFieldName(field.getName());
+				checksByMethodParam.get(0).add(check);
+
+				/*
+				 final HashSet<Check> checks = checksByField.get(field);
+				 if (checks != null)
+				 {
+				 if (LOG.isLoggable(Level.FINE))
+				 LOG.fine("Applying " + checks.size() + " constraint(s) defined for field <"
+				 + fieldName + "> to setter <" + methodName + "> of class "
+				 + clazz.getName());
+				 checksByMethodParam.get(0).addAll(checks);
+				 }*/
 			}
 		}
+	}
+
+	private boolean isGetter(Method method)
+	{
+		return (method.getParameterTypes().length == 0)
+				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+	}
+
+	private boolean isSetter(Method method)
+	{
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+
+		// check if method has exactly one parameter
+		if (methodParameterTypes.length != 1) return false;
+
+		final String methodName = method.getName();
+		final int methodNameLen = methodName.length();
+
+		// check if the method's name starts with setXXX
+		if (!methodName.startsWith("set") || methodNameLen <= 3) return false;
+
+		return true;
 	}
 }

@@ -38,7 +38,7 @@ abstract aspect ApiUsageAuditor
 	 * Warn about the @PostValidateObject annotation used on methods and constructors in classes not annotated with @Constrained
 	 */
 	declare warning: execution (@PostValidateObject * (!@Constrained *).*(..)) || execution (@PostValidateObject (!@Constrained *).new(..)): 
-		"@PostValidateObject is only allowed in classes annotated with @Constrainted";
+		"@PostValidateObject is only allowed in classes annotated with @Constrained";
 
 	/*
 	 * Warn about method parameter constraints in classes not annotated with @Constrained
@@ -50,7 +50,7 @@ abstract aspect ApiUsageAuditor
 		execution(* (!@Constrained *).*(*, *, *, @(@Constraint *) *, ..)) ||
 		execution(* (!@Constrained *).*(*, *, *, *, @(@Constraint *) *, ..)) ||
 		execution(* (!@Constrained *).*(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"Method parameter constraints are only allowed in class annotated with @Constrainted";
+		"Method parameter constraints are only allowed in class annotated with @Constrained";
 
 	/*
 	 * Warn about constructor parameter constraints in classes not annotated with @Constrained
@@ -62,5 +62,5 @@ abstract aspect ApiUsageAuditor
 		execution((!@Constrained *).new(*, *, *, @(@Constraint *) *, ..)) ||
 		execution((!@Constrained *).new(*, *, *, *, @(@Constraint *) *, ..)) ||
 		execution((!@Constrained *).new(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"Method parameter constraints are only allowed in class annotated with @Constrainted";
+		"Method parameter constraints are only allowed in class annotated with @Constrained";
 }

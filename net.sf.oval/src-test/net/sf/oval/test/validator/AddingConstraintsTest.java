@@ -53,13 +53,15 @@ public class AddingConstraintsTest extends TestCase
 	 */
 	public void testAddConstraintToConstructorParameter()
 	{
+		final Validator validator = new Validator();
+
 		try
 		{
 			Constructor constructor = TestEntity.class
 					.getDeclaredConstructor(new Class[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
-			Validator.addCheck(constructor, 0, notNullCheck);
+			validator.addCheck(constructor, 0, notNullCheck);
 			fail();
 		}
 		catch (ConstraintAnnotationNotPresentException e)
@@ -83,17 +85,19 @@ public class AddingConstraintsTest extends TestCase
 	 */
 	public void testAddConstraintToField()
 	{
+		final Validator validator = new Validator();
+
 		TestEntity entity = new TestEntity(null);
-		assertTrue(Validator.validate(entity).size() == 0);
+		assertTrue(validator.validate(entity).size() == 0);
 
 		try
 		{
 			Field field = TestEntity.class.getDeclaredField("name");
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
-			Validator.addCheck(field, notNullCheck);
+			validator.addCheck(field, notNullCheck);
 
-			List<ConstraintViolation> violations = Validator.validate(entity);
+			List<ConstraintViolation> violations = validator.validate(entity);
 			assertTrue(violations.size() == 1);
 			assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
 		}
@@ -115,13 +119,15 @@ public class AddingConstraintsTest extends TestCase
 	 */
 	public void testAddConstraintToMethodParameter()
 	{
+		final Validator validator = new Validator();
+
 		try
 		{
 			Method setter = TestEntity.class
 					.getDeclaredMethod("setName", new Class[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
-			Validator.addCheck(setter, 0, notNullCheck);
+			validator.addCheck(setter, 0, notNullCheck);
 			fail();
 		}
 		catch (ConstraintAnnotationNotPresentException e)

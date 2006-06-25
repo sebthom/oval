@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -57,7 +58,8 @@ public class SizeCheck extends AbstractCheck<Size>
 		return min;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object value)
+	public boolean isSatisfied(final Object validatedObject, final Object value,
+			final OValContext context)
 	{
 		if (value == null) return true;
 

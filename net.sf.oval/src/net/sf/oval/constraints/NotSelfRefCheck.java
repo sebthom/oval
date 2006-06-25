@@ -13,6 +13,7 @@
 package net.sf.oval.constraints;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.contexts.OValContext;
 
 /**
  *
@@ -21,7 +22,8 @@ import net.sf.oval.AbstractCheck;
  */
 public class NotSelfRefCheck extends AbstractCheck<NotSelfRef>
 {
-	public boolean isSatisfied(final Object validatedObject, final Object value)
+	public boolean isSatisfied(final Object validatedObject, final Object value,
+			final OValContext context)
 	{
 		return value != validatedObject;
 	}

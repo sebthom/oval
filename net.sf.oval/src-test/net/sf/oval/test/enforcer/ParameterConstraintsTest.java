@@ -16,7 +16,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.ConstraintsEnforcer.Mode;
 import net.sf.oval.annotations.Constrained;
@@ -72,7 +71,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInNotifyListenersMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
 
 		/*
 		 * Testing Constructor 1
@@ -118,7 +117,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInThrowExceptionMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
 
 		/*
 		 * Testing Constructor 1
@@ -162,7 +161,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInThrowExceptionMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
 
 		try
 		{
@@ -193,12 +192,12 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInNotifyListenersMode()
 	{
-		ConstraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
 
 		TestEntity entity = new TestEntity("");
 
 		ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		ConstraintsEnforcer.addListener(va, entity);
+		TestEnforcerAspect.constraintsEnforcer.addListener(va, entity);
 
 		entity.setName(null);
 		entity.setName("12345678");
@@ -207,6 +206,6 @@ public class ParameterConstraintsTest extends TestCase
 		assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
 		assertTrue(violations.get(1).getCheck() instanceof LengthCheck);
 
-		ConstraintsEnforcer.removeListener(va, entity);
+		TestEnforcerAspect.constraintsEnforcer.removeListener(va, entity);
 	}
 }

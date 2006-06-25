@@ -55,9 +55,11 @@ public class InheritanceTest extends TestCase
 
 	public void testInheritance()
 	{
+		final Validator validator = new Validator();
+
 		AbstractEntity e = new EntityImpl();
 
-		List<ConstraintViolation> violations = Validator.validate(e);
+		List<ConstraintViolation> violations = validator.validate(e);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
 	}

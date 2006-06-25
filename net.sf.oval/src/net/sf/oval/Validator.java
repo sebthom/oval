@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 
+import net.sf.oval.constraints.AssertValidCheck;
+import net.sf.oval.constraints.FieldConstraintsCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.contexts.MethodParameterContext;
@@ -32,6 +34,7 @@ import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
+import net.sf.oval.exceptions.FieldNotFoundException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
 import net.sf.oval.utils.ThreadLocalList;
 
@@ -41,37 +44,62 @@ import net.sf.oval.utils.ThreadLocalList;
  */
 public final class Validator
 {
-	private static final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
+	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
-	private static final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
+	private final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
-	private static final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
-	private static final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
+	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
+	private final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
 
-	private static ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
+	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
 
-	static
+	/**
+	 * public constructor
+	 */
+	public Validator()
 	{
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
 	}
 
-	public static void addCheck(final Constructor constructor, final int parameterIndex,
-			final Check check) throws ConstraintAnnotationNotPresentException
+	/**
+	 * Introduces a new constraints check for the specified constructor parameter
+	 * 
+	 * @param constructor
+	 * @param parameterIndex 0 = first parameter
+	 * @param check
+	 * @throws ConstraintAnnotationNotPresentException
+	 */
+	public void addCheck(final Constructor constructor, final int parameterIndex, final Check check)
+			throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = constructor.getDeclaringClass();
 		final ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(constructor, parameterIndex, check);
 	}
 
-	public static void addCheck(final Field field, final Check check)
+	/**
+	 * Introduces a new constraints check for the specified field
+	 * 
+	 * @param field
+	 * @param check
+	 */
+	public void addCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
 		final ClassChecks checks = getClassChecks(clazz);
 		checks.addCheck(field, check);
 	}
 
-	public static void addCheck(final Method method, final int parameterIndex, final Check check)
+	/**
+	 * Introduces a new constraints check for the specified method parameter
+	 * 
+	 * @param method
+	 * @param parameterIndex 0 = first parameter
+	 * @param check
+	 * @throws ConstraintAnnotationNotPresentException
+	 */
+	public void addCheck(final Method method, final int parameterIndex, final Check check)
 			throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
@@ -80,11 +108,12 @@ public final class Validator
 	}
 
 	/**
+	 * Adds a message bundle
 	 * 
 	 * @param messageBundle
 	 * @return true if the bundle was registered and false if it was already registered
 	 */
-	public static boolean addMessageBundle(final ResourceBundle messageBundle)
+	public boolean addMessageBundle(final ResourceBundle messageBundle)
 	{
 		if (messageBundles.contains(messageBundle)) return false;
 
@@ -102,7 +131,147 @@ public final class Validator
 		return true;
 	}
 
-	private static ClassChecks getClassChecks(final Class clazz)
+	private void checkConstraint(List<ConstraintViolation> violations, Check check,
+			Object validatedObject, Object valueToValidate, OValContext context)
+	{
+
+		/*
+		 * special handling of the AssertValid constraint
+		 */
+		if (check instanceof AssertValidCheck)
+		{
+			if (valueToValidate == null) return;
+
+			// ignore circular dependencies
+			if (isCurrentlyValidated(valueToValidate)) return;
+
+			if (validate(valueToValidate).size() != 0)
+			{
+				final String errorMessage = renderMessage(context, valueToValidate, check);
+				violations.add(new ConstraintViolation(errorMessage, validatedObject,
+						valueToValidate, context, check));
+			}
+			return;
+		}
+
+		/*
+		 * special handling of the FieldConstraints constraint
+		 */
+		if (check instanceof FieldConstraintsCheck)
+		{
+			// the name of the field whose constraints shall be used
+			String fieldName = ((FieldConstraintsCheck) check).getFieldName();
+
+			// the lowest class that is expected to declare the field (or one of its super classes)
+			Class targetClass = validatedObject.getClass();
+
+			/*
+			 * adjust the targetClass based on the validation context
+			 */
+			if (context instanceof ConstructorParameterContext)
+			{
+				// the class declaring the field must either be the class declaring the constructor or one of its super classes
+				targetClass = ((ConstructorParameterContext) context).getConstructor()
+						.getDeclaringClass();
+			}
+			else if (context instanceof MethodParameterContext)
+			{
+				// the class declaring the field must either be the class declaring the method or one of its super classes
+				targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
+			}
+			else if (context instanceof MethodReturnValueContext)
+			{
+				// the class declaring the field must either be the class declaring the getter or one of its super classes
+				targetClass = ((MethodReturnValueContext) context).getGetter().getDeclaringClass();
+			}
+
+			/*
+			 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
+			 */
+			if (fieldName == null || fieldName.length() == 0)
+			{
+				if (context instanceof ConstructorParameterContext)
+				{
+					fieldName = ((ConstructorParameterContext) context).getParameterName();
+				}
+				else if (context instanceof MethodParameterContext)
+				{
+					fieldName = ((MethodParameterContext) context).getParameterName();
+				}
+				else if (context instanceof MethodReturnValueContext)
+				{
+					/*
+					 * calculate the fieldName based on the getXXX isXXX style getter method name
+					 */
+					fieldName = ((MethodReturnValueContext) context).getGetter().getName();
+
+					if (fieldName.startsWith("get") && fieldName.length() > 3)
+					{
+						fieldName = fieldName.substring(3);
+						if (fieldName.length() == 1)
+							fieldName = fieldName.toLowerCase();
+						else
+							fieldName = Character.toLowerCase(fieldName.charAt(0))
+									+ fieldName.substring(1);
+					}
+					else if (fieldName.startsWith("is") && fieldName.length() > 2)
+					{
+						fieldName = fieldName.substring(2);
+						if (fieldName.length() == 1)
+							fieldName = fieldName.toLowerCase();
+						else
+							fieldName = Character.toLowerCase(fieldName.charAt(0))
+									+ fieldName.substring(1);
+					}
+				}
+			}
+
+			/*
+			 * find the field based on fieldName and targetClass
+			 */
+			Field field = null;
+			for (Class fieldClass = targetClass; field == null
+					&& fieldClass.getClass() != Object.class;)
+			{
+				try
+				{
+					field = fieldClass.getDeclaredField(fieldName);
+				}
+				catch (final NoSuchFieldException ex)
+				{
+					fieldClass = fieldClass.getSuperclass();
+				}
+			}
+
+			if (field == null)
+			{
+				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <"
+						+ targetClass + "> or its super classes.");
+			}
+
+			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+			final HashSet<Check> checks = cc.checksByField.get(field);
+			if (checks != null)
+			{
+				for (final Check check2 : checks)
+				{
+					checkConstraint(violations, check2, validatedObject, valueToValidate, context);
+				}
+			}
+		}
+
+		/*
+		 * standard constraints handling
+		 */
+		if (!check.isSatisfied(validatedObject, valueToValidate, context))
+		{
+			final String errorMessage = renderMessage(context, valueToValidate, check);
+			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
+					context, check));
+		}
+	}
+
+	private ClassChecks getClassChecks(final Class clazz)
 	{
 		ClassChecks checks = checksByClass.get(clazz);
 		if (checks == null)
@@ -113,7 +282,7 @@ public final class Validator
 
 				if (checks == null)
 				{
-					checks = new ClassChecks(clazz);
+					checks = new ClassChecks(clazz, this);
 				}
 				checksByClass.put(clazz, checks);
 			}
@@ -121,7 +290,7 @@ public final class Validator
 		return checks;
 	}
 
-	private static Object getFieldValue(final Object validatedObject, final Field field)
+	private Object getFieldValue(final Object validatedObject, final Field field)
 			throws AccessingFieldValueFailedException
 	{
 		try
@@ -137,7 +306,7 @@ public final class Validator
 		}
 	}
 
-	private static Object getGetterValue(final Object validatedObject, final Method getter)
+	private Object getGetterValue(final Object validatedObject, final Method getter)
 			throws InvokingGetterFailedException
 	{
 		try
@@ -151,22 +320,34 @@ public final class Validator
 		}
 	}
 
-	public static ParameterNameResolver getParameterNameResolver()
+	/**
+	 * @return the parameterNameResolver
+	 */
+	public ParameterNameResolver getParameterNameResolver()
 	{
 		return parameterNameResolver;
 	}
 
 	/**
-	 * determines if the given object is currently validated in the current thread
+	 * Determines if the given object is currently validated in the current thread
+	 * 
 	 * @param object
 	 * @return
 	 */
-	public static boolean isCurrentlyValidated(Object object)
+	private boolean isCurrentlyValidated(Object object)
 	{
 		return currentlyValidatedObjects.getList().contains(object);
 	}
 
-	public static void removeCheck(final Constructor constructor, final int parameterIndex,
+	/**
+	 * Removes a check from the specified constructor parameter
+	 * 
+	 * @param constructor
+	 * @param parameterIndex 0 = first parameter
+	 * @param check
+	 * @throws ConstraintAnnotationNotPresentException
+	 */
+	public void removeCheck(final Constructor constructor, final int parameterIndex,
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = constructor.getDeclaringClass();
@@ -174,14 +355,28 @@ public final class Validator
 		checks.removeCheck(constructor, parameterIndex, check);
 	}
 
-	public static void removeCheck(final Field field, final Check check)
+	/**
+	 * Removes a check from the specified field
+	 * 
+	 * @param field
+	 * @param check
+	 */
+	public void removeCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
 		final ClassChecks checks = getClassChecks(clazz);
 		checks.removeCheck(field, check);
 	}
 
-	public static void removeCheck(final Method method, final int parameterIndex, final Check check)
+	/**
+	 * Removes a check from the specified method parameter
+	 * 
+	 * @param method
+	 * @param parameterIndex 0 = first parameter
+	 * @param check
+	 * @throws ConstraintAnnotationNotPresentException
+	 */
+	public void removeCheck(final Method method, final int parameterIndex, final Check check)
 			throws ConstraintAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
@@ -190,11 +385,12 @@ public final class Validator
 	}
 
 	/**
+	 * Removes the message bundle
 	 * 
 	 * @param messageBundle
 	 * @return true if the bundle was registered and false if it wasn't registered
 	 */
-	public static boolean removeMessageBundle(final ResourceBundle messageBundle)
+	public boolean removeMessageBundle(final ResourceBundle messageBundle)
 	{
 		if (!messageBundles.contains(messageBundle)) return false;
 
@@ -202,8 +398,7 @@ public final class Validator
 		return true;
 	}
 
-	private static String renderMessage(final OValContext context, final Object value,
-			final Check check)
+	String renderMessage(final OValContext context, final Object value, final Check check)
 	{
 		String messageKey = check.getMessage();
 
@@ -235,9 +430,12 @@ public final class Validator
 		return MessageFormat.format(messageKey, args.toArray());
 	}
 
-	public static void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
+	/**
+	 * @param parameterNameResolver the parameterNameResolver to set
+	 */
+	public void setParameterNameResolver(ParameterNameResolver parameterNameResolver)
 	{
-		Validator.parameterNameResolver = parameterNameResolver;
+		this.parameterNameResolver = parameterNameResolver;
 	}
 
 	/**
@@ -246,7 +444,7 @@ public final class Validator
 	 * @param validatedObject
 	 * @return  a list with the detected constraint violations. if no violations are detected an empty list is returned
 	 */
-	public static List<ConstraintViolation> validate(final Object validatedObject)
+	public List<ConstraintViolation> validate(final Object validatedObject)
 	{
 		currentlyValidatedObjects.getList().add(validatedObject);
 		try
@@ -266,7 +464,7 @@ public final class Validator
 	 * 
 	 * @return null if no violation, otherwise a list
 	 */
-	static List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
+	List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor constructor, final Object[] parameters)
 	{
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -281,27 +479,23 @@ public final class Validator
 		for (int i = 0; i < parameters.length; i++)
 		{
 			final HashSet<Check> checks = parameterChecks.get(i);
-			final Object valueToValidate = parameters[i];
 
 			if (checks != null)
 			{
+				final Object valueToValidate = parameters[i];
+				final ConstructorParameterContext context = new ConstructorParameterContext(
+						constructor, i, parameterNames[i]);
+
 				for (final Check check : checks)
 				{
-					if (!check.isSatisfied(validatedObject, valueToValidate))
-					{
-						final ConstructorParameterContext context = new ConstructorParameterContext(
-								constructor, i, parameterNames[i]);
-						final String errorMessage = renderMessage(context, valueToValidate, check);
-						violations.add(new ConstraintViolation(errorMessage, validatedObject,
-								valueToValidate, context, check));
-					}
+					checkConstraint(violations, check, validatedObject, valueToValidate, context);
 				}
 			}
 		}
 		return violations.size() == 0 ? null : violations;
 	}
 
-	private static void validateField(final Object validatedObject, final Field field,
+	private void validateField(final Object validatedObject, final Field field,
 			final List<ConstraintViolation> violations)
 	{
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
@@ -311,21 +505,16 @@ public final class Validator
 		if (checks != null)
 		{
 			final Object valueToValidate = getFieldValue(validatedObject, field);
+			final FieldContext context = new FieldContext(field);
 
 			for (final Check check : checks)
 			{
-				if (!check.isSatisfied(validatedObject, valueToValidate))
-				{
-					final FieldContext context = new FieldContext(field);
-					final String errorMessage = renderMessage(context, valueToValidate, check);
-					violations.add(new ConstraintViolation(errorMessage, validatedObject,
-							valueToValidate, context, check));
-				}
+				checkConstraint(violations, check, validatedObject, valueToValidate, context);
 			}
 		}
 	}
 
-	private static void validateGetter(final Object validatedObject, final Method getter,
+	private void validateGetter(final Object validatedObject, final Method getter,
 			final List<ConstraintViolation> violations)
 	{
 		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
@@ -335,12 +524,12 @@ public final class Validator
 		if (checks != null)
 		{
 			final Object valueToValidate = getGetterValue(validatedObject, getter);
+			final MethodReturnValueContext context = new MethodReturnValueContext(getter);
 
 			for (final Check check : checks)
 			{
-				if (!check.isSatisfied(validatedObject, valueToValidate))
+				if (!check.isSatisfied(validatedObject, valueToValidate, context))
 				{
-					final MethodReturnValueContext context = new MethodReturnValueContext(getter);
 					final String errorMessage = renderMessage(context, valueToValidate, check);
 					violations.add(new ConstraintViolation(errorMessage, validatedObject,
 							valueToValidate, context, check));
@@ -354,7 +543,7 @@ public final class Validator
 	 * 
 	 * @return null if no violation, otherwise a list
 	 */
-	static List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
+	List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
 			final Method method, final Object[] parameters)
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -371,20 +560,16 @@ public final class Validator
 		for (int i = 0; i < parameters.length; i++)
 		{
 			final HashSet<Check> checks = parameterChecks.get(i);
-			final Object valueToValidate = parameters[i];
 
 			if (checks != null)
 			{
+				final Object valueToValidate = parameters[i];
+				final MethodParameterContext context = new MethodParameterContext(method, i,
+						parameterNames[i]);
+
 				for (final Check check : checks)
 				{
-					if (!check.isSatisfied(validatedObject, valueToValidate))
-					{
-						final MethodParameterContext context = new MethodParameterContext(method,
-								i, parameterNames[i]);
-						final String errorMessage = renderMessage(context, valueToValidate, check);
-						violations.add(new ConstraintViolation(errorMessage, validatedObject,
-								valueToValidate, context, check));
-					}
+					checkConstraint(violations, check, validatedObject, valueToValidate, context);
 				}
 			}
 		}
@@ -396,7 +581,7 @@ public final class Validator
 	 * 
 	 * @return null if no violation, otherwise a list
 	 */
-	static List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
+	List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
 			final Method method, final Object methodReturnValue)
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -407,20 +592,16 @@ public final class Validator
 
 		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
 
+		final MethodReturnValueContext context = new MethodReturnValueContext(method);
+
 		for (final Check check : checks)
 		{
-			if (!check.isSatisfied(validatedObject, methodReturnValue))
-			{
-				final MethodReturnValueContext context = new MethodReturnValueContext(method);
-				final String errorMessage = renderMessage(context, methodReturnValue, check);
-				violations.add(new ConstraintViolation(errorMessage, validatedObject,
-						methodReturnValue, context, check));
-			}
+			checkConstraint(violations, check, validatedObject, methodReturnValue, context);
 		}
 		return violations.size() == 0 ? null : violations;
 	}
 
-	private static void validateObject(final Object validatedObject, final Class< ? > clazz,
+	private void validateObject(final Object validatedObject, final Class< ? > clazz,
 			final List<ConstraintViolation> violations)
 	{
 		if (clazz == Object.class) return;
@@ -442,10 +623,4 @@ public final class Validator
 		// if the super class is annotated to be validatable also validate it against the object
 		validateObject(validatedObject, clazz.getSuperclass(), violations);
 	}
-
-	/**
-	 * private constructor
-	 */
-	private Validator()
-	{}
 }

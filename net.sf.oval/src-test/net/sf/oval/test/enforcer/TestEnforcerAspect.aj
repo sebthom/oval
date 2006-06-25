@@ -10,8 +10,10 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.test;
+package net.sf.oval.test.enforcer;
 
+import net.sf.oval.ConstraintsEnforcer;
+import net.sf.oval.Validator;
 import net.sf.oval.aspectj.ConstraintsEnforcerAspect;
 
 /**
@@ -19,4 +21,12 @@ import net.sf.oval.aspectj.ConstraintsEnforcerAspect;
  * @version $Revision: 1.1 $
  */
 public aspect TestEnforcerAspect extends ConstraintsEnforcerAspect
-{}
+{
+	public final static Validator validator = new Validator();
+	public final static ConstraintsEnforcer constraintsEnforcer = new ConstraintsEnforcer(validator);
+
+	public TestEnforcerAspect()
+	{
+		super(constraintsEnforcer);
+	}
+}

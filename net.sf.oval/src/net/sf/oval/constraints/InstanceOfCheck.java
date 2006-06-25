@@ -13,6 +13,7 @@
 package net.sf.oval.constraints;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -22,7 +23,7 @@ public class InstanceOfCheck extends AbstractCheck<InstanceOf>
 {
 	private Class clazz;
 
-	public boolean isSatisfied(Object validatedObject, Object value)
+	public boolean isSatisfied(Object validatedObject, Object value, final OValContext context)
 	{
 		if (value == null) return true;
 

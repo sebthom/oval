@@ -13,8 +13,8 @@
 package net.sf.oval.test.enforcer;
 
 import junit.framework.TestCase;
-import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.ConstraintsEnforcer;
+import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.AssertTrue;
 import net.sf.oval.constraints.AssertTrueCheck;
@@ -99,9 +99,10 @@ public class ApplyFieldConstraintsToSetterTest extends TestCase
 	{
 		final Person p = new Person();
 
-		ConstraintsEnforcer.setMode(ConstraintsEnforcer.Mode.NOTIFY_LISTENERS, p);
+		TestEnforcerAspect.constraintsEnforcer.setMode(ConstraintsEnforcer.Mode.NOTIFY_LISTENERS,
+				p);
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		ConstraintsEnforcer.addListener(va, p);
+		TestEnforcerAspect.constraintsEnforcer.addListener(va, p);
 
 		// test @Length(max=)
 		p.setFirstName("Mike");

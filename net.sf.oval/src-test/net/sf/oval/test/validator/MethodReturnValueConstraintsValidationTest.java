@@ -61,14 +61,16 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 
 	public void testMethodReturnValueConstraintValidation()
 	{
+		final Validator validator = new Validator();
+		
 		final TestEntity t = new TestEntity();
 
-		List<ConstraintViolation> violations = Validator.validate(t);
+		List<ConstraintViolation> violations = validator.validate(t);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
 
 		t.name = "wqerwqer";
-		violations = Validator.validate(t);
+		violations = validator.validate(t);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getCheck() instanceof LengthCheck);
 	}

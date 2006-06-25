@@ -18,35 +18,37 @@ import java.util.logging.Logger;
 import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.ParameterNameResolverDefaultImpl;
 import net.sf.oval.Validator;
-import net.sf.oval.annotations.Constrained;
-import net.sf.oval.annotations.PostValidateObject;
-import net.sf.oval.annotations.PreValidateObject;
 
-import org.aspectj.lang.annotation.SuppressAjWarnings;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
+ * This is an annotations based version of the ConstraintsEnforcerAspect aspect
+ *
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.0 $
  */
-public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
+@Aspect
+public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 {
-	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect.class.getName());
+	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect2.class.getName());
 
 	protected final ConstraintsEnforcer constraintsEnforcer;
 	protected final Validator validator;
 
-	public ConstraintsEnforcerAspect()
+	public ConstraintsEnforcerAspect2()
 	{
 		validator = new Validator();
 		constraintsEnforcer = new ConstraintsEnforcer(validator);
 	}
 
-	public ConstraintsEnforcerAspect(final ConstraintsEnforcer constraintsEnforcer)
+	public ConstraintsEnforcerAspect2(ConstraintsEnforcer constraintsEnforcer)
 	{
-		LOG.info("Instantiated");
-
 		this.constraintsEnforcer = constraintsEnforcer;
 		this.validator = constraintsEnforcer.getValidator();
 
@@ -57,40 +59,12 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 		}
 	}
 
-	/*
-	 * POINT CUTS
-	 */
-	pointcut constructorsPostValidateObject(): execution(@PostValidateObject (@Constrained *).new(..));
-
-	pointcut constructorsWithParameter(): execution((@Constrained *).new(*,..));
-
-	pointcut methodsWithParameter() : execution(* (@Constrained *).*(*,..));
-
-	pointcut methodsWithReturnValue() : execution(* (@Constrained *).*(..));
-
-	pointcut methodsPostValidateObject(): execution(@PostValidateObject * (@Constrained *).*(..));
-
-	pointcut methodsPreValidateObject(): execution(@PreValidateObject * (@Constrained *).*(..));
-
-	/*
-	 pointcut constrainedClasses(): @target(Constrained);
-	 pointcut constructorsPostValidateObject(): constrainedClasses() && execution(@PostValidateObject *.new(..));
-	 pointcut constructorsWithParameter(): constrainedClasses() && execution(*.new(*,..));
-	 pointcut methodsWithParameter() : constrainedClasses() && execution(* *.*(*,..));
-	 pointcut methodsPostValidateObject(): constrainedClasses() && execution(@PostValidateObject * *.*(..));
-	 pointcut methodsPreValidateObject(): constrainedClasses() && execution(@PreValidateObject * *.*(..));
-	 */
-
-	/*
-	 * ADVICES
-	 */
-
 	/**
 	 * constructor parameters validation
 	 */
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): constructorsWithParameter()
-	 {
+	@Around("execution((@net.sf.oval.annotations.Constrained *).new(*,..))")
+	public Object constructorsWithParameter(final ProceedingJoinPoint thisJoinPoint)
+	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
@@ -101,15 +75,15 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 		constraintsEnforcer.validateConstructorParameters(TARGET, SIGNATURE.getConstructor(),
 				parameterValues);
 
-		return proceed();
+		return thisJoinPoint.proceed();
 	}
 
 	/**
 	 * method parameters validation
 	 */
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsWithParameter()
-	 {
+	@Around("execution(* (@net.sf.oval.annotations.Constrained *).*(*,..))")
+	public Object methodsWithParameter(final ProceedingJoinPoint thisJoinPoint)
+	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
@@ -120,14 +94,14 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 		final boolean valid = constraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE
 				.getMethod(), parameterValues);
 
-		return valid ? proceed() : null;
+		return valid ? thisJoinPoint.proceed() : null;
 	}
 
 	/**
 	 * object validation before method execution
 	 */
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsPreValidateObject()
+	@Around("execution(@net.sf.oval.annotations.PreValidateObject * (@Constrained *).*(..))")
+	public Object methodsPreValidateObject(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
@@ -136,21 +110,21 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		final boolean valid = constraintsEnforcer.validate(TARGET, false);
 
-		return valid ? proceed() : null;
+		return valid ? thisJoinPoint.proceed() : null;
 	}
 
 	/**
 	 * method return value validation
 	 */
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsWithReturnValue()
+	@Around("execution(* (@net.sf.oval.annotations.Constrained *).*(..))")
+	public Object methodsWithReturnValue(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
 
-		final Object returnValue = proceed();
+		final Object returnValue = thisJoinPoint.proceed();
 
 		constraintsEnforcer.validateMethodReturnValue(TARGET, SIGNATURE.getMethod(), returnValue);
 
@@ -160,8 +134,8 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	/**
 	 * object validation after constructor execution
 	 */
-	@SuppressAjWarnings("adviceDidNotMatch")
-	after() returning: constructorsPostValidateObject()
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateObject (@net.sf.oval.annotations.Constrained *).new(..))")
+	public void constructorsPostValidateObject(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
@@ -174,8 +148,8 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	/**
 	 * object validation after method execution
 	 */
-	@SuppressAjWarnings("adviceDidNotMatch")
-	after() returning: methodsPostValidateObject()
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateObject * (@net.sf.oval.annotations.Constrained *).*(..))")
+	public void methodsPostValidateObject(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
@@ -184,10 +158,6 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		constraintsEnforcer.validate(TARGET, false);
 	}
-
-	/*
-	 * GETTER
-	 */
 
 	/**
 	 * @return the constraintsEnforcer

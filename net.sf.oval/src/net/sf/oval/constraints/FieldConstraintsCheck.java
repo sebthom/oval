@@ -19,17 +19,40 @@ import net.sf.oval.contexts.OValContext;
  * @author Sebastian Thomschke
  * @version $Revision: 1.6 $
  */
-public class AssertFalseCheck extends AbstractCheck<AssertFalse>
+public class FieldConstraintsCheck extends AbstractCheck<FieldConstraints>
 {
+	private String fieldName;
+
+	@Override
+	public void configure(final FieldConstraints constraintAnnotation)
+	{
+		super.configure(constraintAnnotation);
+		setFieldName(constraintAnnotation.value());
+	}
+
+	/**
+	 * @return the fieldName
+	 */
+	public String getFieldName()
+	{
+		return fieldName;
+	}
+
+	/**
+	 *  This method is not used.
+	 *  The validation of this special constraint is directly performed by the Validator class
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
-		if (value == null) return true;
+		return true;
+	}
 
-		if (value instanceof Boolean)
-		{
-			return !((Boolean) value).booleanValue();
-		}
-		return false;
+	/**
+	 * @param fieldName the fieldName to set
+	 */
+	public void setFieldName(final String fieldName)
+	{
+		this.fieldName = fieldName;
 	}
 }
