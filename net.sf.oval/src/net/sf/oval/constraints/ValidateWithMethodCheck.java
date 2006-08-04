@@ -24,6 +24,7 @@ import net.sf.oval.exceptions.ReflectionException;
  */
 public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
 {
+	private boolean ignoreIfNull;
 	private String methodName;
 	private Class parameterType;
 
@@ -33,6 +34,7 @@ public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
 		super.configure(constraintAnnotation);
 		setMethodName(constraintAnnotation.methodName());
 		setParameterType(constraintAnnotation.parameterType());
+		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
 	}
 
 	@Override
@@ -57,9 +59,19 @@ public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
 		return parameterType;
 	}
 
+	/**
+	 * @return the ignoreIfNull
+	 */
+	public boolean isIgnoreIfNull()
+	{
+		return ignoreIfNull;
+	}
+
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
+		if (value == null && ignoreIfNull) return true;
+		
 		try
 		{
 			final Method method = validatedObject.getClass().getDeclaredMethod(methodName,
@@ -73,6 +85,14 @@ public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
 					+ validatedObject.getClass().getName() + "." + methodName + "("
 					+ validatedObject.getClass().getName() + ") failed.", e);
 		}
+	}
+
+	/**
+	 * @param ignoreIfNull the ignoreIfNull to set
+	 */
+	public void setIgnoreIfNull(boolean ignoreIfNull)
+	{
+		this.ignoreIfNull = ignoreIfNull;
 	}
 
 	/**

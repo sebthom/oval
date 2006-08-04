@@ -27,7 +27,7 @@ public class ValidateWithMethodConstraintTest extends TestCase
 {
 	private static class TestEntity
 	{
-		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class)
+		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class, ignoreIfNull = false)
 		public String name;
 
 		protected boolean isNameValid(String name)

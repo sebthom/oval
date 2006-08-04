@@ -37,14 +37,9 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 public @interface ValidateWithMethod
 {
 	/**
-	 * name a the single parameter method to use for validation
+	 * this constraint will be ignored if the value to check is null
 	 */
-	String methodName();
-
-	/**
-	 * type of the method parameter
-	 */
-	Class parameterType();
+	boolean ignoreIfNull() default true;
 
 	/**
 	 * message to be used for the ContraintsViolatatedException
@@ -52,4 +47,14 @@ public @interface ValidateWithMethod
 	 * @see ConstraintsViolatedException
 	 */
 	String message() default "net.sf.oval.constraints.ValidateWithMethod.violated";
+
+	/**
+	 * name a the single parameter method to use for validation
+	 */
+	String methodName();
+	
+	/**
+	 * type of the method parameter
+	 */
+	Class parameterType();
 }
