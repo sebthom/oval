@@ -51,7 +51,7 @@ public class AllTests
 		suite
 				.addTestSuite(net.sf.oval.test.enforcer.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.ParameterConstraintsTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.PrePostValidateObjectTest.class);
+		suite.addTestSuite(net.sf.oval.test.enforcer.PrePostValidateThisTest.class);
 
 		//$JUnit-END$
 		return suite;

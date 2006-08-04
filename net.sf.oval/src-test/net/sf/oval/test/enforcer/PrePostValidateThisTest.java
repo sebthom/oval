@@ -17,8 +17,8 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.ConstraintsEnforcer.Mode;
 import net.sf.oval.annotations.Constrained;
-import net.sf.oval.annotations.PostValidateObject;
-import net.sf.oval.annotations.PreValidateObject;
+import net.sf.oval.annotations.PostValidateThis;
+import net.sf.oval.annotations.PreValidateThis;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.contexts.FieldContext;
@@ -28,7 +28,7 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * @author Sebastian Thomschke
  * @version $Revision: 1.1 $
  */
-public class PrePostValidateObjectTest extends TestCase
+public class PrePostValidateThisTest extends TestCase
 {
 	@Constrained(applyFieldConstraintsToSetter = false)
 	public static class TestEntity
@@ -39,19 +39,19 @@ public class PrePostValidateObjectTest extends TestCase
 		public TestEntity()
 		{}
 
-		@PostValidateObject
+		@PostValidateThis
 		public TestEntity(String name)
 		{
 			this.name = name;
 		}
 
-		@PreValidateObject
+		@PreValidateThis
 		public String getName()
 		{
 			return name;
 		}
 
-		@PostValidateObject
+		@PostValidateThis
 		public void setName(String name)
 		{
 			this.name = name;

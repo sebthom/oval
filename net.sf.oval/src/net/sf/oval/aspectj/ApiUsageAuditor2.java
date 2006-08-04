@@ -39,14 +39,14 @@ public abstract class ApiUsageAuditor2
 	/*
 	 * Warn about the @PreValidateObject annotation used on methods in classes not annotated with @Constrained
 	 */
-	@DeclareWarning("execution (@net.sf.oval.annotations.PreValidateObject * (!@net.sf.oval.annotations.Constrained *).*(..))")
-	public static final String warning3 = "@PreValidateObject is only allowed in class annotated with @Constrained";
+	@DeclareWarning("execution (@net.sf.oval.annotations.PreValidateThis * (!@net.sf.oval.annotations.Constrained *).*(..))")
+	public static final String warning3 = "@PreValidateThis is only allowed in class annotated with @Constrained";
 
 	/*
 	 * Warn about the @PostValidateObject annotation used on methods and constructors in classes not annotated with @Constrained
 	 */
-	@DeclareWarning("execution (@net.sf.oval.annotations.PostValidateObject * (!@net.sf.oval.annotations.Constrained *).*(..)) || execution (@net.sf.oval.annotations.PostValidateObject (!@net.sf.oval.annotations.Constrained *).new(..))")
-	public static final String warning4 = "@PostValidateObject is only allowed in classes annotated with @Constrainted";
+	@DeclareWarning("execution (@net.sf.oval.annotations.PostValidateThis * (!@net.sf.oval.annotations.Constrained *).*(..)) || execution (@net.sf.oval.annotations.PostValidateObject (!@net.sf.oval.annotations.Constrained *).new(..))")
+	public static final String warning4 = "@PostValidateThis is only allowed in classes annotated with @Constrainted";
 
 	/*
 	 * Warn about method parameter constraints in classes not annotated with @Constrained

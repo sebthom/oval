@@ -100,8 +100,8 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	/**
 	 * object validation before method execution
 	 */
-	@Around("execution(@net.sf.oval.annotations.PreValidateObject * (@Constrained *).*(..))")
-	public Object methodsPreValidateObject(final ProceedingJoinPoint thisJoinPoint)
+	@Around("execution(@net.sf.oval.annotations.PreValidateThis * (@Constrained *).*(..))")
+	public Object methodsPreValidateThis(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
@@ -134,8 +134,8 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	/**
 	 * object validation after constructor execution
 	 */
-	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateObject (@net.sf.oval.annotations.Constrained *).new(..))")
-	public void constructorsPostValidateObject(final JoinPoint thisJoinPoint)
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis (@net.sf.oval.annotations.Constrained *).new(..))")
+	public void constructorsPostValidateThis(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
@@ -148,8 +148,8 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	/**
 	 * object validation after method execution
 	 */
-	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateObject * (@net.sf.oval.annotations.Constrained *).*(..))")
-	public void methodsPostValidateObject(final JoinPoint thisJoinPoint)
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis * (@net.sf.oval.annotations.Constrained *).*(..))")
+	public void methodsPostValidateThis(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();

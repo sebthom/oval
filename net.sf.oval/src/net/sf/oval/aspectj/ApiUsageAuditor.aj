@@ -5,8 +5,8 @@ package net.sf.oval.aspectj;
 
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.Constraint;
-import net.sf.oval.annotations.PostValidateObject;
-import net.sf.oval.annotations.PreValidateObject;
+import net.sf.oval.annotations.PostValidateThis;
+import net.sf.oval.annotations.PreValidateThis;
 
 /**
  * @author Sebastian Thomschke
@@ -29,16 +29,16 @@ abstract aspect ApiUsageAuditor
 		"Method return value constraints for non-getter methods are only allowed in classes annotated with @Constrainted";
 
 	/*
-	 * Warn about the @PreValidateObject annotation used on methods in classes not annotated with @Constrained
+	 * Warn about the @PreValidateThis annotation used on methods in classes not annotated with @Constrained
 	 */
 	declare warning: execution (@PreValidateObject * (!@Constrained *).*(..)): 
-		"@PreValidateObject is only allowed in class annotated with @Constrainted";
+		"@PreValidateThis is only allowed in class annotated with @Constrainted";
 
 	/*
-	 * Warn about the @PostValidateObject annotation used on methods and constructors in classes not annotated with @Constrained
+	 * Warn about the @PostValidateThis annotation used on methods and constructors in classes not annotated with @Constrained
 	 */
-	declare warning: execution (@PostValidateObject * (!@Constrained *).*(..)) || execution (@PostValidateObject (!@Constrained *).new(..)): 
-		"@PostValidateObject is only allowed in classes annotated with @Constrained";
+	declare warning: execution (@PostValidateThis * (!@Constrained *).*(..)) || execution (@PostValidateObject (!@Constrained *).new(..)): 
+		"@PostValidateThis is only allowed in classes annotated with @Constrained";
 
 	/*
 	 * Warn about method parameter constraints in classes not annotated with @Constrained

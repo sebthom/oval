@@ -90,7 +90,7 @@ public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
 	/**
 	 * @param ignoreIfNull the ignoreIfNull to set
 	 */
-	public void setIgnoreIfNull(boolean ignoreIfNull)
+	public void setIgnoreIfNull(final boolean ignoreIfNull)
 	{
 		this.ignoreIfNull = ignoreIfNull;
 	}

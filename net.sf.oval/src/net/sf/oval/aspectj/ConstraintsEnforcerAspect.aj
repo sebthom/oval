@@ -19,8 +19,8 @@ import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.ParameterNameResolverDefaultImpl;
 import net.sf.oval.Validator;
 import net.sf.oval.annotations.Constrained;
-import net.sf.oval.annotations.PostValidateObject;
-import net.sf.oval.annotations.PreValidateObject;
+import net.sf.oval.annotations.PostValidateThis;
+import net.sf.oval.annotations.PreValidateThis;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.aspectj.lang.reflect.ConstructorSignature;
@@ -60,7 +60,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	/*
 	 * POINT CUTS
 	 */
-	pointcut constructorsPostValidateObject(): execution(@PostValidateObject (@Constrained *).new(..));
+	pointcut constructorsPostValidateThis(): execution(@PostValidateThis (@Constrained *).new(..));
 
 	pointcut constructorsWithParameter(): execution((@Constrained *).new(*,..));
 
@@ -68,9 +68,9 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 	pointcut methodsWithReturnValue() : execution(* (@Constrained *).*(..));
 
-	pointcut methodsPostValidateObject(): execution(@PostValidateObject * (@Constrained *).*(..));
+	pointcut methodsPostValidateThis(): execution(@PostValidateThis * (@Constrained *).*(..));
 
-	pointcut methodsPreValidateObject(): execution(@PreValidateObject * (@Constrained *).*(..));
+	pointcut methodsPreValidateThis(): execution(@PreValidateThis * (@Constrained *).*(..));
 
 	/*
 	 pointcut constrainedClasses(): @target(Constrained);
@@ -127,7 +127,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * object validation before method execution
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsPreValidateObject()
+	Object around(): methodsPreValidateThis()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
@@ -161,7 +161,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * object validation after constructor execution
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	after() returning: constructorsPostValidateObject()
+	after() returning: constructorsPostValidateThis()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
@@ -175,7 +175,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * object validation after method execution
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	after() returning: methodsPostValidateObject()
+	after() returning: methodsPostValidateThis()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();

@@ -15,7 +15,7 @@ package net.sf.oval.test.enforcer;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.annotations.Constrained;
-import net.sf.oval.annotations.PostValidateObject;
+import net.sf.oval.annotations.PostValidateThis;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
@@ -37,7 +37,7 @@ public class InnerClassTest extends TestCase
 			/**
 			 * the @PostValidateObject annotation should lead to a warning by the ApiUsageAuditor
 			 */
-			@PostValidateObject
+			@PostValidateThis
 			private InnerClassNonConstrain(String name)
 			{
 				this.name = name;
@@ -58,7 +58,7 @@ public class InnerClassTest extends TestCase
 			@NotNull
 			protected String name;
 
-			@PostValidateObject
+			@PostValidateThis
 			private InnerClassConstrain(String name)
 			{
 				this.name = name;
