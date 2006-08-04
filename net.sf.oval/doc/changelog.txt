@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2006-??-?? v0.6
+2006-08-?? v0.6
 ===============
 + constraints programmatically specified during runtime via net.sf.oval.Validator.addCheck(...) can now be removed using net.sf.oval.Validator.removeCheck(...)
 + added french translation for the violation messages of the built-in constraints (provided by mimil)
@@ -14,6 +14,7 @@
 ~ moved @FieldConstraints from package net.sf.annotations to net.sf.constraints
 ~ @FieldConstraints constraint now also considers constraints added to fields during runtime via Validator.addCheck(...)
 ~ changed all static methods of Validator and ConstraintsEnforcer to non-static to allow multiple validator instances at the same time being configured differently
++ introduced an ignoreIfNull parameter for the @ValidateWithMethod annotation
 
 Refactoring:
 - removed net.sf.oval.Validator.setAnnotationCheckLoader(AnnotationCheckLoader)
