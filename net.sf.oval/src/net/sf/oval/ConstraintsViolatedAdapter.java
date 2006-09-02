@@ -12,11 +12,11 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.utils.CollectionFactory;
 
 /**
  * @author Sebastian Thomschke
@@ -24,8 +24,9 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  */
 public class ConstraintsViolatedAdapter implements ConstraintsViolatedListener
 {
-	private final ArrayList<ConstraintsViolatedException> violationExceptions = new ArrayList<ConstraintsViolatedException>();
-	private final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+	private final List<ConstraintsViolatedException> violationExceptions = CollectionFactory
+			.createList();
+	private final List<ConstraintViolation> violations = CollectionFactory.createList();
 
 	public void clear()
 	{

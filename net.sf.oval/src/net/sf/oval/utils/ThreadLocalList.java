@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class ThreadLocalList<T> extends ThreadLocal
 {
 	public Object initialValue()
 	{
-		return new ArrayList<T>();
+		return CollectionFactory.createList();
 	}
 
 	@SuppressWarnings("unchecked")

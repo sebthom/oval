@@ -16,13 +16,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.sf.oval.constraints.AssertValidCheck;
@@ -36,6 +35,7 @@ import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.FieldNotFoundException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
+import net.sf.oval.utils.CollectionFactory;
 import net.sf.oval.utils.ThreadLocalList;
 
 /**
@@ -49,7 +49,8 @@ public final class Validator
 	private final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
-	private final HashMap<ResourceBundle, ArrayList<String>> messageBundleKeys = new HashMap<ResourceBundle, ArrayList<String>>();
+	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory
+			.createMap();
 
 	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
 
@@ -118,7 +119,7 @@ public final class Validator
 		if (messageBundles.contains(messageBundle)) return false;
 
 		messageBundles.addFirst(messageBundle);
-		final ArrayList<String> keys = new ArrayList<String>();
+		final List<String> keys = CollectionFactory.createList();
 
 		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum
 				.hasMoreElements();)
@@ -250,7 +251,7 @@ public final class Validator
 			}
 
 			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-			final HashSet<Check> checks = cc.checksByField.get(field);
+			final Set<Check> checks = cc.checksByField.get(field);
 			if (checks != null)
 			{
 				for (final Check check2 : checks)
@@ -296,7 +297,6 @@ public final class Validator
 		try
 		{
 			if (!field.isAccessible()) field.setAccessible(true);
-
 			return field.get(validatedObject);
 		}
 		catch (Exception ex)
@@ -404,7 +404,7 @@ public final class Validator
 
 		for (final ResourceBundle bundle : messageBundles)
 		{
-			final ArrayList<String> keys = messageBundleKeys.get(bundle);
+			final List<String> keys = messageBundleKeys.get(bundle);
 			if (keys.contains(messageKey))
 			{
 				messageKey = bundle.getString(messageKey);
@@ -449,7 +449,7 @@ public final class Validator
 		currentlyValidatedObjects.getList().add(validatedObject);
 		try
 		{
-			final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+			final List<ConstraintViolation> violations = CollectionFactory.createList();
 			validateObject(validatedObject, validatedObject.getClass(), violations);
 			return violations;
 		}
@@ -469,16 +469,16 @@ public final class Validator
 	{
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 
-		final HashMap<Integer, HashSet<Check>> parameterChecks = cc.checksByConstructorParameter
+		final Map<Integer, Set<Check>> parameterChecks = cc.checksByConstructorParameter
 				.get(constructor);
 
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
-		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+		final List<ConstraintViolation> violations = CollectionFactory.createList();
 		for (int i = 0; i < parameters.length; i++)
 		{
-			final HashSet<Check> checks = parameterChecks.get(i);
+			final Set<Check> checks = parameterChecks.get(i);
 
 			if (checks != null)
 			{
@@ -500,7 +500,7 @@ public final class Validator
 	{
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 
-		final HashSet<Check> checks = cc.checksByField.get(field);
+		final Set<Check> checks = cc.checksByField.get(field);
 
 		if (checks != null)
 		{
@@ -519,7 +519,7 @@ public final class Validator
 	{
 		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
 
-		final HashSet<Check> checks = cc.checksByGetter.get(getter);
+		final Set<Check> checks = cc.checksByGetter.get(getter);
 
 		if (checks != null)
 		{
@@ -548,18 +548,17 @@ public final class Validator
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
-		final HashMap<Integer, HashSet<Check>> parameterChecks = cc.checksByMethodParameter
-				.get(method);
+		final Map<Integer, Set<Check>> parameterChecks = cc.checksByMethodParameter.get(method);
 
 		// check if the method has any parameter checks at all
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
-		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+		final List<ConstraintViolation> violations = CollectionFactory.createList();
 
 		for (int i = 0; i < parameters.length; i++)
 		{
-			final HashSet<Check> checks = parameterChecks.get(i);
+			final Set<Check> checks = parameterChecks.get(i);
 
 			if (checks != null)
 			{
@@ -586,11 +585,11 @@ public final class Validator
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
-		final HashSet<Check> checks = cc.checksByMethod.get(method);
+		final Set<Check> checks = cc.checksByMethod.get(method);
 
 		if (checks == null) return null;
 
-		final ArrayList<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+		final List<ConstraintViolation> violations = CollectionFactory.createList();
 
 		final MethodReturnValueContext context = new MethodReturnValueContext(method);
 

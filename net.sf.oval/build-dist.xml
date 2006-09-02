@@ -13,7 +13,7 @@
 	<!-- ================================ -->
 	<!-- Global properties                -->
 	<!-- ================================ -->
-	<property name="version" value="0.6" />
+	<property name="version" value="0.7" />
 	<property name="buildversion" value="${version}.${NOW}" />
 	<property name="jar.basename" value="net.sf.oval" />
 	<property name="dist.basename" value="net.sf.oval" />

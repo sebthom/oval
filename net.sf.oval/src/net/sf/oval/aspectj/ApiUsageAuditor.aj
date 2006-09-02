@@ -31,13 +31,13 @@ abstract aspect ApiUsageAuditor
 	/*
 	 * Warn about the @PreValidateThis annotation used on methods in classes not annotated with @Constrained
 	 */
-	declare warning: execution (@PreValidateObject * (!@Constrained *).*(..)): 
+	declare warning: execution (@PreValidateThis * (!@Constrained *).*(..)): 
 		"@PreValidateThis is only allowed in class annotated with @Constrainted";
 
 	/*
 	 * Warn about the @PostValidateThis annotation used on methods and constructors in classes not annotated with @Constrained
 	 */
-	declare warning: execution (@PostValidateThis * (!@Constrained *).*(..)) || execution (@PostValidateObject (!@Constrained *).new(..)): 
+	declare warning: execution (@PostValidateThis * (!@Constrained *).*(..)) || execution (@PostValidateThis (!@Constrained *).new(..)): 
 		"@PostValidateThis is only allowed in classes annotated with @Constrained";
 
 	/*

@@ -42,7 +42,7 @@ public abstract class AbstractCheck<ConstraintAnnotation extends Annotation>
 		final Class constraintClazz = constraintAnnotation.getClass();
 		try
 		{
-			Method getMessage = constraintClazz.getDeclaredMethod("message", (Class[]) null);
+			final Method getMessage = constraintClazz.getDeclaredMethod("message", (Class[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (Exception e)

@@ -140,7 +140,7 @@ if(violations.size()&gt;0)
       constraints.</para>
 
       <para>Following the JavaBeans specification 
-      (<link>http://java.sun.com/products/javabeans/index.jsp</link>) 
+      (<ulink url="http://java.sun.com/products/javabeans/index.jsp">http://java.sun.com/products/javabeans/index.jsp</ulink>) 
       OVal identifies parameterless non-void methods whose names start 
       with &quot;is&quot; (e.g. <command>public boolean 
       isEnabled()</command> ) or &quot;get&quot; (e.g. <command>public 
@@ -368,7 +368,7 @@ bo.setAlternativeName(null); // throws a ConstraintsViolatedException because pa
       <para>To enforce that all field and getter constraints are 
       checked before a method is executed, annotate the respective 
       method with <command>
-      @net.sf.oval.annotations.PreValidateObject</command>.</para>
+      @net.sf.oval.annotations.PreValidateThis</command>.</para>
 
       <para>In case of constraint violations a 
       ConstraintsViolatedException is thrown and the method will not be 
@@ -380,7 +380,7 @@ public class BusinessObject
     @NotNull
     private String name = null;
 
-    @PreValidateObject
+    @PreValidateThis
     public void save()
     {
         // do something fancy
@@ -458,7 +458,7 @@ List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);</programlis
       <para>To enforce that all field and getter constraints are 
       checked after an object has been instantiated, annotate the 
       constructors of the corresponding class with <command>
-      @net.sf.oval.annotations.PostValidateObject</command>.</para>
+      @net.sf.oval.annotations.PostValidateThis</command>.</para>
 
       <para>In case of constraint violations the constructor will throw 
       a ConstraintsViolatedException which effectively means the code 
@@ -472,7 +472,7 @@ public class BusinessObject
     @NotNull
     private String name;
 
-    @PostValidateObject
+    @PostValidateThis
     public BusinessObject()
     {
     }
@@ -492,7 +492,7 @@ BusinessObject bo = new BusinessObject();</programlisting>
       <para>To enforce that all field and getter constraints are 
       checked after a method of an object has been executed, annotate 
       the method with <command>
-      @net.sf.oval.annotations.PostValidateObject</command>.</para>
+      @net.sf.oval.annotations.PostValidateThis</command>.</para>
 
       <para>In case of constraint violations the method will throw an 
       ConstraintsViolatedException.</para>
@@ -507,7 +507,7 @@ public class BusinessObject
     @Length(max=10)
     private String name = &quot;12345&quot;;
 
-    @PostValidateObject
+    @PostValidateThis
     public appendToName(String appendix)
     {
         name += appendix;
@@ -749,7 +749,13 @@ public @interface UpperCase
     <ulink url="http://docbook.sourceforge.net/projects/xsl/">
     <inlinemediaobject><imageobject><imagedata depth="40"
      fileref="images/docbook.png" format="PNG"
-     width="128"/></imageobject></inlinemediaobject></ulink></para>
+     width="128"/></imageobject></inlinemediaobject></ulink>
+    <ulink url="http://javolution.org">
+    <inlinemediaobject><imageobject><imagedata depth="32"
+     fileref="images/javolution.png" format="PNG"
+     width="144"/></imageobject></inlinemediaobject></ulink>    
+
+    </para>
 
     <para />
 

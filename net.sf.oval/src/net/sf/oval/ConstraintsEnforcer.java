@@ -5,12 +5,12 @@ package net.sf.oval;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.utils.CollectionFactory;
 
 /**
  * @author Sebastian Thomschke
@@ -36,10 +36,10 @@ public class ConstraintsEnforcer
 		THROW_EXCEPTION
 	}
 
-	protected Validator validator;
+	private Validator validator;
 
-	private final WeakHashMap<Class, HashSet<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, HashSet<ConstraintsViolatedListener>>();
-	private final WeakHashMap<Object, HashSet<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, HashSet<ConstraintsViolatedListener>>();
+	private final WeakHashMap<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
+	private final WeakHashMap<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
 
 	private final WeakHashMap<Class, Mode> modesByClass = new WeakHashMap<Class, Mode>();
 	private final WeakHashMap<Object, Mode> modesByObject = new WeakHashMap<Object, Mode>();
@@ -58,28 +58,25 @@ public class ConstraintsEnforcer
 	{
 		if (clazz == null || listener == null) return;
 
-		HashSet<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
+		Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
 
 		if (currentListeners == null)
 		{
-			currentListeners = new HashSet<ConstraintsViolatedListener>();
+			currentListeners = CollectionFactory.createSet();
 			listenersByClass.put(clazz, currentListeners);
 		}
 		currentListeners.add(listener);
 	}
 
-	//
-
 	public void addListener(final ConstraintsViolatedListener listener, final Object validatedObject)
 	{
 		if (validatedObject == null || listener == null) return;
 
-		HashSet<ConstraintsViolatedListener> currentListeners = listenersByObject
-				.get(validatedObject);
+		Set<ConstraintsViolatedListener> currentListeners = listenersByObject.get(validatedObject);
 
 		if (currentListeners == null)
 		{
-			currentListeners = new HashSet<ConstraintsViolatedListener>();
+			currentListeners = CollectionFactory.createSet();
 			listenersByObject.put(validatedObject, currentListeners);
 		}
 		currentListeners.add(listener);
@@ -120,7 +117,7 @@ public class ConstraintsEnforcer
 
 	public boolean hasListener(final ConstraintsViolatedListener listener, final Class clazz)
 	{
-		final HashSet<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
+		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
 
 		if (currentListeners == null) return false;
 
@@ -130,7 +127,7 @@ public class ConstraintsEnforcer
 	public boolean hasListener(final ConstraintsViolatedListener listener,
 			final Object validatedObject)
 	{
-		final HashSet<ConstraintsViolatedListener> currentListeners = listenersByObject
+		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
 				.get(validatedObject);
 
 		if (currentListeners == null) return false;
@@ -143,11 +140,11 @@ public class ConstraintsEnforcer
 	 */
 	private void notifyListeners(final Object validatedObject, final ConstraintsViolatedException ex)
 	{
-		final ArrayList<ConstraintsViolatedListener> notifiedListeners = new ArrayList<ConstraintsViolatedListener>();
+		final List<ConstraintsViolatedListener> notifiedListeners = CollectionFactory.createList();
 
 		// notifiy object listeners
 		{
-			final HashSet<ConstraintsViolatedListener> currentListeners = listenersByObject
+			final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
 					.get(validatedObject);
 			if (currentListeners != null)
 			{
@@ -161,7 +158,7 @@ public class ConstraintsEnforcer
 
 		// notifiy class listeners
 		{
-			final HashSet<ConstraintsViolatedListener> currentListeners = listenersByClass
+			final Set<ConstraintsViolatedListener> currentListeners = listenersByClass
 					.get(validatedObject);
 			if (currentListeners != null)
 			{
@@ -176,7 +173,7 @@ public class ConstraintsEnforcer
 
 	public void removeListener(final ConstraintsViolatedListener listener, final Class clazz)
 	{
-		final HashSet<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
+		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
 
 		if (currentListeners == null) return;
 
@@ -186,7 +183,7 @@ public class ConstraintsEnforcer
 	public void removeListener(final ConstraintsViolatedListener listener,
 			final Object validatedObject)
 	{
-		final HashSet<ConstraintsViolatedListener> currentListeners = listenersByObject
+		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
 				.get(validatedObject);
 
 		if (currentListeners == null) return;
@@ -245,6 +242,7 @@ public class ConstraintsEnforcer
 
 			if (alwaysThrow) throw violationException;
 			if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
+
 		}
 		return violations.size() == 0;
 	}

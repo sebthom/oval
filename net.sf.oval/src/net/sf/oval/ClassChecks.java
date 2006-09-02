@@ -16,8 +16,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +27,7 @@ import net.sf.oval.constraints.FieldConstraintsCheck;
 import net.sf.oval.contexts.ClassContext;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.ReflectionException;
+import net.sf.oval.utils.CollectionFactory;
 
 /**
  * This class holds information about all the constraints defined for a class
@@ -41,35 +42,38 @@ final class ClassChecks
 	/**
 	 * checks on constructors' parameter values
 	 */
-	final HashMap<Constructor, HashMap<Integer, HashSet<Check>>> checksByConstructorParameter = new HashMap<Constructor, HashMap<Integer, HashSet<Check>>>();
+	final Map<Constructor, Map<Integer, Set<Check>>> checksByConstructorParameter = CollectionFactory
+			.createMap();
 
 	/**
 	 * checks on fields' value
 	 */
-	final HashMap<Field, HashSet<Check>> checksByField = new HashMap<Field, HashSet<Check>>();
+	final Map<Field, Set<Check>> checksByField = CollectionFactory.createMap();
 
 	/**
 	 * checks on getter methods' return value
 	 */
-	final HashMap<Method, HashSet<Check>> checksByGetter = new HashMap<Method, HashSet<Check>>();
+	final Map<Method, Set<Check>> checksByGetter = CollectionFactory.createMap();
 
 	/**
 	 * checks on parameterized methods' return value
 	 */
-	final HashMap<Method, HashSet<Check>> checksByMethod = new HashMap<Method, HashSet<Check>>();
+	final Map<Method, Set<Check>> checksByMethod = CollectionFactory.createMap();
 
 	/**
 	 * checks on methods' parameter values
 	 */
-	final HashMap<Method, HashMap<Integer, HashSet<Check>>> checksByMethodParameter = new HashMap<Method, HashMap<Integer, HashSet<Check>>>();
+	final Map<Method, Map<Integer, Set<Check>>> checksByMethodParameter = CollectionFactory
+			.createMap();
 
-	final HashSet<Field> constrainedFields = new HashSet<Field>();
+	final Set<Field> constrainedFields = CollectionFactory.createSet();
 
-	final HashSet<Method> constrainedGetters = new HashSet<Method>();
-	final HashSet<Method> constrainedMethods = new HashSet<Method>();
-	final HashSet<Constructor> constrainedParameterizedConstructors = new HashSet<Constructor>();
+	final Set<Method> constrainedGetters = CollectionFactory.createSet();
+	final Set<Method> constrainedMethods = CollectionFactory.createSet();
+	final Set<Constructor> constrainedParameterizedConstructors = CollectionFactory.createSet();
 
-	final HashSet<Method> constrainedParameterizedMethods = new HashSet<Method>();
+	final Set<Method> constrainedParameterizedMethods = CollectionFactory.createSet();
+
 	final Constrained constrainedAnnotation;
 
 	final Class clazz;
@@ -121,21 +125,21 @@ final class ClassChecks
 					new ClassContext(clazz));
 
 		// retrieve the currently registered checks for all parameters of the specified constructor
-		HashMap<Integer, HashSet<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+		Map<Integer, Set<Check>> checksOfConstructorByParameter = checksByConstructorParameter
 				.get(constructor);
 		if (checksOfConstructorByParameter == null)
 		{
-			checksOfConstructorByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksOfConstructorByParameter = CollectionFactory.createMap();
 			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
 			constrainedParameterizedConstructors.add(constructor);
 		}
 
 		// retrieve the checks for the specified parameter
-		HashSet<Check> checksOfConstructorParameter = checksOfConstructorByParameter
+		Set<Check> checksOfConstructorParameter = checksOfConstructorByParameter
 				.get(parameterIndex);
 		if (checksOfConstructorParameter == null)
 		{
-			checksOfConstructorParameter = new HashSet<Check>();
+			checksOfConstructorParameter = CollectionFactory.createSet();
 			checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
 		}
 
@@ -144,10 +148,10 @@ final class ClassChecks
 
 	synchronized void addCheck(final Field field, final Check check)
 	{
-		HashSet<Check> checksOfField = checksByField.get(field);
+		Set<Check> checksOfField = checksByField.get(field);
 		if (checksOfField == null)
 		{
-			checksOfField = new HashSet<Check>();
+			checksOfField = CollectionFactory.createSet();
 			checksByField.put(field, checksOfField);
 			constrainedFields.add(field);
 		}
@@ -165,20 +169,19 @@ final class ClassChecks
 					new ClassContext(clazz));
 
 		// retrieve the currently registered checks for all parameters of the specified method
-		HashMap<Integer, HashSet<Check>> checksOfMethodByParameter = checksByMethodParameter
-				.get(method);
+		Map<Integer, Set<Check>> checksOfMethodByParameter = checksByMethodParameter.get(method);
 		if (checksOfMethodByParameter == null)
 		{
-			checksOfMethodByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksOfMethodByParameter = CollectionFactory.createMap();
 			checksByMethodParameter.put(method, checksOfMethodByParameter);
 			constrainedParameterizedMethods.add(method);
 		}
 
 		// retrieve the checks for the specified parameter
-		HashSet<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
+		Set<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
 		if (checksOfMethodParameter == null)
 		{
-			checksOfMethodParameter = new HashSet<Check>();
+			checksOfMethodParameter = CollectionFactory.createSet();
 			checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
 		}
 
@@ -190,13 +193,13 @@ final class ClassChecks
 	{
 		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(
 				Constraint.class);
-		Class checkClass = constraint.check();
+		final Class checkClass = constraint.check();
 
 		try
 		{
 			// instantiate the appropriate check for the found constraint
 			@SuppressWarnings("unchecked")
-			AnnotationCheck<ConstraintAnnotation> check = (AnnotationCheck<ConstraintAnnotation>) checkClass
+			final AnnotationCheck<ConstraintAnnotation> check = (AnnotationCheck<ConstraintAnnotation>) checkClass
 					.newInstance();
 			check.configure(constraintAnnotation);
 			return check;
@@ -211,18 +214,18 @@ final class ClassChecks
 			final Check check) throws ConstraintAnnotationNotPresentException
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
-		HashMap<Integer, HashSet<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+		Map<Integer, Set<Check>> checksOfConstructorByParameter = checksByConstructorParameter
 				.get(constructor);
 		if (checksOfConstructorByParameter == null) return;
 
 		{
-			checksOfConstructorByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksOfConstructorByParameter = CollectionFactory.createMap();
 			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
 			constrainedParameterizedConstructors.add(constructor);
 		}
 
 		// retrieve the checks for the specified parameter
-		HashSet<Check> checksOfConstructorParameter = checksOfConstructorByParameter
+		final Set<Check> checksOfConstructorParameter = checksOfConstructorByParameter
 				.get(parameterIndex);
 		if (checksOfConstructorParameter == null) return;
 
@@ -238,7 +241,7 @@ final class ClassChecks
 
 	synchronized void removeCheck(final Field field, final Check check)
 	{
-		HashSet<Check> checksOfField = checksByField.get(field);
+		final Set<Check> checksOfField = checksByField.get(field);
 
 		if (checksOfField == null) return;
 
@@ -254,18 +257,17 @@ final class ClassChecks
 			throws ConstraintAnnotationNotPresentException
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
-		HashMap<Integer, HashSet<Check>> checksOfMethodByParameter = checksByMethodParameter
-				.get(method);
+		Map<Integer, Set<Check>> checksOfMethodByParameter = checksByMethodParameter.get(method);
 		if (checksOfMethodByParameter == null) return;
 
 		{
-			checksOfMethodByParameter = new HashMap<Integer, HashSet<Check>>();
+			checksOfMethodByParameter = CollectionFactory.createMap();
 			checksByMethodParameter.put(method, checksOfMethodByParameter);
 			constrainedParameterizedMethods.add(method);
 		}
 
 		// retrieve the checks for the specified parameter
-		HashSet<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
+		Set<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
 		if (checksOfMethodParameter == null) return;
 
 		checksOfMethodParameter.remove(check);
@@ -283,13 +285,13 @@ final class ClassChecks
 		// loop over all constructors
 		for (final Constructor constructor : clazz.getDeclaredConstructors())
 		{
-			final HashMap<Integer, HashSet<Check>> checksByConstructorParam = new HashMap<Integer, HashSet<Check>>();
+			final Map<Integer, Set<Check>> checksByConstructorParam = CollectionFactory.createMap();
 			final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
 
 			// loop over all parameters of the current constructor
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final HashSet<Check> parameterChecks = new HashSet<Check>();
+				final Set<Check> parameterChecks = CollectionFactory.createSet();
 
 				// loop over all annotations of the current parameter
 				for (final Annotation annotation : parameterAnnotations[i])
@@ -321,7 +323,7 @@ final class ClassChecks
 		// loop over all fields
 		for (final Field field : clazz.getDeclaredFields())
 		{
-			final HashSet<Check> fieldChecks = new HashSet<Check>();
+			final Set<Check> fieldChecks = CollectionFactory.createSet();
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
@@ -368,7 +370,7 @@ final class ClassChecks
 				continue;
 			}
 
-			final HashSet<Check> returnValueChecks = new HashSet<Check>();
+			final Set<Check> returnValueChecks = CollectionFactory.createSet();
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
@@ -397,13 +399,13 @@ final class ClassChecks
 		// loop over all methods
 		for (final Method method : clazz.getDeclaredMethods())
 		{
-			final HashMap<Integer, HashSet<Check>> checksByMethodParam = new HashMap<Integer, HashSet<Check>>();
+			final Map<Integer, Set<Check>> checksByMethodParam = CollectionFactory.createMap();
 			final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 
 			// loop over all parameters of the current method
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final HashSet<Check> parameterChecks = new HashSet<Check>();
+				final Set<Check> parameterChecks = CollectionFactory.createSet();
 
 				// loop over all annotations of the current parameter
 				for (final Annotation annotation : parameterAnnotations[i])
@@ -505,12 +507,12 @@ final class ClassChecks
 			// check if a corresponding field has been found
 			if (field != null)
 			{
-				FieldConstraintsCheck check = new FieldConstraintsCheck();
+				final FieldConstraintsCheck check = new FieldConstraintsCheck();
 				check.setFieldName(field.getName());
 				checksByMethodParam.get(0).add(check);
 
 				/*
-				 final HashSet<Check> checks = checksByField.get(field);
+				 final Set<Check> checks = checksByField.get(field);
 				 if (checks != null)
 				 {
 				 if (LOG.isLoggable(Level.FINE))
@@ -523,13 +525,13 @@ final class ClassChecks
 		}
 	}
 
-	private boolean isGetter(Method method)
+	private boolean isGetter(final Method method)
 	{
 		return (method.getParameterTypes().length == 0)
 				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
 	}
 
-	private boolean isSetter(Method method)
+	private boolean isSetter(final Method method)
 	{
 		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
 

@@ -2,7 +2,11 @@
 [+] Feature added.
 [*] Change.
 
-2006-08-?? v0.6
+2006-??-?? v0.7
+===============
++ added internal support for Javolution Collection Classes (http://javolution.org/)
+
+2006-08-04 v0.6
 ===============
 + constraints programmatically specified during runtime via net.sf.oval.Validator.addCheck(...) can now be removed using net.sf.oval.Validator.removeCheck(...)
 + added french translation for the violation messages of the built-in constraints (provided by mimil)
