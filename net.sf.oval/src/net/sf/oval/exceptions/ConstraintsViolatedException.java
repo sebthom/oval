@@ -26,6 +26,8 @@ public class ConstraintsViolatedException extends OValException
 {
 	private static final long serialVersionUID = 1L;
 
+	private final long causingThreadId = Thread.currentThread().getId();
+
 	private final ConstraintViolation[] constraintViolations;
 
 	public ConstraintsViolatedException(final ConstraintViolation... constraintViolations)
@@ -41,6 +43,14 @@ public class ConstraintsViolatedException extends OValException
 
 		this.constraintViolations = constraintViolations
 				.toArray(new ConstraintViolation[constraintViolations.size()]);
+	}
+
+	/**
+	 * @return the id of the thread that caused the violations
+	 */
+	public long getCausingThreadId()
+	{
+		return causingThreadId;
 	}
 
 	/**

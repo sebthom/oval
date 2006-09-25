@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.AssertValidCheck;
 import net.sf.oval.constraints.FieldConstraintsCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
@@ -35,7 +36,6 @@ import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.FieldNotFoundException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
-import net.sf.oval.utils.CollectionFactory;
 import net.sf.oval.utils.ThreadLocalList;
 
 /**
@@ -49,8 +49,8 @@ public final class Validator
 	private final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
-	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory
-			.createMap();
+	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory.INSTANCE
+			.createMap(8);
 
 	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
 
@@ -119,7 +119,7 @@ public final class Validator
 		if (messageBundles.contains(messageBundle)) return false;
 
 		messageBundles.addFirst(messageBundle);
-		final List<String> keys = CollectionFactory.createList();
+		final List<String> keys = CollectionFactory.INSTANCE.createList();
 
 		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum
 				.hasMoreElements();)
@@ -336,7 +336,7 @@ public final class Validator
 	 */
 	private boolean isCurrentlyValidated(Object object)
 	{
-		return currentlyValidatedObjects.getList().contains(object);
+		return currentlyValidatedObjects.get().contains(object);
 	}
 
 	/**
@@ -446,16 +446,16 @@ public final class Validator
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject)
 	{
-		currentlyValidatedObjects.getList().add(validatedObject);
+		currentlyValidatedObjects.get().add(validatedObject);
 		try
 		{
-			final List<ConstraintViolation> violations = CollectionFactory.createList();
+			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
 			validateObject(validatedObject, validatedObject.getClass(), violations);
 			return violations;
 		}
 		finally
 		{
-			currentlyValidatedObjects.getList().remove(validatedObject);
+			currentlyValidatedObjects.get().remove(validatedObject);
 		}
 	}
 
@@ -475,7 +475,7 @@ public final class Validator
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
-		final List<ConstraintViolation> violations = CollectionFactory.createList();
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
 		for (int i = 0; i < parameters.length; i++)
 		{
 			final Set<Check> checks = parameterChecks.get(i);
@@ -554,7 +554,7 @@ public final class Validator
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
-		final List<ConstraintViolation> violations = CollectionFactory.createList();
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
 
 		for (int i = 0; i < parameters.length; i++)
 		{
@@ -589,7 +589,7 @@ public final class Validator
 
 		if (checks == null) return null;
 
-		final List<ConstraintViolation> violations = CollectionFactory.createList();
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(8);
 
 		final MethodReturnValueContext context = new MethodReturnValueContext(method);
 

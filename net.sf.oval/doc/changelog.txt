@@ -4,7 +4,9 @@
 
 2006-??-?? v0.7
 ===============
-+ added internal support for Javolution Collection Classes (http://javolution.org/)
++ added pluggable support for 3rd party collection classes
++ added support for Javolution Collection Classes (http://javolution.org/)
++ added the JUnit test cases to the sources zip file
 
 2006-08-04 v0.6
 ===============

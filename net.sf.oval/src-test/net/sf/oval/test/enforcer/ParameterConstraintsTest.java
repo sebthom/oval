@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.ConstraintsViolatedAdapter;
-import net.sf.oval.ConstraintsEnforcer.Mode;
+import net.sf.oval.ConstraintsEnforcer.ReportingMode;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.LengthCheck;
@@ -71,7 +71,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInNotifyListenersMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS, TestEntity.class);
 
 		/*
 		 * Testing Constructor 1
@@ -117,7 +117,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInThrowExceptionMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
 
 		/*
 		 * Testing Constructor 1
@@ -161,7 +161,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInThrowExceptionMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
 
 		try
 		{
@@ -192,7 +192,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInNotifyListenersMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(Mode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS, TestEntity.class);
 
 		TestEntity entity = new TestEntity("");
 

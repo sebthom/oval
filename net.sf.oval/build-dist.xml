@@ -22,6 +22,7 @@
 	<!-- Project directories              -->
 	<!-- ================================ -->
 	<property name="src" value="${basedir}/src" />
+	<property name="src-test" value="${basedir}/src-test" />
 	<property name="doc" value="${basedir}/doc" />
 	<property name="res" value="${basedir}/resources" />
 
@@ -176,6 +177,11 @@
 			destfile="${build}/${jar.basename}_${version}-src.zip"
 		/>
 
+		<zip 
+			basedir="${src-test}" update="true"
+			destfile="${build}/${jar.basename}_${version}-src.zip"
+		/>
+				
 		<delete failonerror="false">
 			<fileset dir="${dist}" includes="${dist.basename}_${buildversion}*"/>
 		</delete>

@@ -6,11 +6,12 @@ package net.sf.oval;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
-import net.sf.oval.utils.CollectionFactory;
 
 /**
  * @author Sebastian Thomschke
@@ -19,35 +20,35 @@ import net.sf.oval.utils.CollectionFactory;
 public class ConstraintsEnforcer
 {
 	/**
-	 * The mode how oval should respond to detected constraint violations.
+	 * The mode how the constraints enforcer should report detected constraint violations.
 	 * 
 	 * @author Sebastian Thomschke
 	 */
-	public static enum Mode
+	public static enum ReportingMode
 	{
 		/**
-		 * notify listeners about a detected constraint violation 
+		 * notify listeners about a detected constraint violation but do not throw
 		 */
 		NOTIFY_LISTENERS,
 
 		/**
 		 * notify listeners about a detected constraint violation and additionally throw a ContraintsViolatatedException 
 		 */
-		THROW_EXCEPTION
+		NOTIFY_LISTENERS_AND_THROW_EXCEPTION
 	}
 
 	private Validator validator;
 
-	private final WeakHashMap<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
-	private final WeakHashMap<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
+	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
+	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
 
-	private final WeakHashMap<Class, Mode> modesByClass = new WeakHashMap<Class, Mode>();
-	private final WeakHashMap<Object, Mode> modesByObject = new WeakHashMap<Object, Mode>();
+	private final Map<Class, ReportingMode> reportingModesByClass = new WeakHashMap<Class, ReportingMode>();
+	private final Map<Object, ReportingMode> reportingModesByObject = new WeakHashMap<Object, ReportingMode>();
 
 	/**
 	 * default reporting mode
 	 */
-	private Mode mode = Mode.THROW_EXCEPTION;
+	private ReportingMode reportingMode = ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION;
 
 	public ConstraintsEnforcer(final Validator validator)
 	{
@@ -62,7 +63,7 @@ public class ConstraintsEnforcer
 
 		if (currentListeners == null)
 		{
-			currentListeners = CollectionFactory.createSet();
+			currentListeners = CollectionFactory.INSTANCE.createSet();
 			listenersByClass.put(clazz, currentListeners);
 		}
 		currentListeners.add(listener);
@@ -76,7 +77,7 @@ public class ConstraintsEnforcer
 
 		if (currentListeners == null)
 		{
-			currentListeners = CollectionFactory.createSet();
+			currentListeners = CollectionFactory.INSTANCE.createSet(2);
 			listenersByObject.put(validatedObject, currentListeners);
 		}
 		currentListeners.add(listener);
@@ -86,25 +87,25 @@ public class ConstraintsEnforcer
 	 * Gets the default  mode.
 	 * @return the mode
 	 */
-	public Mode getMode()
+	public ReportingMode getReportingMode()
 	{
-		return mode;
+		return reportingMode;
 	}
 
-	public Mode getMode(final Class clazz)
+	public ReportingMode getReportingMode(final Class clazz)
 	{
-		if (clazz == null) return mode;
+		if (clazz == null) return reportingMode;
 
-		final Mode classMode = modesByClass.get(clazz);
-		return classMode == null ? mode : classMode;
+		final ReportingMode classMode = reportingModesByClass.get(clazz);
+		return classMode == null ? reportingMode : classMode;
 	}
 
-	public Mode getMode(final Object validatedObject)
+	public ReportingMode getReportingMode(final Object validatedObject)
 	{
-		if (validatedObject == null) return mode;
+		if (validatedObject == null) return reportingMode;
 
-		final Mode objectMode = modesByObject.get(validatedObject);
-		return objectMode == null ? getMode(validatedObject.getClass()) : objectMode;
+		final ReportingMode objectMode = reportingModesByObject.get(validatedObject);
+		return objectMode == null ? getReportingMode(validatedObject.getClass()) : objectMode;
 	}
 
 	/**
@@ -140,7 +141,8 @@ public class ConstraintsEnforcer
 	 */
 	private void notifyListeners(final Object validatedObject, final ConstraintsViolatedException ex)
 	{
-		final List<ConstraintsViolatedListener> notifiedListeners = CollectionFactory.createList();
+		final List<ConstraintsViolatedListener> notifiedListeners = CollectionFactory.INSTANCE
+				.createList();
 
 		// notifiy object listeners
 		{
@@ -192,36 +194,38 @@ public class ConstraintsEnforcer
 	}
 
 	/**
-	 * Sets the default validation mode.
-	 * @param newDefaultMode the validation mode to set
+	 * Sets the default validation mode for all constrained objects
+	 * accessed within the current thread.
+	 * 
+	 * @param newDefaultReportingMode the validation mode to set
 	 */
-	public void setMode(final Mode newDefaultMode)
+	public void setReportingMode(final ReportingMode newDefaultReportingMode)
 	{
-		mode = newDefaultMode;
+		reportingMode = newDefaultReportingMode;
 	}
 
-	public void setMode(final Mode mode, final Class clazz)
+	public void setReportingMode(final ReportingMode reportingMode, final Class clazz)
 	{
-		if (clazz == null || mode == null) return;
+		if (clazz == null || reportingMode == null) return;
 
-		modesByClass.put(clazz, mode);
+		reportingModesByClass.put(clazz, reportingMode);
 	}
 
-	public void setMode(final Mode mode, final Object validatedObject)
+	public void setReportingMode(final ReportingMode reportingMode, final Object validatedObject)
 	{
-		if (validatedObject == null || mode == null) return;
+		if (validatedObject == null || reportingMode == null) return;
 
-		modesByObject.put(validatedObject, mode);
+		reportingModesByObject.put(validatedObject, reportingMode);
 	}
 
-	public void unsetMode(final Class clazz)
+	public void unsetReportingMode(final Class clazz)
 	{
-		modesByClass.remove(clazz);
+		reportingModesByClass.remove(clazz);
 	}
 
-	public void unsetMode(final Object validatedObject)
+	public void unsetReportingMode(final Object validatedObject)
 	{
-		modesByObject.remove(validatedObject);
+		reportingModesByObject.remove(validatedObject);
 	}
 
 	/**
@@ -241,7 +245,8 @@ public class ConstraintsEnforcer
 			notifyListeners(validatedObject, violationException);
 
 			if (alwaysThrow) throw violationException;
-			if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
+			if (getReportingMode(validatedObject) == ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION)
+				throw violationException;
 
 		}
 		return violations.size() == 0;
@@ -286,7 +291,8 @@ public class ConstraintsEnforcer
 				violations.toArray(new ConstraintViolation[violations.size()]));
 		notifyListeners(validatedObject, violationException);
 
-		if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
+		if (getReportingMode(validatedObject) == ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION)
+			throw violationException;
 
 		return false;
 	}
@@ -309,7 +315,8 @@ public class ConstraintsEnforcer
 				violations.toArray(new ConstraintViolation[violations.size()]));
 		notifyListeners(validatedObject, violationException);
 
-		if (getMode(validatedObject) == Mode.THROW_EXCEPTION) throw violationException;
+		if (getReportingMode(validatedObject) == ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION)
+			throw violationException;
 
 		return false;
 	}

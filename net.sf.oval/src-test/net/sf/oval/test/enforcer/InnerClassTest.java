@@ -80,7 +80,7 @@ public class InnerClassTest extends TestCase
 	 */
 	public void testInnerClassNonConstrain()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(ConstraintsEnforcer.Mode.THROW_EXCEPTION);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
 
 		try
 		{
@@ -95,7 +95,7 @@ public class InnerClassTest extends TestCase
 
 	public void testInnerClassConstrain()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(ConstraintsEnforcer.Mode.THROW_EXCEPTION);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
 
 		try
 		{

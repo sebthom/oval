@@ -14,19 +14,22 @@ package net.sf.oval.utils;
 
 import java.util.List;
 
+import net.sf.oval.collections.CollectionFactory;
+
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.0 $
  */
 public class ThreadLocalList<T> extends ThreadLocal
 {
-	public Object initialValue()
+	public List<T> initialValue()
 	{
-		return CollectionFactory.createList();
+		return CollectionFactory.INSTANCE.createList();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> getList()
+	@Override
+	public List<T> get()
 	{
 		return (List<T>) super.get();
 	}

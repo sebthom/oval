@@ -99,7 +99,7 @@ public class ApplyFieldConstraintsToSetterTest extends TestCase
 	{
 		final Person p = new Person();
 
-		TestEnforcerAspect.constraintsEnforcer.setMode(ConstraintsEnforcer.Mode.NOTIFY_LISTENERS,
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS,
 				p);
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		TestEnforcerAspect.constraintsEnforcer.addListener(va, p);

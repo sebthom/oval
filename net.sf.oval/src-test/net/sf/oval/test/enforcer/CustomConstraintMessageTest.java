@@ -77,7 +77,7 @@ public class CustomConstraintMessageTest extends TestCase
 	 */
 	public void testCustomConstraintMessage()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setMode(ConstraintsEnforcer.Mode.THROW_EXCEPTION);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
 
 		final TestEntity e = new TestEntity();
 

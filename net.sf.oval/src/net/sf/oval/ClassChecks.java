@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.Constraint;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.FieldConstraintsCheck;
 import net.sf.oval.contexts.ClassContext;
 import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
 import net.sf.oval.exceptions.ReflectionException;
-import net.sf.oval.utils.CollectionFactory;
 
 /**
  * This class holds information about all the constraints defined for a class
@@ -42,41 +42,42 @@ final class ClassChecks
 	/**
 	 * checks on constructors' parameter values
 	 */
-	final Map<Constructor, Map<Integer, Set<Check>>> checksByConstructorParameter = CollectionFactory
-			.createMap();
+	final Map<Constructor, Map<Integer, Set<Check>>> checksByConstructorParameter = CollectionFactory.INSTANCE
+			.createMap(4);
 
 	/**
 	 * checks on fields' value
 	 */
-	final Map<Field, Set<Check>> checksByField = CollectionFactory.createMap();
+	final Map<Field, Set<Check>> checksByField = CollectionFactory.INSTANCE.createMap();
 
 	/**
 	 * checks on getter methods' return value
 	 */
-	final Map<Method, Set<Check>> checksByGetter = CollectionFactory.createMap();
+	final Map<Method, Set<Check>> checksByGetter = CollectionFactory.INSTANCE.createMap();
 
 	/**
 	 * checks on parameterized methods' return value
 	 */
-	final Map<Method, Set<Check>> checksByMethod = CollectionFactory.createMap();
+	final Map<Method, Set<Check>> checksByMethod = CollectionFactory.INSTANCE.createMap();
 
 	/**
 	 * checks on methods' parameter values
 	 */
-	final Map<Method, Map<Integer, Set<Check>>> checksByMethodParameter = CollectionFactory
+	final Map<Method, Map<Integer, Set<Check>>> checksByMethodParameter = CollectionFactory.INSTANCE
 			.createMap();
 
-	final Set<Field> constrainedFields = CollectionFactory.createSet();
-
-	final Set<Method> constrainedGetters = CollectionFactory.createSet();
-	final Set<Method> constrainedMethods = CollectionFactory.createSet();
-	final Set<Constructor> constrainedParameterizedConstructors = CollectionFactory.createSet();
-
-	final Set<Method> constrainedParameterizedMethods = CollectionFactory.createSet();
+	final Class clazz;
 
 	final Constrained constrainedAnnotation;
+	final Set<Field> constrainedFields = CollectionFactory.INSTANCE.createSet();
+	final Set<Method> constrainedGetters = CollectionFactory.INSTANCE.createSet();
 
-	final Class clazz;
+	final Set<Method> constrainedMethods = CollectionFactory.INSTANCE.createSet();
+
+	final Set<Constructor> constrainedParameterizedConstructors = CollectionFactory.INSTANCE
+			.createSet(4);
+
+	final Set<Method> constrainedParameterizedMethods = CollectionFactory.INSTANCE.createSet();
 
 	final Validator validator;
 
@@ -129,7 +130,7 @@ final class ClassChecks
 				.get(constructor);
 		if (checksOfConstructorByParameter == null)
 		{
-			checksOfConstructorByParameter = CollectionFactory.createMap();
+			checksOfConstructorByParameter = CollectionFactory.INSTANCE.createMap(8);
 			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
 			constrainedParameterizedConstructors.add(constructor);
 		}
@@ -139,7 +140,7 @@ final class ClassChecks
 				.get(parameterIndex);
 		if (checksOfConstructorParameter == null)
 		{
-			checksOfConstructorParameter = CollectionFactory.createSet();
+			checksOfConstructorParameter = CollectionFactory.INSTANCE.createSet(8);
 			checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
 		}
 
@@ -151,7 +152,7 @@ final class ClassChecks
 		Set<Check> checksOfField = checksByField.get(field);
 		if (checksOfField == null)
 		{
-			checksOfField = CollectionFactory.createSet();
+			checksOfField = CollectionFactory.INSTANCE.createSet(8);
 			checksByField.put(field, checksOfField);
 			constrainedFields.add(field);
 		}
@@ -172,7 +173,7 @@ final class ClassChecks
 		Map<Integer, Set<Check>> checksOfMethodByParameter = checksByMethodParameter.get(method);
 		if (checksOfMethodByParameter == null)
 		{
-			checksOfMethodByParameter = CollectionFactory.createMap();
+			checksOfMethodByParameter = CollectionFactory.INSTANCE.createMap(8);
 			checksByMethodParameter.put(method, checksOfMethodByParameter);
 			constrainedParameterizedMethods.add(method);
 		}
@@ -181,11 +182,33 @@ final class ClassChecks
 		Set<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
 		if (checksOfMethodParameter == null)
 		{
-			checksOfMethodParameter = CollectionFactory.createSet();
+			checksOfMethodParameter = CollectionFactory.INSTANCE.createSet(8);
 			checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
 		}
 
 		checksOfMethodParameter.add(check);
+	}
+
+	private boolean isGetter(final Method method)
+	{
+		return (method.getParameterTypes().length == 0)
+				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+	}
+
+	private boolean isSetter(final Method method)
+	{
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+
+		// check if method has exactly one parameter
+		if (methodParameterTypes.length != 1) return false;
+
+		final String methodName = method.getName();
+		final int methodNameLen = methodName.length();
+
+		// check if the method's name starts with setXXX
+		if (!methodName.startsWith("set") || methodNameLen <= 3) return false;
+
+		return true;
 	}
 
 	private <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> loadCheck(
@@ -219,7 +242,7 @@ final class ClassChecks
 		if (checksOfConstructorByParameter == null) return;
 
 		{
-			checksOfConstructorByParameter = CollectionFactory.createMap();
+			checksOfConstructorByParameter = CollectionFactory.INSTANCE.createMap(8);
 			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
 			constrainedParameterizedConstructors.add(constructor);
 		}
@@ -261,7 +284,7 @@ final class ClassChecks
 		if (checksOfMethodByParameter == null) return;
 
 		{
-			checksOfMethodByParameter = CollectionFactory.createMap();
+			checksOfMethodByParameter = CollectionFactory.INSTANCE.createMap(8);
 			checksByMethodParameter.put(method, checksOfMethodByParameter);
 			constrainedParameterizedMethods.add(method);
 		}
@@ -285,13 +308,14 @@ final class ClassChecks
 		// loop over all constructors
 		for (final Constructor constructor : clazz.getDeclaredConstructors())
 		{
-			final Map<Integer, Set<Check>> checksByConstructorParam = CollectionFactory.createMap();
+			final Map<Integer, Set<Check>> checksByConstructorParam = CollectionFactory.INSTANCE
+					.createMap(8);
 			final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
 
 			// loop over all parameters of the current constructor
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final Set<Check> parameterChecks = CollectionFactory.createSet();
+				final Set<Check> parameterChecks = CollectionFactory.INSTANCE.createSet(8);
 
 				// loop over all annotations of the current parameter
 				for (final Annotation annotation : parameterAnnotations[i])
@@ -323,7 +347,7 @@ final class ClassChecks
 		// loop over all fields
 		for (final Field field : clazz.getDeclaredFields())
 		{
-			final Set<Check> fieldChecks = CollectionFactory.createSet();
+			final Set<Check> fieldChecks = CollectionFactory.INSTANCE.createSet(8);
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
@@ -370,7 +394,7 @@ final class ClassChecks
 				continue;
 			}
 
-			final Set<Check> returnValueChecks = CollectionFactory.createSet();
+			final Set<Check> returnValueChecks = CollectionFactory.INSTANCE.createSet(8);
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
@@ -399,13 +423,14 @@ final class ClassChecks
 		// loop over all methods
 		for (final Method method : clazz.getDeclaredMethods())
 		{
-			final Map<Integer, Set<Check>> checksByMethodParam = CollectionFactory.createMap();
+			final Map<Integer, Set<Check>> checksByMethodParam = CollectionFactory.INSTANCE
+					.createMap(8);
 			final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 
 			// loop over all parameters of the current method
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final Set<Check> parameterChecks = CollectionFactory.createSet();
+				final Set<Check> parameterChecks = CollectionFactory.INSTANCE.createSet(8);
 
 				// loop over all annotations of the current parameter
 				for (final Annotation annotation : parameterAnnotations[i])
@@ -523,27 +548,5 @@ final class ClassChecks
 				 }*/
 			}
 		}
-	}
-
-	private boolean isGetter(final Method method)
-	{
-		return (method.getParameterTypes().length == 0)
-				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
-	}
-
-	private boolean isSetter(final Method method)
-	{
-		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
-
-		// check if method has exactly one parameter
-		if (methodParameterTypes.length != 1) return false;
-
-		final String methodName = method.getName();
-		final int methodNameLen = methodName.length();
-
-		// check if the method's name starts with setXXX
-		if (!methodName.startsWith("set") || methodNameLen <= 3) return false;
-
-		return true;
 	}
 }
