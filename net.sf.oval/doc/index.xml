@@ -632,6 +632,8 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
 { 
     public boolean isValid(Object validatable, Object value) 
     {
+        if (value == null) return true;
+        
         String val = value.toString();
         return val.equals(val.toUpperCase()); 
     } 

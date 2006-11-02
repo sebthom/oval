@@ -4,9 +4,12 @@
 
 2006-??-?? v0.7
 ===============
-+ added pluggable support for 3rd party collection classes
++ added pluggable support for alternative collection implementations
 + added support for Javolution Collection Classes (http://javolution.org/)
-+ added the JUnit test cases to the sources zip file
++ changed the ant script to include the JUnit test cases in the sources zip file
+~ net.sf.oval.AbstractAnnotationCheck: class AbstractCheck renamed to AbstractAnnotationCheck
+- fixed some serialization related issues
+- fixed NPE in InstanceOfCheck
 
 2006-08-04 v0.6
 ===============
