@@ -46,7 +46,7 @@ public class ConstraintsViolatedException extends OValException
 	}
 
 	/**
-	 * @return the id of the thread that caused the violations
+	 * @return the id of the thread in which the violations occured
 	 */
 	public long getCausingThreadId()
 	{

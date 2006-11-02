@@ -14,6 +14,7 @@ package net.sf.oval.exceptions;
 
 /**
  * The root exception of all exceptions thrown by oval
+ * 
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
