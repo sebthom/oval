@@ -37,6 +37,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
 
 		/*
