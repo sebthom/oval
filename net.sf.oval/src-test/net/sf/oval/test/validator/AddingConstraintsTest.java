@@ -58,7 +58,7 @@ public class AddingConstraintsTest extends TestCase
 		try
 		{
 			Constructor constructor = TestEntity.class
-					.getDeclaredConstructor(new Class[]{String.class});
+					.getDeclaredConstructor(new Class<?>[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
 			validator.addCheck(constructor, 0, notNullCheck);
@@ -124,7 +124,7 @@ public class AddingConstraintsTest extends TestCase
 		try
 		{
 			Method setter = TestEntity.class
-					.getDeclaredMethod("setName", new Class[]{String.class});
+					.getDeclaredMethod("setName", new Class<?>[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
 			validator.addCheck(setter, 0, notNullCheck);
