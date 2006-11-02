@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.annotations;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,5 +28,5 @@ import net.sf.oval.AnnotationCheck;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Constraint
 {
-	Class< ? extends AnnotationCheck< ? >> check();
+	Class< ? extends AnnotationCheck< ? extends Annotation >> check();
 }
