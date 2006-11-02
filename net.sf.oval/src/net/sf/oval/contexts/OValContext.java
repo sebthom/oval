@@ -12,9 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.contexts;
 
+import java.io.Serializable;
+
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.1 $
  */
-public class OValContext
-{}
+public class OValContext implements Serializable
+{
+	private static final long serialVersionUID = 1L;
+}

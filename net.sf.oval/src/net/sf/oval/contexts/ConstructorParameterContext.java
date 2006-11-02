@@ -14,6 +14,7 @@ package net.sf.oval.contexts;
 
 import java.lang.reflect.Constructor;
 
+import net.sf.oval.utils.SerializableConstructor;
 import net.sf.oval.utils.StringUtils;
 
 /**
@@ -22,8 +23,9 @@ import net.sf.oval.utils.StringUtils;
  */
 public class ConstructorParameterContext extends OValContext
 {
-	private final Constructor< ? > constructor;
+	private static final long serialVersionUID = 1L;
 
+	private final SerializableConstructor constructor;
 	private final int parameterIndex;
 	private final String parameterName;
 
@@ -32,10 +34,10 @@ public class ConstructorParameterContext extends OValContext
 	 * @param constructor
 	 * @param parameterIndex
 	 */
-	public ConstructorParameterContext(final Constructor constructor, final int parameterIndex,
-			final String parameterName)
+	public ConstructorParameterContext(final Constructor< ? > constructor,
+			final int parameterIndex, final String parameterName)
 	{
-		this.constructor = constructor;
+		this.constructor = SerializableConstructor.getInstance(constructor);
 		this.parameterIndex = parameterIndex;
 		this.parameterName = parameterName;
 	}
@@ -43,9 +45,9 @@ public class ConstructorParameterContext extends OValContext
 	/**
 	 * @return Returns the constructor.
 	 */
-	public Constructor getConstructor()
+	public Constructor<?> getConstructor()
 	{
-		return constructor;
+		return constructor.getConstructor();
 	}
 
 	/**

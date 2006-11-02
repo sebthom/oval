@@ -18,7 +18,7 @@ package net.sf.oval.contexts;
  */
 public class ClassContext extends OValContext
 {
-	private static final long serialVersionUID = 4955115715680346101L;
+	private static final long serialVersionUID = 1L;
 
 	private final Class clazz;
 

@@ -14,6 +14,7 @@ package net.sf.oval.contexts;
 
 import java.lang.reflect.Method;
 
+import net.sf.oval.utils.SerializableMethod;
 import net.sf.oval.utils.StringUtils;
 
 /**
@@ -22,14 +23,16 @@ import net.sf.oval.utils.StringUtils;
  */
 public class MethodParameterContext extends OValContext
 {
-	private final Method method;
+	private static final long serialVersionUID = 1L;
+
+	private final SerializableMethod method;
 	private final int parameterIndex;
 	private final String parameterName;
 
 	public MethodParameterContext(final Method method, final int parameterIndex,
 			final String parameterName)
 	{
-		this.method = method;
+		this.method = SerializableMethod.getInstance(method);
 		this.parameterIndex = parameterIndex;
 		this.parameterName = parameterName;
 	}
@@ -39,7 +42,7 @@ public class MethodParameterContext extends OValContext
 	 */
 	public Method getMethod()
 	{
-		return method;
+		return method.getMethod();
 	}
 
 	/**
@@ -48,6 +51,14 @@ public class MethodParameterContext extends OValContext
 	public int getParameterIndex()
 	{
 		return parameterIndex;
+	}
+
+	/**
+	 * @return the parameterName
+	 */
+	public String getParameterName()
+	{
+		return parameterName;
 	}
 
 	public String toString()
@@ -61,14 +72,6 @@ public class MethodParameterContext extends OValContext
 				+ parameterIndex
 				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName
 						+ ")");
-	}
-
-	/**
-	 * @return the parameterName
-	 */
-	public String getParameterName()
-	{
-		return parameterName;
 	}
 
 }

@@ -14,17 +14,21 @@ package net.sf.oval.contexts;
 
 import java.lang.reflect.Method;
 
+import net.sf.oval.utils.SerializableMethod;
+
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
 public class MethodReturnValueContext extends OValContext
 {
-	private final Method getter;
+	private static final long serialVersionUID = 1L;
+
+	private final SerializableMethod getter;
 
 	public MethodReturnValueContext(final Method getter)
 	{
-		this.getter = getter;
+		this.getter = SerializableMethod.getInstance(getter);
 	}
 
 	/**
@@ -32,7 +36,7 @@ public class MethodReturnValueContext extends OValContext
 	 */
 	public Method getGetter()
 	{
-		return getter;
+		return getter.getMethod();
 	}
 
 	public String toString()
