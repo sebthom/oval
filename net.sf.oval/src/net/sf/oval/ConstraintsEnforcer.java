@@ -37,7 +37,7 @@ public class ConstraintsEnforcer
 		NOTIFY_LISTENERS_AND_THROW_EXCEPTION
 	}
 
-	private Validator validator;
+	private final Validator validator;
 
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
