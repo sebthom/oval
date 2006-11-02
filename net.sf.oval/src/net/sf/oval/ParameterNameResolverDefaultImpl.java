@@ -28,8 +28,11 @@ public class ParameterNameResolverDefaultImpl implements ParameterNameResolver
 	private final WeakHashMap<Constructor, String[]> constructorParameterNames = new WeakHashMap<Constructor, String[]>();
 	private final WeakHashMap<Method, String[]> methodParameterNames = new WeakHashMap<Method, String[]>();
 
-	public synchronized String[] getParameterNames(final Method method) throws ReflectionException
+	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
+		/*
+		 * intentionally the following code is not synchronized
+		 */
 		String[] parameterNames = methodParameterNames.get(method);
 		if (parameterNames == null)
 		{
@@ -46,6 +49,9 @@ public class ParameterNameResolverDefaultImpl implements ParameterNameResolver
 
 	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
 	{
+		/*
+		 * intentionally the following code is not synchronized
+		 */
 		String[] parameterNames = constructorParameterNames.get(constructor);
 		if (parameterNames == null)
 		{

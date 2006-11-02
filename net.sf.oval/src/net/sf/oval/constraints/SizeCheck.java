@@ -16,15 +16,17 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sf.oval.AbstractCheck;
+import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.7 $
  */
-public class SizeCheck extends AbstractCheck<Size>
+public class SizeCheck extends AbstractAnnotationCheck<Size>
 {
+	private static final long serialVersionUID = 1L;
+	
 	private int min;
 	private int max;
 

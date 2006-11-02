@@ -12,15 +12,17 @@
  *******************************************************************************/
 package net.sf.oval.constraints;
 
-import net.sf.oval.AbstractCheck;
+import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.5 $
  */
-public class NotNullCheck extends AbstractCheck<NotNull>
+public class NotNullCheck extends AbstractAnnotationCheck<NotNull>
 {
+	private static final long serialVersionUID = 1L;
+
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{

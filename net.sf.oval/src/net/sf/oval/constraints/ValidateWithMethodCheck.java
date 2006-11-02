@@ -14,7 +14,7 @@ package net.sf.oval.constraints;
 
 import java.lang.reflect.Method;
 
-import net.sf.oval.AbstractCheck;
+import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ReflectionException;
 
@@ -22,8 +22,10 @@ import net.sf.oval.exceptions.ReflectionException;
  * @author Sebastian Thomschke
  * @version $Revision: 1.7 $
  */
-public class ValidateWithMethodCheck extends AbstractCheck<ValidateWithMethod>
+public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod>
 {
+	private static final long serialVersionUID = 1L;
+	
 	private boolean ignoreIfNull;
 	private String methodName;
 	private Class parameterType;

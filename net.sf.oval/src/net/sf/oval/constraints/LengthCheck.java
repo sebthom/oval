@@ -12,15 +12,17 @@
  *******************************************************************************/
 package net.sf.oval.constraints;
 
-import net.sf.oval.AbstractCheck;
+import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.7 $
  */
-public class LengthCheck extends AbstractCheck<Length>
+public class LengthCheck extends AbstractAnnotationCheck<Length>
 {
+	private static final long serialVersionUID = 1L;
+	
 	private int min;
 	private int max;
 

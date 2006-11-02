@@ -12,28 +12,53 @@
  *******************************************************************************/
 package net.sf.oval.constraints;
 
-import net.sf.oval.AbstractCheck;
+import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.6 $
  */
-public class InstanceOfCheck extends AbstractCheck<InstanceOf>
+public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 {
+	private static final long serialVersionUID = 1L;
+	
 	private Class clazz;
 
-	public boolean isSatisfied(Object validatedObject, Object value, final OValContext context)
+	@Override
+	public void configure(final InstanceOf constraintAnnotation)
 	{
-		if (value == null) return true;
+		super.configure(constraintAnnotation);
+		setClazz(constraintAnnotation.value());
+	}
 
-		return clazz.isInstance(value);
+	/**
+	 * @return the clazz
+	 */
+	public Class getClazz()
+	{
+		return clazz;
 	}
 
 	@Override
 	public String[] getMessageValues()
 	{
 		return new String[]{clazz.getName()};
+	}
+
+	public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context)
+	{
+		if (value == null) return true;
+
+		return clazz.isInstance(value);
+	}
+
+	/**
+	 * @param clazz the clazz to set
+	 */
+	public void setClazz(final Class clazz)
+	{
+		this.clazz = clazz;
 	}
 
 }

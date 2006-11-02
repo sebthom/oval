@@ -12,15 +12,17 @@
  *******************************************************************************/
 package net.sf.oval.constraints;
 
-import net.sf.oval.AbstractCheck;
+import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.0 $
  */
-public class AssertValidCheck extends AbstractCheck<AssertValid>
+public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 {
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 *  This method is not used.
 	 *  The validation of this special constraint is directly performed by the Validator class

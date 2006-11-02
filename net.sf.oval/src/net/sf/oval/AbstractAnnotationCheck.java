@@ -21,11 +21,11 @@ import java.util.logging.Logger;
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
-public abstract class AbstractCheck<ConstraintAnnotation extends Annotation>
+public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annotation>
 		implements
 			AnnotationCheck<ConstraintAnnotation>
 {
-	private final static Logger LOG = Logger.getLogger(AbstractCheck.class.getName());
+	private final static Logger LOG = Logger.getLogger(AbstractAnnotationCheck.class.getName());
 
 	protected ConstraintAnnotation constraintAnnotation;
 	protected String message;
@@ -39,10 +39,11 @@ public abstract class AbstractCheck<ConstraintAnnotation extends Annotation>
 		 * Using reflection is required because annotations do not support inheritance and 
 		 * therefore cannot implement an interface that could be used for a down cast here.
 		 */
-		final Class constraintClazz = constraintAnnotation.getClass();
+		final Class< ? > constraintClazz = constraintAnnotation.getClass();
 		try
 		{
-			final Method getMessage = constraintClazz.getDeclaredMethod("message", (Class[]) null);
+			final Method getMessage = constraintClazz.getDeclaredMethod("message",
+					(Class< ? >[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (Exception e)

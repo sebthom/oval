@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval;
 
+import java.io.Serializable;
+
 import net.sf.oval.contexts.OValContext;
 
 /**
@@ -20,7 +22,7 @@ import net.sf.oval.contexts.OValContext;
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
-public interface Check
+public interface Check extends Serializable
 {
 	/**
 	 * gets the default message is displayed if a corresponding message key
