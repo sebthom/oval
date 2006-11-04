@@ -18,13 +18,13 @@ import net.sf.oval.contexts.ClassContext;
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
-public class ConstraintAnnotationNotPresentException extends OValException
+public class ConstrainedAnnotationNotPresentException extends OValException
 {
 	private static final long serialVersionUID = 1L;
 
 	private final ClassContext classContext;
 
-	public ConstraintAnnotationNotPresentException(final String message,
+	public ConstrainedAnnotationNotPresentException(final String message,
 			final ClassContext classContext)
 	{
 		super(message);

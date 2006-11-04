@@ -23,7 +23,7 @@ import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.MethodParameterContext;
-import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
+import net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
@@ -140,7 +140,7 @@ public class AddingConstraintsTest extends TestCase
 				fail();
 			}
 		}
-		catch (ConstraintAnnotationNotPresentException e)
+		catch (ConstrainedAnnotationNotPresentException e)
 		{
 			fail();
 		}
@@ -204,7 +204,7 @@ public class AddingConstraintsTest extends TestCase
 				fail();
 			}
 		}
-		catch (ConstraintAnnotationNotPresentException e)
+		catch (ConstrainedAnnotationNotPresentException e)
 		{
 			fail();
 		}

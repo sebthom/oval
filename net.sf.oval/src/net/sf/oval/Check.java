@@ -44,11 +44,11 @@ public interface Check extends Serializable
 	 * This method implements the validation logic
 	 * 
 	 * @param validatedObject the object to validate the value against
-	 * @param value the property/parameter to validate
-	 * @param context the validation context
-	 * @return true if the property/parameter meets the check
+	 * @param validatedValue the value to validate
+	 * @param context the validation context (e.g. a field, a constructor parameter or a method parameter)
+	 * @return true if the value satisfies the checked constraint
 	 */
-	boolean isSatisfied(Object validatedObject, Object value, OValContext context);
+	boolean isSatisfied(Object validatedObject, Object validatedValue, OValContext context);
 
 	/**
 	 * sets the default message is displayed if a corresponding message key

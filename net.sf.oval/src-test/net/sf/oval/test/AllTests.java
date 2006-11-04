@@ -33,7 +33,7 @@ public class AllTests
 		 */
 		suite.addTestSuite(net.sf.oval.test.validator.AddingConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.FieldConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
@@ -46,6 +46,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.enforcer.AddingConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.ApplyFieldConstraintsToParametersTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.ApplyFieldConstraintsToSetterTest.class);
+		suite.addTestSuite(net.sf.oval.test.enforcer.ConstraintSetTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.CustomConstraintMessageTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.InnerClassTest.class);

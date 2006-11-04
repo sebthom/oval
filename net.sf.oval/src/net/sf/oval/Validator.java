@@ -23,19 +23,20 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import net.sf.oval.collections.CollectionFactory;
+import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.AssertValidCheck;
-import net.sf.oval.constraints.FieldConstraintsCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.AccessingFieldValueFailedException;
-import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
-import net.sf.oval.exceptions.FieldNotFoundException;
+import net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
+import net.sf.oval.exceptions.UndefinedConstraintSetException;
 import net.sf.oval.utils.ThreadLocalList;
 
 /**
@@ -44,15 +45,20 @@ import net.sf.oval.utils.ThreadLocalList;
  */
 public final class Validator
 {
+	private final static Logger LOG = Logger.getLogger(Validator.class.getName());
+
 	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
-	private final WeakHashMap<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
+	private final WeakHashMap<Class, ClassConfiguration> checksByClass = new WeakHashMap<Class, ClassConfiguration>();
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
 	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory.INSTANCE
 			.createMap(8);
 
 	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
+
+	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
+			.createMap();
 
 	/**
 	 * public constructor
@@ -69,13 +75,13 @@ public final class Validator
 	 * @param constructor
 	 * @param parameterIndex 0 = first parameter
 	 * @param check
-	 * @throws ConstraintAnnotationNotPresentException
+	 * @throws ConstrainedAnnotationNotPresentException
 	 */
 	public void addCheck(final Constructor constructor, final int parameterIndex, final Check check)
-			throws ConstraintAnnotationNotPresentException
+			throws ConstrainedAnnotationNotPresentException
 	{
 		final Class clazz = constructor.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
+		final ClassConfiguration checks = getClassConfig(clazz);
 		checks.addCheck(constructor, parameterIndex, check);
 	}
 
@@ -88,7 +94,7 @@ public final class Validator
 	public void addCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
+		final ClassConfiguration checks = getClassConfig(clazz);
 		checks.addCheck(field, check);
 	}
 
@@ -98,13 +104,13 @@ public final class Validator
 	 * @param method
 	 * @param parameterIndex 0 = first parameter
 	 * @param check
-	 * @throws ConstraintAnnotationNotPresentException
+	 * @throws ConstrainedAnnotationNotPresentException
 	 */
 	public void addCheck(final Method method, final int parameterIndex, final Check check)
-			throws ConstraintAnnotationNotPresentException
+			throws ConstrainedAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
+		final ClassConfiguration checks = getClassConfig(clazz);
 		checks.addCheck(method, parameterIndex, check);
 	}
 
@@ -132,8 +138,8 @@ public final class Validator
 		return true;
 	}
 
-	private void checkConstraint(List<ConstraintViolation> violations, Check check,
-			Object validatedObject, Object valueToValidate, OValContext context)
+	private void checkConstraint(final List<ConstraintViolation> violations, final Check check,
+			final Object validatedObject, final Object valueToValidate, final OValContext context)
 	{
 
 		/*
@@ -158,107 +164,63 @@ public final class Validator
 		/*
 		 * special handling of the FieldConstraints constraint
 		 */
-		if (check instanceof FieldConstraintsCheck)
+		if (check instanceof AssertConstraintSetCheck)
 		{
-			// the name of the field whose constraints shall be used
-			String fieldName = ((FieldConstraintsCheck) check).getFieldName();
-
-			// the lowest class that is expected to declare the field (or one of its super classes)
-			Class targetClass = validatedObject.getClass();
-
-			/*
-			 * adjust the targetClass based on the validation context
-			 */
-			if (context instanceof ConstructorParameterContext)
-			{
-				// the class declaring the field must either be the class declaring the constructor or one of its super classes
-				targetClass = ((ConstructorParameterContext) context).getConstructor()
-						.getDeclaringClass();
-			}
-			else if (context instanceof MethodParameterContext)
-			{
-				// the class declaring the field must either be the class declaring the method or one of its super classes
-				targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
-			}
-			else if (context instanceof MethodReturnValueContext)
-			{
-				// the class declaring the field must either be the class declaring the getter or one of its super classes
-				targetClass = ((MethodReturnValueContext) context).getGetter().getDeclaringClass();
-			}
-
-			/*
-			 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
-			 */
-			if (fieldName == null || fieldName.length() == 0)
+			final AssertConstraintSetCheck assertConstraintSetCheck = (AssertConstraintSetCheck) check;
+			Class targetClass = assertConstraintSetCheck.getSource();
+			if (targetClass == Object.class)
 			{
 				if (context instanceof ConstructorParameterContext)
 				{
-					fieldName = ((ConstructorParameterContext) context).getParameterName();
+					targetClass = ((ConstructorParameterContext) context).getConstructor()
+							.getDeclaringClass();
+				}
+				else if (context instanceof FieldContext)
+				{
+					targetClass = ((FieldContext) context).getField().getDeclaringClass();
 				}
 				else if (context instanceof MethodParameterContext)
 				{
-					fieldName = ((MethodParameterContext) context).getParameterName();
+					targetClass = ((MethodParameterContext) context).getMethod()
+							.getDeclaringClass();
 				}
 				else if (context instanceof MethodReturnValueContext)
 				{
-					/*
-					 * calculate the fieldName based on the getXXX isXXX style getter method name
-					 */
-					fieldName = ((MethodReturnValueContext) context).getGetter().getName();
-
-					if (fieldName.startsWith("get") && fieldName.length() > 3)
-					{
-						fieldName = fieldName.substring(3);
-						if (fieldName.length() == 1)
-							fieldName = fieldName.toLowerCase();
-						else
-							fieldName = Character.toLowerCase(fieldName.charAt(0))
-									+ fieldName.substring(1);
-					}
-					else if (fieldName.startsWith("is") && fieldName.length() > 2)
-					{
-						fieldName = fieldName.substring(2);
-						if (fieldName.length() == 1)
-							fieldName = fieldName.toLowerCase();
-						else
-							fieldName = Character.toLowerCase(fieldName.charAt(0))
-									+ fieldName.substring(1);
-					}
+					targetClass = ((MethodReturnValueContext) context).getGetter()
+							.getDeclaringClass();
 				}
-			}
-
-			/*
-			 * find the field based on fieldName and targetClass
-			 */
-			Field field = null;
-			for (Class fieldClass = targetClass; field == null
-					&& fieldClass.getClass() != Object.class;)
-			{
-				try
+				else
 				{
-					field = fieldClass.getDeclaredField(fieldName);
-				}
-				catch (final NoSuchFieldException ex)
-				{
-					fieldClass = fieldClass.getSuperclass();
+					//TODO
+					return;
 				}
 			}
 
-			if (field == null)
+			final ClassConfiguration cc = getClassConfig(targetClass);
+			final String constraintSetId = assertConstraintSetCheck.getId();
+
+			ConstraintSet cs = cc.constraintSetsByShortId.get(constraintSetId);
+			if (cs == null)
 			{
-				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <"
-						+ targetClass + "> or its super classes.");
+				cs = constraintSetsById.get(constraintSetId);
+			}
+			if (cs == null)
+			{
+				throw new UndefinedConstraintSetException("No constraint set with id "
+						+ constraintSetId + " defined.");
 			}
 
-			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-			final Set<Check> checks = cc.checksByField.get(field);
-			if (checks != null)
+			Set<Check> referencedChecks = cs.getChecks(this);
+
+			if (referencedChecks != null)
 			{
-				for (final Check check2 : checks)
+				for (final Check referencedCheck : referencedChecks)
 				{
-					checkConstraint(violations, check2, validatedObject, valueToValidate, context);
+					checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
+							context);
 				}
 			}
+			return;
 		}
 
 		/*
@@ -272,23 +234,32 @@ public final class Validator
 		}
 	}
 
-	private ClassChecks getClassChecks(final Class clazz)
+	ClassConfiguration getClassConfig(final Class clazz)
 	{
-		ClassChecks checks = checksByClass.get(clazz);
-		if (checks == null)
+		synchronized (checksByClass)
 		{
-			synchronized (checksByClass)
+			ClassConfiguration checks = checksByClass.get(clazz);
+			if (checks == null)
 			{
-				checks = checksByClass.get(clazz);
+				checks = new ClassConfiguration(clazz, this);
 
-				if (checks == null)
+				// register the constraint set definitions in a global map
+				for (final ConstraintSet cs : checks.constraintSetsByShortId.values())
 				{
-					checks = new ClassChecks(clazz, this);
+					if (constraintSetsById.containsKey(cs.id))
+					{
+						LOG.warning("Another constraint set with the same fully qualified id "
+								+ cs.id + " has already been defined.");
+						//TODO what to do?
+					}
+					else
+						constraintSetsById.put(cs.id, cs);
 				}
-				checksByClass.put(clazz, checks);
+
 			}
+			checksByClass.put(clazz, checks);
+			return checks;
 		}
-		return checks;
 	}
 
 	private Object getFieldValue(final Object validatedObject, final Field field)
@@ -334,7 +305,7 @@ public final class Validator
 	 * @param object
 	 * @return
 	 */
-	private boolean isCurrentlyValidated(Object object)
+	private boolean isCurrentlyValidated(final Object object)
 	{
 		return currentlyValidatedObjects.get().contains(object);
 	}
@@ -345,14 +316,14 @@ public final class Validator
 	 * @param constructor
 	 * @param parameterIndex 0 = first parameter
 	 * @param check
-	 * @throws ConstraintAnnotationNotPresentException
+	 * @throws ConstrainedAnnotationNotPresentException
 	 */
 	public void removeCheck(final Constructor constructor, final int parameterIndex,
-			final Check check) throws ConstraintAnnotationNotPresentException
+			final Check check) throws ConstrainedAnnotationNotPresentException
 	{
 		final Class clazz = constructor.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
-		checks.removeCheck(constructor, parameterIndex, check);
+		final ClassConfiguration cc = getClassConfig(clazz);
+		cc.removeCheck(constructor, parameterIndex, check);
 	}
 
 	/**
@@ -364,8 +335,8 @@ public final class Validator
 	public void removeCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
-		checks.removeCheck(field, check);
+		final ClassConfiguration cc = getClassConfig(clazz);
+		cc.removeCheck(field, check);
 	}
 
 	/**
@@ -374,13 +345,13 @@ public final class Validator
 	 * @param method
 	 * @param parameterIndex 0 = first parameter
 	 * @param check
-	 * @throws ConstraintAnnotationNotPresentException
+	 * @throws ConstrainedAnnotationNotPresentException
 	 */
 	public void removeCheck(final Method method, final int parameterIndex, final Check check)
-			throws ConstraintAnnotationNotPresentException
+			throws ConstrainedAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
+		final ClassConfiguration checks = getClassConfig(clazz);
 		checks.removeCheck(method, parameterIndex, check);
 	}
 
@@ -433,7 +404,7 @@ public final class Validator
 	/**
 	 * @param parameterNameResolver the parameterNameResolver to set
 	 */
-	public void setParameterNameResolver(ParameterNameResolver parameterNameResolver)
+	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
 	{
 		this.parameterNameResolver = parameterNameResolver;
 	}
@@ -467,7 +438,7 @@ public final class Validator
 	List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor constructor, final Object[] parameters)
 	{
-		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
+		final ClassConfiguration cc = getClassConfig(constructor.getDeclaringClass());
 
 		final Map<Integer, Set<Check>> parameterChecks = cc.checksByConstructorParameter
 				.get(constructor);
@@ -498,7 +469,7 @@ public final class Validator
 	private void validateField(final Object validatedObject, final Field field,
 			final List<ConstraintViolation> violations)
 	{
-		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+		final ClassConfiguration cc = getClassConfig(field.getDeclaringClass());
 
 		final Set<Check> checks = cc.checksByField.get(field);
 
@@ -517,7 +488,7 @@ public final class Validator
 	private void validateGetter(final Object validatedObject, final Method getter,
 			final List<ConstraintViolation> violations)
 	{
-		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
+		final ClassConfiguration cc = getClassConfig(getter.getDeclaringClass());
 
 		final Set<Check> checks = cc.checksByGetter.get(getter);
 
@@ -546,7 +517,7 @@ public final class Validator
 	List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
 			final Method method, final Object[] parameters)
 	{
-		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+		final ClassConfiguration cc = getClassConfig(method.getDeclaringClass());
 
 		final Map<Integer, Set<Check>> parameterChecks = cc.checksByMethodParameter.get(method);
 
@@ -583,7 +554,7 @@ public final class Validator
 	List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
 			final Method method, final Object methodReturnValue)
 	{
-		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+		final ClassConfiguration cc = getClassConfig(method.getDeclaringClass());
 
 		final Set<Check> checks = cc.checksByMethod.get(method);
 
@@ -600,12 +571,16 @@ public final class Validator
 		return violations.size() == 0 ? null : violations;
 	}
 
+	/**
+	 * validate validatedObject based on the constraints of the given clazz
+	 */
 	private void validateObject(final Object validatedObject, final Class< ? > clazz,
 			final List<ConstraintViolation> violations)
 	{
+		// abort if the root class is reached
 		if (clazz == Object.class) return;
 
-		final ClassChecks cc = getClassChecks(clazz);
+		final ClassConfiguration cc = getClassConfig(clazz);
 
 		// validate field constraints
 		for (final Field field : cc.constrainedFields)

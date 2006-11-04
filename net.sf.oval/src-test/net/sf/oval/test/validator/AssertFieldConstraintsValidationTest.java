@@ -29,7 +29,7 @@ import net.sf.oval.constraints.RegExCheck;
  * @author Sebastian Thomschke
  * @version $Revision: 1.1 $
  */
-public class FieldConstraintsValidationTest extends TestCase
+public class AssertFieldConstraintsValidationTest extends TestCase
 {
 	private final static String REGEX_ZIP_CODE = "^[0-9]*$";
 

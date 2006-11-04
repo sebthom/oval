@@ -20,8 +20,8 @@ import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.AssertTrue;
 import net.sf.oval.constraints.AssertTrueCheck;
-import net.sf.oval.constraints.FieldConstraints;
-import net.sf.oval.constraints.FieldConstraintsCheck;
+import net.sf.oval.constraints.AssertFieldConstraints;
+import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotEmpty;
@@ -75,31 +75,31 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			return isValid;
 		}
 
-		public void setDummyFirstName(@FieldConstraints("firstName")
+		public void setDummyFirstName(@AssertFieldConstraints("firstName")
 		String dummyFirstName)
 		{
 		// doing interesting stuff here
 		}
 
-		public void setFirstName(@FieldConstraints
+		public void setFirstName(@AssertFieldConstraints
 		String firstName)
 		{
 			this.firstName = firstName;
 		}
 
-		public void setLastName(@FieldConstraints
+		public void setLastName(@AssertFieldConstraints
 		String lastName)
 		{
 			this.lastName = lastName;
 		}
 
-		public void setValid(@FieldConstraints
+		public void setValid(@AssertFieldConstraints
 		boolean isValid)
 		{
 			this.isValid = isValid;
 		}
 
-		public void setZipCode(@FieldConstraints
+		public void setZipCode(@AssertFieldConstraints
 		String zipCode)
 		{
 			this.zipCode = zipCode;
@@ -171,7 +171,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			{
 				final Method setter = p.getClass().getMethod("setZipCode2",
 						new Class[]{String.class});
-				final FieldConstraintsCheck check = new FieldConstraintsCheck();
+				final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 				TestEnforcerAspect.validator.addCheck(setter, 0, check);
 				p.setZipCode2("dffd34");
 				assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
@@ -190,7 +190,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			{
 				final Method setter = p.getClass().getMethod("setZipCode2",
 						new Class[]{String.class});
-				final FieldConstraintsCheck check = new FieldConstraintsCheck();
+				final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 				check.setFieldName("firstName");
 				TestEnforcerAspect.validator.addCheck(setter, 0, check);
 				p.setZipCode2("dffd34");

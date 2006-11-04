@@ -48,8 +48,11 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (Exception e)
 		{
-			LOG.log(Level.WARNING, "Cannot determine constraint error message based on annotation "
-					+ constraintClazz.getName(), e);
+			if (LOG.isLoggable(Level.FINE))
+				LOG.log(Level.FINE,
+						"Cannot determine constraint error message based on annotation "
+								+ constraintClazz.getName(), e);
+			message = constraintClazz.getName();
 		}
 	}
 

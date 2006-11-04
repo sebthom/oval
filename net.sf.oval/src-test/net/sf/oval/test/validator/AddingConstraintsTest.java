@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.NotNullCheck;
-import net.sf.oval.exceptions.ConstraintAnnotationNotPresentException;
+import net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException;
 
 /**
  * @author Sebastian Thomschke
@@ -64,7 +64,7 @@ public class AddingConstraintsTest extends TestCase
 			validator.addCheck(constructor, 0, notNullCheck);
 			fail();
 		}
-		catch (ConstraintAnnotationNotPresentException e)
+		catch (ConstrainedAnnotationNotPresentException e)
 		{
 			//expected
 		}
@@ -130,7 +130,7 @@ public class AddingConstraintsTest extends TestCase
 			validator.addCheck(setter, 0, notNullCheck);
 			fail();
 		}
-		catch (ConstraintAnnotationNotPresentException e)
+		catch (ConstrainedAnnotationNotPresentException e)
 		{
 			//expected
 		}

@@ -7,22 +7,28 @@
 + added pluggable support for alternative collection implementations
 + added support for Javolution Collection Classes (http://javolution.org/)
 + changed the ant script to include the JUnit test cases in the sources zip file
-~ net.sf.oval.AbstractAnnotationCheck: class AbstractCheck renamed to AbstractAnnotationCheck
 - fixed some serialization related issues
 - fixed NPE in InstanceOfCheck
++ added the concept of constraint sets
+	+ added @net.sf.oval.annotations.DefineConstraintSet
+	+ added @net.sf.oval.constraints.AssertConstraintSet
+
+Refactoring:
+* net.sf.oval.ClassConfig: class ClassChecks renamed to ClassConfig
+* net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException: class ConstraintAnnotationNotPresentException renamed to ConstrainedAnnotationNotPresentException
 
 2006-08-04 v0.6
 ===============
 + constraints programmatically specified during runtime via net.sf.oval.Validator.addCheck(...) can now be removed using net.sf.oval.Validator.removeCheck(...)
 + added french translation for the violation messages of the built-in constraints (provided by mimil)
 + added @InstanceOf constraint
-~ simplified annotation check loading by introducing a check parameter to the @Constraint annotation that is used to specify the constraint check class
-~ refactored AspectJ related code into separate classes in the package net.sf.oval.aspectj to potentially support other AOP libraries later
-~ made the code to resolve the variables names of constructor and method parameters configurable via the ParameterNameResolver interface and the Validator.setParameterNameResolver(...) method
+* simplified annotation check loading by introducing a check parameter to the @Constraint annotation that is used to specify the constraint check class
+* refactored AspectJ related code into separate classes in the package net.sf.oval.aspectj to potentially support other AOP libraries later
+* made the code to resolve the variables names of constructor and method parameters configurable via the ParameterNameResolver interface and the Validator.setParameterNameResolver(...) method
 + added @AssertValid constraint
-~ moved @FieldConstraints from package net.sf.annotations to net.sf.constraints
-~ @FieldConstraints constraint now also considers constraints added to fields during runtime via Validator.addCheck(...)
-~ changed all static methods of Validator and ConstraintsEnforcer to non-static to allow multiple validator instances at the same time being configured differently
+* moved @FieldConstraints from package net.sf.annotations to net.sf.constraints
+* @FieldConstraints constraint now also considers constraints added to fields during runtime via Validator.addCheck(...)
+* changed all static methods of Validator and ConstraintsEnforcer to non-static to allow multiple validator instances at the same time being configured differently
 + introduced an ignoreIfNull parameter for the @ValidateWithMethod annotation
 * net.sf.oval.annotations.PreValidateThis: annotation @PreValidateObject renamed to @PreValidateThis
 * net.sf.oval.annotations.PostValidateThis: annotation @PostValidateObject renamed to @PostValidateThis

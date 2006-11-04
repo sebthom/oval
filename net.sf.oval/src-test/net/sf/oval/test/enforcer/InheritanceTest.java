@@ -14,7 +14,7 @@ package net.sf.oval.test.enforcer;
 
 import junit.framework.TestCase;
 import net.sf.oval.annotations.Constrained;
-import net.sf.oval.constraints.FieldConstraints;
+import net.sf.oval.constraints.AssertFieldConstraints;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
@@ -53,7 +53,7 @@ public class InheritanceTest extends TestCase
 		/**
 		 * @param name the name to set
 		 */
-		public void setName2(@FieldConstraints
+		public void setName2(@AssertFieldConstraints
 		String name)
 		{
 			this.name = name;

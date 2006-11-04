@@ -19,25 +19,19 @@ import net.sf.oval.contexts.OValContext;
  * @author Sebastian Thomschke
  * @version $Revision: 1.6 $
  */
-public class FieldConstraintsCheck extends AbstractAnnotationCheck<FieldConstraints>
+public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertConstraintSet>
 {
 	private static final long serialVersionUID = 1L;
-	
-	private String fieldName;
+
+	private String id;
+	private Class source;
 
 	@Override
-	public void configure(final FieldConstraints constraintAnnotation)
+	public void configure(final AssertConstraintSet constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setFieldName(constraintAnnotation.value());
-	}
-
-	/**
-	 * @return the fieldName
-	 */
-	public String getFieldName()
-	{
-		return fieldName;
+		setId(constraintAnnotation.id());
+		setSource(constraintAnnotation.source());
 	}
 
 	/**
@@ -50,11 +44,24 @@ public class FieldConstraintsCheck extends AbstractAnnotationCheck<FieldConstrai
 		return true;
 	}
 
-	/**
-	 * @param fieldName the fieldName to set
-	 */
-	public void setFieldName(final String fieldName)
+	public String getId()
 	{
-		this.fieldName = fieldName;
+		return id;
 	}
+
+	public void setId(final String id)
+	{
+		this.id = id;
+	}
+
+	public Class getSource()
+	{
+		return source;
+	}
+
+	public void setSource(final Class source)
+	{
+		this.source = source;
+	}
+
 }

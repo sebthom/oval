@@ -345,7 +345,7 @@ public class BusinessObject
 
     public void setAlternativeName(@FieldConstraints(&quot;name&quot;) String altName)
     {
-        this.alternativeName = name;
+        this.alternativeName = altName;
     }
 
     ...
@@ -615,20 +615,20 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
 
   <section>
 
-    <title>Creating custom constraints</title>
+    <title>Creating custom annotation based constraints</title>
 
-    <para>Developing custom constraints is fairly easy. All you need to 
+    <para>Developing custom annotation based constraints is fairly easy. All you need to 
     do is:</para>
 
     <orderedlist>
 
       <listitem>
 
-        <para>Create a check class that implements <command>
-        net.sf.oval.AnnotationCheck</command> or extends <command>
-        net.sf.oval.AbstractCheck</command>.</para>
+        <para>Create a constraint check class that implements <command>
+        net.sf.oval.AnnotationConstraintCheck</command> or extends <command>
+        net.sf.oval.AbstractAnnotationConstraintCheck</command>.</para>
 
-        <programlisting>public class UpperCaseCheck extends AbstractCheck&lt;UpperCase&gt; 
+        <programlisting>public class UpperCaseCheck extends AbstractAnnotationConstraintCheck&lt;UpperCase&gt; 
 { 
     public boolean isValid(Object validatable, Object value) 
     {
