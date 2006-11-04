@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
+import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
@@ -35,6 +36,7 @@ import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException;
+import net.sf.oval.exceptions.FieldNotFoundException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
 import net.sf.oval.utils.ThreadLocalList;
@@ -186,13 +188,8 @@ public final class Validator
 				}
 				else if (context instanceof MethodReturnValueContext)
 				{
-					targetClass = ((MethodReturnValueContext) context).getGetter()
+					targetClass = ((MethodReturnValueContext) context).getMethod()
 							.getDeclaringClass();
-				}
-				else
-				{
-					//TODO
-					return;
 				}
 			}
 
@@ -221,6 +218,112 @@ public final class Validator
 				}
 			}
 			return;
+		}
+
+		/*
+		 * special handling of the FieldConstraints constraint
+		 */
+		if (check instanceof AssertFieldConstraintsCheck)
+		{
+			// the name of the field whose constraints shall be used
+			String fieldName = ((AssertFieldConstraintsCheck) check).getFieldName();
+
+			// the lowest class that is expected to declare the field (or one of its super classes)
+			Class targetClass = validatedObject.getClass();
+
+			/*
+			 * adjust the targetClass based on the validation context
+			 */
+			if (context instanceof ConstructorParameterContext)
+			{
+				// the class declaring the field must either be the class declaring the constructor or one of its super classes
+				targetClass = ((ConstructorParameterContext) context).getConstructor()
+						.getDeclaringClass();
+			}
+			else if (context instanceof MethodParameterContext)
+			{
+				// the class declaring the field must either be the class declaring the method or one of its super classes
+				targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
+			}
+			else if (context instanceof MethodReturnValueContext)
+			{
+				// the class declaring the field must either be the class declaring the getter or one of its super classes
+				targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
+			}
+
+			/*
+			 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
+			 */
+			if (fieldName == null || fieldName.length() == 0)
+			{
+				if (context instanceof ConstructorParameterContext)
+				{
+					fieldName = ((ConstructorParameterContext) context).getParameterName();
+				}
+				else if (context instanceof MethodParameterContext)
+				{
+					fieldName = ((MethodParameterContext) context).getParameterName();
+				}
+				else if (context instanceof MethodReturnValueContext)
+				{
+					/*
+					 * calculate the fieldName based on the getXXX isXXX style getter method name
+					 */
+					fieldName = ((MethodReturnValueContext) context).getMethod().getName();
+
+					if (fieldName.startsWith("get") && fieldName.length() > 3)
+					{
+						fieldName = fieldName.substring(3);
+						if (fieldName.length() == 1)
+							fieldName = fieldName.toLowerCase();
+						else
+							fieldName = Character.toLowerCase(fieldName.charAt(0))
+									+ fieldName.substring(1);
+					}
+					else if (fieldName.startsWith("is") && fieldName.length() > 2)
+					{
+						fieldName = fieldName.substring(2);
+						if (fieldName.length() == 1)
+							fieldName = fieldName.toLowerCase();
+						else
+							fieldName = Character.toLowerCase(fieldName.charAt(0))
+									+ fieldName.substring(1);
+					}
+				}
+			}
+
+			/*
+			 * find the field based on fieldName and targetClass
+			 */
+			Field field = null;
+			for (Class fieldClass = targetClass; field == null
+					&& fieldClass.getClass() != Object.class;)
+			{
+				try
+				{
+					field = fieldClass.getDeclaredField(fieldName);
+				}
+				catch (final NoSuchFieldException ex)
+				{
+					fieldClass = fieldClass.getSuperclass();
+				}
+			}
+
+			if (field == null)
+			{
+				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <"
+						+ targetClass + "> or its super classes.");
+			}
+
+			final ClassConfiguration cc = getClassConfig(field.getDeclaringClass());
+			final Set<Check> referencedChecks = cc.checksByField.get(field);
+			if (referencedChecks != null)
+			{
+				for (final Check check2 : referencedChecks)
+				{
+					checkConstraint(violations, check2, validatedObject, valueToValidate, context);
+				}
+			}
 		}
 
 		/*
