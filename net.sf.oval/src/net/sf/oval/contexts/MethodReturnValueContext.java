@@ -24,24 +24,24 @@ public class MethodReturnValueContext extends OValContext
 {
 	private static final long serialVersionUID = 1L;
 
-	private final SerializableMethod getter;
+	private final SerializableMethod method;
 
-	public MethodReturnValueContext(final Method getter)
+	public MethodReturnValueContext(final Method method)
 	{
-		this.getter = SerializableMethod.getInstance(getter);
+		this.method = SerializableMethod.getInstance(method);
 	}
 
 	/**
 	 * @return Returns the getter.
 	 */
-	public Method getGetter()
+	public Method getMethod()
 	{
-		return getter.getMethod();
+		return method.getMethod();
 	}
 
 	public String toString()
 	{
-		return getter.getDeclaringClass().getName() + "." + getter.getName() + "()";
+		return method.getDeclaringClass().getName() + "." + method.getName() + "()";
 	}
 
 }
