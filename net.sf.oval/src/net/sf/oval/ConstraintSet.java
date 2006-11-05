@@ -13,21 +13,18 @@ import net.sf.oval.exceptions.OValException;
  */
 class ConstraintSet
 {
-	/**
-	 * the short id of the constraint set
-	 */
-	String shortId;
+	protected Set<Check> checks;
 
 	/**
-	 * the fully qualified id of the constraint set
+	 * the id of the constraint set
 	 */
-	String id;
+	public String id;
 
 	/**
 	 * @return Returns a set of constraint checks associated with this constraint set
 	 */
-	Set<Check> getChecks(final Validator validator) throws OValException
+	public Set<Check> getChecks(final Validator validator) throws OValException
 	{
-		return null;
+		return checks;
 	}
 }
