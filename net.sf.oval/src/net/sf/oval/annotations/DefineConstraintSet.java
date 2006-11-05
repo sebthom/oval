@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
 public @interface DefineConstraintSet
 {
 	/**
-	 * The short id of the constraint set.<br>
-	 * The fully qualified id is <code>classname + "." + short</code>
-	 * where the classname is the name of the class in which this annotation is used.
+	 * The local id of the constraint set.<br>
+	 * The constraint set id is <code>[class name] + "." + [local id]</code>
+	 * where [class name] is the name of the class in which this annotation is used.
 	 *  
 	 * @return
 	 */

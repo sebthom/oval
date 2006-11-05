@@ -41,8 +41,8 @@ public @interface AssertConstraintSet
 	/**
 	 * The id of the constraint set to apply here:<br>
 	 * <ul>
-	 * <li>If the constraint set was defined in the same class, then the short id can be used.<br>
-	 * <li>If the constraint set was defined in another class and this class is specified in the source parameter, then the short id can be used too.<br>
+	 * <li>If the constraint set was defined in the same class, then the local id can be used.<br>
+	 * <li>If the constraint set was defined in another class and this class is specified in the source parameter, then the local id can be used too.<br>
 	 * <li>In any other case the fully qualified id of the constraint set needs to be used.
 	 * </ul>
 	 */
