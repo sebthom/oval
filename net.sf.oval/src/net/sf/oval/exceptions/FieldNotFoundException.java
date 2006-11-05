@@ -16,9 +16,14 @@ package net.sf.oval.exceptions;
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
-public class FieldNotFoundException extends OValException
+public class FieldNotFoundException extends ReflectionException
 {
 	private static final long serialVersionUID = 1L;
+
+	public FieldNotFoundException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 
 	public FieldNotFoundException(final String message)
 	{
