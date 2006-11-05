@@ -52,8 +52,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 				LOG.log(Level.FINE,
 						"Cannot determine constraint error message based on annotation "
 								+ constraintClazz.getName(), e);
-			message = constraintClazz.getName();
 		}
+		if (message == null) message = constraintClazz.getName() + ".violated";
 	}
 
 	public ConstraintAnnotation getConstraintAnnotation()
@@ -63,6 +63,18 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 
 	public String getMessage()
 	{
+		/*
+		 * if the message has not been initialized (which might be the case when using XML configuration),
+		 * construct the string based on this class' name minus the appendix "Check" plus the appendix ".violated"
+		 */
+		if (message == null)
+		{
+			final String className = getClass().getName();
+			if (className.endsWith("Check"))
+				message = className.substring(0, getClass().getName().length() - 5) + ".violated";
+			else
+				message = className + ".violated";
+		}
 		return message;
 	}
 

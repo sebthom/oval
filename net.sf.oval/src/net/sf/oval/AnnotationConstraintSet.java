@@ -21,6 +21,11 @@ class AnnotationConstraintSet extends ConstraintSet
 	 */
 	OValContext context;
 
+	/**
+	 * the local id of the constraint set
+	 */
+	String localId;
+
 	@Override
 	public Set<Check> getChecks(final Validator validator) throws OValException
 	{
@@ -28,7 +33,7 @@ class AnnotationConstraintSet extends ConstraintSet
 		{
 			final FieldContext fc = (FieldContext) context;
 			final Field f = fc.getField();
-			final ClassConfiguration cf = validator.getClassConfig(f.getDeclaringClass());
+			final ClassChecks cf = validator.getClassChecks(f.getDeclaringClass());
 
 			// for performance reasons we are returning the internal set
 			return cf.checksByField.get(f);
