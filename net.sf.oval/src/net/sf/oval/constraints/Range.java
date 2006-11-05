@@ -39,7 +39,7 @@ public @interface Range
 	long max() default Long.MAX_VALUE;
 
 	/**
-	 * message to be used for the ContraintsViolatatedException
+	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */

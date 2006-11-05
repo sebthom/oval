@@ -42,7 +42,7 @@ public @interface ValidateWithMethod
 	boolean ignoreIfNull() default true;
 
 	/**
-	 * message to be used for the ContraintsViolatatedException
+	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */

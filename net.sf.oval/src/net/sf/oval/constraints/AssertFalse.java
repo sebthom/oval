@@ -35,7 +35,7 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 public @interface AssertFalse
 {
 	/**
-	 * message to be used for the ContraintsViolatatedException
+	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */

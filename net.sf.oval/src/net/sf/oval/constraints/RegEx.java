@@ -44,7 +44,7 @@ public @interface RegEx
 	int flags() default 0;
 
 	/**
-	 * message to be used for the ContraintsViolatatedException
+	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */

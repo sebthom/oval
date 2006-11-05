@@ -39,7 +39,7 @@ public @interface Size
 	int max() default Integer.MAX_VALUE;
 
 	/**
-	 * message to be used for the ContraintsViolatatedException
+	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */
