@@ -5,6 +5,10 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Sebastian Thomschke
+ *
+ */
 public final class ReflectionUtils
 {
 	private static final Logger LOG = Logger.getLogger(ReflectionUtils.class.getName());
@@ -73,7 +77,7 @@ public final class ReflectionUtils
 				}
 			}
 		}
-		
+
 		return field;
 	}
 
