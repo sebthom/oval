@@ -34,7 +34,7 @@ public class MethodParameterContext extends OValContext
 	{
 		this.method = SerializableMethod.getInstance(method);
 		this.parameterIndex = parameterIndex;
-		this.parameterName = parameterName;
+		this.parameterName = parameterName == null ? "param" + parameterIndex : parameterName;
 	}
 
 	/**
@@ -73,5 +73,4 @@ public class MethodParameterContext extends OValContext
 				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName
 						+ ")");
 	}
-
 }
