@@ -19,12 +19,9 @@ import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.DefineConstraintSet;
 import net.sf.oval.constraints.AssertConstraintSet;
 import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotEmptyCheck;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.constraints.RegEx;
-import net.sf.oval.constraints.RegExCheck;
 
 /**
  * @author Sebastian Thomschke
@@ -36,10 +33,10 @@ public class ConstraintSetTest extends TestCase
 	private class Person
 	{
 		@DefineConstraintSet("zipCode")
-		@NotNull
-		@Length(max = 6)
-		@NotEmpty
-		@RegEx(pattern = "^[0-9]*$")
+		@NotNull(message = "NOT_NULL")
+		@Length(max = 6, message = "LENGTH")
+		@NotEmpty(message = "NOT_EMPTY")
+		@RegEx(pattern = "^[0-9]*$", message = "REG_EX")
 		private String zipCode;
 
 		public String getZipCode()
@@ -85,21 +82,21 @@ public class ConstraintSetTest extends TestCase
 			p.setZipCode("1234567");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof LengthCheck);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("LENGTH"));
 			va.clear();
 
 			// test @NotEmpty
 			p.setZipCode("");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof NotEmptyCheck);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_EMPTY"));
 			va.clear();
 
 			// test @RegEx
 			p.setZipCode("dffd34");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof RegExCheck);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
 			va.clear();
 		}
 
@@ -115,21 +112,21 @@ public class ConstraintSetTest extends TestCase
 			p.setZipCode("1234567");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof LengthCheck);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("LENGTH"));
 			va.clear();
 
 			// test @NotEmpty
 			p.setZipCode("");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof NotEmptyCheck);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_EMPTY"));
 			va.clear();
 
 			// test @RegEx
 			p.setZipCode("dffd34");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof RegExCheck);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
 			va.clear();
 		}
 	}

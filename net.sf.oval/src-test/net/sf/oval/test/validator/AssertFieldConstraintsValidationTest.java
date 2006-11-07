@@ -18,12 +18,9 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotEmptyCheck;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.constraints.RegEx;
-import net.sf.oval.constraints.RegExCheck;
 
 /**
  * @author Sebastian Thomschke
@@ -42,9 +39,9 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		public String lastName;
 
 		@NotNull
-		@Length(max = 6)
-		@NotEmpty
-		@RegEx(pattern = REGEX_ZIP_CODE)
+		@Length(max = 6, message = "LENGTH")
+		@NotEmpty(message="NOT_EMPTY")
+		@RegEx(pattern = REGEX_ZIP_CODE, message = "REG_EX")
 		public String zipCode;
 	}
 
@@ -63,18 +60,18 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		p.zipCode = "1234567";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof LengthCheck);
+		assertTrue(violations.get(0).getMessage().equals("LENGTH"));
 
 		// test @NotEmpty
 		p.zipCode = "";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof NotEmptyCheck);
+		assertTrue(violations.get(0).getMessage().equals("NOT_EMPTY"));
 
 		// test @RegEx
 		p.zipCode = "dffd34";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof RegExCheck);
+		assertTrue(violations.get(0).getMessage().equals("REG_EX"));
 	}
 }

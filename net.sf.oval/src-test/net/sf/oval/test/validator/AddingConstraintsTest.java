@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.NotNullCheck;
-import net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException;
+import net.sf.oval.exceptions.InvalidConfigurationException;
 
 /**
  * @author Sebastian Thomschke
@@ -51,7 +51,7 @@ public class AddingConstraintsTest extends TestCase
 	 * try to programmatically add a NotNull constraint to the constructor parameter
 	 * this should fail since the class is not annotated with @Constrain and constructor parameter constraints are not enforced via the ValidationAspect
 	 */
-	public void testAddConstraintToConstructorParameter()
+	public void testAddConstraintToConstructorParameter() throws Exception
 	{
 		final Validator validator = new Validator();
 
@@ -59,65 +59,40 @@ public class AddingConstraintsTest extends TestCase
 		{
 			Constructor constructor = TestEntity.class
 					.getDeclaredConstructor(new Class<?>[]{String.class});
-			NotNullCheck notNullCheck = new NotNullCheck();
-			notNullCheck.setMessage("name must not be null");
-			validator.addCheck(constructor, 0, notNullCheck);
+			validator.addChecks(constructor, 0, new NotNullCheck());
 			fail();
 		}
-		catch (ConstrainedAnnotationNotPresentException e)
+		catch (InvalidConfigurationException e)
 		{
 			//expected
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (NoSuchMethodException e)
-		{
-			e.printStackTrace();
-			fail();
 		}
 	}
 
 	/**
 	 * programmatically add a NotNull constraint to the name field
 	 */
-	public void testAddConstraintToField()
+	public void testAddConstraintToField() throws Exception
 	{
 		final Validator validator = new Validator();
 
 		TestEntity entity = new TestEntity(null);
 		assertTrue(validator.validate(entity).size() == 0);
 
-		try
-		{
-			Field field = TestEntity.class.getDeclaredField("name");
-			NotNullCheck notNullCheck = new NotNullCheck();
-			notNullCheck.setMessage("name must not be null");
-			validator.addCheck(field, notNullCheck);
+		Field field = TestEntity.class.getDeclaredField("name");
+		NotNullCheck notNullCheck = new NotNullCheck();
+		notNullCheck.setMessage("NOT_NULL");
+		validator.addChecks(field, notNullCheck);
 
-			List<ConstraintViolation> violations = validator.validate(entity);
-			assertTrue(violations.size() == 1);
-			assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
+		List<ConstraintViolation> violations = validator.validate(entity);
+		assertTrue(violations.size() == 1);
+		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 	}
 
 	/**
 	 * try to programmatically add a NotNull constraint to the setter parameter
 	 * this should fail since the class is not annotated with @Constrain and constructor parameter constraints are not enforced via the ValidationAspect
 	 */
-	public void testAddConstraintToMethodParameter()
+	public void testAddConstraintToMethodParameter() throws Exception
 	{
 		final Validator validator = new Validator();
 
@@ -127,22 +102,12 @@ public class AddingConstraintsTest extends TestCase
 					.getDeclaredMethod("setName", new Class<?>[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
-			validator.addCheck(setter, 0, notNullCheck);
+			validator.addChecks(setter, 0, notNullCheck);
 			fail();
 		}
-		catch (ConstrainedAnnotationNotPresentException e)
+		catch (InvalidConfigurationException e)
 		{
 			//expected
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (NoSuchMethodException e)
-		{
-			e.printStackTrace();
-			fail();
 		}
 	}
 }

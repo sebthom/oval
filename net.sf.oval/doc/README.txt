@@ -3,9 +3,10 @@ Version $VERSION$
 http://oval.sf.net
 
 OVal is a generic Java 5 based object validation framework that uses 
-annotations to express constraints and AspectJ to handle automatic
-validation (programming by contract). It supports validation of class 
-fields as well as constructor and method parameters.
+annotations to express constraints and optionally AspectJ to handle 
+automatic validation (programming by contract). It supports validation
+of class fields, method return values, as well as constructor and method 
+parameters.
 
 =======================================
 

@@ -15,9 +15,7 @@ package net.sf.oval.test.enforcer;
 import junit.framework.TestCase;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
@@ -32,8 +30,8 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 
 		public String name;
 
-		@NotNull
-		@Length(max = 4)
+		@NotNull(message = "NOT_NULL")
+		@Length(max = 4, message = "LENGTH")
 		public String getName()
 		{
 			return name;
@@ -52,7 +50,7 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 		catch (ConstraintsViolatedException e)
 		{
 			assertTrue(e.getConstraintViolations().length == 1);
-			assertTrue(e.getConstraintViolations()[0].getCheck() instanceof NotNullCheck);
+			assertTrue(e.getConstraintViolations()[0].getMessage().equals("NOT_NULL"));
 		}
 
 		t.name = "testtest";
@@ -65,7 +63,7 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 		catch (ConstraintsViolatedException e)
 		{
 			assertTrue(e.getConstraintViolations().length == 1);
-			assertTrue(e.getConstraintViolations()[0].getCheck() instanceof LengthCheck);
+			assertTrue(e.getConstraintViolations()[0].getMessage().equals("LENGTH"));
 		}
 	}
 

@@ -18,9 +18,8 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.NotNullCheck;
+import net.sf.oval.exceptions.InvalidConfigurationException;
 
 /**
  * @author Sebastian Thomschke
@@ -30,16 +29,18 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 {
 	public static class TestEntity
 	{
-
 		public String name;
 
-		@NotNull
-		@Length(max = 4)
+		@NotNull(message = "NOT_NULL")
+		@Length(max = 4, message = "LENGTH")
 		public String getName()
 		{
 			return name;
 		}
+	}
 
+	public static class TestEntityInvalidConfig extends TestEntity
+	{
 		/**
 		 * the @NotNull annotation should lead to a warning by the ApiUsageAuditor
 		 */
@@ -62,17 +63,32 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 	public void testMethodReturnValueConstraintValidation()
 	{
 		final Validator validator = new Validator();
-		
-		final TestEntity t = new TestEntity();
 
-		List<ConstraintViolation> violations = validator.validate(t);
-		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
+		{
+			final TestEntity t = new TestEntity();
 
-		t.name = "wqerwqer";
-		violations = validator.validate(t);
-		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof LengthCheck);
+			List<ConstraintViolation> violations = validator.validate(t);
+			assertTrue(violations.size() == 1);
+			assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+
+			t.name = "wqerwqer";
+			violations = validator.validate(t);
+			assertTrue(violations.size() == 1);
+			assertTrue(violations.get(0).getMessage().equals("LENGTH"));
+		}
+
+		{
+			final TestEntityInvalidConfig t = new TestEntityInvalidConfig();
+
+			try
+			{
+				validator.validate(t);
+				fail();
+			}
+			catch (InvalidConfigurationException e)
+			{
+				// expected
+			}
+		}
 	}
-
 }

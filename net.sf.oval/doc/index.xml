@@ -743,24 +743,25 @@ public @interface UpperCase
     <para />
 
     <para>
+    
     <ulink url="http://www.sourceforge.net/"><inlinemediaobject><imageobject>
-    <imagedata depth="37"
-     fileref="http://sourceforge.net/sflogo.php?group_id=67542&amp;type=2"
-     format="PNG"
-     width="125"/></imageobject></inlinemediaobject></ulink> 
-    <ulink url="http://docbook.sourceforge.net/projects/xsl/">
-    <inlinemediaobject><imageobject><imagedata depth="40"
-     fileref="images/docbook.png" format="PNG"
-     width="128"/></imageobject></inlinemediaobject></ulink>
-    <ulink url="http://javolution.org">
-    <inlinemediaobject><imageobject><imagedata depth="32"
-     fileref="images/javolution.png" format="PNG"
-     width="144"/></imageobject></inlinemediaobject></ulink>    
+        <imagedata format="PNG" depth="37" width="125" fileref="images/sourceforge.png"/>
+    </imageobject></inlinemediaobject></ulink> 
+    
+    <ulink url="http://docbook.sourceforge.net/projects/xsl/"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="38" width="126" fileref="images/docbook.png" />
+    </imageobject></inlinemediaobject></ulink>
+    
+    <ulink url="http://javolution.org"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="32" width="144" fileref="images/javolution.png" />
+    </imageobject></inlinemediaobject></ulink>    
 
+    <ulink url="http://xstream.codehaus.org"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="37" width="116" fileref="images/xstream.png" />
+    </imageobject></inlinemediaobject></ulink>  
+    
     </para>
-
-    <para />
-
+    
   </section>
 
 </article>

@@ -16,7 +16,7 @@ package net.sf.oval.exceptions;
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
-public class UndefinedConstraintSetException extends OValException
+public class UndefinedConstraintSetException extends InvalidConfigurationException
 {
 	private static final long serialVersionUID = 1L;
 

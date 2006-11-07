@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintsEnforcer;
-import net.sf.oval.ParameterNameResolverDefaultImpl;
+import net.sf.oval.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.Validator;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.PostValidateThis;
@@ -51,7 +51,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 		this.validator = constraintsEnforcer.getValidator();
 
 		// in case the this ConstraintsEnforcerAspect is used we can also use the ParameterNameResolver that utilizes the AspectJ library
-		if (validator.getParameterNameResolver() instanceof ParameterNameResolverDefaultImpl)
+		if (validator.getParameterNameResolver() instanceof ParameterNameResolverEnumerationImpl)
 		{
 			validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 		}
@@ -83,7 +83,8 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 	/*
 	 * ADVICES
-	 */
+	 */ 
+	declare parents: (@Constrained *) implements ConstraintsEnforcementIsEnabled;
 
 	/**
 	 * constructor parameters validation

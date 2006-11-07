@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,9 +24,16 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 import net.sf.oval.collections.CollectionFactory;
+import net.sf.oval.configuration.AnnotationsConfigurer;
+import net.sf.oval.configuration.ClassConfiguration;
+import net.sf.oval.configuration.Configurer;
+import net.sf.oval.configuration.ConstraintSetConfiguration;
+import net.sf.oval.configuration.ConstructorConfiguration;
+import net.sf.oval.configuration.FieldConfiguration;
+import net.sf.oval.configuration.MethodConfiguration;
+import net.sf.oval.configuration.OValConfiguration;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
@@ -35,9 +43,13 @@ import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.AccessingFieldValueFailedException;
-import net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException;
+import net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException;
 import net.sf.oval.exceptions.FieldNotFoundException;
+import net.sf.oval.exceptions.InvalidConfigurationException;
 import net.sf.oval.exceptions.InvokingGetterFailedException;
+import net.sf.oval.exceptions.MethodNotFoundException;
+import net.sf.oval.exceptions.OValException;
+import net.sf.oval.exceptions.ReflectionException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
 import net.sf.oval.utils.ThreadLocalList;
 
@@ -47,20 +59,20 @@ import net.sf.oval.utils.ThreadLocalList;
  */
 public final class Validator
 {
-	private final static Logger LOG = Logger.getLogger(Validator.class.getName());
+	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
-	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
-
-	private final WeakHashMap<Class, ClassConfiguration> checksByClass = new WeakHashMap<Class, ClassConfiguration>();
-
-	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
-	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory.INSTANCE
-			.createMap(8);
-
-	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverDefaultImpl();
+	private final Configurer configurer;
 
 	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
 			.createMap();
+	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
+
+	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory.INSTANCE
+			.createMap(8);
+
+	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
+
+	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
 
 	/**
 	 * public constructor
@@ -69,51 +81,303 @@ public final class Validator
 	{
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
+
+		this.configurer = new AnnotationsConfigurer();
+	}
+
+	public Validator(final Configurer configurer)
+	{
+		// add the message bundle for the pre-built constraints in the default locale
+		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
+
+		this.configurer = configurer;
+	}
+
+	public void addChecks(final ClassConfiguration classConfig)
+			throws InvalidConfigurationException, FieldNotFoundException, MethodNotFoundException,
+			ReflectionException
+	{
+		if (classConfig.type == null)
+			throw new InvalidConfigurationException("The property 'type' for " + classConfig
+					+ " must be specified.");
+
+		final ClassChecks classChecks = getClassChecks(classConfig.type);
+
+		try
+		{
+			/*
+			 * apply field checks
+			 */
+			if (classConfig.fieldsConfig != null)
+				for (final FieldConfiguration fieldConfig : classConfig.fieldsConfig)
+				{
+					final Field field = classConfig.type.getDeclaredField(fieldConfig.name);
+
+					if (fieldConfig.checks != null && fieldConfig.checks.size() > 0)
+					{
+						addChecks(field, fieldConfig.checks);
+					}
+
+					if (fieldConfig.defineConstraintSet != null)
+					{
+						final ConstraintSet cs = new ConstraintSet();
+						cs.context = new FieldContext(field);
+						cs.id = field.getDeclaringClass().getName() + "."
+								+ fieldConfig.defineConstraintSet;
+
+						classChecks.constraintSetsByLocalId
+								.put(fieldConfig.defineConstraintSet, cs);
+
+						// add the constraint set to the global map
+						addConstraintSet(cs);
+					}
+				}
+
+			/*
+			 * apply constructor parameter checks
+			 */
+			if (classConfig.constructorsConfig != null)
+				for (final ConstructorConfiguration constructorConfig : classConfig.constructorsConfig)
+				{
+					if (constructorConfig.parametersConfig != null)
+					{
+						final Class< ? >[] parameterTypes = new Class[constructorConfig.parametersConfig
+								.size()];
+
+						for (int i = 0, l = constructorConfig.parametersConfig.size(); i < l; i++)
+						{
+							parameterTypes[i] = constructorConfig.parametersConfig.get(i).type;
+						}
+
+						final Constructor constructor = classConfig.type
+								.getDeclaredConstructor(parameterTypes);
+
+						for (int i = 0, l = constructorConfig.parametersConfig.size(); i < l; i++)
+						{
+							final List<Check> checks = constructorConfig.parametersConfig.get(i).checks;
+
+							if (checks != null && checks.size() > 0)
+							{
+								addChecks(constructor, i, checks);
+							}
+						}
+					}
+				}
+
+			/*
+			 * apply method parameter and return value checks
+			 */
+			if (classConfig.methodsConfig != null)
+				for (final MethodConfiguration methodConfig : classConfig.methodsConfig)
+				{
+					if (methodConfig.parametersConfig != null)
+					{
+						final Class< ? >[] parameterTypes = new Class[methodConfig.parametersConfig
+								.size()];
+
+						for (int i = 0, l = methodConfig.parametersConfig.size(); i < l; i++)
+						{
+							parameterTypes[i] = methodConfig.parametersConfig.get(i).type;
+						}
+
+						final Method method = classConfig.type.getDeclaredMethod(methodConfig.name,
+								parameterTypes);
+
+						for (int i = 0, l = methodConfig.parametersConfig.size(); i < l; i++)
+						{
+							final List<Check> checks = methodConfig.parametersConfig.get(i).checks;
+
+							if (checks != null && checks.size() > 0)
+							{
+								addChecks(method, i, checks);
+							}
+						}
+
+						if (methodConfig.returnValueChecks != null
+								&& methodConfig.returnValueChecks.size() > 0)
+						{
+							addChecks(method, methodConfig.returnValueChecks);
+						}
+					}
+				}
+		}
+		catch (SecurityException e)
+		{
+			throw new ReflectionException("SecurityException occured", e);
+		}
+		catch (NoSuchMethodException e)
+		{
+			throw new MethodNotFoundException("NoSuchMethodException occured.", e);
+		}
+		catch (NoSuchFieldException e)
+		{
+			throw new FieldNotFoundException("FieldNotFoundException occured.", e);
+		}
 	}
 
 	/**
-	 * Introduces a new constraints check for the specified constructor parameter
+	 * Introduces new constraint checks for the given constructor parameter
 	 * 
 	 * @param constructor
 	 * @param parameterIndex 0 = first parameter
-	 * @param check
-	 * @throws ConstrainedAnnotationNotPresentException
+	 * @param checks
+	 * @throws InvalidConfigurationException
 	 */
-	public void addCheck(final Constructor constructor, final int parameterIndex, final Check check)
-			throws ConstrainedAnnotationNotPresentException
+	public void addChecks(final Constructor constructor, final int parameterIndex,
+			final Check... checks) throws InvalidConfigurationException
 	{
 		final Class clazz = constructor.getDeclaringClass();
-		final ClassConfiguration checks = getClassConfig(clazz);
-		checks.addCheck(constructor, parameterIndex, check);
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addChecks(constructor, parameterIndex, checks);
 	}
 
 	/**
-	 * Introduces a new constraints check for the specified field
+	 * Introduces new constraint checks for the given constructor parameter
+	 * 
+	 * @param constructor
+	 * @param parameterIndex 0 = first parameter
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	public void addChecks(final Constructor constructor, final int parameterIndex,
+			final Collection<Check> checks) throws InvalidConfigurationException
+	{
+		final Class clazz = constructor.getDeclaringClass();
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addChecks(constructor, parameterIndex, checks.toArray(new Check[checks.size()]));
+	}
+
+	/**
+	 * Introduces new constraint checks for the given field
 	 * 
 	 * @param field
-	 * @param check
+	 * @param checks
 	 */
-	public void addCheck(final Field field, final Check check)
+	public void addChecks(final Field field, final Check... checks)
 	{
 		final Class clazz = field.getDeclaringClass();
-		final ClassConfiguration checks = getClassConfig(clazz);
-		checks.addCheck(field, check);
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addChecks(field, checks);
 	}
 
 	/**
-	 * Introduces a new constraints check for the specified method parameter
+	 * Introduces new constraint checks for the given field
+	 * 
+	 * @param field
+	 * @param checks
+	 */
+	public void addChecks(final Field field, final Collection<Check> checks)
+	{
+		final Class clazz = field.getDeclaringClass();
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addChecks(field, checks.toArray(new Check[checks.size()]));
+	}
+
+	/**
+	 * Introduces new constraint checks for the method's return value
+	 * 
+	 * @param method
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	public void addChecks(final Method method, final Check... checks)
+			throws InvalidConfigurationException
+	{
+		final Class clazz = method.getDeclaringClass();
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addCheck(method, checks);
+	}
+
+	/**
+	 * Introduces new constraint checks for the method's return value
+	 * 
+	 * @param method
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	public void addChecks(final Method method, final Collection<Check> checks)
+			throws InvalidConfigurationException
+	{
+		final Class clazz = method.getDeclaringClass();
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addCheck(method, checks.toArray(new Check[checks.size()]));
+	}
+
+	/**
+	 * Introduces new constraint checks for the given method parameter
 	 * 
 	 * @param method
 	 * @param parameterIndex 0 = first parameter
-	 * @param check
-	 * @throws ConstrainedAnnotationNotPresentException
+	 * @param checks
+	 * @throws InvalidConfigurationException
 	 */
-	public void addCheck(final Method method, final int parameterIndex, final Check check)
-			throws ConstrainedAnnotationNotPresentException
+	public void addChecks(final Method method, final int parameterIndex, final Check... checks)
+			throws InvalidConfigurationException
 	{
 		final Class clazz = method.getDeclaringClass();
-		final ClassConfiguration checks = getClassConfig(clazz);
-		checks.addCheck(method, parameterIndex, check);
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addCheck(method, parameterIndex, checks);
+	}
+
+	/**
+	 * Introduces new constraint checks for the given method parameter
+	 * 
+	 * @param method
+	 * @param parameterIndex 0 = first parameter
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	public void addChecks(final Method method, final int parameterIndex,
+			final Collection<Check> checks) throws InvalidConfigurationException
+	{
+		final Class clazz = method.getDeclaringClass();
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.addCheck(method, parameterIndex, checks.toArray(new Check[checks.size()]));
+	}
+
+	public void addChecks(final OValConfiguration config) throws OValException
+	{
+		try
+		{
+			if (config.constraintSetsConfig != null)
+			{
+				for (final ConstraintSetConfiguration constraintSetConfiguration : config.constraintSetsConfig)
+				{
+					addConstraintSet(constraintSetConfiguration);
+				}
+			}
+
+			if (config.classesConfig != null && config.classesConfig.size() > 0)
+				for (final ClassConfiguration classConfig : config.classesConfig)
+				{
+					addChecks(classConfig);
+				}
+		}
+		catch (SecurityException e)
+		{
+			throw new ReflectionException("SecurityException occured", e);
+		}
+	}
+
+	public void addConstraintSet(final ConstraintSet constraintSet)
+			throws ConstraintSetAlreadyDefinedException
+	{
+		if (constraintSetsById.containsKey(constraintSet.id))
+			throw new ConstraintSetAlreadyDefinedException(
+					"Another constraint set with the same fully qualified id " + constraintSet.id
+							+ " has already been defined.");
+
+		constraintSetsById.put(constraintSet.id, constraintSet);
+	}
+
+	public void addConstraintSet(final ConstraintSetConfiguration constraintSetConfigurations)
+	{
+		final ConstraintSet cs = new ConstraintSet();
+		cs.checks = CollectionFactory.INSTANCE.createSet(constraintSetConfigurations.checks == null
+				? 2 : constraintSetConfigurations.checks.size());
+		cs.checks.addAll(constraintSetConfigurations.checks);
+		cs.id = constraintSetConfigurations.id;
+		addConstraintSet(cs);
 	}
 
 	/**
@@ -158,7 +422,7 @@ public final class Validator
 			{
 				final String errorMessage = renderMessage(context, valueToValidate, check);
 				violations.add(new ConstraintViolation(errorMessage, validatedObject,
-						valueToValidate, context, check));
+						valueToValidate, context));
 			}
 			return;
 		}
@@ -193,10 +457,10 @@ public final class Validator
 				}
 			}
 
-			final ClassConfiguration cc = getClassConfig(targetClass);
+			final ClassChecks cc = getClassChecks(targetClass);
 			final String constraintSetId = assertConstraintSetCheck.getId();
 
-			ConstraintSet cs = cc.constraintSetsByShortId.get(constraintSetId);
+			ConstraintSet cs = cc.constraintSetsByLocalId.get(constraintSetId);
 			if (cs == null)
 			{
 				cs = constraintSetsById.get(constraintSetId);
@@ -207,7 +471,7 @@ public final class Validator
 						+ constraintSetId + " defined.");
 			}
 
-			Set<Check> referencedChecks = cs.getChecks(this);
+			final Set<Check> referencedChecks = cs.getChecks(this);
 
 			if (referencedChecks != null)
 			{
@@ -315,7 +579,7 @@ public final class Validator
 						+ targetClass + "> or its super classes.");
 			}
 
-			final ClassConfiguration cc = getClassConfig(field.getDeclaringClass());
+			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 			final Set<Check> referencedChecks = cc.checksByField.get(field);
 			if (referencedChecks != null)
 			{
@@ -333,34 +597,22 @@ public final class Validator
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check);
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
-					context, check));
+					context));
 		}
 	}
 
-	ClassConfiguration getClassConfig(final Class clazz)
+	ClassChecks getClassChecks(final Class clazz)
 	{
 		synchronized (checksByClass)
 		{
-			ClassConfiguration checks = checksByClass.get(clazz);
+			ClassChecks checks = checksByClass.get(clazz);
 			if (checks == null)
 			{
-				checks = new ClassConfiguration(clazz, this);
+				checks = new ClassChecks(clazz);
+				checksByClass.put(clazz, checks);
 
-				// register the constraint set definitions in a global map
-				for (final ConstraintSet cs : checks.constraintSetsByShortId.values())
-				{
-					if (constraintSetsById.containsKey(cs.id))
-					{
-						LOG.warning("Another constraint set with the same fully qualified id "
-								+ cs.id + " has already been defined.");
-						//TODO what to do?
-					}
-					else
-						constraintSetsById.put(cs.id, cs);
-				}
-
+				addChecks(configurer.getClassConfiguration(clazz));
 			}
-			checksByClass.put(clazz, checks);
 			return checks;
 		}
 	}
@@ -414,23 +666,22 @@ public final class Validator
 	}
 
 	/**
-	 * Removes a check from the specified constructor parameter
+	 * Removes a check from the given constructor parameter
 	 * 
 	 * @param constructor
 	 * @param parameterIndex 0 = first parameter
 	 * @param check
-	 * @throws ConstrainedAnnotationNotPresentException
 	 */
 	public void removeCheck(final Constructor constructor, final int parameterIndex,
-			final Check check) throws ConstrainedAnnotationNotPresentException
+			final Check check)
 	{
 		final Class clazz = constructor.getDeclaringClass();
-		final ClassConfiguration cc = getClassConfig(clazz);
+		final ClassChecks cc = getClassChecks(clazz);
 		cc.removeCheck(constructor, parameterIndex, check);
 	}
 
 	/**
-	 * Removes a check from the specified field
+	 * Removes a check from the given field
 	 * 
 	 * @param field
 	 * @param check
@@ -438,24 +689,32 @@ public final class Validator
 	public void removeCheck(final Field field, final Check check)
 	{
 		final Class clazz = field.getDeclaringClass();
-		final ClassConfiguration cc = getClassConfig(clazz);
+		final ClassChecks cc = getClassChecks(clazz);
 		cc.removeCheck(field, check);
 	}
 
 	/**
-	 * Removes a check from the specified method parameter
+	 * Removes a check from the given method parameter
 	 * 
 	 * @param method
 	 * @param parameterIndex 0 = first parameter
 	 * @param check
-	 * @throws ConstrainedAnnotationNotPresentException
 	 */
 	public void removeCheck(final Method method, final int parameterIndex, final Check check)
-			throws ConstrainedAnnotationNotPresentException
 	{
 		final Class clazz = method.getDeclaringClass();
-		final ClassConfiguration checks = getClassConfig(clazz);
+		final ClassChecks checks = getClassChecks(clazz);
 		checks.removeCheck(method, parameterIndex, check);
+	}
+
+	/**
+	 * Removes the constraint set with the given id
+	 * @param id
+	 * @return the removed constraint set
+	 */
+	public ConstraintSet removeConstraintSet(final String id)
+	{
+		return constraintSetsById.remove(id);
 	}
 
 	/**
@@ -505,6 +764,19 @@ public final class Validator
 	}
 
 	/**
+	 * resets the constraint configuration
+	 *
+	 */
+	public void resetChecks()
+	{
+		synchronized (this)
+		{
+			checksByClass.clear();
+			constraintSetsById.clear();
+		}
+	}
+
+	/**
 	 * @param parameterNameResolver the parameterNameResolver to set
 	 */
 	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
@@ -541,7 +813,7 @@ public final class Validator
 	List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor constructor, final Object[] parameters)
 	{
-		final ClassConfiguration cc = getClassConfig(constructor.getDeclaringClass());
+		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 
 		final Map<Integer, Set<Check>> parameterChecks = cc.checksByConstructorParameter
 				.get(constructor);
@@ -572,7 +844,7 @@ public final class Validator
 	private void validateField(final Object validatedObject, final Field field,
 			final List<ConstraintViolation> violations)
 	{
-		final ClassConfiguration cc = getClassConfig(field.getDeclaringClass());
+		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 
 		final Set<Check> checks = cc.checksByField.get(field);
 
@@ -591,7 +863,7 @@ public final class Validator
 	private void validateGetter(final Object validatedObject, final Method getter,
 			final List<ConstraintViolation> violations)
 	{
-		final ClassConfiguration cc = getClassConfig(getter.getDeclaringClass());
+		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
 
 		final Set<Check> checks = cc.checksByGetter.get(getter);
 
@@ -606,7 +878,7 @@ public final class Validator
 				{
 					final String errorMessage = renderMessage(context, valueToValidate, check);
 					violations.add(new ConstraintViolation(errorMessage, validatedObject,
-							valueToValidate, context, check));
+							valueToValidate, context));
 				}
 			}
 		}
@@ -620,7 +892,7 @@ public final class Validator
 	List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
 			final Method method, final Object[] parameters)
 	{
-		final ClassConfiguration cc = getClassConfig(method.getDeclaringClass());
+		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
 		final Map<Integer, Set<Check>> parameterChecks = cc.checksByMethodParameter.get(method);
 
@@ -657,7 +929,7 @@ public final class Validator
 	List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
 			final Method method, final Object methodReturnValue)
 	{
-		final ClassConfiguration cc = getClassConfig(method.getDeclaringClass());
+		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
 		final Set<Check> checks = cc.checksByMethod.get(method);
 
@@ -683,7 +955,7 @@ public final class Validator
 		// abort if the root class is reached
 		if (clazz == Object.class) return;
 
-		final ClassConfiguration cc = getClassConfig(clazz);
+		final ClassChecks cc = getClassChecks(clazz);
 
 		// validate field constraints
 		for (final Field field : cc.constrainedFields)

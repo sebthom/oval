@@ -20,7 +20,6 @@ import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.PostValidateThis;
 import net.sf.oval.annotations.PreValidateThis;
 import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
@@ -33,7 +32,7 @@ public class PrePostValidateThisTest extends TestCase
 	@Constrained(applyFieldConstraintsToSetter = false)
 	public static class TestEntity
 	{
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		public String name;
 
 		public TestEntity()
@@ -60,7 +59,8 @@ public class PrePostValidateThisTest extends TestCase
 
 	public void testConstructorValidationInNotifyListenersMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
+				TestEntity.class);
 
 		try
 		{
@@ -73,23 +73,17 @@ public class PrePostValidateThisTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof FieldContext);
 		}
 
-		try
-		{
-			new TestEntity("test");
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+		new TestEntity("test");
 	}
 
 	public void testConstructorValidationInThrowExceptionMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(
+				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
 
 		try
 		{
@@ -101,18 +95,11 @@ public class PrePostValidateThisTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof FieldContext);
 		}
 
-		try
-		{
-			new TestEntity("test");
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+		new TestEntity("test");
 	}
 
 	public void testMethodValidationInNotifyListenersMode()
@@ -124,38 +111,31 @@ public class PrePostValidateThisTest extends TestCase
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		TestEnforcerAspect.constraintsEnforcer.addListener(va, t);
 
-		try
-		{
-			t.getName();
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof NotNullCheck);
-			va.clear();
+		t.getName();
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+		assertTrue(va.getConstraintViolations().size() == 1);
+		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+		va.clear();
 
-			t.setName(null);
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getCheck() instanceof NotNullCheck);
-			va.clear();
+		t.setName(null);
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+		assertTrue(va.getConstraintViolations().size() == 1);
+		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+		va.clear();
 
-			t.setName("the name");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
-			assertTrue(va.getConstraintViolations().size() == 0);
+		t.setName("the name");
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+		assertTrue(va.getConstraintViolations().size() == 0);
 
-			assertNotNull(t.getName());
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
-			assertTrue(va.getConstraintViolations().size() == 0);
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
+		assertNotNull(t.getName());
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+		assertTrue(va.getConstraintViolations().size() == 0);
 	}
 
 	public void testMethodValidationInThrowExceptionMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(
+				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
 
 		final TestEntity t = new TestEntity();
 
@@ -168,7 +148,7 @@ public class PrePostValidateThisTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof FieldContext);
 		}
 
@@ -183,17 +163,11 @@ public class PrePostValidateThisTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof FieldContext);
 		}
-		try
-		{
-			t.setName("the name");
-			assertNotNull(t.getName());
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+
+		t.setName("the name");
+		assertNotNull(t.getName());
 	}
 }

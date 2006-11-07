@@ -15,11 +15,11 @@ package net.sf.oval.aspectj;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.WeakHashMap;
 
 import net.sf.oval.ParameterNameResolver;
 import net.sf.oval.exceptions.ReflectionException;
+import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.WeakHashSet;
 
 import org.aspectj.lang.JoinPoint;
@@ -37,7 +37,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 	private final WeakHashMap<Method, String[]> methodParameterNames = new WeakHashMap<Method, String[]>();
 	private final WeakHashSet<Class> inspectedClasses = new WeakHashSet<Class>();
 
-	public synchronized String[] getParameterNames(Method method) throws ReflectionException
+	public synchronized String[] getParameterNames(final Method method) throws ReflectionException
 	{
 		String[] parameterNames = methodParameterNames.get(method);
 		if (parameterNames == null)
@@ -66,7 +66,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 
 		if (parameterNames == null)
 		{
-			int parameterCount = method.getParameterTypes().length;
+			final int parameterCount = method.getParameterTypes().length;
 			parameterNames = new String[parameterCount];
 			for (int i = 0; i < parameterCount; i++)
 			{
@@ -77,7 +77,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 		return parameterNames;
 	}
 
-	public String[] getParameterNames(Constructor constructor) throws ReflectionException
+	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
 	{
 		String[] parameterNames = constructorParameterNames.get(constructor);
 		if (parameterNames == null)
@@ -106,7 +106,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 
 		if (parameterNames == null)
 		{
-			int parameterCount = constructor.getParameterTypes().length;
+			final int parameterCount = constructor.getParameterTypes().length;
 			parameterNames = new String[parameterCount];
 			for (int i = 0; i < parameterCount; i++)
 			{
@@ -117,14 +117,13 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 		return parameterNames;
 	}
 
-	private void determineParamterNames(Class clazz) throws IllegalArgumentException,
+	private void determineParamterNames(final Class clazz) throws IllegalArgumentException,
 			IllegalAccessException, SecurityException
 	{
 		for (final Field field : clazz.getDeclaredFields())
 		{
 			// search for static fields of type JoinPoint.StaticPart
-			if (((field.getModifiers() & Modifier.STATIC) != 0)
-					&& field.getType() == JoinPoint.StaticPart.class)
+			if (ReflectionUtils.isStatic(field) && field.getType() == JoinPoint.StaticPart.class)
 			{
 				// access the StaticPart object
 				field.setAccessible(true);

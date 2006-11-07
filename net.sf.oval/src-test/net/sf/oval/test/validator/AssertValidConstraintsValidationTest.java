@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.AssertValid;
-import net.sf.oval.constraints.AssertValidCheck;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotEmpty;
 import net.sf.oval.constraints.NotNull;
@@ -38,7 +37,7 @@ public class AssertValidConstraintsValidationTest extends TestCase
 		@NotNull
 		public String lastName;
 
-		@AssertValid
+		@AssertValid(message = "ASSERT_VALID")
 		public Address homeAddress;
 	}
 
@@ -56,7 +55,7 @@ public class AssertValidConstraintsValidationTest extends TestCase
 		@RegEx(pattern = "^[0-9]*$")
 		public String zipCode;
 
-		@AssertValid
+		@AssertValid(message = "ASSERT_VALID")
 		public Person contact;
 	}
 
@@ -83,12 +82,12 @@ public class AssertValidConstraintsValidationTest extends TestCase
 		p.homeAddress = a;
 		List<ConstraintViolation> violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof AssertValidCheck);
+		assertTrue(violations.get(0).getMessage().equals("ASSERT_VALID"));
 
 		// test circular dependencies
 		a.contact = p;
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof AssertValidCheck);
+		assertTrue(violations.get(0).getMessage().equals("ASSERT_VALID"));
 	}
 }

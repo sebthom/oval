@@ -13,6 +13,7 @@
 package net.sf.oval.annotations;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,6 +25,7 @@ import net.sf.oval.AnnotationCheck;
  * @author Sebastian Thomschke
  * @version $Revision: 1.1 $
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Constraint

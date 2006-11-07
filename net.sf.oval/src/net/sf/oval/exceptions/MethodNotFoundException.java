@@ -12,30 +12,21 @@
  *******************************************************************************/
 package net.sf.oval.exceptions;
 
-import net.sf.oval.contexts.ClassContext;
-
 /**
  * @author Sebastian Thomschke
  * @version $Revision: 1.2 $
  */
-public class ConstrainedAnnotationNotPresentException extends OValException
+public class MethodNotFoundException extends ReflectionException
 {
 	private static final long serialVersionUID = 1L;
 
-	private final ClassContext classContext;
-
-	public ConstrainedAnnotationNotPresentException(final String message,
-			final ClassContext classContext)
+	public MethodNotFoundException(String message, Throwable cause)
 	{
-		super(message);
-		this.classContext = classContext;
+		super(message, cause);
 	}
 
-	/**
-	 * @return the classContext
-	 */
-	public ClassContext getContext()
+	public MethodNotFoundException(final String message)
 	{
-		return classContext;
+		super(message);
 	}
 }

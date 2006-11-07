@@ -80,22 +80,17 @@ public class InnerClassTest extends TestCase
 	 */
 	public void testInnerClassNonConstrain()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
+		TestEnforcerAspect.constraintsEnforcer
+				.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
 
-		try
-		{
-			TestEntity.InnerClassNonConstrain instance = new TestEntity.InnerClassNonConstrain(null);
-			instance.setName(null);
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			fail();
-		}
+		TestEntity.InnerClassNonConstrain instance = new TestEntity.InnerClassNonConstrain(null);
+		instance.setName(null);
 	}
 
 	public void testInnerClassConstrain()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
+		TestEnforcerAspect.constraintsEnforcer
+				.setReportingMode(ConstraintsEnforcer.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
 
 		try
 		{
@@ -107,14 +102,7 @@ public class InnerClassTest extends TestCase
 
 		TestEntity.InnerClassConstrain instance = null;
 
-		try
-		{
-			instance = new TestEntity.InnerClassConstrain("");
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			fail();
-		}
+		instance = new TestEntity.InnerClassConstrain("");
 
 		try
 		{

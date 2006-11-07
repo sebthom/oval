@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.NotNullCheck;
 
 /**
  * @author Sebastian Thomschke
@@ -28,7 +27,7 @@ public class InheritanceTest extends TestCase
 {
 	public static abstract class AbstractEntity
 	{
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		private String name;
 
 		/**
@@ -61,6 +60,6 @@ public class InheritanceTest extends TestCase
 
 		List<ConstraintViolation> violations = validator.validate(e);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
+		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 	}
 }

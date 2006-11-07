@@ -7,4 +7,4 @@ integration:
 	@javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
 	@javax.persistence.ManyToMany(optional=false) => @net.sf.oval.constraints.NotNull
 	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
-	@javax.persistence.Column(length=false)       => @net.sf.oval.constraints.Length
+	@javax.persistence.Column(length=5    )       => @net.sf.oval.constraints.Length

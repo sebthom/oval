@@ -1,18 +1,34 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.oval.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author Sebastian Thomschke
- *
  */
 public final class ReflectionUtils
 {
 	private static final Logger LOG = Logger.getLogger(ReflectionUtils.class.getName());
 
+	/**
+	 * @param setter
+	 * @return Returns the corresponding field for a setter method. Returns null if the method is not a JavaBean style setter or the field could not be located.
+	 */
 	public static Field getFieldForSetter(final Method setter)
 	{
 		if (!isSetter(setter)) return null;
@@ -44,9 +60,9 @@ public final class ReflectionUtils
 		}
 		catch (final NoSuchFieldException e)
 		{
-			if (LOG.isLoggable(Level.FINE))
+			if (LOG.isLoggable(Level.FINER))
 			{
-				LOG.log(Level.FINE, "Field not found", e);
+				LOG.log(Level.FINER, "Field not found", e);
 			}
 		}
 
@@ -71,9 +87,9 @@ public final class ReflectionUtils
 			}
 			catch (NoSuchFieldException ex)
 			{
-				if (LOG.isLoggable(Level.FINE))
+				if (LOG.isLoggable(Level.FINER))
 				{
-					LOG.log(Level.FINE, "Field not found", ex);
+					LOG.log(Level.FINER, "Field not found", ex);
 				}
 			}
 		}
@@ -109,8 +125,18 @@ public final class ReflectionUtils
 		return true;
 	}
 
+	public static boolean isStatic(final Field field)
+	{
+		return (field.getModifiers() & Modifier.STATIC) != 0;
+	}
+
 	private ReflectionUtils()
 	{
 	// do nothing
+	}
+
+	public boolean isStatic(final Method method)
+	{
+		return (method.getModifiers() & Modifier.STATIC) != 0;
 	}
 }

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import net.sf.oval.contexts.OValContext;
 
 /**
- * An instance of this class provides detailed information about a constraint violation 
+ * An instance of this class provides detailed information about a single constraint violation 
  * that was detected during validation.
  * 
  * @author Sebastian Thomschke
@@ -27,23 +27,54 @@ import net.sf.oval.contexts.OValContext;
  */
 public class ConstraintViolation implements Serializable
 {
-	private final static long serialVersionUID = 1L;
 	private final static Logger LOG = Logger.getLogger(ConstraintViolation.class.getName());
 
-	private final Check check;
+	private final static long serialVersionUID = 1L;
+
 	private final OValContext context;
 	private final String message;
 	private transient Object validatedObject;
 	private transient Object value;
 
 	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object value, final OValContext context, final Check check)
+			final Object value, final OValContext context)
 	{
 		this.message = message;
 		this.validatedObject = validatedObject;
 		this.value = value;
 		this.context = context;
-		this.check = check;
+	}
+
+	/**
+	 * @return Returns the context where the constraint violation occured.
+	 */
+	public OValContext getContext()
+	{
+		return context;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage()
+	{
+		return message;
+	}
+
+	/**
+	 * @return the validatedObject
+	 */
+	public Object getValidatedObject()
+	{
+		return validatedObject;
+	}
+
+	/**
+	 * @return Returns the value that was validated.
+	 */
+	public Object getValue()
+	{
+		return value;
 	}
 
 	/**
@@ -65,6 +96,11 @@ public class ConstraintViolation implements Serializable
 		{
 			value = in.readObject();
 		}
+	}
+
+	public String toString()
+	{
+		return getClass().getName() + ": " + message;
 	}
 
 	/**
@@ -105,50 +141,5 @@ public class ConstraintViolation implements Serializable
 			// indicate value does not implement Serializable
 			out.writeBoolean(false);
 		}
-	}
-
-	/**
-	 * @return Returns the check.
-	 */
-	public Check getCheck()
-	{
-		return check;
-	}
-
-	/**
-	 * @return Returns the context.
-	 */
-	public OValContext getContext()
-	{
-		return context;
-	}
-
-	/**
-	 * @return the message
-	 */
-	public String getMessage()
-	{
-		return message;
-	}
-
-	/**
-	 * @return the validatedObject
-	 */
-	public Object getValidatedObject()
-	{
-		return validatedObject;
-	}
-
-	/**
-	 * @return Returns the value that was validated.
-	 */
-	public Object getValue()
-	{
-		return value;
-	}
-
-	public String toString()
-	{
-		return getClass().getName() + ": " + message;
 	}
 }

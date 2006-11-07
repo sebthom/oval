@@ -19,11 +19,12 @@ import java.util.WeakHashMap;
 import net.sf.oval.exceptions.ReflectionException;
 
 /**
- * This implementation determines the names of constructor and method parameters by simply enumerating them based on there index 
+ * This implementation determines the names of constructor and method parameters by simply enumerating them based on there index
+ *  
  * @author Sebastian Thomschke
  * @version $Revision: 1.0 $
  */
-public class ParameterNameResolverDefaultImpl implements ParameterNameResolver
+public class ParameterNameResolverEnumerationImpl implements ParameterNameResolver
 {
 	private final WeakHashMap<Constructor, String[]> constructorParameterNames = new WeakHashMap<Constructor, String[]>();
 	private final WeakHashMap<Method, String[]> methodParameterNames = new WeakHashMap<Method, String[]>();

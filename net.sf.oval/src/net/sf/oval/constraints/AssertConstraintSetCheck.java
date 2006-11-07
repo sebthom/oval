@@ -24,7 +24,7 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	private static final long serialVersionUID = 1L;
 
 	private String id;
-	private Class source;
+	private Class source = Object.class;
 
 	@Override
 	public void configure(final AssertConstraintSet constraintAnnotation)

@@ -44,6 +44,15 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		map = new WeakHashMap<E, Object>();
 	}
 
+	/**
+	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
+	 * the given initial capacity and the default load factor (0.75).
+	 */
+	public WeakHashSet(int initialCapacity)
+	{
+		map = new WeakHashMap<E, Object>(initialCapacity);
+	}
+
 	public boolean add(final E o)
 	{
 		return map.put(o, EXISTS) == null;

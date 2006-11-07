@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraints;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,6 +30,7 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * @author Sebastian Thomschke
  * @version $Revision: 1.5 $
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(check = NotNegativeCheck.class)

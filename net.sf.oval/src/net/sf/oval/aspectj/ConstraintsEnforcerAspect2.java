@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintsEnforcer;
-import net.sf.oval.ParameterNameResolverDefaultImpl;
+import net.sf.oval.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.Validator;
 
 import org.aspectj.lang.JoinPoint;
@@ -53,7 +53,7 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 		this.validator = constraintsEnforcer.getValidator();
 
 		// in case the this ConstraintsEnforcerAspect is used we can also use the ParameterNameResolver that utilizes the AspectJ library
-		if (validator.getParameterNameResolver() instanceof ParameterNameResolverDefaultImpl)
+		if (validator.getParameterNameResolver() instanceof ParameterNameResolverEnumerationImpl)
 		{
 			validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 		}

@@ -20,9 +20,7 @@ import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.ConstraintsEnforcer.ReportingMode;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
@@ -36,7 +34,7 @@ public class ParameterConstraintsTest extends TestCase
 	public static class TestEntity
 	{
 		@SuppressWarnings("unused")
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		private String name;
 
 		/**
@@ -44,7 +42,7 @@ public class ParameterConstraintsTest extends TestCase
 		 * 
 		 * @param name
 		 */
-		public TestEntity(@NotNull
+		public TestEntity(@NotNull(message = "NOT_NULL")
 		String name)
 		{
 			this.name = name;
@@ -61,8 +59,8 @@ public class ParameterConstraintsTest extends TestCase
 			this.name = name;
 		}
 
-		public void setName(@NotNull
-		@Length(max = 4)
+		public void setName(@NotNull(message = "NOT_NULL")
+		@Length(max = 4, message = "LENGTH")
 		String name)
 		{
 			this.name = name;
@@ -71,7 +69,8 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInNotifyListenersMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
+				TestEntity.class);
 
 		/*
 		 * Testing Constructor 1
@@ -87,37 +86,24 @@ public class ParameterConstraintsTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
 		}
 
-		try
-		{
-			new TestEntity("test");
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+		new TestEntity("test");
 
 		/*
 		 * Testing Constructor 2
 		 */
-		try
-		{
-			// the constructor should not result in an any auto validation,
-			// therefore the construction with a null value for the name parameter should succeed
-			new TestEntity(null, 100);
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+		// the constructor should not result in an any auto validation,
+		// therefore the construction with a null value for the name parameter should succeed
+		new TestEntity(null, 100);
 	}
 
 	public void testConstructorParameterConstraintsInThrowExceptionMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(
+				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
 
 		/*
 		 * Testing Constructor 1
@@ -131,37 +117,24 @@ public class ParameterConstraintsTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
 		}
 
-		try
-		{
-			new TestEntity("test");
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+		new TestEntity("test");
 
 		/*
 		 * Testing Constructor 2
 		 */
-		try
-		{
-			// the constructor should not result in an any auto validation,
-			// therefore the construction with a null value for the name parameter should succeed
-			new TestEntity(null, 100);
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			fail();
-		}
+		// the constructor should not result in an any auto validation,
+		// therefore the construction with a null value for the name parameter should succeed
+		new TestEntity(null, 100);
 	}
 
 	public void testMethodParametersInThrowExceptionMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(
+				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
 
 		try
 		{
@@ -173,7 +146,7 @@ public class ParameterConstraintsTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
-			assertTrue(violations[0].getCheck() instanceof NotNullCheck);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 		}
 
 		try
@@ -186,13 +159,14 @@ public class ParameterConstraintsTest extends TestCase
 		{
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
-			assertTrue(violations[0].getCheck() instanceof LengthCheck);
+			assertTrue(violations[0].getMessage().equals("LENGTH"));
 		}
 	}
 
 	public void testMethodParametersInNotifyListenersMode()
 	{
-		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS, TestEntity.class);
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
+				TestEntity.class);
 
 		TestEntity entity = new TestEntity("");
 
@@ -203,8 +177,8 @@ public class ParameterConstraintsTest extends TestCase
 		entity.setName("12345678");
 		List<ConstraintViolation> violations = va.getConstraintViolations();
 		assertTrue(violations.size() == 2);
-		assertTrue(violations.get(0).getCheck() instanceof NotNullCheck);
-		assertTrue(violations.get(1).getCheck() instanceof LengthCheck);
+		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+		assertTrue(violations.get(1).getMessage().equals("LENGTH"));
 
 		TestEnforcerAspect.constraintsEnforcer.removeListener(va, entity);
 	}

@@ -12,6 +12,9 @@
 + added the concept of constraint sets
 	+ added @net.sf.oval.annotations.DefineConstraintSet
 	+ added @net.sf.oval.constraints.AssertConstraintSet
+* removed the "check" property from the net.sf.oval.ConstraintViolation class
+* reworked the whole configuration mechanism
++ added support for XML based configurations
 
 Refactoring:
 * net.sf.oval.ClassConfig: class ClassChecks renamed to ClassConfig
