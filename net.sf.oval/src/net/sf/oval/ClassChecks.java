@@ -110,94 +110,6 @@ final class ClassChecks
 	}
 
 	/**
-	 * adds constraint checks to a method's return value
-	 * @param method
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	synchronized void addCheck(final Method method, final Check... checks)
-			throws InvalidConfigurationException
-	{
-		// ensure the method has a return type
-		if (method.getReturnType() == Void.TYPE)
-		{
-			throw new InvalidConfigurationException(
-					"Adding return value constraints for method "
-							+ method
-							+ " is not possible. The method is declared as void and does not return any values.");
-		}
-
-		final boolean isGetter = ReflectionUtils.isGetter(method);
-		if (!isGetter && !isConstraintsEnforcementEnabled)
-		{
-			throw new InvalidConfigurationException(
-					"Cannot apply method return value constraints for method "
-							+ method
-							+ " not following the JavaBean Getter method convention. Constraints enforcement is not activated for this class.");
-		}
-
-		constrainedMethods.add(method);
-		Set<Check> methodChecks = checksByMethod.get(method);
-		if (methodChecks == null)
-		{
-			methodChecks = CollectionFactory.INSTANCE.createSet(checks.length);
-			checksByMethod.put(method, methodChecks);
-		}
-		for (final Check check : checks)
-		{
-			methodChecks.add(check);
-		}
-
-		if (isGetter)
-		{
-			if (!checksByGetter.containsKey(method))
-			{
-				constrainedGetters.add(method);
-				// we are pointing to the same set as used in the checksByMethod map 
-				checksByGetter.put(method, methodChecks);
-			}
-		}
-
-	}
-
-	/**
-	 * adds constraint checks to a method parameter 
-	 *  
-	 * @param method
-	 * @param parameterIndex
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	synchronized void addCheck(final Method method, final int parameterIndex, final Check... checks)
-			throws InvalidConfigurationException
-	{
-		if (!isConstraintsEnforcementEnabled)
-			throw new InvalidConfigurationException(
-					"Cannot apply method parameter constraints to class " + clazz.getName()
-							+ ". Constraints enforcement is not activated for this class.");
-
-		// retrieve the currently registered checks for all parameters of the specified method
-		Map<Integer, Set<Check>> checksOfMethodByParameter = checksByMethodParameter.get(method);
-		if (checksOfMethodByParameter == null)
-		{
-			checksOfMethodByParameter = CollectionFactory.INSTANCE.createMap(8);
-			checksByMethodParameter.put(method, checksOfMethodByParameter);
-			constrainedParameterizedMethods.add(method);
-		}
-
-		// retrieve the checks for the specified parameter
-		Set<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
-		if (checksOfMethodParameter == null)
-		{
-			checksOfMethodParameter = CollectionFactory.INSTANCE.createSet(8);
-			checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
-		}
-
-		for (final Check check : checks)
-			checksOfMethodParameter.add(check);
-	}
-
-	/**
 	 * adds constraint checks to a constructor parameter 
 	 *  
 	 * @param constructor
@@ -254,6 +166,94 @@ final class ClassChecks
 
 		for (final Check check : checks)
 			checksOfField.add(check);
+	}
+
+	/**
+	 * adds constraint checks to a method's return value
+	 * @param method
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	synchronized void addChecks(final Method method, final Check... checks)
+			throws InvalidConfigurationException
+	{
+		// ensure the method has a return type
+		if (method.getReturnType() == Void.TYPE)
+		{
+			throw new InvalidConfigurationException(
+					"Adding return value constraints for method "
+							+ method
+							+ " is not possible. The method is declared as void and does not return any values.");
+		}
+
+		final boolean isGetter = ReflectionUtils.isGetter(method);
+		if (!isGetter && !isConstraintsEnforcementEnabled)
+		{
+			throw new InvalidConfigurationException(
+					"Cannot apply method return value constraints for method "
+							+ method
+							+ " not following the JavaBean Getter method convention. Constraints enforcement is not activated for this class.");
+		}
+
+		constrainedMethods.add(method);
+		Set<Check> methodChecks = checksByMethod.get(method);
+		if (methodChecks == null)
+		{
+			methodChecks = CollectionFactory.INSTANCE.createSet(checks.length);
+			checksByMethod.put(method, methodChecks);
+		}
+		for (final Check check : checks)
+		{
+			methodChecks.add(check);
+		}
+
+		if (isGetter)
+		{
+			if (!checksByGetter.containsKey(method))
+			{
+				constrainedGetters.add(method);
+				// we are pointing to the same set as used in the checksByMethod map 
+				checksByGetter.put(method, methodChecks);
+			}
+		}
+
+	}
+
+	/**
+	 * adds constraint checks to a method parameter 
+	 *  
+	 * @param method
+	 * @param parameterIndex
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	synchronized void addChecks(final Method method, final int parameterIndex, final Check... checks)
+			throws InvalidConfigurationException
+	{
+		if (!isConstraintsEnforcementEnabled)
+			throw new InvalidConfigurationException(
+					"Cannot apply method parameter constraints to class " + clazz.getName()
+							+ ". Constraints enforcement is not activated for this class.");
+
+		// retrieve the currently registered checks for all parameters of the specified method
+		Map<Integer, Set<Check>> checksOfMethodByParameter = checksByMethodParameter.get(method);
+		if (checksOfMethodByParameter == null)
+		{
+			checksOfMethodByParameter = CollectionFactory.INSTANCE.createMap(8);
+			checksByMethodParameter.put(method, checksOfMethodByParameter);
+			constrainedParameterizedMethods.add(method);
+		}
+
+		// retrieve the checks for the specified parameter
+		Set<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
+		if (checksOfMethodParameter == null)
+		{
+			checksOfMethodParameter = CollectionFactory.INSTANCE.createSet(8);
+			checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
+		}
+
+		for (final Check check : checks)
+			checksOfMethodParameter.add(check);
 	}
 
 	synchronized void removeCheck(final Constructor constructor, final int parameterIndex,

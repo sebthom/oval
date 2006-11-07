@@ -285,7 +285,7 @@ public final class Validator
 	{
 		final Class clazz = method.getDeclaringClass();
 		final ClassChecks cc = getClassChecks(clazz);
-		cc.addCheck(method, checks);
+		cc.addChecks(method, checks);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public final class Validator
 	{
 		final Class clazz = method.getDeclaringClass();
 		final ClassChecks cc = getClassChecks(clazz);
-		cc.addCheck(method, checks.toArray(new Check[checks.size()]));
+		cc.addChecks(method, checks.toArray(new Check[checks.size()]));
 	}
 
 	/**
@@ -316,7 +316,7 @@ public final class Validator
 	{
 		final Class clazz = method.getDeclaringClass();
 		final ClassChecks cc = getClassChecks(clazz);
-		cc.addCheck(method, parameterIndex, checks);
+		cc.addChecks(method, parameterIndex, checks);
 	}
 
 	/**
@@ -332,7 +332,7 @@ public final class Validator
 	{
 		final Class clazz = method.getDeclaringClass();
 		final ClassChecks cc = getClassChecks(clazz);
-		cc.addCheck(method, parameterIndex, checks.toArray(new Check[checks.size()]));
+		cc.addChecks(method, parameterIndex, checks.toArray(new Check[checks.size()]));
 	}
 
 	public void addChecks(final OValConfiguration config) throws OValException
