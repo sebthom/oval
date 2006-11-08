@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration;
+package net.sf.oval.configuration.elements;
 
 import java.util.List;
 
@@ -19,9 +19,8 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class FieldConfiguration
+public class ParameterConfiguration
 {
-	public String name;
+	public Class< ? > type;
 	public List<Check> checks;
-	public String defineConstraintSet;
 }

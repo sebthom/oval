@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration;
+package net.sf.oval.configuration.elements;
 
 import java.util.List;
 

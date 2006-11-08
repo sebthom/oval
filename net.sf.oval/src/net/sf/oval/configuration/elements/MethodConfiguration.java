@@ -10,14 +10,18 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration;
+package net.sf.oval.configuration.elements;
 
 import java.util.List;
+
+import net.sf.oval.Check;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ConstructorConfiguration
+public class MethodConfiguration
 {
+	public String name;
 	public List<ParameterConfiguration> parametersConfig;
+	public List<Check> returnValueChecks;
 }

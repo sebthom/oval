@@ -10,17 +10,16 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration;
+package net.sf.oval.configuration.elements;
 
-import java.util.List;
-
-import net.sf.oval.Check;
+import java.util.Set;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ParameterConfiguration
+public class OValConfiguration
 {
-	public Class< ? > type;
-	public List<Check> checks;
+	public Set<ConstraintSetConfiguration> constraintSetsConfig;
+	
+	public Set<ClassConfiguration> classesConfig;
 }

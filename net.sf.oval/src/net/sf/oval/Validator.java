@@ -27,13 +27,13 @@ import java.util.WeakHashMap;
 
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.configuration.AnnotationsConfigurer;
-import net.sf.oval.configuration.ClassConfiguration;
 import net.sf.oval.configuration.Configurer;
-import net.sf.oval.configuration.ConstraintSetConfiguration;
-import net.sf.oval.configuration.ConstructorConfiguration;
-import net.sf.oval.configuration.FieldConfiguration;
-import net.sf.oval.configuration.MethodConfiguration;
-import net.sf.oval.configuration.OValConfiguration;
+import net.sf.oval.configuration.elements.ClassConfiguration;
+import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
+import net.sf.oval.configuration.elements.ConstructorConfiguration;
+import net.sf.oval.configuration.elements.FieldConfiguration;
+import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.OValConfiguration;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
@@ -61,7 +61,7 @@ public final class Validator
 {
 	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
-	private final Configurer configurer;
+	private final Configurer[] configurers;
 
 	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
 			.createMap();
@@ -82,15 +82,15 @@ public final class Validator
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
 
-		this.configurer = new AnnotationsConfigurer();
+		configurers = new Configurer[]{new AnnotationsConfigurer()};
 	}
 
-	public Validator(final Configurer configurer)
+	public Validator(final Configurer... configurers)
 	{
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
 
-		this.configurer = configurer;
+		this.configurers = configurers;
 	}
 
 	public void addChecks(final ClassConfiguration classConfig)
@@ -611,7 +611,8 @@ public final class Validator
 				checks = new ClassChecks(clazz);
 				checksByClass.put(clazz, checks);
 
-				addChecks(configurer.getClassConfiguration(clazz));
+				for (Configurer configurer : configurers)
+					addChecks(configurer.getClassConfiguration(clazz));
 			}
 			return checks;
 		}

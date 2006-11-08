@@ -14,6 +14,8 @@ package net.sf.oval.configuration;
 
 import java.util.Set;
 
+import net.sf.oval.configuration.elements.ClassConfiguration;
+import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.exceptions.OValException;
 
 /**

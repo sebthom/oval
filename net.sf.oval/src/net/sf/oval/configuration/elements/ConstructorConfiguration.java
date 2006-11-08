@@ -10,18 +10,14 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration;
+package net.sf.oval.configuration.elements;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ClassConfiguration
+public class ConstructorConfiguration
 {
-	public Class< ? > type;
-	public Set<FieldConfiguration> fieldsConfig;
-	public Set<ConstructorConfiguration> constructorsConfig;
-	public Set<MethodConfiguration> methodsConfig;
-	public boolean applyFieldConstraintsToSetter;
+	public List<ParameterConfiguration> parametersConfig;
 }

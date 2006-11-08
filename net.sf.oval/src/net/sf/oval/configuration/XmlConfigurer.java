@@ -16,9 +16,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Set;
 
 import net.sf.oval.Check;
+import net.sf.oval.configuration.elements.ClassConfiguration;
+import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
+import net.sf.oval.configuration.elements.ConstructorConfiguration;
+import net.sf.oval.configuration.elements.FieldConfiguration;
+import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.OValConfiguration;
+import net.sf.oval.configuration.elements.ParameterConfiguration;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -28,10 +34,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Sebastian Thomschke
  * @see http://xstream.codehaus.org/
  */
-public class XmlConfigurer implements Configurer
+public class XmlConfigurer extends ObjectConfigurer
 {
-	private OValConfiguration oValConfiguration;
-
 	private XStream xStream;
 
 	public XmlConfigurer()
@@ -52,23 +56,6 @@ public class XmlConfigurer implements Configurer
 	public void fromXML(final String xml)
 	{
 		oValConfiguration = (OValConfiguration) xStream.fromXML(xml);
-	}
-
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
-	{
-		if (oValConfiguration.classesConfig != null)
-		{
-			for (ClassConfiguration classConfig : oValConfiguration.classesConfig)
-			{
-				if (classConfig.type == clazz) return classConfig;
-			}
-		}
-		return null;
-	}
-
-	public Set<ConstraintSetConfiguration> getConstraintSetConfigurations()
-	{
-		return oValConfiguration.constraintSetsConfig;
 	}
 
 	/**
