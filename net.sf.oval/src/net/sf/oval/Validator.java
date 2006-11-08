@@ -55,13 +55,12 @@ import net.sf.oval.utils.ThreadLocalList;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.10 $
  */
 public final class Validator
 {
 	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
-	private final Configurer[] configurers;
+	private final Configurer configurer;
 
 	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
 			.createMap();
@@ -82,15 +81,15 @@ public final class Validator
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
 
-		configurers = new Configurer[]{new AnnotationsConfigurer()};
+		configurer = new AnnotationsConfigurer();
 	}
 
-	public Validator(final Configurer... configurers)
+	public Validator(final Configurer configurer)
 	{
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
 
-		this.configurers = configurers;
+		this.configurer = configurer;
 	}
 
 	public void addChecks(final ClassConfiguration classConfig)
@@ -611,8 +610,7 @@ public final class Validator
 				checks = new ClassChecks(clazz);
 				checksByClass.put(clazz, checks);
 
-				for (Configurer configurer : configurers)
-					addChecks(configurer.getClassConfiguration(clazz));
+				addChecks(configurer.getClassConfiguration(clazz));
 			}
 			return checks;
 		}
