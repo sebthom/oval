@@ -2,7 +2,7 @@
 <project>
 
 	<description>
-    	OVal is a generic based object validation framework for Java 5
+    	OVal is a generic based object validation framework for Java(tm) 5 or later
     </description>
 
 	<tstamp>

@@ -15,15 +15,12 @@ package net.sf.oval.configuration;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Set;
-
-import javax.imageio.stream.FileImageInputStream;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.elements.ClassConfiguration;
