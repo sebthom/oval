@@ -31,7 +31,8 @@ import org.aspectj.lang.reflect.MethodSignature;
  * This is an annotations based version of the ConstraintsEnforcerAspect aspect
  *
  * @author Sebastian Thomschke
- * @version $Revision: 1.0 $
+ * 
+ * @see ConstraintsEnforcer
  */
 @Aspect
 public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2

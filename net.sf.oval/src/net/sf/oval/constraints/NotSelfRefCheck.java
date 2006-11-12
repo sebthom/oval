@@ -16,9 +16,7 @@ import net.sf.oval.AbstractAnnotationCheck;
 import net.sf.oval.contexts.OValContext;
 
 /**
- *
  * @author Sebastian Thomschke
- * @version $Revision: 1.3 $
  */
 public class NotSelfRefCheck extends AbstractAnnotationCheck<NotSelfRef>
 {

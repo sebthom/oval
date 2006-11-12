@@ -19,7 +19,6 @@ import net.sf.oval.utils.StringUtils;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.4 $
  */
 public class ConstructorParameterContext extends OValContext
 {

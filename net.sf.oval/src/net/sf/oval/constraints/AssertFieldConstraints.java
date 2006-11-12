@@ -25,7 +25,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * Applies the constraints of the specified field to the annotated parameter or getter method.
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.3 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

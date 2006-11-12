@@ -18,7 +18,6 @@ import net.sf.oval.aspectj.ConstraintsEnforcerAspect;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public aspect TestEnforcerAspect extends ConstraintsEnforcerAspect
 {

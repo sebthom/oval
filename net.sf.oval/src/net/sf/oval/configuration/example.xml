@@ -1,0 +1,52 @@
+<oval>
+	<!-- define a constraint set -->
+	<constraintSet id="user.userid">
+		<net.sf.oval.constraints.NotNullCheck />
+		<net.sf.oval.constraints.RegExCheck>
+			<pattern pattern="^[a-z0-9]{8}$" flags="0" />
+		</net.sf.oval.constraints.RegExCheck>
+	</constraintSet>
+
+	<!-- define checks for the acme.model.User class -->
+	<!-- overwrite=false means already defined checks for this class will not be removed -->
+	<class type="acme.model.User" overwrite="false" applyFieldConstraintsToSetter="true">
+		<field name="firstName">
+			<net.sf.oval.constraints.LengthCheck min="0" max="3" />
+		</field>
+
+		<field name="lastName">
+			<net.sf.oval.constraints.LengthCheck min="0" max="5" />
+		</field>
+
+		<!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
+		<field name="managerId" overwrite="true">
+			<!-- use the checks defined for the constaint set "user.userid" -->
+			<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+		</field>
+
+		<field name="userId" overwrite="true">
+			<!-- use the checks defined for the constaint set "user.userid" -->
+			<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+		</field>
+
+		<!-- define constructor parameter checks -->
+		<constructor>
+			<!-- parameter 1 -->
+			<parameter type="String">
+				<net.sf.oval.constraints.NotNullCheck />
+			</parameter>
+
+			<!-- parameter 2 -->
+			<!-- the types of all parameters must be listed, even if no checks are defined -->
+			<parameter type="String" />
+		</constructor>
+
+		<!-- define method parameter checks -->
+		<method name="setPasswordExpirationDays">
+			<!-- parameter 1 -->
+			<parameter type="int">
+				<net.sf.oval.constraints.NotNullCheck />
+			</parameter>
+		</method>
+	</class>
+</oval>

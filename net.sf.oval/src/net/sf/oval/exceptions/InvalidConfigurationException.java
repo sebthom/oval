@@ -25,7 +25,7 @@ public class InvalidConfigurationException extends OValException
 		super(message);
 	}
 
-	public InvalidConfigurationException(String message, Throwable cause)
+	public InvalidConfigurationException(final String message, final Throwable cause)
 	{
 		super(message, cause);
 	}

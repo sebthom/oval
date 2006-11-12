@@ -18,13 +18,12 @@ import net.sf.oval.Validator;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.3 $
  */
 public class AllTests
 {
 
 	public static Test suite() throws Exception
-	{
+	{	
 		final TestSuite suite = new TestSuite("Test for " + Validator.class.getPackage().getName());
 
 		//$JUnit-BEGIN$
@@ -40,7 +39,7 @@ public class AllTests
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.XmlConfigurationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 
 		/*
 		 * Enforcer tests

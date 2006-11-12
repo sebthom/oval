@@ -19,7 +19,6 @@ import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.7 $
  */
 public class RegExCheck extends AbstractAnnotationCheck<RegEx>
 {

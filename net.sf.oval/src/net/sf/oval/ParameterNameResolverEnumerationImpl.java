@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.WeakHashMap;
@@ -22,28 +23,26 @@ import net.sf.oval.exceptions.ReflectionException;
  * This implementation determines the names of constructor and method parameters by simply enumerating them based on there index
  *  
  * @author Sebastian Thomschke
- * @version $Revision: 1.0 $
  */
 public class ParameterNameResolverEnumerationImpl implements ParameterNameResolver
 {
-	private final WeakHashMap<Constructor, String[]> constructorParameterNames = new WeakHashMap<Constructor, String[]>();
-	private final WeakHashMap<Method, String[]> methodParameterNames = new WeakHashMap<Method, String[]>();
+	private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
 	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
 		/*
 		 * intentionally the following code is not synchronized
 		 */
-		String[] parameterNames = methodParameterNames.get(method);
+		String[] parameterNames = parameterNamesCache.get(method);
 		if (parameterNames == null)
 		{
-			int parameterCount = method.getParameterTypes().length;
+			final int parameterCount = method.getParameterTypes().length;
 			parameterNames = new String[parameterCount];
 			for (int i = 0; i < parameterCount; i++)
 			{
 				parameterNames[i] = "parameter" + i;
 			}
-			methodParameterNames.put(method, parameterNames);
+			parameterNamesCache.put(method, parameterNames);
 		}
 		return parameterNames;
 	}
@@ -53,16 +52,16 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 		/*
 		 * intentionally the following code is not synchronized
 		 */
-		String[] parameterNames = constructorParameterNames.get(constructor);
+		String[] parameterNames = parameterNamesCache.get(constructor);
 		if (parameterNames == null)
 		{
-			int parameterCount = constructor.getParameterTypes().length;
+			final int parameterCount = constructor.getParameterTypes().length;
 			parameterNames = new String[parameterCount];
 			for (int i = 0; i < parameterCount; i++)
 			{
 				parameterNames[i] = "parameter" + i;
 			}
-			constructorParameterNames.put(constructor, parameterNames);
+			parameterNamesCache.put(constructor, parameterNames);
 		}
 		return parameterNames;
 	}

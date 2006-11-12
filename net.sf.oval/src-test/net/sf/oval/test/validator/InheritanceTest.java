@@ -21,7 +21,6 @@ import net.sf.oval.constraints.NotNull;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class InheritanceTest extends TestCase
 {

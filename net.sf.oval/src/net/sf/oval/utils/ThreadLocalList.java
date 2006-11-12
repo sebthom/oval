@@ -18,7 +18,6 @@ import net.sf.oval.collections.CollectionFactory;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.0 $
  */
 public class ThreadLocalList<T> extends ThreadLocal
 {

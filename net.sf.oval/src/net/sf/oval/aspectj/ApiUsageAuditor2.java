@@ -19,7 +19,6 @@ import org.aspectj.lang.annotation.DeclareWarning;
  * This is an annotations based version of the ApiUsageAuditor aspect
  *
  * @author Sebastian Thomschke
- * @version $Revision: 1.0 $
  */
 @Aspect
 public abstract class ApiUsageAuditor2

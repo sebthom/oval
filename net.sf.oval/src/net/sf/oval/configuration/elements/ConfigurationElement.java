@@ -12,14 +12,14 @@
  *******************************************************************************/
 package net.sf.oval.configuration.elements;
 
-import java.util.Set;
-
 /**
  * @author Sebastian Thomschke
  */
-public class OValConfiguration
+public class ConfigurationElement
 {
-	public Set<ConstraintSetConfiguration> constraintSetsConfig;
-	
-	public Set<ClassConfiguration> classesConfig;
+	/**
+	 * if set to false the checks defined here and in the child configuration elements will be added to the already registered checks for the respective contexts
+	 * if set to true the already registered checks for the respective contexts will be replaced by the checks defined here and in the child configuration elements  
+	 */
+	public Boolean overwrite;
 }

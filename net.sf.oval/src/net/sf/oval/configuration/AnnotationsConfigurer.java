@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Set;
 
 import net.sf.oval.AnnotationCheck;
 import net.sf.oval.Check;
@@ -41,18 +40,18 @@ import net.sf.oval.utils.ReflectionUtils;
  */
 public class AnnotationsConfigurer implements Configurer
 {
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
-			throws ReflectionException
+	public ClassConfiguration getClassConfiguration(Class< ? > clazz) throws OValException
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
-		config.applyFieldConstraintsToSetter = clazz.isAnnotationPresent(Constrained.class) ? clazz
-				.getAnnotation(Constrained.class).applyFieldConstraintsToSetter() : false;
+		config.applyFieldConstraintsToSetter = config.type.isAnnotationPresent(Constrained.class)
+				? config.type.getAnnotation(Constrained.class).applyFieldConstraintsToSetter()
+				: false;
 
 		/*
 		 * determine field checks
 		 */
-		for (final Field field : clazz.getDeclaredFields())
+		for (final Field field : config.type.getDeclaredFields())
 		{
 			final List<Check> checks = CollectionFactory.INSTANCE.createList(4);
 			String definedConstraintSetId = null;
@@ -74,21 +73,21 @@ public class AnnotationsConfigurer implements Configurer
 			}
 			if (checks.size() > 0)
 			{
-				if (config.fieldsConfig == null)
-					config.fieldsConfig = CollectionFactory.INSTANCE.createSet(8);
+				if (config.fieldConfigurations == null)
+					config.fieldConfigurations = CollectionFactory.INSTANCE.createSet(8);
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
 				fc.checks = checks;
 				fc.defineConstraintSet = definedConstraintSetId;
-				config.fieldsConfig.add(fc);
+				config.fieldConfigurations.add(fc);
 			}
 		}
 
 		/*
 		 * determine constructor parameter checks
 		 */
-		for (final Constructor constructor : clazz.getDeclaredConstructors())
+		for (final Constructor constructor : config.type.getDeclaredConstructors())
 		{
 			final List<ParameterConfiguration> parametersConfig = CollectionFactory.INSTANCE
 					.createList(4);
@@ -117,19 +116,19 @@ public class AnnotationsConfigurer implements Configurer
 			}
 			if (parametersConfig.size() > 0)
 			{
-				if (config.constructorsConfig == null)
-					config.constructorsConfig = CollectionFactory.INSTANCE.createSet(2);
+				if (config.constructorConfigurations == null)
+					config.constructorConfigurations = CollectionFactory.INSTANCE.createSet(2);
 
 				final ConstructorConfiguration cc = new ConstructorConfiguration();
-				cc.parametersConfig = parametersConfig;
-				config.constructorsConfig.add(cc);
+				cc.parameterConfigurations = parametersConfig;
+				config.constructorConfigurations.add(cc);
 			}
 		}
 
 		/*
 		 * determine method return value and parameter checks
 		 */
-		for (final Method method : clazz.getDeclaredMethods())
+		for (final Method method : config.type.getDeclaredMethods())
 		{
 			/*
 			 * determine method return value checks
@@ -193,14 +192,14 @@ public class AnnotationsConfigurer implements Configurer
 
 			if (parametersConfig.size() > 0 || returnValueChecks.size() > 0)
 			{
-				if (config.methodsConfig == null)
-					config.methodsConfig = CollectionFactory.INSTANCE.createSet(8);
+				if (config.methodConfigurations == null)
+					config.methodConfigurations = CollectionFactory.INSTANCE.createSet(8);
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
-				mc.parametersConfig = parametersConfig;
+				mc.parameterConfigurations = parametersConfig;
 				mc.returnValueChecks = returnValueChecks;
-				config.methodsConfig.add(mc);
+				config.methodConfigurations.add(mc);
 			}
 		}
 		return config;
@@ -229,7 +228,8 @@ public class AnnotationsConfigurer implements Configurer
 		}
 	}
 
-	public Set<ConstraintSetConfiguration> getConstraintSetConfigurations() throws OValException
+	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
+			throws OValException
 	{
 		return null;
 	}

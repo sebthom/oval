@@ -25,7 +25,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * check if not null
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.6 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -27,7 +27,6 @@ import net.sf.oval.annotations.Constraint;
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.6 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

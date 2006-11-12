@@ -27,8 +27,10 @@ import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
+ * This aspect intercepts calls to constructors and methods annotated with @net.sf.oval.annotations.Constrained 
+ * for automatic runtime validation of constraints defined for constructor/method parameters and method return values.
+ * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 {
@@ -83,7 +85,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 	/*
 	 * ADVICES
-	 */ 
+	 */
 	declare parents: (@Constrained *) implements ConstraintsEnforcementIsEnabled;
 
 	/**

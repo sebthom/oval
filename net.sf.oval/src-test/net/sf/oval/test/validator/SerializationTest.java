@@ -27,7 +27,6 @@ import net.sf.oval.constraints.Length;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class SerializationTest extends TestCase
 {
@@ -59,6 +58,6 @@ public class SerializationTest extends TestCase
 		// deserialize the violations
 		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 		ObjectInputStream ois = new ObjectInputStream(bis);
-		violations = (List<ConstraintViolation>) ois.readObject();
+		assertTrue(ois.readObject() instanceof List);
 	}
 }

@@ -17,7 +17,6 @@ import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.4 $
  */
 public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 {

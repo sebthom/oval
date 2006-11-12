@@ -14,7 +14,6 @@ package net.sf.oval.utils;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public final class StringUtils
 {

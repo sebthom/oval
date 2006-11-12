@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.configuration;
 
-import java.util.Set;
-
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.exceptions.OValException;
@@ -23,7 +21,8 @@ import net.sf.oval.exceptions.OValException;
  */
 public interface Configurer
 {
-	ClassConfiguration getClassConfiguration(final Class<?> clazz) throws OValException;
+	ClassConfiguration getClassConfiguration(Class< ? > clazz) throws OValException;
 
-	Set<ConstraintSetConfiguration> getConstraintSetConfigurations() throws OValException;
+	ConstraintSetConfiguration getConstraintSetConfiguration(String constraintSetId)
+			throws OValException;
 }

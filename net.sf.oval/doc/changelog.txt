@@ -2,23 +2,33 @@
 [+] Feature added.
 [*] Change.
 
-2006-??-?? v0.7
+2006-11-?? v0.7
 ===============
 + added pluggable support for alternative collection implementations
 + added support for Javolution Collection Classes (http://javolution.org/)
 + changed the ant script to include the JUnit test cases in the sources zip file
 - fixed some serialization related issues
 - fixed NPE in InstanceOfCheck
+* reworked the configuration mechanism
+    + added net.sf.oval.configuration package
+    + added support for POJO based constraint configuration
+    + added support for XML based constraint configuration
 + added the concept of constraint sets
 	+ added @net.sf.oval.annotations.DefineConstraintSet
 	+ added @net.sf.oval.constraints.AssertConstraintSet
+	+ added net.sf.oval.exceptions.UndefinedConstraintSetException
+	+ added net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException
+    + added net.sf.oval.Validator.addConstraintSet(ConstraintSetConfiguration)	
+* made resolving of constraint violation messages customizable
+    + added net.sf.oval.MessageResolver
+    + added net.sf.oval.MessageResolverImpl
+    + added net.sf.oval.Validator.getMessageResolver()
+    + added net.sf.oval.Validator.setMessageResolver(MessageResolver)
 * removed the "check" property from the net.sf.oval.ConstraintViolation class
-* reworked the whole configuration mechanism
-+ added support for XML based configurations
 
 Refactoring:
-* net.sf.oval.ClassConfig: class ClassChecks renamed to ClassConfig
 * net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException: class ConstraintAnnotationNotPresentException renamed to ConstrainedAnnotationNotPresentException
+* net.sf.oval.AbstractAnnotationCheck: class AbstractCheck renamed to AbstractAnnotationCheck
 
 2006-08-04 v0.6
 ===============

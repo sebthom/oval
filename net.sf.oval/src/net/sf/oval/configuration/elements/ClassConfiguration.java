@@ -17,11 +17,11 @@ import java.util.Set;
 /**
  * @author Sebastian Thomschke
  */
-public class ClassConfiguration
+public class ClassConfiguration extends ConfigurationElement
 {
 	public Class< ? > type;
-	public Set<FieldConfiguration> fieldsConfig;
-	public Set<ConstructorConfiguration> constructorsConfig;
-	public Set<MethodConfiguration> methodsConfig;
-	public boolean applyFieldConstraintsToSetter;
+	public Set<FieldConfiguration> fieldConfigurations;
+	public Set<ConstructorConfiguration> constructorConfigurations;
+	public Set<MethodConfiguration> methodConfigurations;
+	public Boolean applyFieldConstraintsToSetter;
 }

@@ -15,6 +15,7 @@ package net.sf.oval.test.enforcer;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
+import net.sf.oval.ClassChecks;
 import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.annotations.Constrained;
@@ -28,7 +29,6 @@ import net.sf.oval.constraints.RegEx;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class ApplyFieldConstraintsToParametersTest extends TestCase
 {
@@ -156,6 +156,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
 		va.clear();
 
+		final ClassChecks cc = TestEnforcerAspect.validator.getClassChecks(Person.class);
 		// test dynamic introduction of FieldConstraintsCheck
 		{
 			p.setZipCode2("dffd34");
@@ -165,20 +166,20 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			final Method setter = p.getClass().getMethod("setZipCode2",
 					new Class<?>[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
-			TestEnforcerAspect.validator.addChecks(setter, 0, check);
+			cc.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
 			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
 			va.clear();
-			TestEnforcerAspect.validator.removeCheck(setter, 0, check);
+			cc.removeCheck(setter, 0, check);
 		}
 		{
 			final Method setter = p.getClass().getMethod("setZipCode2",
 					new Class<?>[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			check.setFieldName("firstName");
-			TestEnforcerAspect.validator.addChecks(setter, 0, check);
+			cc.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 			p.setZipCode2(null);
@@ -186,7 +187,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			assertTrue(va.getConstraintViolations().size() == 1);
 			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
 			va.clear();
-			TestEnforcerAspect.validator.removeCheck(setter, 0, check);
+			cc.removeCheck(setter, 0, check);
 		}
 		{
 			p.setZipCode2("dffd34");

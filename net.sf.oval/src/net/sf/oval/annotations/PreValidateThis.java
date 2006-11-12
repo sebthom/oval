@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
  * a ConstraintsViolatedException exception is thrown. 
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.3 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

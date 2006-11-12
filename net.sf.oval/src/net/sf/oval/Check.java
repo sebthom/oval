@@ -20,7 +20,6 @@ import net.sf.oval.contexts.OValContext;
  * interface for classes that can check/validate if a single constraint is satisfied
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public interface Check extends Serializable
 {

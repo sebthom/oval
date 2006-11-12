@@ -18,7 +18,6 @@ import net.sf.oval.utils.SerializableField;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public class FieldContext extends OValContext
 {

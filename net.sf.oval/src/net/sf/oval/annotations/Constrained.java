@@ -20,7 +20,6 @@ import java.lang.annotation.Target;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

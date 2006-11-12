@@ -23,7 +23,6 @@ import net.sf.oval.contexts.OValContext;
  * that was detected during validation.
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.3 $
  */
 public class ConstraintViolation implements Serializable
 {

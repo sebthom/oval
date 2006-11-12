@@ -21,7 +21,6 @@ import net.sf.oval.constraints.ValidateWithMethod;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class ValidateWithMethodConstraintTest extends TestCase
 {

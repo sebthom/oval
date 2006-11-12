@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class OValContext implements Serializable
 {

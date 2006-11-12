@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import junit.framework.TestCase;
+import net.sf.oval.ClassChecks;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.constraints.NotNullCheck;
@@ -28,7 +29,6 @@ import net.sf.oval.exceptions.InvalidConfigurationException;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class AddingConstraintsTest extends TestCase
 {
@@ -112,8 +112,10 @@ public class AddingConstraintsTest extends TestCase
 				fail();
 			}
 
+			final ClassChecks cc = TestEnforcerAspect.validator.getClassChecks(setter.getDeclaringClass());
+			
 			// adding a constraint
-			TestEnforcerAspect.validator.addChecks(setter, 0, notNullCheck);
+			cc.addChecks(setter, 0, notNullCheck);
 			try
 			{
 				TestEntity1 entity = new TestEntity1("blabla");
@@ -129,7 +131,7 @@ public class AddingConstraintsTest extends TestCase
 			}
 
 			// removing the constraint
-			TestEnforcerAspect.validator.removeCheck(setter, 0, notNullCheck);
+			cc.removeCheck(setter, 0, notNullCheck);
 			try
 			{
 				TestEntity1 entity = new TestEntity1("blabla");
@@ -168,8 +170,10 @@ public class AddingConstraintsTest extends TestCase
 		// testing without constraint
 		new TestEntity2(null);
 
+		final ClassChecks cc = TestEnforcerAspect.validator.getClassChecks(constructor.getDeclaringClass());
+		
 		// adding a constraint
-		TestEnforcerAspect.validator.addChecks(constructor, 0, notNullCheck);
+		cc.addChecks(constructor, 0, notNullCheck);
 		try
 		{
 			new TestEntity2(null);
@@ -184,7 +188,7 @@ public class AddingConstraintsTest extends TestCase
 		}
 
 		// removing the constraint
-		TestEnforcerAspect.validator.removeCheck(constructor, 0, notNullCheck);
+		cc.removeCheck(constructor, 0, notNullCheck);
 		new TestEntity2(null);
 	}
 
@@ -207,9 +211,11 @@ public class AddingConstraintsTest extends TestCase
 			assertTrue(violations.size() == 0);
 		}
 
+		final ClassChecks cc = TestEnforcerAspect.validator.getClassChecks(field.getDeclaringClass());
+		
 		// adding a constraint
 		{
-			TestEnforcerAspect.validator.addChecks(field, notNullCheck);
+			cc.addChecks(field, notNullCheck);
 
 			List<ConstraintViolation> violations = TestEnforcerAspect.validator
 					.validate(entity);
@@ -219,7 +225,7 @@ public class AddingConstraintsTest extends TestCase
 
 		// removing the constraint
 		{
-			TestEnforcerAspect.validator.removeCheck(field, notNullCheck);
+			cc.removeCheck(field, notNullCheck);
 
 			List<ConstraintViolation> violations = TestEnforcerAspect.validator
 					.validate(entity);

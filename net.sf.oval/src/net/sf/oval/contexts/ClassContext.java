@@ -14,7 +14,6 @@ package net.sf.oval.contexts;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public class ClassContext extends OValContext
 {

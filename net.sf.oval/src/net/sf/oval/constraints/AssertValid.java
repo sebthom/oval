@@ -25,7 +25,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * Check if the value object passes a validation by Validator.validate()
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.6 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

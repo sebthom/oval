@@ -22,7 +22,6 @@ import java.lang.annotation.Target;
  * defines a constraint set
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.0 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -25,7 +25,6 @@ import net.sf.oval.constraints.RegEx;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class AssertValidConstraintsValidationTest extends TestCase
 {

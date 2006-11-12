@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annotation>
 		implements

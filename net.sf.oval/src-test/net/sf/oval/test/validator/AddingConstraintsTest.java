@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import junit.framework.TestCase;
+import net.sf.oval.ClassChecks;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraints.NotNullCheck;
@@ -25,7 +26,6 @@ import net.sf.oval.exceptions.InvalidConfigurationException;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class AddingConstraintsTest extends TestCase
 {
@@ -59,7 +59,9 @@ public class AddingConstraintsTest extends TestCase
 		{
 			Constructor constructor = TestEntity.class
 					.getDeclaredConstructor(new Class<?>[]{String.class});
-			validator.addChecks(constructor, 0, new NotNullCheck());
+
+			final ClassChecks cc = validator.getClassChecks(constructor.getDeclaringClass());
+			cc.addChecks(constructor, 0, new NotNullCheck());
 			fail();
 		}
 		catch (InvalidConfigurationException e)
@@ -81,7 +83,9 @@ public class AddingConstraintsTest extends TestCase
 		Field field = TestEntity.class.getDeclaredField("name");
 		NotNullCheck notNullCheck = new NotNullCheck();
 		notNullCheck.setMessage("NOT_NULL");
-		validator.addChecks(field, notNullCheck);
+		
+		final ClassChecks cc = validator.getClassChecks(field.getDeclaringClass());
+		cc.addChecks(field, notNullCheck);
 
 		List<ConstraintViolation> violations = validator.validate(entity);
 		assertTrue(violations.size() == 1);
@@ -102,7 +106,9 @@ public class AddingConstraintsTest extends TestCase
 					.getDeclaredMethod("setName", new Class<?>[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("name must not be null");
-			validator.addChecks(setter, 0, notNullCheck);
+			
+			final ClassChecks cc = validator.getClassChecks(setter.getDeclaringClass());
+			cc.addChecks(setter, 0, notNullCheck);
 			fail();
 		}
 		catch (InvalidConfigurationException e)

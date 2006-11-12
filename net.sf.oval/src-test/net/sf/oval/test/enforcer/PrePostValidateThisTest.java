@@ -25,7 +25,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class PrePostValidateThisTest extends TestCase
 {

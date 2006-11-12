@@ -19,9 +19,9 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodConfiguration
+public class MethodConfiguration extends ConfigurationElement
 {
 	public String name;
-	public List<ParameterConfiguration> parametersConfig;
+	public List<ParameterConfiguration> parameterConfigurations;
 	public List<Check> returnValueChecks;
 }

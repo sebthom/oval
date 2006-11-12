@@ -23,7 +23,6 @@ import net.sf.oval.exceptions.InvalidConfigurationException;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public class MethodReturnValueConstraintsValidationTest extends TestCase
 {

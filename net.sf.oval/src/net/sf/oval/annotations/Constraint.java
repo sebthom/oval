@@ -23,12 +23,11 @@ import net.sf.oval.AnnotationCheck;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Constraint
 {
-	Class< ? extends AnnotationCheck< ? extends Annotation >> check();
+	Class< ? extends AnnotationCheck< ? extends Annotation>> check();
 }

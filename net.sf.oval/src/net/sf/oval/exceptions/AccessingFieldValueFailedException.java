@@ -16,7 +16,6 @@ import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.5 $
  */
 public class AccessingFieldValueFailedException extends ReflectionException
 {

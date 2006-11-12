@@ -43,9 +43,10 @@ public class SerializableConstructor implements Serializable
 	}
 
 	private transient Constructor< ? > constructor;
-	private final Class< ? > declaringClass;
-	private final Class< ? >[] parameterTypes;
 
+	private final Class< ? > declaringClass;
+
+	private final Class< ? >[] parameterTypes;
 	protected SerializableConstructor(final Constructor< ? > constructor)
 	{
 		this.constructor = constructor;

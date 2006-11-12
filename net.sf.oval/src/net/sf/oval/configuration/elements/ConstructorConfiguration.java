@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author Sebastian Thomschke
  */
-public class ConstructorConfiguration
+public class ConstructorConfiguration extends ConfigurationElement
 {
-	public List<ParameterConfiguration> parametersConfig;
+	public List<ParameterConfiguration> parameterConfigurations;
 }

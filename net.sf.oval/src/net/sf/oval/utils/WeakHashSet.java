@@ -22,7 +22,6 @@ import java.util.WeakHashMap;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.4 $
  */
 public class WeakHashSet<E> implements Set<E>, Serializable
 {

@@ -28,7 +28,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.7 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

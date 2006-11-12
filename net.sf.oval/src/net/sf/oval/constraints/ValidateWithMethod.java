@@ -30,7 +30,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
  * be ignored when specified for methods with method parameters or returning void.
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.7 $
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

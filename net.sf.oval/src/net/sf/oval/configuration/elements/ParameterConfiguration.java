@@ -19,7 +19,7 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class ParameterConfiguration
+public class ParameterConfiguration extends ConfigurationElement
 {
 	public Class< ? > type;
 	public List<Check> checks;

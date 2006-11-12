@@ -17,7 +17,6 @@ import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.6 $
  */
 public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertConstraintSet>
 {
@@ -63,5 +62,4 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	{
 		this.source = source;
 	}
-
 }

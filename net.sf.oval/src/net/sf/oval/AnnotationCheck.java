@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
  * constraint annotation is satisfied
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public interface AnnotationCheck<ConstraintAnnotation extends Annotation> extends Check
 {

@@ -19,7 +19,7 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class ConstraintSetConfiguration
+public class ConstraintSetConfiguration extends ConfigurationElement
 {
 	public List<Check> checks;
 

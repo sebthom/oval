@@ -14,7 +14,6 @@ package net.sf.oval.exceptions;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public class UndefinedConstraintSetException extends InvalidConfigurationException
 {

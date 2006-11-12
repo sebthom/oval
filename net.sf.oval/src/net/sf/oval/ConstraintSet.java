@@ -13,6 +13,7 @@
 package net.sf.oval;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Set;
 
 import net.sf.oval.contexts.FieldContext;
@@ -24,17 +25,15 @@ import net.sf.oval.exceptions.OValException;
  */
 class ConstraintSet
 {
-	/**
-	 * considered if isDynamic is false
-	 */
 	Set<Check> checks;
 
 	/**
-	 * considered if isDynamic=true
-	 * the context where the constraint set was defined
+	 * the context where to get the checks from
 	 */
 	OValContext context;
 
+	String localId;
+	
 	/**
 	 * the id of the constraint set
 	 */
@@ -43,7 +42,7 @@ class ConstraintSet
 	/**
 	 * @return Returns a set of constraint checks associated with this constraint set
 	 */
-	Set<Check> getChecks(final Validator validator) throws OValException
+	Collection<Check> getChecks(final Validator validator) throws OValException
 	{
 		if (context != null)
 		{
@@ -51,10 +50,10 @@ class ConstraintSet
 			{
 				final FieldContext fc = (FieldContext) context;
 				final Field f = fc.getField();
-				final ClassChecks cf = validator.getClassChecks(f.getDeclaringClass());
 
 				// for performance reasons we are returning the internal set
-				return cf.checksByField.get(f);
+				final ClassChecks cc = validator.getClassChecks(f.getDeclaringClass());
+				return cc.checksByField.get(f);
 			}
 
 			throw new OValException("Currently unsupported context type " + context);

@@ -21,7 +21,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.2 $
  */
 public class InnerClassTest extends TestCase
 {

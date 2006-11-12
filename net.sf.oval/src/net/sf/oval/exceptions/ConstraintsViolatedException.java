@@ -20,7 +20,6 @@ import net.sf.oval.ConstraintViolation;
  * This exception is thrown if one or more constraints are not satisfied during validation.
  * 
  * @author Sebastian Thomschke
- * @version $Revision: 1.1 $
  */
 public class ConstraintsViolatedException extends OValException
 {

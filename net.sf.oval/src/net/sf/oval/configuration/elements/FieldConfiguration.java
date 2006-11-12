@@ -19,7 +19,7 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class FieldConfiguration
+public class FieldConfiguration extends ConfigurationElement
 {
 	public String name;
 	public List<Check> checks;

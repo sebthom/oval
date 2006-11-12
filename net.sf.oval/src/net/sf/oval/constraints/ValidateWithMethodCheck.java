@@ -20,7 +20,6 @@ import net.sf.oval.exceptions.ReflectionException;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.7 $
  */
 public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod>
 {

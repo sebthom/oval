@@ -17,12 +17,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.sf.oval.collections.CollectionFactory;
@@ -33,7 +29,7 @@ import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
-import net.sf.oval.configuration.elements.OValConfiguration;
+import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
@@ -42,57 +38,49 @@ import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
-import net.sf.oval.exceptions.AccessingFieldValueFailedException;
 import net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException;
 import net.sf.oval.exceptions.FieldNotFoundException;
 import net.sf.oval.exceptions.InvalidConfigurationException;
-import net.sf.oval.exceptions.InvokingGetterFailedException;
 import net.sf.oval.exceptions.MethodNotFoundException;
-import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ReflectionException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
+import net.sf.oval.utils.ListOrderedSet;
+import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.ThreadLocalList;
 
 /**
  * @author Sebastian Thomschke
  */
-public final class Validator
+public class Validator
 {
-	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
+	protected final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
+	protected final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>();
 
-	private final Configurer configurer;
-
-	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
+	protected final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
 			.createMap();
-	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
-	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory.INSTANCE
-			.createMap(8);
+	protected final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
-	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
+	protected MessageResolver messageResolver = new MessageResolverImpl();
 
-	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
+	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
 
 	/**
-	 * public constructor
+	 * Constructs a new validator object and uses a new isntance of
+	 * AnnotationsConfigurer
 	 */
 	public Validator()
 	{
-		// add the message bundle for the pre-built constraints in the default locale
-		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
-
-		configurer = new AnnotationsConfigurer();
+		configurers.add(new AnnotationsConfigurer());
 	}
 
-	public Validator(final Configurer configurer)
+	public Validator(final Configurer... configurers)
 	{
-		// add the message bundle for the pre-built constraints in the default locale
-		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
-
-		this.configurer = configurer;
+		for (final Configurer configurer : configurers)
+			this.configurers.add(configurer);
 	}
 
-	public void addChecks(final ClassConfiguration classConfig)
+	protected void addChecks(final ClassConfiguration classConfig)
 			throws InvalidConfigurationException, FieldNotFoundException, MethodNotFoundException,
 			ReflectionException
 	{
@@ -100,32 +88,38 @@ public final class Validator
 			throw new InvalidConfigurationException("The property 'type' for " + classConfig
 					+ " must be specified.");
 
-		final ClassChecks classChecks = getClassChecks(classConfig.type);
+		final ClassChecks cc = getClassChecks(classConfig.type);
+
+		if (classConfig.overwrite != null && classConfig.overwrite)
+		{
+			cc.reset();
+		}
 
 		try
 		{
 			/*
 			 * apply field checks
 			 */
-			if (classConfig.fieldsConfig != null)
-				for (final FieldConfiguration fieldConfig : classConfig.fieldsConfig)
+			if (classConfig.fieldConfigurations != null)
+				for (final FieldConfiguration fieldConfig : classConfig.fieldConfigurations)
 				{
 					final Field field = classConfig.type.getDeclaredField(fieldConfig.name);
 
+					if (fieldConfig.overwrite != null && fieldConfig.overwrite)
+					{
+						cc.removeAllCheck(field);
+					}
+
 					if (fieldConfig.checks != null && fieldConfig.checks.size() > 0)
 					{
-						addChecks(field, fieldConfig.checks);
+						cc.addChecks(field, fieldConfig.checks.toArray(new Check[fieldConfig.checks
+								.size()]));
 					}
 
 					if (fieldConfig.defineConstraintSet != null)
 					{
-						final ConstraintSet cs = new ConstraintSet();
-						cs.context = new FieldContext(field);
-						cs.id = field.getDeclaringClass().getName() + "."
-								+ fieldConfig.defineConstraintSet;
-
-						classChecks.constraintSetsByLocalId
-								.put(fieldConfig.defineConstraintSet, cs);
+						final ConstraintSet cs = cc.addFieldConstraintSet(field,
+								fieldConfig.defineConstraintSet);
 
 						// add the constraint set to the global map
 						addConstraintSet(cs);
@@ -135,29 +129,43 @@ public final class Validator
 			/*
 			 * apply constructor parameter checks
 			 */
-			if (classConfig.constructorsConfig != null)
-				for (final ConstructorConfiguration constructorConfig : classConfig.constructorsConfig)
+			if (classConfig.constructorConfigurations != null)
+				for (final ConstructorConfiguration constructorConfig : classConfig.constructorConfigurations)
 				{
-					if (constructorConfig.parametersConfig != null)
+					if (constructorConfig.parameterConfigurations != null)
 					{
-						final Class< ? >[] parameterTypes = new Class[constructorConfig.parametersConfig
+						final Class< ? >[] parameterTypes = new Class[constructorConfig.parameterConfigurations
 								.size()];
 
-						for (int i = 0, l = constructorConfig.parametersConfig.size(); i < l; i++)
+						for (int i = 0, l = constructorConfig.parameterConfigurations.size(); i < l; i++)
 						{
-							parameterTypes[i] = constructorConfig.parametersConfig.get(i).type;
+							parameterTypes[i] = constructorConfig.parameterConfigurations.get(i).type;
 						}
 
 						final Constructor constructor = classConfig.type
 								.getDeclaredConstructor(parameterTypes);
 
-						for (int i = 0, l = constructorConfig.parametersConfig.size(); i < l; i++)
+						if (constructorConfig.overwrite != null && constructorConfig.overwrite)
 						{
-							final List<Check> checks = constructorConfig.parametersConfig.get(i).checks;
+							cc.removeAllChecks(constructor);
+						}
+
+						for (int i = 0, l = constructorConfig.parameterConfigurations.size(); i < l; i++)
+						{
+							final ParameterConfiguration parameterConfig = constructorConfig.parameterConfigurations
+									.get(i);
+
+							if (parameterConfig.overwrite != null && parameterConfig.overwrite)
+							{
+								cc.removeAllChecks(constructor, i);
+							}
+
+							final List<Check> checks = parameterConfig.checks;
 
 							if (checks != null && checks.size() > 0)
 							{
-								addChecks(constructor, i, checks);
+								cc.addChecks(constructor, i, checks
+										.toArray(new Check[checks.size()]));
 							}
 						}
 					}
@@ -166,37 +174,62 @@ public final class Validator
 			/*
 			 * apply method parameter and return value checks
 			 */
-			if (classConfig.methodsConfig != null)
-				for (final MethodConfiguration methodConfig : classConfig.methodsConfig)
+			if (classConfig.methodConfigurations != null)
+				for (final MethodConfiguration methodConfig : classConfig.methodConfigurations)
 				{
-					if (methodConfig.parametersConfig != null)
+					Method method = null;
+					if (methodConfig.parameterConfigurations == null
+							|| methodConfig.parameterConfigurations.size() == 0)
 					{
-						final Class< ? >[] parameterTypes = new Class[methodConfig.parametersConfig
+						method = classConfig.type.getDeclaredMethod(methodConfig.name);
+
+						if (methodConfig.overwrite != null && methodConfig.overwrite)
+						{
+							cc.removeAllChecks(method);
+						}
+					}
+					else
+					{
+						final Class< ? >[] parameterTypes = new Class[methodConfig.parameterConfigurations
 								.size()];
 
-						for (int i = 0, l = methodConfig.parametersConfig.size(); i < l; i++)
+						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
 						{
-							parameterTypes[i] = methodConfig.parametersConfig.get(i).type;
+							parameterTypes[i] = methodConfig.parameterConfigurations.get(i).type;
 						}
 
-						final Method method = classConfig.type.getDeclaredMethod(methodConfig.name,
+						method = classConfig.type.getDeclaredMethod(methodConfig.name,
 								parameterTypes);
 
-						for (int i = 0, l = methodConfig.parametersConfig.size(); i < l; i++)
+						if (methodConfig.overwrite != null && methodConfig.overwrite)
 						{
-							final List<Check> checks = methodConfig.parametersConfig.get(i).checks;
+							cc.removeAllChecks(method);
+						}
+
+						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
+						{
+							final ParameterConfiguration parameterConfig = methodConfig.parameterConfigurations
+									.get(i);
+
+							if (parameterConfig.overwrite != null && parameterConfig.overwrite)
+							{
+								cc.removeAllChecks(method, i);
+							}
+
+							final List<Check> checks = parameterConfig.checks;
 
 							if (checks != null && checks.size() > 0)
 							{
-								addChecks(method, i, checks);
+								cc.addChecks(method, i, checks.toArray(new Check[checks.size()]));
 							}
 						}
+					}
 
-						if (methodConfig.returnValueChecks != null
-								&& methodConfig.returnValueChecks.size() > 0)
-						{
-							addChecks(method, methodConfig.returnValueChecks);
-						}
+					if (methodConfig.returnValueChecks != null
+							&& methodConfig.returnValueChecks.size() > 0)
+					{
+						cc.addChecks(method, methodConfig.returnValueChecks
+								.toArray(new Check[methodConfig.returnValueChecks.size()]));
 					}
 				}
 		}
@@ -214,151 +247,7 @@ public final class Validator
 		}
 	}
 
-	/**
-	 * Introduces new constraint checks for the given constructor parameter
-	 * 
-	 * @param constructor
-	 * @param parameterIndex 0 = first parameter
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	public void addChecks(final Constructor constructor, final int parameterIndex,
-			final Check... checks) throws InvalidConfigurationException
-	{
-		final Class clazz = constructor.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(constructor, parameterIndex, checks);
-	}
-
-	/**
-	 * Introduces new constraint checks for the given constructor parameter
-	 * 
-	 * @param constructor
-	 * @param parameterIndex 0 = first parameter
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	public void addChecks(final Constructor constructor, final int parameterIndex,
-			final Collection<Check> checks) throws InvalidConfigurationException
-	{
-		final Class clazz = constructor.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(constructor, parameterIndex, checks.toArray(new Check[checks.size()]));
-	}
-
-	/**
-	 * Introduces new constraint checks for the given field
-	 * 
-	 * @param field
-	 * @param checks
-	 */
-	public void addChecks(final Field field, final Check... checks)
-	{
-		final Class clazz = field.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(field, checks);
-	}
-
-	/**
-	 * Introduces new constraint checks for the given field
-	 * 
-	 * @param field
-	 * @param checks
-	 */
-	public void addChecks(final Field field, final Collection<Check> checks)
-	{
-		final Class clazz = field.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(field, checks.toArray(new Check[checks.size()]));
-	}
-
-	/**
-	 * Introduces new constraint checks for the method's return value
-	 * 
-	 * @param method
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	public void addChecks(final Method method, final Check... checks)
-			throws InvalidConfigurationException
-	{
-		final Class clazz = method.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(method, checks);
-	}
-
-	/**
-	 * Introduces new constraint checks for the method's return value
-	 * 
-	 * @param method
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	public void addChecks(final Method method, final Collection<Check> checks)
-			throws InvalidConfigurationException
-	{
-		final Class clazz = method.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(method, checks.toArray(new Check[checks.size()]));
-	}
-
-	/**
-	 * Introduces new constraint checks for the given method parameter
-	 * 
-	 * @param method
-	 * @param parameterIndex 0 = first parameter
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	public void addChecks(final Method method, final int parameterIndex, final Check... checks)
-			throws InvalidConfigurationException
-	{
-		final Class clazz = method.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(method, parameterIndex, checks);
-	}
-
-	/**
-	 * Introduces new constraint checks for the given method parameter
-	 * 
-	 * @param method
-	 * @param parameterIndex 0 = first parameter
-	 * @param checks
-	 * @throws InvalidConfigurationException
-	 */
-	public void addChecks(final Method method, final int parameterIndex,
-			final Collection<Check> checks) throws InvalidConfigurationException
-	{
-		final Class clazz = method.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.addChecks(method, parameterIndex, checks.toArray(new Check[checks.size()]));
-	}
-
-	public void addChecks(final OValConfiguration config) throws OValException
-	{
-		try
-		{
-			if (config.constraintSetsConfig != null)
-			{
-				for (final ConstraintSetConfiguration constraintSetConfiguration : config.constraintSetsConfig)
-				{
-					addConstraintSet(constraintSetConfiguration);
-				}
-			}
-
-			if (config.classesConfig != null && config.classesConfig.size() > 0)
-				for (final ClassConfiguration classConfig : config.classesConfig)
-				{
-					addChecks(classConfig);
-				}
-		}
-		catch (SecurityException e)
-		{
-			throw new ReflectionException("SecurityException occured", e);
-		}
-	}
-
-	public void addConstraintSet(final ConstraintSet constraintSet)
+	protected void addConstraintSet(final ConstraintSet constraintSet)
 			throws ConstraintSetAlreadyDefinedException
 	{
 		if (constraintSetsById.containsKey(constraintSet.id))
@@ -369,44 +258,27 @@ public final class Validator
 		constraintSetsById.put(constraintSet.id, constraintSet);
 	}
 
-	public void addConstraintSet(final ConstraintSetConfiguration constraintSetConfigurations)
+	public ConstraintSet addConstraintSet(
+			final ConstraintSetConfiguration constraintSetConfigurations)
+			throws ConstraintSetAlreadyDefinedException
 	{
 		final ConstraintSet cs = new ConstraintSet();
 		cs.checks = CollectionFactory.INSTANCE.createSet(constraintSetConfigurations.checks == null
 				? 2 : constraintSetConfigurations.checks.size());
 		cs.checks.addAll(constraintSetConfigurations.checks);
 		cs.id = constraintSetConfigurations.id;
-		addConstraintSet(cs);
+
+		if (constraintSetConfigurations.overwrite != null && constraintSetConfigurations.overwrite)
+			constraintSetsById.put(cs.id, cs);
+		else
+			addConstraintSet(cs);
+
+		return cs;
 	}
 
-	/**
-	 * Adds a message bundle
-	 * 
-	 * @param messageBundle
-	 * @return true if the bundle was registered and false if it was already registered
-	 */
-	public boolean addMessageBundle(final ResourceBundle messageBundle)
-	{
-		if (messageBundles.contains(messageBundle)) return false;
-
-		messageBundles.addFirst(messageBundle);
-		final List<String> keys = CollectionFactory.INSTANCE.createList();
-
-		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum
-				.hasMoreElements();)
-		{
-			keys.add(keysEnum.nextElement());
-		}
-
-		messageBundleKeys.put(messageBundle, keys);
-
-		return true;
-	}
-
-	private void checkConstraint(final List<ConstraintViolation> violations, final Check check,
+	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
 	{
-
 		/*
 		 * special handling of the AssertValid constraint
 		 */
@@ -456,29 +328,39 @@ public final class Validator
 				}
 			}
 
-			final ClassChecks cc = getClassChecks(targetClass);
+			final Class source = assertConstraintSetCheck.getSource();
 			final String constraintSetId = assertConstraintSetCheck.getId();
 
-			ConstraintSet cs = cc.constraintSetsByLocalId.get(constraintSetId);
-			if (cs == null)
+			Collection<Check> referencedChecks = null;
+			if (source == Object.class)
 			{
-				cs = constraintSetsById.get(constraintSetId);
+				final ClassChecks cc = getClassChecks(targetClass);
+				final ConstraintSet cs = cc.constraintSetsByLocalId.get(assertConstraintSetCheck
+						.getId());
+				if (cs != null) referencedChecks = cs.getChecks(this);
 			}
-			if (cs == null)
+			else
+			{
+				final ClassChecks cc = getClassChecks(source);
+				final ConstraintSet cs = cc.constraintSetsByLocalId.get(assertConstraintSetCheck
+						.getId());
+				if (cs != null) referencedChecks = cs.getChecks(this);
+			}
+			if (referencedChecks == null)
+			{
+				final ConstraintSet cs = getConstraintSet(constraintSetId);
+				if (cs != null) referencedChecks = cs.getChecks(this);
+			}
+			if (referencedChecks == null)
 			{
 				throw new UndefinedConstraintSetException("No constraint set with id "
 						+ constraintSetId + " defined.");
 			}
 
-			final Set<Check> referencedChecks = cs.getChecks(this);
-
-			if (referencedChecks != null)
+			for (final Check referencedCheck : referencedChecks)
 			{
-				for (final Check referencedCheck : referencedChecks)
-				{
-					checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
-							context);
-				}
+				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
+						context);
 			}
 			return;
 		}
@@ -488,9 +370,6 @@ public final class Validator
 		 */
 		if (check instanceof AssertFieldConstraintsCheck)
 		{
-			// the name of the field whose constraints shall be used
-			String fieldName = ((AssertFieldConstraintsCheck) check).getFieldName();
-
 			// the lowest class that is expected to declare the field (or one of its super classes)
 			Class targetClass = validatedObject.getClass();
 
@@ -513,6 +392,9 @@ public final class Validator
 				// the class declaring the field must either be the class declaring the getter or one of its super classes
 				targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
 			}
+
+			// the name of the field whose constraints shall be used
+			String fieldName = ((AssertFieldConstraintsCheck) check).getFieldName();
 
 			/*
 			 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
@@ -558,19 +440,7 @@ public final class Validator
 			/*
 			 * find the field based on fieldName and targetClass
 			 */
-			Field field = null;
-			for (Class fieldClass = targetClass; field == null
-					&& fieldClass.getClass() != Object.class;)
-			{
-				try
-				{
-					field = fieldClass.getDeclaredField(fieldName);
-				}
-				catch (final NoSuchFieldException ex)
-				{
-					fieldClass = fieldClass.getSuperclass();
-				}
-			}
+			final Field field = ReflectionUtils.getFieldRecursive(targetClass, fieldName);
 
 			if (field == null)
 			{
@@ -579,12 +449,13 @@ public final class Validator
 			}
 
 			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-			final Set<Check> referencedChecks = cc.checksByField.get(field);
-			if (referencedChecks != null)
+			final Collection<Check> referencedChecks = cc.checksByField.get(field);
+			if (referencedChecks != null && referencedChecks.size() > 0)
 			{
-				for (final Check check2 : referencedChecks)
+				for (final Check referencedCheck : referencedChecks)
 				{
-					checkConstraint(violations, check2, validatedObject, valueToValidate, context);
+					checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
+							context);
 				}
 			}
 		}
@@ -600,49 +471,56 @@ public final class Validator
 		}
 	}
 
-	ClassChecks getClassChecks(final Class clazz)
+	public ClassChecks getClassChecks(final Class clazz)
 	{
 		synchronized (checksByClass)
 		{
-			ClassChecks checks = checksByClass.get(clazz);
-			if (checks == null)
+			ClassChecks cc = checksByClass.get(clazz);
+			if (cc == null)
 			{
-				checks = new ClassChecks(clazz);
-				checksByClass.put(clazz, checks);
+				cc = new ClassChecks(clazz);
+				checksByClass.put(clazz, cc);
 
-				addChecks(configurer.getClassConfiguration(clazz));
+				for (final Configurer configurer : configurers)
+				{
+					final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
+					addChecks(classConfig);
+				}
 			}
-			return checks;
+			return cc;
 		}
 	}
 
-	private Object getFieldValue(final Object validatedObject, final Field field)
-			throws AccessingFieldValueFailedException
+	/**
+	 * @return the internal list with the registered configurers
+	 */
+	public List<Configurer> getConfigurers()
 	{
-		try
-		{
-			if (!field.isAccessible()) field.setAccessible(true);
-			return field.get(validatedObject);
-		}
-		catch (Exception ex)
-		{
-			throw new AccessingFieldValueFailedException("Accessing value of field "
-					+ field.getName() + "failed.", validatedObject, new FieldContext(field), ex);
-		}
+		return configurers;
 	}
 
-	private Object getGetterValue(final Object validatedObject, final Method getter)
-			throws InvokingGetterFailedException
+	protected ConstraintSet getConstraintSet(final String constraintSetId)
 	{
-		try
+		ConstraintSet cs = constraintSetsById.get(constraintSetId);
+
+		if (cs == null)
 		{
-			return getter.invoke(validatedObject, (Object[]) null);
+			for (final Configurer configurer : configurers)
+			{
+				final ConstraintSetConfiguration csc = configurer
+						.getConstraintSetConfiguration(constraintSetId);
+				if (csc != null) cs = addConstraintSet(csc);
+			}
 		}
-		catch (Exception ex)
-		{
-			throw new InvokingGetterFailedException("Executing getter method " + getter.getName()
-					+ " failed.", validatedObject, new MethodReturnValueContext(getter), ex);
-		}
+		return cs;
+	}
+
+	/**
+	 * @return the messageResolver
+	 */
+	public MessageResolver getMessageResolver()
+	{
+		return messageResolver;
 	}
 
 	/**
@@ -659,51 +537,9 @@ public final class Validator
 	 * @param object
 	 * @return
 	 */
-	private boolean isCurrentlyValidated(final Object object)
+	protected boolean isCurrentlyValidated(final Object object)
 	{
 		return currentlyValidatedObjects.get().contains(object);
-	}
-
-	/**
-	 * Removes a check from the given constructor parameter
-	 * 
-	 * @param constructor
-	 * @param parameterIndex 0 = first parameter
-	 * @param check
-	 */
-	public void removeCheck(final Constructor constructor, final int parameterIndex,
-			final Check check)
-	{
-		final Class clazz = constructor.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.removeCheck(constructor, parameterIndex, check);
-	}
-
-	/**
-	 * Removes a check from the given field
-	 * 
-	 * @param field
-	 * @param check
-	 */
-	public void removeCheck(final Field field, final Check check)
-	{
-		final Class clazz = field.getDeclaringClass();
-		final ClassChecks cc = getClassChecks(clazz);
-		cc.removeCheck(field, check);
-	}
-
-	/**
-	 * Removes a check from the given method parameter
-	 * 
-	 * @param method
-	 * @param parameterIndex 0 = first parameter
-	 * @param check
-	 */
-	public void removeCheck(final Method method, final int parameterIndex, final Check check)
-	{
-		final Class clazz = method.getDeclaringClass();
-		final ClassChecks checks = getClassChecks(clazz);
-		checks.removeCheck(method, parameterIndex, check);
 	}
 
 	/**
@@ -716,63 +552,44 @@ public final class Validator
 		return constraintSetsById.remove(id);
 	}
 
-	/**
-	 * Removes the message bundle
-	 * 
-	 * @param messageBundle
-	 * @return true if the bundle was registered and false if it wasn't registered
-	 */
-	public boolean removeMessageBundle(final ResourceBundle messageBundle)
+	protected String renderMessage(final OValContext context, final Object value, final Check check)
 	{
-		if (!messageBundles.contains(messageBundle)) return false;
+		final String messageKey = check.getMessage();
 
-		messageBundles.remove(messageBundle);
-		return true;
-	}
+		String message = messageResolver.getMessage(messageKey);
+		if (message == null) message = messageKey;
 
-	String renderMessage(final OValContext context, final Object value, final Check check)
-	{
-		String messageKey = check.getMessage();
+		// if there are no place holders in the message simply return it
+		if (message.indexOf('{') == -1) return message;
 
-		for (final ResourceBundle bundle : messageBundles)
-		{
-			final List<String> keys = messageBundleKeys.get(bundle);
-			if (keys.contains(messageKey))
-			{
-				messageKey = bundle.getString(messageKey);
-				break;
-			}
-		}
-
-		// if no place holders are in the message return just return it
-		if (messageKey.indexOf('{') == -1) return messageKey;
-
-		final LinkedList<Object> args = new LinkedList<Object>();
-		args.addLast(context);
-		args.addLast(value);
 		final String[] messageValues = check.getMessageValues();
-		if (messageValues != null)
+		final int messageValuesCount = messageValues == null ? 0 : messageValues.length;
+		final Object[] args = new Object[2 + messageValuesCount];
+		args[0] = context;
+		args[1] = value;
+		if (messageValuesCount > 0)
 		{
-			for (final String val : messageValues)
-			{
-				args.addLast(val);
-			}
+			System.arraycopy(messageValues, 0, args, 2, messageValuesCount);
 		}
-
-		return MessageFormat.format(messageKey, args.toArray());
+		return MessageFormat.format(message, args);
 	}
 
 	/**
-	 * resets the constraint configuration
-	 *
+	 * clears the checks and constraint sets => reconfiguration using the
+	 * registered configurers takes place
 	 */
-	public void resetChecks()
+	public void reset()
 	{
-		synchronized (this)
-		{
-			checksByClass.clear();
-			constraintSetsById.clear();
-		}
+		checksByClass.clear();
+		constraintSetsById.clear();
+	}
+
+	/**
+	 * @param messageResolver the messageResolver to set
+	 */
+	public void setMessageResolver(final MessageResolver messageResolver)
+	{
+		this.messageResolver = messageResolver;
 	}
 
 	/**
@@ -810,24 +627,23 @@ public final class Validator
 	 * @return null if no violation, otherwise a list
 	 */
 	List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
-			final Constructor constructor, final Object[] parameters)
+			final Constructor constructor, final Object[] args)
 	{
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-
-		final Map<Integer, Set<Check>> parameterChecks = cc.checksByConstructorParameter
+		final Map<Integer, Collection<Check>> parameterChecks = cc.checksByConstructorParameter
 				.get(constructor);
 
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
 		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
-		for (int i = 0; i < parameters.length; i++)
+		for (int i = 0; i < args.length; i++)
 		{
-			final Set<Check> checks = parameterChecks.get(i);
+			final Collection<Check> checks = parameterChecks.get(i);
 
-			if (checks != null)
+			if (checks != null && checks.size() > 0)
 			{
-				final Object valueToValidate = parameters[i];
+				final Object valueToValidate = args[i];
 				final ConstructorParameterContext context = new ConstructorParameterContext(
 						constructor, i, parameterNames[i]);
 
@@ -840,16 +656,15 @@ public final class Validator
 		return violations.size() == 0 ? null : violations;
 	}
 
-	private void validateField(final Object validatedObject, final Field field,
+	protected void validateField(final Object validatedObject, final Field field,
 			final List<ConstraintViolation> violations)
 	{
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+		final Collection<Check> checks = cc.checksByField.get(field);
 
-		final Set<Check> checks = cc.checksByField.get(field);
-
-		if (checks != null)
+		if (checks != null && checks.size() > 0)
 		{
-			final Object valueToValidate = getFieldValue(validatedObject, field);
+			final Object valueToValidate = ReflectionUtils.getFieldValue(field, validatedObject);
 			final FieldContext context = new FieldContext(field);
 
 			for (final Check check : checks)
@@ -859,16 +674,15 @@ public final class Validator
 		}
 	}
 
-	private void validateGetter(final Object validatedObject, final Method getter,
+	protected void validateGetter(final Object validatedObject, final Method getter,
 			final List<ConstraintViolation> violations)
 	{
 		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
+		final Collection<Check> checks = cc.checksByMethod.get(getter);
 
-		final Set<Check> checks = cc.checksByGetter.get(getter);
-
-		if (checks != null)
+		if (checks != null && checks.size() > 0)
 		{
-			final Object valueToValidate = getGetterValue(validatedObject, getter);
+			final Object valueToValidate = ReflectionUtils.invokeMethod(getter, validatedObject);
 			final MethodReturnValueContext context = new MethodReturnValueContext(getter);
 
 			for (final Check check : checks)
@@ -889,25 +703,26 @@ public final class Validator
 	 * @return null if no violation, otherwise a list
 	 */
 	List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
-			final Method method, final Object[] parameters)
+			final Method method, final Object[] args)
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-
-		final Map<Integer, Set<Check>> parameterChecks = cc.checksByMethodParameter.get(method);
+		final Map<Integer, Collection<Check>> parameterChecks = cc.checksByMethodParameter
+				.get(method);
 
 		// check if the method has any parameter checks at all
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
+
 		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
 
-		for (int i = 0; i < parameters.length; i++)
+		for (int i = 0; i < args.length; i++)
 		{
-			final Set<Check> checks = parameterChecks.get(i);
+			final Collection<Check> checks = parameterChecks.get(i);
 
-			if (checks != null)
+			if (checks != null && checks.size() > 0)
 			{
-				final Object valueToValidate = parameters[i];
+				final Object valueToValidate = args[i];
 				final MethodParameterContext context = new MethodParameterContext(method, i,
 						parameterNames[i]);
 
@@ -929,29 +744,30 @@ public final class Validator
 			final Method method, final Object methodReturnValue)
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+		final Collection<Check> checks = cc.checksByMethod.get(method);
 
-		final Set<Check> checks = cc.checksByMethod.get(method);
-
-		if (checks == null) return null;
-
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(8);
-
-		final MethodReturnValueContext context = new MethodReturnValueContext(method);
-
-		for (final Check check : checks)
+		if (checks != null && checks.size() > 0)
 		{
-			checkConstraint(violations, check, validatedObject, methodReturnValue, context);
+			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(8);
+
+			final MethodReturnValueContext context = new MethodReturnValueContext(method);
+
+			for (final Check check : checks)
+			{
+				checkConstraint(violations, check, validatedObject, methodReturnValue, context);
+			}
+			return violations.size() == 0 ? null : violations;
 		}
-		return violations.size() == 0 ? null : violations;
+		return null;
 	}
 
 	/**
 	 * validate validatedObject based on the constraints of the given clazz
 	 */
-	private void validateObject(final Object validatedObject, final Class< ? > clazz,
+	protected void validateObject(final Object validatedObject, final Class< ? > clazz,
 			final List<ConstraintViolation> violations)
 	{
-		// abort if the root class is reached
+		// abort if the root class has been reached
 		if (clazz == Object.class) return;
 
 		final ClassChecks cc = getClassChecks(clazz);
