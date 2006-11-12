@@ -126,10 +126,7 @@ public class XMLConfigurationTest extends TestCase
 		 */
 		x.fromXML(xmlConfig);
 
-		System.out.println(xmlConfig);
-
 		Validator validator = new Validator(x);
-		//validator.getConfigurers().add(x);
 
 		Person p = new Person();
 		p.lastName = "";
