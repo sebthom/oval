@@ -12,11 +12,18 @@
  *******************************************************************************/
 package net.sf.oval.configuration;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Set;
+
+import javax.imageio.stream.FileImageInputStream;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.elements.ClassConfiguration;
@@ -38,13 +45,13 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  */
 public class XMLConfigurer extends POJOConfigurer
 {
-	private final XStream xStream;
-
 	protected static class ChecksConfiguration
 	{
 		public Set<ClassConfiguration> classConfigurations;
 		public Set<ConstraintSetConfiguration> constraintSetConfigurations;
 	}
+
+	private final XStream xStream;
 
 	/**
 	 * creates an XMLConfigurer instance backed by a new XStream instance 
@@ -62,36 +69,6 @@ public class XMLConfigurer extends POJOConfigurer
 	{
 		this.xStream = xStream;
 		configureXStream();
-	}
-
-	public synchronized void fromXML(final InputStream input)
-	{
-		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream
-				.fromXML(input);
-		classConfigurations = checksConfiguration.classConfigurations;
-		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
-	}
-
-	public synchronized void fromXML(final Reader xml)
-	{
-		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream.fromXML(xml);
-		classConfigurations = checksConfiguration.classConfigurations;
-		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
-	}
-
-	public synchronized void fromXML(final String xml)
-	{
-		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream.fromXML(xml);
-		classConfigurations = checksConfiguration.classConfigurations;
-		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
-	}
-
-	/**
-	 * @return the xStream
-	 */
-	public XStream getXStream()
-	{
-		return xStream;
 	}
 
 	protected final void configureXStream()
@@ -147,6 +124,49 @@ public class XMLConfigurer extends POJOConfigurer
 		xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",
 				ParameterConfiguration.class);
 		xStream.addImplicitCollection(MethodConfiguration.class, "returnValueChecks", Check.class);
+	}
+
+	public synchronized void fromXML(final File input) throws IOException
+	{
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(input));
+		try
+		{
+			fromXML(bis);
+		}
+		finally
+		{
+			bis.close();
+		}
+	}
+
+	public synchronized void fromXML(final InputStream input)
+	{
+		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream
+				.fromXML(input);
+		classConfigurations = checksConfiguration.classConfigurations;
+		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
+	}
+
+	public synchronized void fromXML(final Reader xml)
+	{
+		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream.fromXML(xml);
+		classConfigurations = checksConfiguration.classConfigurations;
+		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
+	}
+
+	public synchronized void fromXML(final String xml)
+	{
+		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream.fromXML(xml);
+		classConfigurations = checksConfiguration.classConfigurations;
+		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
+	}
+
+	/**
+	 * @return the xStream
+	 */
+	public XStream getXStream()
+	{
+		return xStream;
 	}
 
 	public synchronized String toXML()

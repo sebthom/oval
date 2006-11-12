@@ -10,15 +10,15 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.aspectj;
+package net.sf.oval;
 
 /**
  * Marker interface that is added to advised classes by the ConstraintsEnforcerAspect
- * to indicate that constraints are enforced via AOP
+ * to indicate that constraints are actually enforced via AOP. Do not use it manually.
  * 
  * @author Sebastian Thomschke
  */
-public interface ConstraintsEnforcementIsEnabled
+public interface Guarded
 {
 
 }

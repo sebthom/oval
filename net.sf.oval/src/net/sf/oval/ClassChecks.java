@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.oval.aspectj.ConstraintsEnforcementIsEnabled;
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.exceptions.InvalidConfigurationException;
@@ -87,7 +86,7 @@ public final class ClassChecks
 			LOG.fine("Initializing constraints configuration for class " + clazz);
 
 		this.clazz = clazz;
-		isConstraintsEnforcementEnabled = ConstraintsEnforcementIsEnabled.class
+		isConstraintsEnforcementEnabled = Guarded.class
 				.isAssignableFrom(clazz);
 	}
 

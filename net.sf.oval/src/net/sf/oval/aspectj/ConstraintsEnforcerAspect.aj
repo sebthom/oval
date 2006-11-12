@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintsEnforcer;
+import net.sf.oval.Guarded;
 import net.sf.oval.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.Validator;
 import net.sf.oval.annotations.Constrained;
@@ -86,7 +87,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	/*
 	 * ADVICES
 	 */
-	declare parents: (@Constrained *) implements ConstraintsEnforcementIsEnabled;
+	declare parents: (@Constrained *) implements Guarded;
 
 	/**
 	 * constructor parameters validation

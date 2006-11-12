@@ -2,13 +2,13 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN" "../resources/docbook/sdocbook.dtd">
 <article>
 
-  <title>OVal - object validation framework for Java 5</title>
+  <title>OVal - object validation framework for <trademark>Java</trademark> 5 or later</title>
 
   <section>
 
     <title>What is OVal?</title>
 
-    <para>OVal is a generic validation frameworks for any kind of Java 
+    <para>OVal is a generic validation frameworks for any kind of Java
     objects (not only JavaBeans) and allows you:</para>
 
     <itemizedlist>
@@ -133,7 +133,7 @@ if(violations.size()&gt;0)
       <title>Specifying constraints for getter method return 
       value</title>
 
-      <para>Additionally to field constraints you can also specify 
+      <para>Additionally to field constraints you can specify 
       constraints for the return value of getter methods. When 
       validating the object the values of all fields and the return 
       values of the getter methods are checked against the specified 
@@ -145,7 +145,7 @@ if(violations.size()&gt;0)
       with &quot;is&quot; (e.g. <command>public boolean 
       isEnabled()</command> ) or &quot;get&quot; (e.g. <command>public 
       String getName()</command>) as getter methods. Return value 
-      constraints specified for other method types are ignored during 
+      constraints specified for parameteriezd method are not evaluated during 
       validation.</para>
 
       <para><emphasis>Important:</emphasis> To retrieve the return 
@@ -189,7 +189,7 @@ if(exs.size()&gt;0)
     <title>Using OVal for programming by contract</title>
 
     <para>By utilizing AspectJ OVal provides support for several 
-    aspects of programming by contract, but is not a full blown 
+    aspects of programming by contract - however it is not a full blown 
     programming by contract implementation.</para>
 
     <para>With OVal you can</para>
@@ -198,16 +198,16 @@ if(exs.size()&gt;0)
 
       <listitem>
 
-        <para>allow the execution of a class constructor or method only 
-        if the passed parameters satisfy prior defined constraints (pre 
+        <para>enforce that a parameterized constructor/method is invoked only 
+        if the given arguments satisfy prior defined constraints (pre 
         condition)</para>
 
       </listitem>
 
       <listitem>
 
-        <para>allow the execution of a method only if the object is in 
-        a certain state (pre condition)</para>
+        <para>enforce that a method is invoked only if the object is in a 
+        certain state (pre condition)</para>
 
       </listitem>
 
@@ -220,7 +220,7 @@ if(exs.size()&gt;0)
 
       <listitem>
 
-        <para>enforce the object must be in a certain state after a 
+        <para>enforce that the object must be in a certain state after a 
         method has been executed (post condition)</para>
 
       </listitem>
@@ -249,10 +249,9 @@ if(exs.size()&gt;0)
       Aspect</command> that extends the abstract aspect <command>
       net.sf.oval.aspectj.ConstraintsEnforcerAspect</command>. When the 
       new aspect is created the AspectJ builder will automatically 
-      weave the programming-by-contract related code into your classes 
+      weave the validation related code into your compiled classes 
       annotated with <command>
-      @net.sf.oval.annotations.Constrained</command> when they get 
-      compiled.</para>
+      @net.sf.oval.annotations.Constrained</command>.</para>
 
       <para>Now you can create all your business classes, add the 
       <command>@net.sf.oval.annotations.Constrained</command> 
@@ -267,9 +266,10 @@ if(exs.size()&gt;0)
       condition)</title>
 
       <para>Constraints specified for constructor parameters are 
-      automatically checked when the constructor is called. A call to 
-      the constructor is prohibited if any of the constraints is not 
-      satisfied.</para>
+      automatically checked when the constructor is invoked. Invocations of 
+      the constructor will be prohibited if any of the constraints is not satisfied.
+      In such a case a <command>net.sf.oval.constraints.ConstraintsViolatedException</command> 
+      wil be thrown.</para>
 
       <programlisting>@net.sf.oval.annotations.Constrained
 public class BusinessObject
@@ -291,9 +291,10 @@ public class BusinessObject
       condition)</title>
 
       <para>Constraints specified for method parameters are 
-      automatically checked when the method is called.A call to the 
-      method is prohibited if any of the constraints is not 
-      satisfied.</para>
+      automatically checked when the method is invoked. Invocations of to the 
+      method will be prohibited if any of the constraints is not satisfied.
+      In such a case a <command>net.sf.oval.constraints.ConstraintsViolatedException</command> 
+      wil be thrown.</para>
 
       <programlisting>@net.sf.oval.annotations.Constrained
 public class BusinessObject
@@ -316,17 +317,17 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
       parameters (pre condition)</title>
 
       <para>You can apply the constraints specified for a field to any 
-      constructor or method parameter in the same class by using the 
-      <command>@net.sf.oval.annotations.FieldConstraints</command> 
+      constructor or method parameter in the same or a parent class by using the 
+      <command>@net.sf.oval.constraints.AssertFieldConstraints</command> 
       annotation.</para>
 
       <para>If you do not specify a field name within the <command>
-      @net.sf.oval.annotations.FieldConstraints</command> annotation 
+      @net.sf.oval.constraints.AssertFieldConstraints</command> annotation 
       the constraints of the field with the same name as the annotated 
       parameter are applied to the parameter.</para>
 
       <para>If you specify a field name within the <command>
-      @net.sf.oval.annotations.FieldConstraints</command> annotation 
+      @net.sf.oval.constraints.AssertFieldConstraints</command> annotation 
       the constraints of the field with the specified name are applied 
       to the annotated parameter.</para>
 
@@ -402,9 +403,9 @@ bo.save();</programlisting>
       <title>Specifying method return value constraints (post 
       condition)</title>
 
-      <para>By adding constraint annotations to non-void methods you 
-      can specify constraints for the return value of the given method. 
-      When the method is called and the return value does not satisfy 
+      <para>By adding constraint annotations to a non-void method you 
+      can specify constraints for the method's return value. 
+      When the method is invoked and the return value does not satisfy 
       all constraints a ConstraintsViolatedException is thrown.</para>
 
       <para><emphasis>Note:</emphasis> Despite the thrown exception the 
@@ -453,7 +454,7 @@ List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);</programlis
     <section>
 
       <title>Enforcing full object validation after constructor 
-      execution (post condition)</title>
+      invocation (post condition)</title>
 
       <para>To enforce that all field and getter constraints are 
       checked after an object has been instantiated, annotate the 
@@ -625,10 +626,10 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
       <listitem>
 
         <para>Create a constraint check class that implements <command>
-        net.sf.oval.AnnotationConstraintCheck</command> or extends <command>
-        net.sf.oval.AbstractAnnotationConstraintCheck</command>.</para>
+        net.sf.oval.AnnotationCheck</command> or extends <command>
+        net.sf.oval.AbstractAnnotationCheck</command>.</para>
 
-        <programlisting>public class UpperCaseCheck extends AbstractAnnotationConstraintCheck&lt;UpperCase&gt; 
+        <programlisting>public class UpperCaseCheck extends AbstractAnnotationCheck&lt;UpperCase&gt; 
 { 
     public boolean isValid(Object validatable, Object value) 
     {
@@ -684,10 +685,10 @@ public @interface UpperCase
 
     <para>If you have to express a rather complex constraint that is 
     used only in one class you might not want to create a custom 
-    constraint annotation for it. Alternatively you can implement the 
-    constraint in a method that has a single parameter to receive the 
+    constraint class for it. Alternatively you can implement the 
+    constraint as a method that has a single parameter to receive the 
     value to validate and which returns true if the constraint is 
-    satisfied and false if its violated.</para>
+    satisfied and false if it is violated.</para>
 
     <para>Example:</para>
 
@@ -702,7 +703,7 @@ public @interface UpperCase
   @ValidateWithMethod(methodName = &quot;isValidDay&quot;, parameterType = int.class)
   private int day = 31;
 
-  protected boolean isValidDay(int day)
+  private boolean isValidDay(int day)
   {
     try
     {
@@ -723,14 +724,102 @@ public @interface UpperCase
   </section>
 
   <section>
+  	<title>XML based constraint configuration</title>
+  	
+  	<para>By default the constraints configuration is done by adding
+  	annotations representing the constraints to the respective locations 
+  	to the source code. Alternatively constraints can also be specified
+  	via XML - either for a complete configuration or to overwrite
+  	the annotations based constraint configurations for specific classes, fields, etc.</para>
+  	
+  	<para>You can used the <command>net.sf.oval.configuration.XMLConfigurer</command> for loading constraint definitions from an XML file:</para>
+  	
+	<programlisting>
+	XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval.xml");
+	Validator validator = new Validator(xmlConfigurer);
+	</programlisting>
+  	
+  	<para>Here is an example XML configuration:</para>
+  	
+  	<programlisting>
+&lt;oval&gt;
+	&lt;!-- define a constraint set --&gt;
+	&lt;constraintSet id=&quot;user.userid&quot;&gt;
+		&lt;net.sf.oval.constraints.NotNullCheck /&gt;
+		&lt;net.sf.oval.constraints.RegExCheck&gt;
+			&lt;pattern pattern=&quot;^[a-z0-9]{8}$&quot; flags=&quot;0&quot; /&gt;
+		&lt;/net.sf.oval.constraints.RegExCheck&gt;
+	&lt;/constraintSet&gt;
+
+	&lt;!-- define checks for the acme.model.User class --&gt;
+	&lt;!-- overwrite=false means already defined checks for this class will not be removed --&gt;
+	&lt;class type=&quot;acme.model.User&quot; overwrite=&quot;false&quot; applyFieldConstraintsToSetter=&quot;true&quot;&gt;
+		&lt;field name=&quot;firstName&quot;&gt;
+			&lt;net.sf.oval.constraints.LengthCheck min=&quot;0&quot; max=&quot;3&quot; /&gt;
+		&lt;/field&gt;
+
+		&lt;field name=&quot;lastName&quot;&gt;
+			&lt;net.sf.oval.constraints.LengthCheck min=&quot;0&quot; max=&quot;5&quot; /&gt;
+		&lt;/field&gt;
+
+		&lt;!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here --&gt;
+		&lt;field name=&quot;managerId&quot; overwrite=&quot;true&quot;&gt;
+			&lt;!-- use the checks defined for the constaint set &quot;user.userid&quot; --&gt;
+			&lt;net.sf.oval.constraints.AssertConstraintSetCheck id=&quot;user.userid&quot; /&gt;
+		&lt;/field&gt;
+
+		&lt;field name=&quot;userId&quot; overwrite=&quot;true&quot;&gt;
+			&lt;!-- use the checks defined for the constaint set &quot;user.userid&quot; --&gt;
+			&lt;net.sf.oval.constraints.AssertConstraintSetCheck id=&quot;user.userid&quot; /&gt;
+		&lt;/field&gt;
+
+		&lt;!-- define constructor parameter checks --&gt;
+		&lt;constructor&gt;
+			&lt;!-- parameter 1 --&gt;
+			&lt;parameter type=&quot;String&quot;&gt;
+				&lt;net.sf.oval.constraints.NotNullCheck /&gt;
+			&lt;/parameter&gt;
+
+			&lt;!-- parameter 2 --&gt;
+			&lt;!-- the types of all parameters must be listed, even if no checks are defined --&gt;
+			&lt;parameter type=&quot;String&quot; /&gt;
+		&lt;/constructor&gt;
+
+		&lt;!-- define method parameter checks --&gt;
+		&lt;method name=&quot;setPasswordExpirationDays&quot;&gt;
+			&lt;!-- parameter 1 --&gt;
+			&lt;parameter type=&quot;int&quot;&gt;
+				&lt;net.sf.oval.constraints.NotNullCheck /&gt;
+			&lt;/parameter&gt;
+		&lt;/method&gt;
+	&lt;/class&gt;
+&lt;/oval&gt;
+	</programlisting>
+  </section>
+  
+  <section>
 
     <title>API Documentation</title>
 
     <para>You can browse OVal&apos;s Javadoc 
     <ulink url="api/index.html">here</ulink>.</para>
-
+    
   </section>
 
+  <section>
+  
+  	<title>Trademark Disclaimer</title>
+  	
+  	<para><trademark>Java</trademark> and all Java-based trademarks are trademarks of 
+  	Sun Microsystems, Inc. in the United States, other countries, or both. For more information please refer to:
+    <ulink url="http://www.sun.com/policies/trademarks/">http://www.sun.com/policies/trademarks/</ulink></para>
+   
+    <para>This site is independent of Sun Microsystems, Inc.</para>
+    
+    <para>All other trademarks are the sole property of their respective owners.</para>
+    
+  </section>
+  
   <section>
 
     <title>Download</title>

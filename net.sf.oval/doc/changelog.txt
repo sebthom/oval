@@ -27,7 +27,6 @@
 * removed the "check" property from the net.sf.oval.ConstraintViolation class
 
 Refactoring:
-* net.sf.oval.exceptions.ConstrainedAnnotationNotPresentException: class ConstraintAnnotationNotPresentException renamed to ConstrainedAnnotationNotPresentException
 * net.sf.oval.AbstractAnnotationCheck: class AbstractCheck renamed to AbstractAnnotationCheck
 
 2006-08-04 v0.6
