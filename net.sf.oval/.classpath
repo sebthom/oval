@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="resources/javolution/javolution.jar"/>
 	<classpathentry kind="lib" path="resources/xstream/xstream-1.2.1.jar"/>
+	<classpathentry kind="lib" path="resources/jpa/persistence-api-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

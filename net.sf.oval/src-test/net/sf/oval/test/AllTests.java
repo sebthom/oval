@@ -34,6 +34,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AddingConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);

@@ -1,10 +1,3 @@
 integration:
 - evaluate if integrating with other validation packages (e.g. commons validator) makes any sense
-- interpret Hibernate Validator annotation
-- interpret EJB3 annotations, e.g.
-	@javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
-	@javax.persistence.OneToMay(optional=false)   => @net.sf.oval.constraints.NotNull
-	@javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
-	@javax.persistence.ManyToMany(optional=false) => @net.sf.oval.constraints.NotNull
-	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
-	@javax.persistence.Column(length=5    )       => @net.sf.oval.constraints.Length
+- consider constraints specified for method parameters in interfaces
