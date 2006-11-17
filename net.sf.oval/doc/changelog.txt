@@ -10,6 +10,7 @@
 	@javax.persistence.ManyToOne(optional=false)  => @net.sf.oval.constraints.NotNull
 	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
 	@javax.persistence.Column(length=5    )       => @net.sf.oval.constraints.Length
+* changed the ant script to generate a maven2 bundle jar in the dist target
 
 2006-11-12 v0.7
 ===============

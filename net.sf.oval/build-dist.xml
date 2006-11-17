@@ -13,7 +13,7 @@
 	<!-- ================================ -->
 	<!-- Global properties                -->
 	<!-- ================================ -->
-	<property name="version" value="0.7" />
+	<property name="version" value="0.8" />
 	<property name="buildversion" value="${version}.${NOW}" />
 	<property name="jar.basename" value="net.sf.oval" />
 	<property name="dist.basename" value="net.sf.oval" />
@@ -195,8 +195,36 @@
 			destfile="${dist}/${dist.basename}_${buildversion}.zip"
 			excludes="bin/**"
 		/>
+	
+	
+		<!-- generate the maven bundle -->
+		<mkdir dir="${build}/maven"/>
 		
-		<delete dir="${build}" />
+		<copy tofile="${build}/maven/${jar.basename}-${version}.jar">
+			<fileset dir="${build}" includes="${jar.basename}_${version}.jar" />	
+		</copy>
+
+		<jar 
+			basedir="${src}"
+			destfile="${build}/maven/${jar.basename}-${version}-sources.jar"
+		/>
 		
+		<jar 
+			basedir="${build}/doc/api"
+			destfile="${build}/maven/${jar.basename}-${version}-javadoc.jar"
+		/>
+		
+		<copy todir="${build}/maven">
+			<fileset dir="${res}/maven" includes="pom.xml"/>	
+		</copy>
+		
+		<replace file="${build}/maven/pom.xml" token="$VERSION$" value="${version}"/>
+		
+		<jar 
+			basedir="${build}/maven"
+			destfile="${dist}/${jar.basename}-${version}-bundle.jar"
+		/>
+		
+<!--		<delete dir="${build}" />-->
 	</target>
 </project>

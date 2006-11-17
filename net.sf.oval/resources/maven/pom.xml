@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.oval</groupId>
+  <artifactId>oval</artifactId>
+  <version>$VERSION$</version>
+  <packaging>jar</packaging>
+  <name>OVal</name>
+  <url>http://oval.sf.net</url>
+  <description>object validation framework for Java 5 or later</description>
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://svn.sourceforge.net/viewvc/oval/net.sf.oval/</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.5.2a</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

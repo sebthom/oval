@@ -86,8 +86,7 @@ public final class ClassChecks
 			LOG.fine("Initializing constraints configuration for class " + clazz);
 
 		this.clazz = clazz;
-		isConstraintsEnforcementEnabled = Guarded.class
-				.isAssignableFrom(clazz);
+		isConstraintsEnforcementEnabled = Guarded.class.isAssignableFrom(clazz);
 	}
 
 	/**
@@ -420,6 +419,8 @@ public final class ClassChecks
 
 	synchronized void reset()
 	{
+		if (LOG.isLoggable(Level.FINE)) LOG.fine("Clearing all checks for class " + clazz.getName());
+		
 		checksByConstructorParameter.clear();
 		checksByField.clear();
 		checksByMethod.clear();
