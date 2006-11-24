@@ -488,7 +488,7 @@ public class Validator
 				for (final Configurer configurer : configurers)
 				{
 					final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
-					addChecks(classConfig);
+					if (classConfig != null) addChecks(classConfig);
 				}
 			}
 			return cc;

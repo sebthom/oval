@@ -15,6 +15,7 @@
 - NPE was thrown when validating objects against an XML based configuration that uses constraint sets
 - various fixes regarding XML based configuration (thanks to tahura)
 + added more JUnit tests for the xml configuration
++ net.sf.oval.configuration.POJOConfigurer and all configuration elements are now serializable
 
 2006-11-12 v0.7
 ===============

@@ -12,11 +12,15 @@
  *******************************************************************************/
 package net.sf.oval.configuration.elements;
 
+import java.io.Serializable;
+
 /**
  * @author Sebastian Thomschke
  */
-public class ConfigurationElement
+public class ConfigurationElement implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * if set to false the checks defined here and in the child configuration elements will be added to the already registered checks for the respective contexts
 	 * if set to true the already registered checks for the respective contexts will be replaced by the checks defined here and in the child configuration elements  

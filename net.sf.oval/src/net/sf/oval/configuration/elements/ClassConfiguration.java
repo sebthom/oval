@@ -19,6 +19,8 @@ import java.util.Set;
  */
 public class ClassConfiguration extends ConfigurationElement
 {
+	private static final long serialVersionUID = 1L;
+	
 	public Class< ? > type;
 	public Set<FieldConfiguration> fieldConfigurations;
 	public Set<ConstructorConfiguration> constructorConfigurations;

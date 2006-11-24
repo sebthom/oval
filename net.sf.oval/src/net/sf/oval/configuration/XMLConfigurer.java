@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Set;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.elements.ClassConfiguration;
@@ -29,6 +28,7 @@ import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
+import net.sf.oval.exceptions.OValException;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -40,13 +40,11 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * 
  * @see http://xstream.codehaus.org/
  */
-public class XMLConfigurer extends POJOConfigurer
+public class XMLConfigurer implements Configurer
 {
-	protected static class ChecksConfiguration
-	{
-		public Set<ClassConfiguration> classConfigurations;
-		public Set<ConstraintSetConfiguration> constraintSetConfigurations;
-	}
+	private static final long serialVersionUID = 1L;
+
+	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
 
 	private final XStream xStream;
 
@@ -87,10 +85,10 @@ public class XMLConfigurer extends POJOConfigurer
 		xStream.useAttributeFor(Long.class);
 		xStream.useAttributeFor(String.class);
 
-		xStream.alias("oval", ChecksConfiguration.class);
-		xStream.addImplicitCollection(ChecksConfiguration.class, "classConfigurations",
+		xStream.alias("oval", POJOConfigurer.class);
+		xStream.addImplicitCollection(POJOConfigurer.class, "classConfigurations",
 				ClassConfiguration.class);
-		xStream.addImplicitCollection(ChecksConfiguration.class, "constraintSetConfigurations",
+		xStream.addImplicitCollection(POJOConfigurer.class, "constraintSetConfigurations",
 				ConstraintSetConfiguration.class);
 
 		xStream.alias("constraintSet", ConstraintSetConfiguration.class);
@@ -111,7 +109,8 @@ public class XMLConfigurer extends POJOConfigurer
 		xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
 
 		xStream.alias("constructor", ConstructorConfiguration.class);
-		xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations", ParameterConfiguration.class);
+		xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations",
+				ParameterConfiguration.class);
 
 		xStream.alias("method", MethodConfiguration.class);
 		xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",
@@ -134,24 +133,36 @@ public class XMLConfigurer extends POJOConfigurer
 
 	public synchronized void fromXML(final InputStream input)
 	{
-		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream
-				.fromXML(input);
-		classConfigurations = checksConfiguration.classConfigurations;
-		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
+		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
 
-	public synchronized void fromXML(final Reader xml)
+	public synchronized void fromXML(final Reader input)
 	{
-		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream.fromXML(xml);
-		classConfigurations = checksConfiguration.classConfigurations;
-		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
+		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
 
-	public synchronized void fromXML(final String xml)
+	public synchronized void fromXML(final String input)
 	{
-		final ChecksConfiguration checksConfiguration = (ChecksConfiguration) xStream.fromXML(xml);
-		classConfigurations = checksConfiguration.classConfigurations;
-		constraintSetConfigurations = checksConfiguration.constraintSetConfigurations;
+		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+	}
+
+	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
+	{
+		return pojoConfigurer.getClassConfiguration(clazz);
+	}
+
+	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
+			throws OValException
+	{
+		return pojoConfigurer.getConstraintSetConfiguration(constraintSetId);
+	}
+
+	/**
+	 * @return the pojoConfigurer
+	 */
+	public POJOConfigurer getPojoConfigurer()
+	{
+		return pojoConfigurer;
 	}
 
 	/**
@@ -162,27 +173,26 @@ public class XMLConfigurer extends POJOConfigurer
 		return xStream;
 	}
 
+	/**
+	 * @param pojoConfigurer the pojoConfigurer to set
+	 */
+	public void setPojoConfigurer(POJOConfigurer pojoConfigurer)
+	{
+		this.pojoConfigurer = pojoConfigurer;
+	}
+
 	public synchronized String toXML()
 	{
-		final ChecksConfiguration checksConfiguration = new ChecksConfiguration();
-		checksConfiguration.classConfigurations = classConfigurations;
-		checksConfiguration.constraintSetConfigurations = constraintSetConfigurations;
-		return xStream.toXML(checksConfiguration);
+		return xStream.toXML(pojoConfigurer);
 	}
 
 	public synchronized void toXML(final OutputStream out)
 	{
-		final ChecksConfiguration checksConfiguration = new ChecksConfiguration();
-		checksConfiguration.classConfigurations = classConfigurations;
-		checksConfiguration.constraintSetConfigurations = constraintSetConfigurations;
-		xStream.toXML(checksConfiguration, out);
+		xStream.toXML(pojoConfigurer, out);
 	}
 
 	public synchronized void toXML(final Writer out)
 	{
-		final ChecksConfiguration checksConfiguration = new ChecksConfiguration();
-		checksConfiguration.classConfigurations = classConfigurations;
-		checksConfiguration.constraintSetConfigurations = constraintSetConfigurations;
-		xStream.toXML(checksConfiguration, out);
+		xStream.toXML(pojoConfigurer, out);
 	}
 }

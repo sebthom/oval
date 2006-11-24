@@ -207,8 +207,8 @@ public class XMLConfigurationTest extends TestCase
 			}
 		}
 
-		x.setClassConfigurations(classConfigs);
-		x.setConstraintSetConfigurations(constraintSetsConfig);
+		x.getPojoConfigurer().setClassConfigurations(classConfigs);
+		x.getPojoConfigurer().setConstraintSetConfigurations(constraintSetsConfig);
 
 		/*
 		 * serialize the configuration to XML

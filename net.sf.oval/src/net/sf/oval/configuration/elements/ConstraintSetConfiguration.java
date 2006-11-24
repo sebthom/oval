@@ -21,6 +21,8 @@ import net.sf.oval.Check;
  */
 public class ConstraintSetConfiguration extends ConfigurationElement
 {
+	private static final long serialVersionUID = 1L;
+	
 	public List<Check> checks;
 
 	/**

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +26,7 @@ import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
+import net.sf.oval.configuration.POJOConfigurer;
 import net.sf.oval.configuration.XMLConfigurer;
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
@@ -67,7 +72,7 @@ public class XMLConfigurationTest extends TestCase
 		validateUser(new Validator(x));
 	}
 
-	public void testSerializedObjectConfiguration()
+	public void testSerializedObjectConfiguration() throws Exception
 	{
 		XMLConfigurer x = new XMLConfigurer();
 
@@ -143,19 +148,28 @@ public class XMLConfigurationTest extends TestCase
 			}
 		}
 
-		x.setClassConfigurations(classConfigs);
-		x.setConstraintSetConfigurations(constraintSetsConfig);
+		x.getPojoConfigurer().setClassConfigurations(classConfigs);
+		x.getPojoConfigurer().setConstraintSetConfigurations(constraintSetsConfig);
 
 		/*
-		 * serialize the configuration to XML
+		 * test POJO Configurer object serialization
+		 */
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		oos.writeObject(x.getPojoConfigurer());
+		oos.flush();
+		oos.close();
+
+		ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
+		ObjectInputStream ois = new ObjectInputStream(bin);
+		x.setPojoConfigurer((POJOConfigurer) ois.readObject());
+		ois.close();
+		
+		/*
+		 * test XML de/serialization
 		 */
 		String xmlConfig = x.toXML();
-
-		/*
-		 * deserialize the configuration from XML
-		 */
 		x.fromXML(xmlConfig);
-
 		validateUser(new Validator(x));
 	}
 

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.configuration;
 
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.Set;
 
 import net.sf.oval.configuration.elements.ClassConfiguration;
@@ -22,8 +22,10 @@ import net.sf.oval.exceptions.OValException;
 /**
  * @author Sebastian Thomschke
  */
-public class POJOConfigurer implements Configurer
+public class POJOConfigurer implements Configurer, Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	protected Set<ClassConfiguration> classConfigurations;
 	protected Set<ConstraintSetConfiguration> constraintSetConfigurations;
 
@@ -42,7 +44,7 @@ public class POJOConfigurer implements Configurer
 	/**
 	 * @return the classConfigurations
 	 */
-	public Collection<ClassConfiguration> getClassConfigurations()
+	public Set<ClassConfiguration> getClassConfigurations()
 	{
 		return classConfigurations;
 	}
@@ -62,7 +64,7 @@ public class POJOConfigurer implements Configurer
 	/**
 	 * @return the constraintSetConfigurations
 	 */
-	public Collection<ConstraintSetConfiguration> getConstraintSetConfigurations()
+	public Set<ConstraintSetConfiguration> getConstraintSetConfigurations()
 	{
 		return constraintSetConfigurations;
 	}
