@@ -289,11 +289,15 @@ public class Validator
 			// ignore circular dependencies
 			if (isCurrentlyValidated(valueToValidate)) return;
 
-			if (validate(valueToValidate).size() != 0)
+			final List<ConstraintViolation> childViolations = validate(valueToValidate);
+
+			if (childViolations.size() != 0)
 			{
 				final String errorMessage = renderMessage(context, valueToValidate, check);
+
 				violations.add(new ConstraintViolation(errorMessage, validatedObject,
-						valueToValidate, context));
+						valueToValidate, context, childViolations
+								.toArray(new ConstraintViolation[childViolations.size()])));
 			}
 			return;
 		}

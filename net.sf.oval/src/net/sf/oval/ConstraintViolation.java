@@ -30,6 +30,7 @@ public class ConstraintViolation implements Serializable
 
 	private final static long serialVersionUID = 1L;
 
+	private final ConstraintViolation[] causes;
 	private final OValContext context;
 	private final String message;
 	private transient Object validatedObject;
@@ -42,6 +43,25 @@ public class ConstraintViolation implements Serializable
 		this.validatedObject = validatedObject;
 		this.value = value;
 		this.context = context;
+		this.causes = null;
+	}
+
+	public ConstraintViolation(final String message, final Object validatedObject,
+			final Object value, final OValContext context, final ConstraintViolation[] causes)
+	{
+		this.message = message;
+		this.validatedObject = validatedObject;
+		this.value = value;
+		this.context = context;
+		this.causes = causes;
+	}
+
+	/**
+	 * @return the causes
+	 */
+	public ConstraintViolation[] getCauses()
+	{
+		return causes;
 	}
 
 	/**
