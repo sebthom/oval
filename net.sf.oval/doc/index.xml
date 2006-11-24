@@ -776,13 +776,13 @@ public @interface UpperCase
 		&lt;!-- define constructor parameter checks --&gt;
 		&lt;constructor&gt;
 			&lt;!-- parameter 1 --&gt;
-			&lt;parameter type=&quot;String&quot;&gt;
+			&lt;parameter type=&quot;java.lang.String&quot;&gt;
 				&lt;net.sf.oval.constraints.NotNullCheck /&gt;
 			&lt;/parameter&gt;
 
 			&lt;!-- parameter 2 --&gt;
 			&lt;!-- the types of all parameters must be listed, even if no checks are defined --&gt;
-			&lt;parameter type=&quot;String&quot; /&gt;
+			&lt;parameter type=&quot;java.lang.String&quot; /&gt;
 		&lt;/constructor&gt;
 
 		&lt;!-- define method parameter checks --&gt;
