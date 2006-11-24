@@ -684,10 +684,10 @@ public @interface UpperCase
     <title>Expressing complex class specific constraints</title>
 
     <para>If you have to express a rather complex constraint that is 
-    used only in one class you might not want to create a custom 
-    constraint class for it. Alternatively you can implement the 
-    constraint as a method that has a single parameter to receive the 
-    value to validate and which returns true if the constraint is 
+    used only within one class you might not want to implement it as a 
+    custom constraint. Alternatively you can write a method within 
+    the class that has a single parameter to receive the value to 
+    validate and that returns true if the constraint is 
     satisfied and false if it is violated.</para>
 
     <para>Example:</para>
