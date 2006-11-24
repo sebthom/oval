@@ -13,6 +13,7 @@
 * changed the ant script to generate a maven2 bundle jar in the dist target
 - AssertConstraintSet constraint was ignored when specified for getter methods' return value 
 - NPE was thrown when validating objects against an XML based configuration that uses constraint sets
+- various fixes regarding XML based configuration (thanks to tahura)
 + added more JUnit tests for the xml configuration
 
 2006-11-12 v0.7
