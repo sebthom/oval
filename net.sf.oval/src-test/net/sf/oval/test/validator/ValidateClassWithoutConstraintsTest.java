@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
+import net.sf.oval.configuration.XMLConfigurer;
 
 /**
  * @author Sebastian Thomschke
@@ -41,11 +42,22 @@ public class ValidateClassWithoutConstraintsTest extends TestCase
 		}
 	}
 
-	public void testValidateClassWithoutConstraints()
+	public void testClassWithoutConstraints()
 	{
 		final TestEntity e = new TestEntity(null);
 
 		final Validator v = new Validator();
+		List<ConstraintViolation> violations = v.validate(e);
+		assertEquals(0, violations.size());
+	}
+	
+	public void testEmptyXmlConfigurer()
+	{
+		XMLConfigurer xmlConfigurer = new XMLConfigurer();  
+		Validator v = new Validator(xmlConfigurer);
+		
+		final TestEntity e = new TestEntity(null);
+		
 		List<ConstraintViolation> violations = v.validate(e);
 		assertEquals(0, violations.size());
 	}
