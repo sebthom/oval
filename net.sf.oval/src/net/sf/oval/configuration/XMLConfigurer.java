@@ -94,8 +94,7 @@ public class XMLConfigurer extends POJOConfigurer
 				ConstraintSetConfiguration.class);
 
 		xStream.alias("constraintSet", ConstraintSetConfiguration.class);
-		//not required as long as only one collection is defined for this class:
-		//xStream.addImplicitCollection(ConstraintSetConfiguration.class, "checks");
+		xStream.addImplicitCollection(ConstraintSetConfiguration.class, "checks");
 
 		xStream.alias("class", ClassConfiguration.class);
 		xStream.addImplicitCollection(ClassConfiguration.class, "constructorConfigurations",
@@ -106,16 +105,13 @@ public class XMLConfigurer extends POJOConfigurer
 				MethodConfiguration.class);
 
 		xStream.alias("field", FieldConfiguration.class);
-		//not required as long as only one collection is defined for this class:
-		//xStream.addImplicitCollection(FieldConfiguration.class, "checks");
+		xStream.addImplicitCollection(FieldConfiguration.class, "checks");
 
 		xStream.alias("parameter", ParameterConfiguration.class);
-		//not required as long as only one collection is defined for this class:
-		//xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
+		xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
 
 		xStream.alias("constructor", ConstructorConfiguration.class);
-		//not required as long as only one collection is defined for this class:
-		//xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations", ParameterConfiguration.class);
+		xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations", ParameterConfiguration.class);
 
 		xStream.alias("method", MethodConfiguration.class);
 		xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",

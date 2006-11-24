@@ -23,6 +23,11 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	private static final long serialVersionUID = 1L;
 
 	private String id;
+
+	/**
+	 * The class in which the constraint set is defined.
+	 * If it is Object.class then a global constraint set is referenced.
+	 */
 	private Class source = Object.class;
 
 	@Override
@@ -55,7 +60,7 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 
 	public Class getSource()
 	{
-		return source;
+		return source == null ? Object.class : source;
 	}
 
 	public void setSource(final Class source)

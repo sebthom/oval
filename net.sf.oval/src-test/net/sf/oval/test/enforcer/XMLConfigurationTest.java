@@ -10,34 +10,42 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.test.validator;
+package net.sf.oval.test.enforcer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ConstraintsViolatedAdapter;
 import net.sf.oval.Validator;
+import net.sf.oval.ConstraintsEnforcer.ReportingMode;
+import net.sf.oval.annotations.Constrained;
+import net.sf.oval.aspectj.ParameterNameResolverAspectJImpl;
 import net.sf.oval.configuration.XMLConfigurer;
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
+import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.constraints.RegExCheck;
+import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.test.enforcer.ParameterConstraintsTest.TestEntity;
 
 /**
  * @author Sebastian Thomschke
  */
 public class XMLConfigurationTest extends TestCase
 {
+	@Constrained
 	public static class User
 	{
 		// added @Length to test if overwrite=true works
@@ -50,12 +58,29 @@ public class XMLConfigurationTest extends TestCase
 
 		protected String lastName;
 
+		public User()
+		{}
+
+		public User(String userId, String managerId, int somethingElse)
+		{
+			this.userId = userId;
+			this.managerId = managerId;
+		}
+
 		/**
 		 * @return the managerId
 		 */
 		public String getManagerId()
 		{
 			return managerId;
+		}
+
+		/**
+		 * @param managerId the managerId to set
+		 */
+		public void setManagerId(String managerId)
+		{
+			this.managerId = managerId;
 		}
 	}
 
@@ -64,7 +89,11 @@ public class XMLConfigurationTest extends TestCase
 		XMLConfigurer x = new XMLConfigurer();
 		x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
 
-		validateUser(new Validator(x));
+		Validator v = new Validator(x);
+		v.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		TestEnforcerAspect.INSTANCE.getConstraintsEnforcer().setValidator(v);
+
+		validateUser();
 	}
 
 	public void testSerializedObjectConfiguration()
@@ -131,15 +160,50 @@ public class XMLConfigurationTest extends TestCase
 				fc.checks.add(acsc);
 			}
 
+			cf.constructorConfigurations = new HashSet<ConstructorConfiguration>();
+			{
+				ConstructorConfiguration cc = new ConstructorConfiguration();
+				cf.constructorConfigurations.add(cc);
+				cc.parameterConfigurations = new ArrayList<ParameterConfiguration>();
+
+				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				acsc.setId("user.userid");
+
+				ParameterConfiguration pc1 = new ParameterConfiguration();
+				pc1.type = String.class;
+				pc1.checks = new ArrayList<Check>();
+				pc1.checks.add(acsc);
+				cc.parameterConfigurations.add(pc1);
+				ParameterConfiguration pc2 = new ParameterConfiguration();
+				pc2.type = String.class;
+				pc2.checks = new ArrayList<Check>();
+				pc2.checks.add(acsc);
+				cc.parameterConfigurations.add(pc2);
+				ParameterConfiguration pc3 = new ParameterConfiguration();
+				pc3.type = int.class;
+				cc.parameterConfigurations.add(pc3);
+			}
+
 			cf.methodConfigurations = new HashSet<MethodConfiguration>();
 			{
+				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				acsc.setId("user.userid");
+
 				MethodConfiguration mc = new MethodConfiguration();
 				cf.methodConfigurations.add(mc);
 				mc.name = "getManagerId";
 				mc.returnValueChecks = new ArrayList<Check>();
-				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
-				acsc.setId("user.userid");
 				mc.returnValueChecks.add(acsc);
+
+				mc = new MethodConfiguration();
+				cf.methodConfigurations.add(mc);
+				mc.name = "setManagerId";
+				mc.parameterConfigurations = new ArrayList<ParameterConfiguration>();
+				ParameterConfiguration pc1 = new ParameterConfiguration();
+				pc1.type = String.class;
+				pc1.checks = new ArrayList<Check>();
+				pc1.checks.add(acsc);
+				mc.parameterConfigurations.add(pc1);
 			}
 		}
 
@@ -156,68 +220,70 @@ public class XMLConfigurationTest extends TestCase
 		 */
 		x.fromXML(xmlConfig);
 
-		validateUser(new Validator(x));
+		Validator v = new Validator(x);
+		v.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		TestEnforcerAspect.INSTANCE.getConstraintsEnforcer().setValidator(v);
+
+		validateUser();
 	}
 
-	private void validateUser(final Validator validator)
+	private void validateUser()
 	{
-		final User usr = new User();
+		TestEnforcerAspect.constraintsEnforcer.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
+				TestEntity.class);
 
-		usr.lastName = "";
-		usr.userId = "12345678";
-		usr.managerId = "12345678";
+		ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
+		TestEnforcerAspect.constraintsEnforcer.addListener(listener, User.class);
 
-		/*
-		 * check constraints for firstName
-		 */
-		usr.firstName = "123456";
-		List<ConstraintViolation> violations = validator.validate(usr);
-		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".firstName is not between 0 and 3 characters long",
-				violations.get(0).getMessage());
+		listener.clear();
+		try
+		{
+			new User(null, null, 1);
+			fail("ConstraintViolationException expected");
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(2, violations.length);
+			assertEquals(
+					User.class.getName()
+							+ "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
+					violations[0].getMessage());
+			assertEquals(
+					User.class.getName()
+							+ "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
+					violations[1].getMessage());
+		}
 
-		usr.firstName = "";
+		listener.clear();
+		try
+		{
+			User user = new User("12345678", "12345678", 1);
+			user.setManagerId(null);
+			fail("ConstraintViolationException expected");
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(1, violations.length);
+			assertEquals(User.class.getName()
+					+ ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
+					violations[0].getMessage());
+		}
 
-		/*
-		 * check constraints for lastName
-		 */
-		usr.lastName = "123456";
-		violations = validator.validate(usr);
-		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".lastName is not between 0 and 5 characters long",
-				violations.get(0).getMessage());
-
-		usr.lastName = "";
-
-		/*
-		 * check constraints for userId
-		 */
-		usr.userId = null;
-		violations = validator.validate(usr);
-		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".userId is null", violations.get(0).getMessage());
-
-		usr.userId = "%$$e3";
-		violations = validator.validate(usr);
-		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".userId does not match the pattern ^[a-z0-9]{8}$",
-				violations.get(0).getMessage());
-		usr.userId = "12345678";
-
-		/*
-		 * check constraints for managerId
-		 */
-		usr.managerId = null;
-		violations = validator.validate(usr);
-		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".getManagerId() is null", violations.get(0)
-				.getMessage());
-
-		usr.managerId = "%$$e3";
-		violations = validator.validate(usr);
-		assertEquals(1, violations.size());
-		assertEquals(User.class.getName()
-				+ ".getManagerId() does not match the pattern ^[a-z0-9]{8}$", violations.get(0)
-				.getMessage());
+		listener.clear();
+		try
+		{
+			User user = new User();
+			user.getManagerId();
+			fail("ConstraintViolationException expected");
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(1, violations.length);
+			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0]
+					.getMessage());
+		}
 	}
 }

@@ -39,6 +39,7 @@ public class AllTests
 		suite
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 
@@ -56,7 +57,7 @@ public class AllTests
 				.addTestSuite(net.sf.oval.test.enforcer.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.ParameterConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.enforcer.PrePostValidateThisTest.class);
-
+		suite.addTestSuite(net.sf.oval.test.enforcer.XMLConfigurationTest.class);
 		//$JUnit-END$
 		return suite;
 	}

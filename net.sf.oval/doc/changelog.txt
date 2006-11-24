@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2006-??-?? v0.8
+2006-12-?? v0.8
 ===============
 + added JPAAnnotationsConfigurer to translate EJB3 JPA annotations into OVAL constraints
 	@javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
@@ -11,6 +11,9 @@
 	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
 	@javax.persistence.Column(length=5    )       => @net.sf.oval.constraints.Length
 * changed the ant script to generate a maven2 bundle jar in the dist target
+- AssertConstraintSet constraint was ignored when specified for getter methods' return value 
+- NPE was thrown when validating objects against an XML based configuration that uses constraint sets
++ added more JUnit tests for the xml configuration
 
 2006-11-12 v0.7
 ===============

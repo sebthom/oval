@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.Guarded;
-import net.sf.oval.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.Validator;
 import net.sf.oval.annotations.Constrained;
 import net.sf.oval.annotations.PostValidateThis;
@@ -37,27 +36,25 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 {
 	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect.class.getName());
 
-	protected final ConstraintsEnforcer constraintsEnforcer;
-	protected final Validator validator;
+	protected ConstraintsEnforcer constraintsEnforcer;
+	protected Validator validator;
 
 	public ConstraintsEnforcerAspect()
 	{
-		validator = new Validator();
-		constraintsEnforcer = new ConstraintsEnforcer(validator);
+		this(new ConstraintsEnforcer(new Validator()));
 	}
 
 	public ConstraintsEnforcerAspect(final ConstraintsEnforcer constraintsEnforcer)
 	{
 		LOG.info("Instantiated");
 
+		setConstraintsEnforcer(constraintsEnforcer);
+	}
+
+	public final void setConstraintsEnforcer(final ConstraintsEnforcer constraintsEnforcer)
+	{
 		this.constraintsEnforcer = constraintsEnforcer;
 		this.validator = constraintsEnforcer.getValidator();
-
-		// in case the this ConstraintsEnforcerAspect is used we can also use the ParameterNameResolver that utilizes the AspectJ library
-		if (validator.getParameterNameResolver() instanceof ParameterNameResolverEnumerationImpl)
-		{
-			validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-		}
 	}
 
 	/*

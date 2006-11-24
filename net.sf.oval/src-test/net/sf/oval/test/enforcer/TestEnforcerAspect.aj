@@ -15,6 +15,7 @@ package net.sf.oval.test.enforcer;
 import net.sf.oval.ConstraintsEnforcer;
 import net.sf.oval.Validator;
 import net.sf.oval.aspectj.ConstraintsEnforcerAspect;
+import net.sf.oval.aspectj.ParameterNameResolverAspectJImpl;
 
 /**
  * @author Sebastian Thomschke
@@ -24,8 +25,12 @@ public aspect TestEnforcerAspect extends ConstraintsEnforcerAspect
 	public final static Validator validator = new Validator();
 	public final static ConstraintsEnforcer constraintsEnforcer = new ConstraintsEnforcer(validator);
 
+	static TestEnforcerAspect INSTANCE;
+
 	public TestEnforcerAspect()
 	{
 		super(constraintsEnforcer);
+		INSTANCE = this;
+		validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 	}
 }

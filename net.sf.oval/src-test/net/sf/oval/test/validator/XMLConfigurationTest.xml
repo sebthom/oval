@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oval>
+	<!-- define a constraint set -->
+	<constraintSet id="user.userid">
+		<net.sf.oval.constraints.NotNullCheck message="{0} is null" />
+		<net.sf.oval.constraints.RegExCheck message="{0} does not match the pattern {2}">
+			<pattern pattern="^[a-z0-9]{8}$" flags="0" />
+		</net.sf.oval.constraints.RegExCheck>
+	</constraintSet>
+
+	<!-- define checks for the net.sf.oval.test.validator.XMLConfigurationTest$User class -->
+	<!-- overwrite=false means already defined checks for this class will not be removed -->
+	<class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false" applyFieldConstraintsToSetter="true">
+		<field name="firstName">
+			<net.sf.oval.constraints.LengthCheck min="0" max="3" message="{0} is not between {2} and {3} characters long"/>
+		</field>
+
+		<field name="lastName">
+			<net.sf.oval.constraints.LengthCheck min="0" max="5" message="{0} is not between {2} and {3} characters long" />
+		</field>
+
+		<!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
+		<field name="userId" overwrite="true">
+			<!-- use the checks defined for the constaint set "user.userid" -->
+			<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+		</field>
+
+		<!-- define a getter return value check -->
+		<method name="getManagerId">
+			<!-- returnValue -  use the checks defined for the constaint set "user.userid" -->
+			<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+		</method>
+	</class>
+</oval>

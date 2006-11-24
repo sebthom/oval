@@ -687,12 +687,7 @@ public class Validator
 
 			for (final Check check : checks)
 			{
-				if (!check.isSatisfied(validatedObject, valueToValidate, context))
-				{
-					final String errorMessage = renderMessage(context, valueToValidate, check);
-					violations.add(new ConstraintViolation(errorMessage, validatedObject,
-							valueToValidate, context));
-				}
+				checkConstraint(violations, check, validatedObject, valueToValidate, context);
 			}
 		}
 	}

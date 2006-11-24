@@ -45,18 +45,18 @@ public class ConstraintsEnforcer
 		NOTIFY_LISTENERS_AND_THROW_EXCEPTION
 	}
 
-	private final Validator validator;
-
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
+
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
-
-	private final Map<Class, ReportingMode> reportingModesByClass = new WeakHashMap<Class, ReportingMode>();
-	private final Map<Object, ReportingMode> reportingModesByObject = new WeakHashMap<Object, ReportingMode>();
-
 	/**
 	 * default reporting mode
 	 */
 	private ReportingMode reportingMode = ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION;
+
+	private final Map<Class, ReportingMode> reportingModesByClass = new WeakHashMap<Class, ReportingMode>();
+	private final Map<Object, ReportingMode> reportingModesByObject = new WeakHashMap<Object, ReportingMode>();
+
+	private Validator validator;
 
 	public ConstraintsEnforcer(final Validator validator)
 	{
@@ -224,6 +224,14 @@ public class ConstraintsEnforcer
 		if (validatedObject == null || reportingMode == null) return;
 
 		reportingModesByObject.put(validatedObject, reportingMode);
+	}
+
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(final Validator validator)
+	{
+		this.validator = validator;
 	}
 
 	public void unsetReportingMode(final Class clazz)
