@@ -177,16 +177,15 @@ public class Validator
 			if (classConfig.methodConfigurations != null)
 				for (final MethodConfiguration methodConfig : classConfig.methodConfigurations)
 				{
+					/*
+					 * determine the method
+					 */
 					Method method = null;
+
 					if (methodConfig.parameterConfigurations == null
 							|| methodConfig.parameterConfigurations.size() == 0)
 					{
 						method = classConfig.type.getDeclaredMethod(methodConfig.name);
-
-						if (methodConfig.overwrite != null && methodConfig.overwrite)
-						{
-							cc.removeAllChecks(method);
-						}
 					}
 					else
 					{
@@ -200,12 +199,18 @@ public class Validator
 
 						method = classConfig.type.getDeclaredMethod(methodConfig.name,
 								parameterTypes);
+					}
 
-						if (methodConfig.overwrite != null && methodConfig.overwrite)
-						{
-							cc.removeAllChecks(method);
-						}
+					if (methodConfig.overwrite != null && methodConfig.overwrite)
+					{
+						cc.removeAllChecks(method);
+					}
 
+					/*
+					 * configure parameter constraints
+					 */
+					if (methodConfig.parameterConfigurations != null &&methodConfig.parameterConfigurations.size() > 0)
+					{
 						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
 						{
 							final ParameterConfiguration parameterConfig = methodConfig.parameterConfigurations
@@ -225,11 +230,23 @@ public class Validator
 						}
 					}
 
-					if (methodConfig.returnValueChecks != null
-							&& methodConfig.returnValueChecks.size() > 0)
+					/*
+					 * configure return value constraints
+					 */
+					if (methodConfig.returnValueConfiguration != null)
 					{
-						cc.addChecks(method, methodConfig.returnValueChecks
-								.toArray(new Check[methodConfig.returnValueChecks.size()]));
+						if ((methodConfig.returnValueConfiguration.overwrite != null && methodConfig.returnValueConfiguration.overwrite))
+						{
+							cc.removeAllReturnValueChecks(method);
+						}
+
+						if (methodConfig.returnValueConfiguration.checks != null
+								&& methodConfig.returnValueConfiguration.checks.size() > 0)
+						{
+							cc.addChecks(method, methodConfig.returnValueConfiguration.checks
+									.toArray(new Check[methodConfig.returnValueConfiguration.checks
+											.size()]));
+						}
 					}
 				}
 		}

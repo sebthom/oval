@@ -300,11 +300,8 @@ public final class ClassChecks
 
 	synchronized void removeAllChecks(final Method method) throws InvalidConfigurationException
 	{
-		checksByMethod.remove(method);
-		checksByMethodParameter.remove(method);
-		constrainedGetters.remove(method);
-		constrainedMethods.remove(method);
-		constrainedParameterizedMethods.remove(method);
+		removeAllParameterChecks(method);
+		removeAllReturnValueChecks(method);
 	}
 
 	synchronized void removeAllChecks(final Method method, final int parameterIndex)
@@ -322,6 +319,21 @@ public final class ClassChecks
 
 		checksOfMethodByParameter.remove(parameterIndex);
 		if (checksOfMethodByParameter.size() == 0) constrainedParameterizedMethods.remove(method);
+	}
+
+	synchronized void removeAllParameterChecks(final Method method)
+			throws InvalidConfigurationException
+	{
+		checksByMethodParameter.remove(method);
+		constrainedParameterizedMethods.remove(method);
+	}
+
+	synchronized void removeAllReturnValueChecks(final Method method)
+			throws InvalidConfigurationException
+	{
+		checksByMethod.remove(method);
+		constrainedGetters.remove(method);
+		constrainedMethods.remove(method);
 	}
 
 	public synchronized void removeCheck(final Constructor constructor, final int parameterIndex,
@@ -419,8 +431,9 @@ public final class ClassChecks
 
 	synchronized void reset()
 	{
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("Clearing all checks for class " + clazz.getName());
-		
+		if (LOG.isLoggable(Level.FINE))
+			LOG.fine("Clearing all checks for class " + clazz.getName());
+
 		checksByConstructorParameter.clear();
 		checksByField.clear();
 		checksByMethod.clear();

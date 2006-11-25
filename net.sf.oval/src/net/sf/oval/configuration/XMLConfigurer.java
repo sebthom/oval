@@ -27,6 +27,7 @@ import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.exceptions.OValException;
 
@@ -115,7 +116,10 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("method", MethodConfiguration.class);
 		xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",
 				ParameterConfiguration.class);
-		xStream.addImplicitCollection(MethodConfiguration.class, "returnValueChecks", Check.class);
+		xStream.aliasField("returnValue", MethodConfiguration.class, "returnValueConfiguration");
+		//xStream.alias("returnValue", MethodReturnValueConfiguration.class);
+		xStream.addImplicitCollection(MethodReturnValueConfiguration.class, "checks", Check.class);
+
 	}
 
 	public synchronized void fromXML(final File input) throws IOException

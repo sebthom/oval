@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE oval PUBLIC 
+   "-//OVal/OVal Configuration DTD 0.8//EN"
+   "http://oval.sourceforge.net/oval-configuration-0.8.dtd">
 <oval>
 	<!-- define a constraint set -->
 	<constraintSet id="user.userid">
@@ -10,13 +13,16 @@
 
 	<!-- define checks for the net.sf.oval.test.validator.XMLConfigurationTest$User class -->
 	<!-- overwrite=false means already defined checks for this class will not be removed -->
-	<class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false" applyFieldConstraintsToSetter="true">
+	<class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false"
+		applyFieldConstraintsToSetter="true">
 		<field name="firstName">
-			<net.sf.oval.constraints.LengthCheck min="0" max="3" message="{0} is not between {2} and {3} characters long"/>
+			<net.sf.oval.constraints.LengthCheck min="0" max="3"
+				message="{0} is not between {2} and {3} characters long" />
 		</field>
 
 		<field name="lastName">
-			<net.sf.oval.constraints.LengthCheck min="0" max="5" message="{0} is not between {2} and {3} characters long" />
+			<net.sf.oval.constraints.LengthCheck min="0" max="5"
+				message="{0} is not between {2} and {3} characters long" />
 		</field>
 
 		<!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
@@ -28,7 +34,9 @@
 		<!-- define a getter return value check -->
 		<method name="getManagerId">
 			<!-- returnValue -  use the checks defined for the constaint set "user.userid" -->
-			<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+			<returnValue>
+				<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+			</returnValue>
 		</method>
 	</class>
 </oval>

@@ -742,6 +742,10 @@ public @interface UpperCase
   	<para>Here is an example XML configuration:</para>
   	
   	<programlisting>
+&lt;?xml version="1.0" ?&gt;
+&lt;!DOCTYPE oval PUBLIC 
+   &quot;-//OVal/OVal Configuration DTD 0.8//EN&quot;
+   &quot;http://oval.sourceforge.net/oval-configuration-0.8.dtd&quot;&gt;
 &lt;oval&gt;
 	&lt;!-- define a constraint set --&gt;
 	&lt;constraintSet id=&quot;user.userid&quot;&gt;

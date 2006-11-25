@@ -32,6 +32,7 @@ import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.LengthCheck;
@@ -141,10 +142,11 @@ public class XMLConfigurationTest extends TestCase
 				MethodConfiguration mc = new MethodConfiguration();
 				cf.methodConfigurations.add(mc);
 				mc.name = "getManagerId";
-				mc.returnValueChecks = new ArrayList<Check>();
+				mc.returnValueConfiguration=new MethodReturnValueConfiguration();
+				mc.returnValueConfiguration.checks = new ArrayList<Check>();
 				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
-				mc.returnValueChecks.add(acsc);
+				mc.returnValueConfiguration.checks.add(acsc);
 			}
 		}
 

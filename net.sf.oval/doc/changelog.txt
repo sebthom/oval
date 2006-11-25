@@ -17,6 +17,7 @@
 + added more JUnit tests for the xml configuration
 + net.sf.oval.configuration.POJOConfigurer and all configuration elements are now serializable
 + added support for ParaNamer http://paranamer.codehaus.org/ for method parameter name resolving
++ added a DTD for the XML configuration file
 
 2006-11-12 v0.7
 ===============

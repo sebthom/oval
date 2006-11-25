@@ -14,14 +14,14 @@ package net.sf.oval.configuration.elements;
 
 import java.util.List;
 
+import net.sf.oval.Check;
+
 /**
  * @author Sebastian Thomschke
  */
-public class MethodConfiguration extends ConfigurationElement
+public class MethodReturnValueConfiguration extends ConfigurationElement
 {
 	private static final long serialVersionUID = 1L;
-	
-	public String name;
-	public List<ParameterConfiguration> parameterConfigurations;
-	public MethodReturnValueConfiguration returnValueConfiguration;
+
+	public List<Check> checks;
 }

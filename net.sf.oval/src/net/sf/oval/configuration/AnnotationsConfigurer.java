@@ -29,6 +29,7 @@ import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.exceptions.OValException;
@@ -198,7 +199,8 @@ public class AnnotationsConfigurer implements Configurer
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
 				mc.parameterConfigurations = parametersConfig;
-				mc.returnValueChecks = returnValueChecks;
+				mc.returnValueConfiguration = new MethodReturnValueConfiguration();
+				mc.returnValueConfiguration.checks = returnValueChecks;
 				config.methodConfigurations.add(mc);
 			}
 		}
