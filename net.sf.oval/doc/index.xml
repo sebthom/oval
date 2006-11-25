@@ -8,7 +8,7 @@
 
     <title>What is OVal?</title>
 
-    <para>OVal is a generic validation frameworks for any kind of Java
+    <para>OVal is a generic validation framework for any kind of Java
     objects (not only JavaBeans) and allows you:</para>
 
     <itemizedlist>
