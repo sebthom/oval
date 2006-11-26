@@ -14,7 +14,6 @@ package net.sf.oval.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sf.oval.Validator;
 
 /**
  * @author Sebastian Thomschke
@@ -24,7 +23,7 @@ public class AllTests
 
 	public static Test suite() throws Exception
 	{	
-		final TestSuite suite = new TestSuite("Test for " + Validator.class.getPackage().getName());
+		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
 		//$JUnit-BEGIN$
 

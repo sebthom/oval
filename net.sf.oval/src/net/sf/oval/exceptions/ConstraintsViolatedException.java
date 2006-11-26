@@ -31,14 +31,14 @@ public class ConstraintsViolatedException extends OValException
 
 	public ConstraintsViolatedException(final ConstraintViolation... constraintViolations)
 	{
-		super(constraintViolations.length + " constraint violation(s) found.");
+		super(constraintViolations.length + " constraint violation(s) occured.");
 
 		this.constraintViolations = constraintViolations;
 	}
 
 	public ConstraintsViolatedException(final List<ConstraintViolation> constraintViolations)
 	{
-		super(constraintViolations.size() + " constraint violation(s) found.");
+		super(constraintViolations.size() + " constraint violation(s) occured.");
 
 		this.constraintViolations = constraintViolations
 				.toArray(new ConstraintViolation[constraintViolations.size()]);

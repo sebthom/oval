@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintsEnforcer;
-import net.sf.oval.ParameterNameResolverEnumerationImpl;
+import net.sf.oval.Guarded;
 import net.sf.oval.Validator;
 
 import org.aspectj.lang.JoinPoint;
@@ -24,6 +24,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.DeclareParents;
 import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -39,25 +40,38 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 {
 	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect2.class.getName());
 
-	protected final ConstraintsEnforcer constraintsEnforcer;
-	protected final Validator validator;
+    @SuppressWarnings("unused")
+	@DeclareParents("(@Constrained *)")
+    private Guarded implementedInterface;
+
+    
+	private ConstraintsEnforcer constraintsEnforcer;
+	private Validator validator;
 
 	public ConstraintsEnforcerAspect2()
 	{
-		validator = new Validator();
-		constraintsEnforcer = new ConstraintsEnforcer(validator);
+		this(new ConstraintsEnforcer(new Validator()));
 	}
 
-	public ConstraintsEnforcerAspect2(ConstraintsEnforcer constraintsEnforcer)
+	public ConstraintsEnforcerAspect2(final ConstraintsEnforcer constraintsEnforcer)
 	{
-		this.constraintsEnforcer = constraintsEnforcer;
-		this.validator = constraintsEnforcer.getValidator();
+		LOG.info("Instantiated");
 
-		// in case the this ConstraintsEnforcerAspect is used we can also use the ParameterNameResolver that utilizes the AspectJ library
-		if (validator.getParameterNameResolver() instanceof ParameterNameResolverEnumerationImpl)
-		{
-			validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-		}
+		setConstraintsEnforcer(constraintsEnforcer);
+	}
+
+	/**
+	 * object validation after constructor execution
+	 */
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis (@net.sf.oval.annotations.Constrained *).new(..))")
+	public void constructorsPostValidateThis(final JoinPoint thisJoinPoint)
+	{
+		final Object TARGET = thisJoinPoint.getTarget();
+		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
+
+		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
+
+		constraintsEnforcer.validate(TARGET, true);
 	}
 
 	/**
@@ -80,22 +94,33 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	}
 
 	/**
-	 * method parameters validation
+	 * @return the constraintsEnforcer
 	 */
-	@Around("execution(* (@net.sf.oval.annotations.Constrained *).*(*,..))")
-	public Object methodsWithParameter(final ProceedingJoinPoint thisJoinPoint)
+	public ConstraintsEnforcer getConstraintsEnforcer()
+	{
+		return constraintsEnforcer;
+	}
+
+	/**
+	 * @return the validator
+	 */
+	public Validator getValidator()
+	{
+		return validator;
+	}
+
+	/**
+	 * object validation after method execution
+	 */
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis * (@net.sf.oval.annotations.Constrained *).*(..))")
+	public void methodsPostValidateThis(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
+		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
 
-		final Object[] parameterValues = thisJoinPoint.getArgs();
-
-		final boolean valid = constraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE
-				.getMethod(), parameterValues);
-
-		return valid ? thisJoinPoint.proceed() : null;
+		constraintsEnforcer.validate(TARGET, false);
 	}
 
 	/**
@@ -110,6 +135,25 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
 
 		final boolean valid = constraintsEnforcer.validate(TARGET, false);
+
+		return valid ? thisJoinPoint.proceed() : null;
+	}
+
+	/**
+	 * method parameters validation
+	 */
+	@Around("execution(* (@net.sf.oval.annotations.Constrained *).*(*,..))")
+	public Object methodsWithParameter(final ProceedingJoinPoint thisJoinPoint)
+	{
+		final Object TARGET = thisJoinPoint.getTarget();
+		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
+
+		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
+
+		final Object[] parameterValues = thisJoinPoint.getArgs();
+
+		final boolean valid = constraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE
+				.getMethod(), parameterValues);
 
 		return valid ? thisJoinPoint.proceed() : null;
 	}
@@ -131,48 +175,10 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		return returnValue;
 	}
-
-	/**
-	 * object validation after constructor execution
-	 */
-	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis (@net.sf.oval.annotations.Constrained *).new(..))")
-	public void constructorsPostValidateThis(final JoinPoint thisJoinPoint)
+	
+	public final void setConstraintsEnforcer(final ConstraintsEnforcer constraintsEnforcer)
 	{
-		final Object TARGET = thisJoinPoint.getTarget();
-		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
-
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
-
-		constraintsEnforcer.validate(TARGET, true);
-	}
-
-	/**
-	 * object validation after method execution
-	 */
-	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis * (@net.sf.oval.annotations.Constrained *).*(..))")
-	public void methodsPostValidateThis(final JoinPoint thisJoinPoint)
-	{
-		final Object TARGET = thisJoinPoint.getTarget();
-		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
-
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
-
-		constraintsEnforcer.validate(TARGET, false);
-	}
-
-	/**
-	 * @return the constraintsEnforcer
-	 */
-	public ConstraintsEnforcer getConstraintsEnforcer()
-	{
-		return constraintsEnforcer;
-	}
-
-	/**
-	 * @return the validator
-	 */
-	public Validator getValidator()
-	{
-		return validator;
+		this.constraintsEnforcer = constraintsEnforcer;
+		this.validator = constraintsEnforcer.getValidator();
 	}
 }

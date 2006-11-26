@@ -36,8 +36,8 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 {
 	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect.class.getName());
 
-	protected ConstraintsEnforcer constraintsEnforcer;
-	protected Validator validator;
+	private ConstraintsEnforcer constraintsEnforcer;
+	private Validator validator;
 
 	public ConstraintsEnforcerAspect()
 	{
