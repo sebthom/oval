@@ -21,7 +21,16 @@ import net.sf.oval.contexts.OValContext;
 public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 {
 	private static final long serialVersionUID = 1L;
-	
+
+	private boolean requireValidElements = true;
+
+	@Override
+	public void configure(AssertValid constraintAnnotation)
+	{
+		super.configure(constraintAnnotation);
+		setRequireValidElements(constraintAnnotation.requireValidElements());
+	}
+
 	/**
 	 *  This method is not used.
 	 *  The validation of this special constraint is directly performed by the Validator class
@@ -31,5 +40,21 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	{
 		// ignored
 		return true;
+	}
+
+	/**
+	 * @return true if all elements of a collection must be valid 
+	 */
+	public boolean isRequireValidElements()
+	{
+		return requireValidElements;
+	}
+
+	/**
+	 * Specifies if all the elements of a collection must be valid.
+	 */
+	public void setRequireValidElements(final boolean requireValidElements)
+	{
+		this.requireValidElements = requireValidElements;
 	}
 }

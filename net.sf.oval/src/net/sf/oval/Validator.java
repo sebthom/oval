@@ -209,7 +209,8 @@ public class Validator
 					/*
 					 * configure parameter constraints
 					 */
-					if (methodConfig.parameterConfigurations != null &&methodConfig.parameterConfigurations.size() > 0)
+					if (methodConfig.parameterConfigurations != null
+							&& methodConfig.parameterConfigurations.size() > 0)
 					{
 						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
 						{
@@ -315,6 +316,25 @@ public class Validator
 				violations.add(new ConstraintViolation(errorMessage, validatedObject,
 						valueToValidate, context, childViolations
 								.toArray(new ConstraintViolation[childViolations.size()])));
+			}
+
+			// if the value to validate is a collection also validate the collection items
+			if (valueToValidate instanceof Collection
+					&& ((AssertValidCheck) check).isRequireValidElements())
+			{
+				for (final Object item : (Collection) valueToValidate)
+				{
+					final List<ConstraintViolation> itemViolations = validate(item);
+
+					if (itemViolations.size() != 0)
+					{
+						final String errorMessage = renderMessage(context, item, check);
+
+						violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
+								context, itemViolations
+										.toArray(new ConstraintViolation[itemViolations.size()])));
+					}
+				}
 			}
 			return;
 		}

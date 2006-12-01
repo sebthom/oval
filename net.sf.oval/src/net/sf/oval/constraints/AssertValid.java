@@ -38,4 +38,9 @@ public @interface AssertValid
 	 * @see ConstraintsViolatedException
 	 */
 	String message() default "net.sf.oval.constraints.AssertValid.violated";
+
+	/**
+	 * Specifies if all the elements of a collection must be valid too.
+	 */
+	boolean requireValidElements() default true;
 }

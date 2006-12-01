@@ -12,7 +12,9 @@
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
@@ -38,6 +40,16 @@ public class AssertValidConstraintsValidationTest extends TestCase
 
 		@AssertValid(message = "ASSERT_VALID")
 		public Address homeAddress;
+
+		@AssertValid(message = "ASSERT_VALID")
+		public Set<Address> otherAddresses1;
+
+		@AssertValid(message = "ASSERT_VALID", requireValidElements = false)
+		public Set<Address> otherAddresses2;
+
+		@AssertValid(message = "ASSERT_VALID", requireValidElements = true)
+		public Set<Address> otherAddresses3;
+
 	}
 
 	private static class Address
@@ -58,7 +70,7 @@ public class AssertValidConstraintsValidationTest extends TestCase
 		public Person contact;
 	}
 
-	public void testFieldValidation()
+	public void testScalarValues()
 	{
 		final Validator validator = new Validator();
 
@@ -88,5 +100,33 @@ public class AssertValidConstraintsValidationTest extends TestCase
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getMessage().equals("ASSERT_VALID"));
+	}
+
+	public void testCollectionValues()
+	{
+		final Validator validator = new Validator();
+
+		final Person p = new Person();
+		p.firstName = "John";
+		p.lastName = "Doe";
+		p.otherAddresses1 = new HashSet<Address>();
+		p.otherAddresses2 = new HashSet<Address>();
+		p.otherAddresses3 = new HashSet<Address>();
+
+		final Address a = new Address();
+		a.street = "The Street";
+		a.city = "The City";
+		a.zipCode = null;
+		assertTrue(validator.validate(a).size() == 1);
+
+		p.otherAddresses1.add(a);
+		assertTrue(validator.validate(p).size() == 1);
+
+		p.otherAddresses1.remove(a);
+		p.otherAddresses2.add(a);
+		assertTrue(validator.validate(p).size() == 0);
+
+		p.otherAddresses3.add(a);
+		assertTrue(validator.validate(p).size() == 1);
 	}
 }
