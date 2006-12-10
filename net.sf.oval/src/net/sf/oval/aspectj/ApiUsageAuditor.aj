@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.aspectj;
 
-import net.sf.oval.annotations.Constrained;
+import net.sf.oval.annotations.Guarded;
 import net.sf.oval.annotations.Constraint;
 import net.sf.oval.annotations.PostValidateThis;
 import net.sf.oval.annotations.PreValidateThis;
@@ -27,48 +27,48 @@ abstract aspect ApiUsageAuditor
 	/*
 	 * Warn about constraints for void methods 
 	 */
-	declare warning: execution(@(@Constraint *) void (@Constrained *).*(..)): 
+	declare warning: execution(@(@Constraint *) void (@Guarded *).*(..)): 
 		"Method return value constraints are not allowed for methods without return values";
 
 	/*
 	 * Warn about return value constraints for non-getter methods in classes not annotated with @Constrained 
 	 */
-	declare warning: execution(@(@Constraint *) * (!@Constrained *).*(..)) && !getterMethods(): 
+	declare warning: execution(@(@Constraint *) * (!@Guarded *).*(..)) && !getterMethods(): 
 		"Method return value constraints for non-getter methods are only allowed in classes annotated with @Constrainted";
 
 	/*
 	 * Warn about the @PreValidateThis annotation used on methods in classes not annotated with @Constrained
 	 */
-	declare warning: execution (@PreValidateThis * (!@Constrained *).*(..)): 
+	declare warning: execution (@PreValidateThis * (!@Guarded *).*(..)): 
 		"@PreValidateThis is only allowed in class annotated with @Constrainted";
 
 	/*
 	 * Warn about the @PostValidateThis annotation used on methods and constructors in classes not annotated with @Constrained
 	 */
-	declare warning: execution (@PostValidateThis * (!@Constrained *).*(..)) || execution (@PostValidateThis (!@Constrained *).new(..)): 
-		"@PostValidateThis is only allowed in classes annotated with @Constrained";
+	declare warning: execution (@PostValidateThis * (!@Guarded *).*(..)) || execution (@PostValidateThis (!@Guarded *).new(..)): 
+		"@PostValidateThis is only allowed in classes annotated with @Guarded";
 
 	/*
 	 * Warn about method parameter constraints in classes not annotated with @Constrained
 	 */
 	declare warning:
-		execution(* (!@Constrained *).*(@(@Constraint *) *, ..)) ||
-		execution(* (!@Constrained *).*(*, @(@Constraint *) *, ..)) ||
-		execution(* (!@Constrained *).*(*, *, @(@Constraint *) *, ..)) ||
-		execution(* (!@Constrained *).*(*, *, *, @(@Constraint *) *, ..)) ||
-		execution(* (!@Constrained *).*(*, *, *, *, @(@Constraint *) *, ..)) ||
-		execution(* (!@Constrained *).*(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"Method parameter constraints are only allowed in class annotated with @Constrained";
+		execution(* (!@Guarded *).*(@(@Constraint *) *, ..)) ||
+		execution(* (!@Guarded *).*(*, @(@Constraint *) *, ..)) ||
+		execution(* (!@Guarded *).*(*, *, @(@Constraint *) *, ..)) ||
+		execution(* (!@Guarded *).*(*, *, *, @(@Constraint *) *, ..)) ||
+		execution(* (!@Guarded *).*(*, *, *, *, @(@Constraint *) *, ..)) ||
+		execution(* (!@Guarded *).*(*, *, *, *, *, @(@Constraint *) *, ..)): 
+		"Method parameter constraints are only allowed in class annotated with @Guarded";
 
 	/*
 	 * Warn about constructor parameter constraints in classes not annotated with @Constrained
 	 */
 	declare warning:
-		execution((!@Constrained *).new(@(@Constraint *) *, ..)) ||
-		execution((!@Constrained *).new(*, @(@Constraint *) *, ..)) ||
-		execution((!@Constrained *).new(*, *, @(@Constraint *) *, ..)) ||
-		execution((!@Constrained *).new(*, *, *, @(@Constraint *) *, ..)) ||
-		execution((!@Constrained *).new(*, *, *, *, @(@Constraint *) *, ..)) ||
-		execution((!@Constrained *).new(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"Method parameter constraints are only allowed in class annotated with @Constrained";
+		execution((!@Guarded *).new(@(@Constraint *) *, ..)) ||
+		execution((!@Guarded *).new(*, @(@Constraint *) *, ..)) ||
+		execution((!@Guarded *).new(*, *, @(@Constraint *) *, ..)) ||
+		execution((!@Guarded *).new(*, *, *, @(@Constraint *) *, ..)) ||
+		execution((!@Guarded *).new(*, *, *, *, @(@Constraint *) *, ..)) ||
+		execution((!@Guarded *).new(*, *, *, *, *, @(@Constraint *) *, ..)): 
+		"Method parameter constraints are only allowed in class annotated with @Guarded";
 }

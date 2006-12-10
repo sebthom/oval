@@ -20,7 +20,7 @@ import java.util.List;
 
 import net.sf.oval.AnnotationCheck;
 import net.sf.oval.Check;
-import net.sf.oval.annotations.Constrained;
+import net.sf.oval.annotations.Guarded;
 import net.sf.oval.annotations.Constraint;
 import net.sf.oval.annotations.DefineConstraintSet;
 import net.sf.oval.collections.CollectionFactory;
@@ -45,8 +45,8 @@ public class AnnotationsConfigurer implements Configurer
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
-		config.applyFieldConstraintsToSetter = config.type.isAnnotationPresent(Constrained.class)
-				? config.type.getAnnotation(Constrained.class).applyFieldConstraintsToSetter()
+		config.applyFieldConstraintsToSetter = config.type.isAnnotationPresent(Guarded.class)
+				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetter()
 				: false;
 
 		/*

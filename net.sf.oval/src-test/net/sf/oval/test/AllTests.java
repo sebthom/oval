@@ -43,20 +43,21 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 
 		/*
-		 * Enforcer tests
+		 * Guard tests
 		 */
-		suite.addTestSuite(net.sf.oval.test.enforcer.AddingConstraintsTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.ApplyFieldConstraintsToParametersTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.ApplyFieldConstraintsToSetterTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.ConstraintSetTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.CustomConstraintMessageTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.InheritanceTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.InnerClassTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.AddingConstraintsTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToParametersTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToSetterTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ConstraintSetTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.CustomConstraintMessageTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.InheritanceTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);
 		suite
-				.addTestSuite(net.sf.oval.test.enforcer.MethodReturnValueConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.ParameterConstraintsTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.PrePostValidateThisTest.class);
-		suite.addTestSuite(net.sf.oval.test.enforcer.XMLConfigurationTest.class);
+				.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ParameterConstraintsTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -15,10 +15,10 @@ package net.sf.oval.aspectj;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.oval.ConstraintsEnforcer;
-import net.sf.oval.Guarded;
+import net.sf.oval.Guard;
+import net.sf.oval.IsGuarded;
 import net.sf.oval.Validator;
-import net.sf.oval.annotations.Constrained;
+import net.sf.oval.annotations.Guarded;
 import net.sf.oval.annotations.PostValidateThis;
 import net.sf.oval.annotations.PreValidateThis;
 
@@ -27,70 +27,90 @@ import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
- * This aspect intercepts calls to constructors and methods annotated with @net.sf.oval.annotations.Constrained 
+ * This aspect intercepts calls to constructors and methods annotated with @net.sf.oval.annotations.Guarded 
  * for automatic runtime validation of constraints defined for constructor/method parameters and method return values.
  * 
  * @author Sebastian Thomschke
  */
-public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
+public abstract aspect GuardAspect extends ApiUsageAuditor
 {
-	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect.class.getName());
+	private final static Logger LOG = Logger.getLogger(GuardAspect.class.getName());
 
-	private ConstraintsEnforcer constraintsEnforcer;
+	private Guard guard;
 	private Validator validator;
 
-	public ConstraintsEnforcerAspect()
+	public GuardAspect()
 	{
-		this(new ConstraintsEnforcer(new Validator()));
+		this(new Guard(new Validator()));
 	}
 
-	public ConstraintsEnforcerAspect(final ConstraintsEnforcer constraintsEnforcer)
+	public GuardAspect(final Guard guard)
 	{
 		LOG.info("Instantiated");
 
-		setConstraintsEnforcer(constraintsEnforcer);
+		setGuard(guard);
 	}
 
-	public final void setConstraintsEnforcer(final ConstraintsEnforcer constraintsEnforcer)
+	/**
+	 * @return the guard
+	 */
+	public Guard getGuard()
 	{
-		this.constraintsEnforcer = constraintsEnforcer;
-		this.validator = constraintsEnforcer.getValidator();
+		return guard;
+	}
+
+	/**
+	 * @return the validator
+	 */
+	public Validator getValidator()
+	{
+		return validator;
+	}
+
+	public void setGuard(final Guard guard)
+	{
+		this.guard = guard;
+		this.validator = guard.getValidator();
 	}
 
 	/*
 	 * POINT CUTS
 	 */
-	pointcut constructorsPostValidateThis(): execution(@PostValidateThis (@Constrained *).new(..));
-
-	pointcut constructorsWithParameter(): execution((@Constrained *).new(*,..));
-
-	pointcut methodsWithParameter() : execution(* (@Constrained *).*(*,..));
-
-	pointcut methodsWithReturnValue() : execution(* (@Constrained *).*(..));
-
-	pointcut methodsPostValidateThis(): execution(@PostValidateThis * (@Constrained *).*(..));
-
-	pointcut methodsPreValidateThis(): execution(@PreValidateThis * (@Constrained *).*(..));
 
 	/*
-	 pointcut constrainedClasses(): @target(Constrained);
-	 pointcut constructorsPostValidateObject(): constrainedClasses() && execution(@PostValidateObject *.new(..));
-	 pointcut constructorsWithParameter(): constrainedClasses() && execution(*.new(*,..));
-	 pointcut methodsWithParameter() : constrainedClasses() && execution(* *.*(*,..));
-	 pointcut methodsPostValidateObject(): constrainedClasses() && execution(@PostValidateObject * *.*(..));
-	 pointcut methodsPreValidateObject(): constrainedClasses() && execution(@PreValidateObject * *.*(..));
+	 pointcut constructorsPostValidateThis(): execution(@PostValidateThis (@Constrained *).new(..));
+	 pointcut constructorsWithParameter(): execution((@Constrained *).new(*,..));
+	 pointcut methodsWithParameter() : execution(* (@Constrained *).*(*,..));
+	 pointcut methodsWithReturnValue() : execution(* (@Constrained *).*(..));
+	 pointcut methodsPostValidateThis(): execution(@PostValidateThis * (@Constrained *).*(..));
+	 pointcut methodsPreValidateThis(): execution(@PreValidateThis * (@Constrained *).*(..));
+	 declare parents: (@Constrained *) implements Guarded;
 	 */
+
+	protected pointcut scope(): @within(Guarded);
+
+	private pointcut constructorsPostValidateThis(): execution(@PostValidateThis *.new(..));
+
+	private pointcut constructorsWithParameter(): execution(*.new(*,..));
+
+	private pointcut methodsWithReturnValue() : execution(* *.*(..));
+
+	private pointcut methodsWithParameter() : execution(* *.*(*,..));
+
+	private pointcut methodsPostValidateThis(): execution(@PostValidateThis * *.*(..));
+
+	private pointcut methodsPreValidateThis(): execution(@PreValidateThis * *.*(..));
 
 	/*
 	 * ADVICES
 	 */
-	declare parents: (@Constrained *) implements Guarded;
-
+	declare parents: (@Guarded *) implements IsGuarded;
+	
 	/**
 	 * constructor parameters validation
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): constructorsWithParameter()
+	Object around(): scope() && constructorsWithParameter()
 	 {
 		final Object TARGET = thisJoinPoint.getTarget();
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
@@ -99,7 +119,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		final Object[] parameterValues = thisJoinPoint.getArgs();
 
-		constraintsEnforcer.validateConstructorParameters(TARGET, SIGNATURE.getConstructor(),
+		guard.validateConstructorParameters(TARGET, SIGNATURE.getConstructor(),
 				parameterValues);
 
 		return proceed();
@@ -109,7 +129,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * method parameters validation
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsWithParameter()
+	Object around(): scope() && methodsWithParameter()
 	 {
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
@@ -118,7 +138,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		final Object[] parameterValues = thisJoinPoint.getArgs();
 
-		final boolean valid = constraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE
+		final boolean valid = guard.validateMethodParameters(TARGET, SIGNATURE
 				.getMethod(), parameterValues);
 
 		return valid ? proceed() : null;
@@ -128,14 +148,14 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * object validation before method execution
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsPreValidateThis()
+	Object around(): scope() && methodsPreValidateThis()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
 
-		final boolean valid = constraintsEnforcer.validate(TARGET, false);
+		final boolean valid = guard.validate(TARGET, false);
 
 		return valid ? proceed() : null;
 	}
@@ -144,7 +164,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * method return value validation
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): methodsWithReturnValue()
+	Object around(): scope() && methodsWithReturnValue()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
@@ -153,7 +173,7 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 
 		final Object returnValue = proceed();
 
-		constraintsEnforcer.validateMethodReturnValue(TARGET, SIGNATURE.getMethod(), returnValue);
+		guard.validateMethodReturnValue(TARGET, SIGNATURE.getMethod(), returnValue);
 
 		return returnValue;
 	}
@@ -162,47 +182,27 @@ public abstract aspect ConstraintsEnforcerAspect extends ApiUsageAuditor
 	 * object validation after constructor execution
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	after() returning: constructorsPostValidateThis()
+	after() returning: scope() && constructorsPostValidateThis()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
 
-		constraintsEnforcer.validate(TARGET, true);
+		guard.validate(TARGET, true);
 	}
 
 	/**
 	 * object validation after method execution
 	 */
 	@SuppressAjWarnings("adviceDidNotMatch")
-	after() returning: methodsPostValidateThis()
+	after() returning: scope() && methodsPostValidateThis()
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
 
-		constraintsEnforcer.validate(TARGET, false);
-	}
-
-	/*
-	 * GETTER
-	 */
-
-	/**
-	 * @return the constraintsEnforcer
-	 */
-	public ConstraintsEnforcer getConstraintsEnforcer()
-	{
-		return constraintsEnforcer;
-	}
-
-	/**
-	 * @return the validator
-	 */
-	public Validator getValidator()
-	{
-		return validator;
+		guard.validate(TARGET, false);
 	}
 }

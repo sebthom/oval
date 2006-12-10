@@ -15,8 +15,8 @@ package net.sf.oval.aspectj;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.oval.ConstraintsEnforcer;
-import net.sf.oval.Guarded;
+import net.sf.oval.Guard;
+import net.sf.oval.IsGuarded;
 import net.sf.oval.Validator;
 
 import org.aspectj.lang.JoinPoint;
@@ -29,41 +29,40 @@ import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
- * This is an annotations based version of the ConstraintsEnforcerAspect aspect
+ * This is an annotations based version of the GuardAspect aspect
  *
  * @author Sebastian Thomschke
  * 
- * @see ConstraintsEnforcer
+ * @see Guard
  */
 @Aspect
-public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
+public abstract class GuardAspect2 extends ApiUsageAuditor2
 {
-	private final static Logger LOG = Logger.getLogger(ConstraintsEnforcerAspect2.class.getName());
+	private final static Logger LOG = Logger.getLogger(GuardAspect2.class.getName());
 
-    @SuppressWarnings("unused")
-	@DeclareParents("(@Constrained *)")
-    private Guarded implementedInterface;
+	@SuppressWarnings("unused")
+	@DeclareParents("(@net.sf.oval.annotations.Guarded *)")
+	private IsGuarded implementedInterface;
 
-    
-	private ConstraintsEnforcer constraintsEnforcer;
+	private Guard guard;
 	private Validator validator;
 
-	public ConstraintsEnforcerAspect2()
+	public GuardAspect2()
 	{
-		this(new ConstraintsEnforcer(new Validator()));
+		this(new Guard(new Validator()));
 	}
 
-	public ConstraintsEnforcerAspect2(final ConstraintsEnforcer constraintsEnforcer)
+	public GuardAspect2(final Guard guard)
 	{
 		LOG.info("Instantiated");
 
-		setConstraintsEnforcer(constraintsEnforcer);
+		setGuard(guard);
 	}
 
 	/**
 	 * object validation after constructor execution
 	 */
-	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis (@net.sf.oval.annotations.Constrained *).new(..))")
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis (@net.sf.oval.annotations.Guarded *).new(..))")
 	public void constructorsPostValidateThis(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
@@ -71,13 +70,13 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
 
-		constraintsEnforcer.validate(TARGET, true);
+		guard.validate(TARGET, true);
 	}
 
 	/**
 	 * constructor parameters validation
 	 */
-	@Around("execution((@net.sf.oval.annotations.Constrained *).new(*,..))")
+	@Around("execution((@net.sf.oval.annotations.Guarded *).new(*,..))")
 	public Object constructorsWithParameter(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
@@ -87,18 +86,17 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		final Object[] parameterValues = thisJoinPoint.getArgs();
 
-		constraintsEnforcer.validateConstructorParameters(TARGET, SIGNATURE.getConstructor(),
-				parameterValues);
+		guard.validateConstructorParameters(TARGET, SIGNATURE.getConstructor(), parameterValues);
 
 		return thisJoinPoint.proceed();
 	}
 
 	/**
-	 * @return the constraintsEnforcer
+	 * @return the guard
 	 */
-	public ConstraintsEnforcer getConstraintsEnforcer()
+	public Guard getGuard()
 	{
-		return constraintsEnforcer;
+		return guard;
 	}
 
 	/**
@@ -112,7 +110,7 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	/**
 	 * object validation after method execution
 	 */
-	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis * (@net.sf.oval.annotations.Constrained *).*(..))")
+	@AfterReturning("execution(@net.sf.oval.annotations.PostValidateThis * (@net.sf.oval.annotations.Guarded *).*(..))")
 	public void methodsPostValidateThis(final JoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
@@ -120,13 +118,13 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("after() " + SIGNATURE);
 
-		constraintsEnforcer.validate(TARGET, false);
+		guard.validate(TARGET, false);
 	}
 
 	/**
 	 * object validation before method execution
 	 */
-	@Around("execution(@net.sf.oval.annotations.PreValidateThis * (@Constrained *).*(..))")
+	@Around("execution(@net.sf.oval.annotations.PreValidateThis * (@net.sf.oval.annotations.Guarded *).*(..))")
 	public Object methodsPreValidateThis(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
@@ -134,7 +132,7 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
 
-		final boolean valid = constraintsEnforcer.validate(TARGET, false);
+		final boolean valid = guard.validate(TARGET, false);
 
 		return valid ? thisJoinPoint.proceed() : null;
 	}
@@ -142,7 +140,7 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	/**
 	 * method parameters validation
 	 */
-	@Around("execution(* (@net.sf.oval.annotations.Constrained *).*(*,..))")
+	@Around("execution(* (@net.sf.oval.annotations.Guarded *).*(*,..))")
 	public Object methodsWithParameter(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
@@ -152,8 +150,8 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		final Object[] parameterValues = thisJoinPoint.getArgs();
 
-		final boolean valid = constraintsEnforcer.validateMethodParameters(TARGET, SIGNATURE
-				.getMethod(), parameterValues);
+		final boolean valid = guard.validateMethodParameters(TARGET, SIGNATURE.getMethod(),
+				parameterValues);
 
 		return valid ? thisJoinPoint.proceed() : null;
 	}
@@ -161,7 +159,7 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 	/**
 	 * method return value validation
 	 */
-	@Around("execution(* (@net.sf.oval.annotations.Constrained *).*(..))")
+	@Around("execution(* (@net.sf.oval.annotations.Guarded *).*(..))")
 	public Object methodsWithReturnValue(final ProceedingJoinPoint thisJoinPoint)
 	{
 		final Object TARGET = thisJoinPoint.getTarget();
@@ -171,14 +169,14 @@ public abstract class ConstraintsEnforcerAspect2 extends ApiUsageAuditor2
 
 		final Object returnValue = thisJoinPoint.proceed();
 
-		constraintsEnforcer.validateMethodReturnValue(TARGET, SIGNATURE.getMethod(), returnValue);
+		guard.validateMethodReturnValue(TARGET, SIGNATURE.getMethod(), returnValue);
 
 		return returnValue;
 	}
-	
-	public final void setConstraintsEnforcer(final ConstraintsEnforcer constraintsEnforcer)
+
+	public final void setGuard(final Guard guard)
 	{
-		this.constraintsEnforcer = constraintsEnforcer;
-		this.validator = constraintsEnforcer.getValidator();
+		this.guard = guard;
+		this.validator = guard.getValidator();
 	}
 }
