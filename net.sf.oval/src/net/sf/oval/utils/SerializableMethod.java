@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 
+import net.sf.oval.exceptions.NestableIOException;
+
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
  * 
@@ -98,11 +100,11 @@ public class SerializableMethod implements Serializable
 		}
 		catch (SecurityException e)
 		{
-			throw new IOException(e);
+			throw new NestableIOException(e);
 		}
 		catch (NoSuchMethodException e)
 		{
-			throw new IOException(e);
+			throw new NestableIOException(e);
 		}
 	}
 }

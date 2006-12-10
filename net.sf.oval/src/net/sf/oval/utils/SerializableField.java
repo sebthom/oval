@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.WeakHashMap;
 
+import net.sf.oval.exceptions.NestableIOException;
+
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
  * 
@@ -87,11 +89,11 @@ public class SerializableField implements Serializable
 		}
 		catch (SecurityException e)
 		{
-			throw new IOException(e);
+			throw new NestableIOException(e);
 		}
 		catch (NoSuchFieldException e)
 		{
-			throw new IOException(e);
+			throw new NestableIOException(e);
 		}
 	}
 }
