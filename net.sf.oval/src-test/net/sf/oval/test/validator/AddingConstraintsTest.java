@@ -49,7 +49,7 @@ public class AddingConstraintsTest extends TestCase
 
 	/**
 	 * try to programmatically add a NotNull constraint to the constructor parameter
-	 * this should fail since the class is not annotated with @Constrain and constructor parameter constraints are not enforced via the ValidationAspect
+	 * this should fail since the class is not annotated with @Guarded and constructor parameter constraints are not enforced via the GuardAspect
 	 */
 	public void testAddConstraintToConstructorParameter() throws Exception
 	{
@@ -94,7 +94,7 @@ public class AddingConstraintsTest extends TestCase
 
 	/**
 	 * try to programmatically add a NotNull constraint to the setter parameter
-	 * this should fail since the class is not annotated with @Constrain and constructor parameter constraints are not enforced via the ValidationAspect
+	 * this should fail since the class is not annotated with @Guarded and constructor parameter constraints are not enforced via the GuardAspect
 	 */
 	public void testAddConstraintToMethodParameter() throws Exception
 	{

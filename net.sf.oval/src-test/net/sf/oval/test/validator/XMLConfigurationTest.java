@@ -69,7 +69,6 @@ public class XMLConfigurationTest extends TestCase
 	{
 		XMLConfigurer x = new XMLConfigurer();
 		x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
-
 		validateUser(new Validator(x));
 	}
 
@@ -142,7 +141,7 @@ public class XMLConfigurationTest extends TestCase
 				MethodConfiguration mc = new MethodConfiguration();
 				cf.methodConfigurations.add(mc);
 				mc.name = "getManagerId";
-				mc.returnValueConfiguration=new MethodReturnValueConfiguration();
+				mc.returnValueConfiguration = new MethodReturnValueConfiguration();
 				mc.returnValueConfiguration.checks = new ArrayList<Check>();
 				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
@@ -166,7 +165,7 @@ public class XMLConfigurationTest extends TestCase
 		ObjectInputStream ois = new ObjectInputStream(bin);
 		x.setPojoConfigurer((POJOConfigurer) ois.readObject());
 		ois.close();
-		
+
 		/*
 		 * test XML de/serialization
 		 */
