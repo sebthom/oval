@@ -71,7 +71,7 @@ public final class ClassChecks
 	final Map<String, ConstraintSet> constraintSetsByLocalId = CollectionFactory.INSTANCE
 			.createMap();
 
-	private final boolean isConstraintsEnforcementEnabled;
+	private final boolean isGuarded;
 
 	/**
 	 * package constructor used by the Validator class
@@ -86,7 +86,7 @@ public final class ClassChecks
 			LOG.fine("Initializing constraints configuration for class " + clazz);
 
 		this.clazz = clazz;
-		isConstraintsEnforcementEnabled = Guarded.class.isAssignableFrom(clazz);
+		isGuarded = IsGuarded.class.isAssignableFrom(clazz);
 	}
 
 	/**
@@ -106,10 +106,10 @@ public final class ClassChecks
 			throw new InvalidConfigurationException(
 					"Given constructor does not belong to this class" + clazz.getName());
 
-		if (!isConstraintsEnforcementEnabled)
+		if (!isGuarded)
 			throw new InvalidConfigurationException(
 					"Cannot apply constructor parameter constraints to class " + clazz.getName()
-							+ ". Constraints enforcement is not activated for this class.");
+							+ ". Constraints guarding is not activated for this class.");
 
 		// retrieve the currently registered checks for all parameters of the specified constructor
 		Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksByConstructorParameter
@@ -185,12 +185,12 @@ public final class ClassChecks
 		}
 
 		final boolean isGetter = ReflectionUtils.isGetter(method);
-		if (!isGetter && !isConstraintsEnforcementEnabled)
+		if (!isGetter && !isGuarded)
 		{
 			throw new InvalidConfigurationException(
 					"Cannot apply method return value constraints for method "
 							+ method
-							+ " not following the JavaBean Getter method convention. Constraints enforcement is not activated for this class.");
+							+ " not following the JavaBean Getter method convention. Constraints guarding is not activated for this class.");
 		}
 
 		constrainedMethods.add(method);
@@ -226,10 +226,10 @@ public final class ClassChecks
 			throw new InvalidConfigurationException("Given method does not belong to class "
 					+ clazz.getName());
 
-		if (!isConstraintsEnforcementEnabled)
+		if (!isGuarded)
 			throw new InvalidConfigurationException(
 					"Cannot apply method parameter constraints to class " + clazz.getName()
-							+ ". Constraints enforcement is not activated for this class.");
+							+ ". Constraints guarding is not activated for this class.");
 
 		// retrieve the currently registered checks for all parameters of the specified method
 		Map<Integer, Collection<Check>> checksOfMethodByParameter = checksByMethodParameter
