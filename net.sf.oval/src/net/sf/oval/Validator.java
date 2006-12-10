@@ -663,9 +663,10 @@ public class Validator
 	}
 
 	/**
-	 * used by ConstraintsEnforcer
+	 * used by Guard
 	 * 
 	 * @return null if no violation, otherwise a list
+	 * @see Guard
 	 */
 	List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor constructor, final Object[] args)
@@ -734,9 +735,10 @@ public class Validator
 	}
 
 	/**
-	 * used by ConstraintsEnforcer
+	 * used by Guard
 	 * 
 	 * @return null if no violation, otherwise a list
+	 * @see Guard
 	 */
 	List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
 			final Method method, final Object[] args)
@@ -772,9 +774,10 @@ public class Validator
 	}
 
 	/**
-	 * used by ConstraintsEnforcer
+	 * used by Guard
 	 * 
 	 * @return null if no violation, otherwise a list
+	 * @see Guard
 	 */
 	List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
 			final Method method, final Object methodReturnValue)
