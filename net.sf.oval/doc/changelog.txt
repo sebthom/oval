@@ -20,6 +20,12 @@
 + added a DTD for the XML configuration file
 * when @AssertValid is used on collections the collection's elements are now validated too by default (thanks to tahura)
 
+Refactoring:
+* net.sf.oval.annotations.Guarded: annotation @Constrained renamed to @Guarded
+* net.sf.oval.aspectj.GuardAspect: aspect ConstraintsEnforcerAspect renamed to GuardAspect
+* net.sf.oval.aspectj.GuardAspect2: class ConstraintsEnforcerAspect2 renamed to GuardAspect2
+* net.sf.oval.Guard: class ConstraintsEnforcer renamed to Guard
+
 2006-11-12 v0.7
 ===============
 + added pluggable support for alternative collection implementations

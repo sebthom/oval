@@ -247,14 +247,14 @@ if(exs.size()&gt;0)
 
       <para>Create a new aspect via <command>File -&gt; New -&gt; 
       Aspect</command> that extends the abstract aspect <command>
-      net.sf.oval.aspectj.ConstraintsEnforcerAspect</command>. When the 
+      net.sf.oval.aspectj.GuardAspect</command>. When the 
       new aspect is created the AspectJ builder will automatically 
       weave the validation related code into your compiled classes 
       annotated with <command>
-      @net.sf.oval.annotations.Constrained</command>.</para>
+      @net.sf.oval.annotations.Guarded</command>.</para>
 
       <para>Now you can create all your business classes, add the 
-      <command>@net.sf.oval.annotations.Constrained</command> 
+      <command>@net.sf.oval.annotations.Guarded</command> 
       annotation and define the required constraints using the built-in 
       or custom constraint annotations.</para>
 
@@ -271,7 +271,7 @@ if(exs.size()&gt;0)
       In such a case a <command>net.sf.oval.constraints.ConstraintsViolatedException</command> 
       wil be thrown.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     public BusinessObject(@NotNull String name)
@@ -296,7 +296,7 @@ public class BusinessObject
       In such a case a <command>net.sf.oval.constraints.ConstraintsViolatedException</command> 
       wil be thrown.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     public void setName(@NotNull String name)
@@ -331,7 +331,7 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
       the constraints of the field with the specified name are applied 
       to the annotated parameter.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     @NotNull
@@ -375,7 +375,7 @@ bo.setAlternativeName(null); // throws a ConstraintsViolatedException because pa
       ConstraintsViolatedException is thrown and the method will not be 
       executed.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     @NotNull
@@ -417,7 +417,7 @@ bo.save();</programlisting>
       the <command>Validator.validate(Object)</command> method on an 
       object of this type.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     private String name = null;
@@ -467,7 +467,7 @@ List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);</programlis
       to the object being in an invalidate state and the invalid object 
       will get garbage collected.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     @NotNull
@@ -502,7 +502,7 @@ BusinessObject bo = new BusinessObject();</programlisting>
       method code still has been executed, you have to manually 
       rollback the changes performed by this method.</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class BusinessObject
 {
     @Length(max=10)
@@ -543,7 +543,7 @@ bo.appendToName(&quot;123456&quot;); // throws a ConstraintsViolatedException be
 
       <para>Example business object:</para>
 
-      <programlisting>@net.sf.oval.annotations.Constrained
+      <programlisting>@net.sf.oval.annotations.Guarded
 public class Person
 {
     @NotNegative
@@ -588,17 +588,17 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
   Person person = new Person();
 
   // specify that no ConstraintsViolatedExceptions are thrown for the object bo
-  ConstraintsEnforcer.setMode(ConstraintsEnforcer.Mode.NOTIFY_LISTENERS, person);
+  myGuard.setMode(Guard.Mode.NOTIFY_LISTENERS, person);
 
   // add a ConstraintsViolatedListener
   ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter(); 
-  ConstraintsEnforcer.addListener(listener, p);
+  myGuard.addListener(listener, p);
 
   person.setName(inputForm.getName()); // constraint violated: name length &lt; 5
   person.setAge(inputForm.getAge()); // constraint violated: age is negative
   person.setZipCode(inputForm.getZipCode); // constraint violated: zip code length != 5
 
-  ConstraintsEnforcer.removeListener(listener, p);
+  myGuard.removeListener(listener, p);
 
   // check if any constraint violations occured
   if(va.getConstraintViolations().size() &gt; 0)
