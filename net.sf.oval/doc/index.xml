@@ -588,17 +588,17 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
   Person person = new Person();
 
   // specify that no ConstraintsViolatedExceptions are thrown for the object bo
-  myGuard.setMode(Guard.Mode.NOTIFY_LISTENERS, person);
+  MyGuardAspect.getGuard().setMode(Guard.Mode.NOTIFY_LISTENERS, person);
 
   // add a ConstraintsViolatedListener
   ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter(); 
-  myGuard.addListener(listener, p);
+  MyGuardAspect.getGuard().addListener(listener, p);
 
   person.setName(inputForm.getName()); // constraint violated: name length &lt; 5
   person.setAge(inputForm.getAge()); // constraint violated: age is negative
   person.setZipCode(inputForm.getZipCode); // constraint violated: zip code length != 5
 
-  myGuard.removeListener(listener, p);
+  MyGuardAspect.getGuard().removeListener(listener, p);
 
   // check if any constraint violations occured
   if(va.getConstraintViolations().size() &gt; 0)
