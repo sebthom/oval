@@ -13,7 +13,7 @@
 	<!-- ================================ -->
 	<!-- Global properties                -->
 	<!-- ================================ -->
-	<property name="version" value="0.8" />
+	<property name="version" value="0.9" />
 	<property name="buildversion" value="${version}.${NOW}" />
 	<property name="jar.basename" value="net.sf.oval" />
 	<property name="dist.basename" value="net.sf.oval" />
@@ -40,7 +40,7 @@
 			<include name="**/*.jar" />
 		</fileset>
 
-		<fileset dir="${ant.home}/..">
+		<fileset dir="${eclipse.pdebuild.home}/..">
 			<!-- includes all aspectj jar files from the eclise plugin dir -->
 			<include name="*aspectj*/**/*.jar" />
 			<include name="*ajdt*/**/*.jar" />
@@ -163,6 +163,8 @@
 		
 		<description>Creates all distribution files</description>
 		
+		<mkdir dir="${dist}"/>
+			
 		<copy todir="${build}/">
 			<fileset
 				dir="${doc}"
@@ -225,6 +227,6 @@
 			destfile="${dist}/${jar.basename}-${version}-bundle.jar"
 		/>
 		
-<!--		<delete dir="${build}" />-->
+		<delete dir="${build}" />
 	</target>
 </project>
