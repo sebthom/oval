@@ -336,6 +336,39 @@ public class Validator
 					}
 				}
 			}
+
+			// if the value to validate is a map also validate the map keys and values
+			else if (valueToValidate instanceof Map
+					&& ((AssertValidCheck) check).isRequireValidElements())
+			{
+				for (final Object item : ((Map) valueToValidate).keySet())
+				{
+					final List<ConstraintViolation> itemViolations = validate(item);
+
+					if (itemViolations.size() != 0)
+					{
+						final String errorMessage = renderMessage(context, item, check);
+
+						violations.add(new ConstraintViolation(errorMessage, validatedObject,
+								item, context, itemViolations
+										.toArray(new ConstraintViolation[itemViolations.size()])));
+					}
+				}
+
+				for (final Object item : ((Map) valueToValidate).values())
+				{
+					final List<ConstraintViolation> itemViolations = validate(item);
+
+					if (itemViolations.size() != 0)
+					{
+						final String errorMessage = renderMessage(context, item, check);
+
+						violations.add(new ConstraintViolation(errorMessage, validatedObject,
+								item, context, itemViolations
+										.toArray(new ConstraintViolation[itemViolations.size()])));
+					}
+				}
+			}
 			return;
 		}
 
