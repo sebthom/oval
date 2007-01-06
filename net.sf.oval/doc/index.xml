@@ -8,67 +8,71 @@
 
     <title>What is OVal?</title>
 
-    <para>OVal is a generic validation framework for any kind of Java
+    <para>OVal is an extensible validation framework for any kind of Java
     objects (not only JavaBeans) and allows you:</para>
 
     <itemizedlist>
-
+    
       <listitem>
-
-        <para>to specify constraints for class fields and method return 
-        values</para>
-
-      </listitem>
-
-      <listitem>
-
         <para>to easily validate objects on demand</para>
-
+      </listitem>
+      
+      <listitem>
+        <para>to specify constraints for class fields and getter return 
+        values</para>
       </listitem>
 
       <listitem>
-
-        <para>to specify constraints for constructor parameters that 
-        are automatically checked when the constructor is called</para>
-
+        <para>to validate objects based on certain EJB3 JPA annotations (namely all field annotations that eventually require a not-null value)</para>
       </listitem>
 
       <listitem>
-
-        <para>to specify constraints for method parameters that are 
-        automatically checked when the method is called</para>
-
+        <para>to configure constraints via annotations and/or simple XML files</para>
       </listitem>
 
       <listitem>
-
-        <para>to enforce full object validation after an object 
-        instance has been created</para>
-
+        <para>to develop custom configuration mechanisms</para>
       </listitem>
-
+      
       <listitem>
-
-        <para>to enforce full object validation before a method of the 
-        object is called</para>
-
-      </listitem>
-
-      <listitem>
-
-        <para>to enforce full object validation after a method of the 
-        object is called</para>
-
-        <para>to either let OVal throw constraint violation exceptions 
-        during automatic checks or alternatively notify constraint 
-        violation listeners.</para>
-
-      </listitem>
-
-      <listitem>
-
         <para>to easily create custom constraints</para>
+      </listitem>
+      
+    </itemizedlist>
 
+	<para>When using AspectJ additional features are available:</para>
+	
+    <itemizedlist>
+
+      <listitem>
+        <para>specify constraints for <emphasis>constructor parameters</emphasis> that 
+        are automatically checked when the constructor is called</para>
+      </listitem>
+
+      <listitem>
+        <para>specify constraints for <emphasis>method parameters</emphasis> that are 
+        automatically checked when the method is called</para>
+      </listitem>
+
+      <listitem>
+        <para>enforce full object validation after an object 
+        instance has been created</para>
+      </listitem>
+
+      <listitem>
+        <para>enforce full object validation before a method of the 
+        object is called</para>
+      </listitem>
+
+      <listitem>
+        <para>enforce full object validation after a method of the 
+        object is called</para>
+      </listitem>
+      
+      <listitem>
+        <para>either let OVal throw constraint violation exceptions 
+        during automatic checks or alternatively notify registered constraint 
+        violation listeners.</para>
       </listitem>
 
     </itemizedlist>
@@ -79,13 +83,12 @@
 
     <title>Prerequisites</title>
 
-    <para>OVal requires Java 5 and AspectJ. Java 5 is required for 
-    annotation support. AspectJ is used to support programming by 
-    contract (e.g. to enforce constraints for constructor and method 
-    parameters).</para>
-
-    <para>If you are only interested in validating objects based on 
-    specified field constraints AspectJ is not required.</para>
+    <para>OVal requires Java 5 or later. Java 5 is mainly required for annotation support
+    but other new language features (generics, for each loop, etc.) are used across OVal too.</para>
+    
+    <para>AspectJ is required if you want to use the programming by contract features 
+    (e.g. to enforce constraints for constructor and method parameters).
+    If you are only interested in simple bean validation AspectJ is not required.</para>
 
   </section>
 
