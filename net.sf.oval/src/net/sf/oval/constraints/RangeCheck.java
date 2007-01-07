@@ -21,9 +21,9 @@ import net.sf.oval.contexts.OValContext;
 public class RangeCheck extends AbstractAnnotationCheck<Range>
 {
 	private static final long serialVersionUID = 1L;
-	
-	private long min;
-	private long max;
+
+	private long min = Long.MIN_VALUE;
+	private long max = Long.MAX_VALUE;
 
 	@Override
 	public void configure(final Range constraintAnnotation)

@@ -35,7 +35,7 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 @Constraint(check = RangeCheck.class)
 public @interface Range
 {
-	long min() default 0;
+	long min() default Long.MIN_VALUE;
 
 	long max() default Long.MAX_VALUE;
 
