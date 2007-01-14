@@ -193,6 +193,19 @@ public final class ReflectionUtils
 		}
 	}
 
+	public static boolean isClassPresent(final String className)
+	{
+		try
+		{
+			Class.forName(className);
+			return true;
+		}
+		catch (ClassNotFoundException e)
+		{
+			return false;
+		}
+	}
+
 	/**
 	 * determines if a method is a JavaBean style getter method
 	 */

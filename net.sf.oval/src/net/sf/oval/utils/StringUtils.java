@@ -29,6 +29,21 @@ public final class StringUtils
 		return out.toString();
 	}
 
+	public static String replaceAll(final String searchIn, final String searchFor, final String replaceWith)
+	{
+		final StringBuilder out = new StringBuilder();
+
+		int startSearchAt = 0, foundAt = 0, searchForLength = searchFor.length();
+
+		while ((foundAt = searchIn.indexOf(searchFor, startSearchAt)) >= 0)
+		{
+			out.append(searchIn.substring(startSearchAt, foundAt)).append(replaceWith);
+			startSearchAt = foundAt + searchForLength;
+		}
+
+		return out.append(searchIn.substring(startSearchAt, searchIn.length())).toString();
+	}
+
 	/**
 	 * private constructor
 	 */
