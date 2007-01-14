@@ -2,7 +2,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sf.oval</groupId>
-  <artifactId>oval</artifactId>
+  <artifactId>net.sf.oval</artifactId>
   <version>$VERSION$</version>
   <packaging>jar</packaging>
   <name>OVal</name>
