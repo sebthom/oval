@@ -77,7 +77,6 @@ public final class ClassChecks
 	 * package constructor used by the Validator class
 	 * 
 	 * @param clazz
-	 * @param validator
 	 */
 	@SuppressWarnings("unchecked")
 	ClassChecks(final Class clazz)
