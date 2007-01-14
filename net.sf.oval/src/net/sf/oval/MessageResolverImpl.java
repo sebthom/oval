@@ -30,6 +30,11 @@ public class MessageResolverImpl implements MessageResolver
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
 
+	public MessageResolverImpl()
+	{
+		// add the message bundle for the pre-built constraints in the default locale
+		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/constraints/Messages"));
+	}
 	/**
 	 * Adds a message bundle
 	 * 

@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
  * Before the annotated method is executed all field and getter constraints 
  * of this object are validated.
  * 
- * If constraint violations occur, the method will not be executed and
- * a ConstraintsViolatedException exception is thrown. 
+ * If constraint violations occur, the annotated method will not be executed 
+ * instead it will throw a ConstraintsViolatedException exception. 
  * 
  * @author Sebastian Thomschke
  */

@@ -20,10 +20,9 @@ import java.lang.annotation.Target;
 
 /**
  * After the annotated method has been executed all field and getter constraints 
- * of this object are validated.
- * 
- * If constraint violations occur, the method will not be executed and
- * a ConstraintsViolatedException exception is thrown. 
+ * of this object are validated.<br>
+ * <br>
+ * In case of constraint violations the annotated method will throw an ConstraintsViolatedException.
  *  
  * @author Sebastian Thomschke
  */
