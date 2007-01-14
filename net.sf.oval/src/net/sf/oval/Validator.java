@@ -15,11 +15,11 @@ package net.sf.oval;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.configuration.AnnotationsConfigurer;
@@ -30,6 +30,7 @@ import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
+import net.sf.oval.constraints.AssertCheck;
 import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
@@ -46,6 +47,7 @@ import net.sf.oval.exceptions.ReflectionException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
 import net.sf.oval.utils.ListOrderedSet;
 import net.sf.oval.utils.ReflectionUtils;
+import net.sf.oval.utils.StringUtils;
 import net.sf.oval.utils.ThreadLocalList;
 
 /**
@@ -53,6 +55,8 @@ import net.sf.oval.utils.ThreadLocalList;
  */
 public class Validator
 {
+	private final static Logger LOG = Logger.getLogger(Validator.class.getName());
+
 	protected final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 	protected final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>();
 
@@ -65,17 +69,24 @@ public class Validator
 
 	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
 
+	protected Map<String, ExpressionLanguage> expressionLanguages = CollectionFactory.INSTANCE
+			.createMap(2);
+
 	/**
 	 * Constructs a new validator object and uses a new isntance of
 	 * AnnotationsConfigurer
 	 */
 	public Validator()
 	{
+		initializeJavaScriptEL();
+
 		configurers.add(new AnnotationsConfigurer());
 	}
 
 	public Validator(final Configurer... configurers)
 	{
+		initializeJavaScriptEL();
+
 		for (final Configurer configurer : configurers)
 			this.configurers.add(configurer);
 	}
@@ -302,73 +313,8 @@ public class Validator
 		 */
 		if (check instanceof AssertValidCheck)
 		{
-			if (valueToValidate == null) return;
-
-			// ignore circular dependencies
-			if (isCurrentlyValidated(valueToValidate)) return;
-
-			final List<ConstraintViolation> childViolations = validate(valueToValidate);
-
-			if (childViolations.size() != 0)
-			{
-				final String errorMessage = renderMessage(context, valueToValidate, check);
-
-				violations.add(new ConstraintViolation(errorMessage, validatedObject,
-						valueToValidate, context, childViolations
-								.toArray(new ConstraintViolation[childViolations.size()])));
-			}
-
-			// if the value to validate is a collection also validate the collection items
-			if (valueToValidate instanceof Collection
-					&& ((AssertValidCheck) check).isRequireValidElements())
-			{
-				for (final Object item : (Collection) valueToValidate)
-				{
-					final List<ConstraintViolation> itemViolations = validate(item);
-
-					if (itemViolations.size() != 0)
-					{
-						final String errorMessage = renderMessage(context, item, check);
-
-						violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
-								context, itemViolations
-										.toArray(new ConstraintViolation[itemViolations.size()])));
-					}
-				}
-			}
-
-			// if the value to validate is a map also validate the map keys and values
-			else if (valueToValidate instanceof Map
-					&& ((AssertValidCheck) check).isRequireValidElements())
-			{
-				for (final Object item : ((Map) valueToValidate).keySet())
-				{
-					final List<ConstraintViolation> itemViolations = validate(item);
-
-					if (itemViolations.size() != 0)
-					{
-						final String errorMessage = renderMessage(context, item, check);
-
-						violations.add(new ConstraintViolation(errorMessage, validatedObject,
-								item, context, itemViolations
-										.toArray(new ConstraintViolation[itemViolations.size()])));
-					}
-				}
-
-				for (final Object item : ((Map) valueToValidate).values())
-				{
-					final List<ConstraintViolation> itemViolations = validate(item);
-
-					if (itemViolations.size() != 0)
-					{
-						final String errorMessage = renderMessage(context, item, check);
-
-						violations.add(new ConstraintViolation(errorMessage, validatedObject,
-								item, context, itemViolations
-										.toArray(new ConstraintViolation[itemViolations.size()])));
-					}
-				}
-			}
+			checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject,
+					valueToValidate, context);
 			return;
 		}
 
@@ -377,65 +323,8 @@ public class Validator
 		 */
 		if (check instanceof AssertConstraintSetCheck)
 		{
-			final AssertConstraintSetCheck assertConstraintSetCheck = (AssertConstraintSetCheck) check;
-			Class targetClass = assertConstraintSetCheck.getSource();
-			if (targetClass == Object.class)
-			{
-				if (context instanceof ConstructorParameterContext)
-				{
-					targetClass = ((ConstructorParameterContext) context).getConstructor()
-							.getDeclaringClass();
-				}
-				else if (context instanceof FieldContext)
-				{
-					targetClass = ((FieldContext) context).getField().getDeclaringClass();
-				}
-				else if (context instanceof MethodParameterContext)
-				{
-					targetClass = ((MethodParameterContext) context).getMethod()
-							.getDeclaringClass();
-				}
-				else if (context instanceof MethodReturnValueContext)
-				{
-					targetClass = ((MethodReturnValueContext) context).getMethod()
-							.getDeclaringClass();
-				}
-			}
-
-			final Class source = assertConstraintSetCheck.getSource();
-			final String constraintSetId = assertConstraintSetCheck.getId();
-
-			Collection<Check> referencedChecks = null;
-			if (source == Object.class)
-			{
-				final ClassChecks cc = getClassChecks(targetClass);
-				final ConstraintSet cs = cc.constraintSetsByLocalId.get(assertConstraintSetCheck
-						.getId());
-				if (cs != null) referencedChecks = cs.getChecks(this);
-			}
-			else
-			{
-				final ClassChecks cc = getClassChecks(source);
-				final ConstraintSet cs = cc.constraintSetsByLocalId.get(assertConstraintSetCheck
-						.getId());
-				if (cs != null) referencedChecks = cs.getChecks(this);
-			}
-			if (referencedChecks == null)
-			{
-				final ConstraintSet cs = getConstraintSet(constraintSetId);
-				if (cs != null) referencedChecks = cs.getChecks(this);
-			}
-			if (referencedChecks == null)
-			{
-				throw new UndefinedConstraintSetException("No constraint set with id "
-						+ constraintSetId + " defined.");
-			}
-
-			for (final Check referencedCheck : referencedChecks)
-			{
-				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
-						context);
-			}
+			checkConstraintAssertConstraintSet(violations, (AssertConstraintSetCheck) check,
+					validatedObject, valueToValidate, context);
 			return;
 		}
 
@@ -444,94 +333,19 @@ public class Validator
 		 */
 		if (check instanceof AssertFieldConstraintsCheck)
 		{
-			// the lowest class that is expected to declare the field (or one of its super classes)
-			Class targetClass = validatedObject.getClass();
+			checkConstraintAssertFieldConstraints(violations, (AssertFieldConstraintsCheck) check,
+					validatedObject, valueToValidate, context);
+			return;
+		}
 
-			/*
-			 * adjust the targetClass based on the validation context
-			 */
-			if (context instanceof ConstructorParameterContext)
-			{
-				// the class declaring the field must either be the class declaring the constructor or one of its super classes
-				targetClass = ((ConstructorParameterContext) context).getConstructor()
-						.getDeclaringClass();
-			}
-			else if (context instanceof MethodParameterContext)
-			{
-				// the class declaring the field must either be the class declaring the method or one of its super classes
-				targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
-			}
-			else if (context instanceof MethodReturnValueContext)
-			{
-				// the class declaring the field must either be the class declaring the getter or one of its super classes
-				targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
-			}
-
-			// the name of the field whose constraints shall be used
-			String fieldName = ((AssertFieldConstraintsCheck) check).getFieldName();
-
-			/*
-			 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
-			 */
-			if (fieldName == null || fieldName.length() == 0)
-			{
-				if (context instanceof ConstructorParameterContext)
-				{
-					fieldName = ((ConstructorParameterContext) context).getParameterName();
-				}
-				else if (context instanceof MethodParameterContext)
-				{
-					fieldName = ((MethodParameterContext) context).getParameterName();
-				}
-				else if (context instanceof MethodReturnValueContext)
-				{
-					/*
-					 * calculate the fieldName based on the getXXX isXXX style getter method name
-					 */
-					fieldName = ((MethodReturnValueContext) context).getMethod().getName();
-
-					if (fieldName.startsWith("get") && fieldName.length() > 3)
-					{
-						fieldName = fieldName.substring(3);
-						if (fieldName.length() == 1)
-							fieldName = fieldName.toLowerCase();
-						else
-							fieldName = Character.toLowerCase(fieldName.charAt(0))
-									+ fieldName.substring(1);
-					}
-					else if (fieldName.startsWith("is") && fieldName.length() > 2)
-					{
-						fieldName = fieldName.substring(2);
-						if (fieldName.length() == 1)
-							fieldName = fieldName.toLowerCase();
-						else
-							fieldName = Character.toLowerCase(fieldName.charAt(0))
-									+ fieldName.substring(1);
-					}
-				}
-			}
-
-			/*
-			 * find the field based on fieldName and targetClass
-			 */
-			final Field field = ReflectionUtils.getFieldRecursive(targetClass, fieldName);
-
-			if (field == null)
-			{
-				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <"
-						+ targetClass + "> or its super classes.");
-			}
-
-			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-			final Collection<Check> referencedChecks = cc.checksByField.get(field);
-			if (referencedChecks != null && referencedChecks.size() > 0)
-			{
-				for (final Check referencedCheck : referencedChecks)
-				{
-					checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
-							context);
-				}
-			}
+		/*
+		 * special handling of the Condition constraint
+		 */
+		if (check instanceof AssertCheck)
+		{
+			checkConstraintCondition(violations, (AssertCheck) check, validatedObject,
+					valueToValidate, context);
+			return;
 		}
 
 		/*
@@ -542,6 +356,248 @@ public class Validator
 			final String errorMessage = renderMessage(context, valueToValidate, check);
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context));
+		}
+	}
+
+	private void checkConstraintAssertConstraintSet(final List<ConstraintViolation> violations,
+			final AssertConstraintSetCheck check, final Object validatedObject,
+			final Object valueToValidate, final OValContext context)
+	{
+		Class targetClass = check.getSource();
+		if (targetClass == Object.class)
+		{
+			if (context instanceof ConstructorParameterContext)
+			{
+				targetClass = ((ConstructorParameterContext) context).getConstructor()
+						.getDeclaringClass();
+			}
+			else if (context instanceof FieldContext)
+			{
+				targetClass = ((FieldContext) context).getField().getDeclaringClass();
+			}
+			else if (context instanceof MethodParameterContext)
+			{
+				targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
+			}
+			else if (context instanceof MethodReturnValueContext)
+			{
+				targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
+			}
+		}
+
+		final Class source = check.getSource();
+		final String constraintSetId = check.getId();
+
+		Collection<Check> referencedChecks = null;
+		if (source == Object.class)
+		{
+			final ClassChecks cc = getClassChecks(targetClass);
+			final ConstraintSet cs = cc.constraintSetsByLocalId.get(check.getId());
+			if (cs != null) referencedChecks = cs.getChecks(this);
+		}
+		else
+		{
+			final ClassChecks cc = getClassChecks(source);
+			final ConstraintSet cs = cc.constraintSetsByLocalId.get(check.getId());
+			if (cs != null) referencedChecks = cs.getChecks(this);
+		}
+		if (referencedChecks == null)
+		{
+			final ConstraintSet cs = getConstraintSet(constraintSetId);
+			if (cs != null) referencedChecks = cs.getChecks(this);
+		}
+		if (referencedChecks == null)
+		{
+			throw new UndefinedConstraintSetException("No constraint set with id "
+					+ constraintSetId + " defined.");
+		}
+
+		for (final Check referencedCheck : referencedChecks)
+		{
+			checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context);
+		}
+	}
+
+	private void checkConstraintAssertFieldConstraints(final List<ConstraintViolation> violations,
+			final AssertFieldConstraintsCheck check, final Object validatedObject,
+			final Object valueToValidate, final OValContext context)
+	{
+		// the lowest class that is expected to declare the field (or one of its super classes)
+		Class targetClass = validatedObject.getClass();
+
+		/*
+		 * adjust the targetClass based on the validation context
+		 */
+		if (context instanceof ConstructorParameterContext)
+		{
+			// the class declaring the field must either be the class declaring the constructor or one of its super classes
+			targetClass = ((ConstructorParameterContext) context).getConstructor()
+					.getDeclaringClass();
+		}
+		else if (context instanceof MethodParameterContext)
+		{
+			// the class declaring the field must either be the class declaring the method or one of its super classes
+			targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
+		}
+		else if (context instanceof MethodReturnValueContext)
+		{
+			// the class declaring the field must either be the class declaring the getter or one of its super classes
+			targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
+		}
+
+		// the name of the field whose constraints shall be used
+		String fieldName = check.getFieldName();
+
+		/*
+		 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
+		 */
+		if (fieldName == null || fieldName.length() == 0)
+		{
+			if (context instanceof ConstructorParameterContext)
+			{
+				fieldName = ((ConstructorParameterContext) context).getParameterName();
+			}
+			else if (context instanceof MethodParameterContext)
+			{
+				fieldName = ((MethodParameterContext) context).getParameterName();
+			}
+			else if (context instanceof MethodReturnValueContext)
+			{
+				/*
+				 * calculate the fieldName based on the getXXX isXXX style getter method name
+				 */
+				fieldName = ((MethodReturnValueContext) context).getMethod().getName();
+
+				if (fieldName.startsWith("get") && fieldName.length() > 3)
+				{
+					fieldName = fieldName.substring(3);
+					if (fieldName.length() == 1)
+						fieldName = fieldName.toLowerCase();
+					else
+						fieldName = Character.toLowerCase(fieldName.charAt(0))
+								+ fieldName.substring(1);
+				}
+				else if (fieldName.startsWith("is") && fieldName.length() > 2)
+				{
+					fieldName = fieldName.substring(2);
+					if (fieldName.length() == 1)
+						fieldName = fieldName.toLowerCase();
+					else
+						fieldName = Character.toLowerCase(fieldName.charAt(0))
+								+ fieldName.substring(1);
+				}
+			}
+		}
+
+		/*
+		 * find the field based on fieldName and targetClass
+		 */
+		final Field field = ReflectionUtils.getFieldRecursive(targetClass, fieldName);
+
+		if (field == null)
+		{
+			throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <"
+					+ targetClass + "> or its super classes.");
+		}
+
+		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+		final Collection<Check> referencedChecks = cc.checksByField.get(field);
+		if (referencedChecks != null && referencedChecks.size() > 0)
+		{
+			for (final Check referencedCheck : referencedChecks)
+			{
+				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
+						context);
+			}
+		}
+
+	}
+
+	private void checkConstraintCondition(final List<ConstraintViolation> violations,
+			final AssertCheck check, final Object validatedObject, final Object valueToValidate,
+			final OValContext context)
+	{
+		final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
+		Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+		values.put("value", valueToValidate);
+		values.put("this", validatedObject);
+		if (!eng.evaluate(check.getCondition(), values))
+		{
+			final String errorMessage = renderMessage(context, valueToValidate, check);
+
+			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
+					context));
+		}
+	}
+
+	private void checkConstraintAssertValid(final List<ConstraintViolation> violations,
+			final AssertValidCheck check, final Object validatedObject,
+			final Object valueToValidate, final OValContext context)
+	{
+		if (valueToValidate == null) return;
+
+		// ignore circular dependencies
+		if (isCurrentlyValidated(valueToValidate)) return;
+
+		final List<ConstraintViolation> childViolations = validate(valueToValidate);
+
+		if (childViolations.size() != 0)
+		{
+			final String errorMessage = renderMessage(context, valueToValidate, check);
+
+			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
+					context, childViolations
+							.toArray(new ConstraintViolation[childViolations.size()])));
+		}
+
+		// if the value to validate is a collection also validate the collection items
+		if (valueToValidate instanceof Collection && check.isRequireValidElements())
+		{
+			for (final Object item : (Collection) valueToValidate)
+			{
+				final List<ConstraintViolation> itemViolations = validate(item);
+
+				if (itemViolations.size() != 0)
+				{
+					final String errorMessage = renderMessage(context, item, check);
+
+					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
+							context, itemViolations.toArray(new ConstraintViolation[itemViolations
+									.size()])));
+				}
+			}
+		}
+
+		// if the value to validate is a map also validate the map keys and values
+		else if (valueToValidate instanceof Map && check.isRequireValidElements())
+		{
+			for (final Object item : ((Map) valueToValidate).keySet())
+			{
+				final List<ConstraintViolation> itemViolations = validate(item);
+
+				if (itemViolations.size() != 0)
+				{
+					final String errorMessage = renderMessage(context, item, check);
+
+					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
+							context, itemViolations.toArray(new ConstraintViolation[itemViolations
+									.size()])));
+				}
+			}
+
+			for (final Object item : ((Map) valueToValidate).values())
+			{
+				final List<ConstraintViolation> itemViolations = validate(item);
+
+				if (itemViolations.size() != 0)
+				{
+					final String errorMessage = renderMessage(context, item, check);
+
+					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
+							context, itemViolations.toArray(new ConstraintViolation[itemViolations
+									.size()])));
+				}
+			}
 		}
 	}
 
@@ -605,6 +661,15 @@ public class Validator
 		return parameterNameResolver;
 	}
 
+	private void initializeJavaScriptEL()
+	{
+		if (ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
+		{
+			registerExpressionLanguage("javascript", new ExpressionLanguageRhinoImpl());
+			LOG.info("Expression language 'javascript' registered");
+		}
+	}
+
 	/**
 	 * Determines if the given object is currently validated in the current thread
 	 * 
@@ -614,6 +679,17 @@ public class Validator
 	protected boolean isCurrentlyValidated(final Object object)
 	{
 		return currentlyValidatedObjects.get().contains(object);
+	}
+
+	public boolean isExpressionLanguageAvailable(final String languageName)
+	{
+		return expressionLanguages.get(languageName) != null;
+	}
+
+	public void registerExpressionLanguage(final String languageName,
+			final ExpressionLanguage expressionLanguage)
+	{
+		expressionLanguages.put(languageName, expressionLanguage);
 	}
 
 	/**
@@ -628,6 +704,7 @@ public class Validator
 
 	protected String renderMessage(final OValContext context, final Object value, final Check check)
 	{
+		if (check instanceof AssertCheck) System.out.println("hi");
 		final String messageKey = check.getMessage();
 
 		String message = messageResolver.getMessage(messageKey);
@@ -638,14 +715,27 @@ public class Validator
 
 		final String[] messageValues = check.getMessageValues();
 		final int messageValuesCount = messageValues == null ? 0 : messageValues.length;
-		final Object[] args = new Object[2 + messageValuesCount];
-		args[0] = context;
-		args[1] = value;
-		if (messageValuesCount > 0)
+
+		message = StringUtils.replaceAll(message, "{0}", context.toString());
+		message = StringUtils.replaceAll(message, "{1}", value == null ? "null" : value.toString());
+
+		for (int i = 0; i < messageValuesCount; i++)
 		{
-			System.arraycopy(messageValues, 0, args, 2, messageValuesCount);
+			message = StringUtils.replaceAll(message, "{" + Integer.toString(i + 2) + "}",
+					messageValues[i]);
 		}
-		return MessageFormat.format(message, args);
+		if (check instanceof AssertCheck) System.out.println(message);
+		return message;
+		/*
+		 
+		 final Object[] args = new Object[2 + messageValuesCount];
+		 args[0] = context;
+		 args[1] = value;
+		 if (messageValuesCount > 0)
+		 {
+		 System.arraycopy(messageValues, 0, args, 2, messageValuesCount);
+		 }
+		 return MessageFormat.format(message, args);*/
 	}
 
 	/**
