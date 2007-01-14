@@ -2,11 +2,14 @@
 [+] Feature added.
 [*] Change.
 
-200?-??-?? v0.9
+2007-??-?? v0.9
 ===============
 ~ updated the DTD
 - the ant build script now also creates the dist folder if it does not exist (thanks to tahura)
 * when @AssertValid is used on a map the map's keys and values are now validated too by default (thanks to tahura)
++ added plugabble support for expression languages
++ introduced @net.sf.oval.constraints.Assert(constraint="expression", language="javascript")
++ added javascript as default expression langauage via Mozilla Rhino
 
 2006-12-10 v0.8
 ===============
