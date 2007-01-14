@@ -26,13 +26,13 @@ public class ExpressionLanguageJavascriptTest extends TestCase
 {
 	private static class Person
 	{
-		@Assert(constraint = "value!=null", message = "CONDITION")
+		@Assert(expression = "value!=null", message = "C1")
 		public String firstName;
 
-		@Assert(constraint = "value!=null")
+		@Assert(expression = "value!=null", message = "C2")
 		public String lastName;
 
-		@Assert(constraint = "value!=null && value.length>0 && value.length<7", message = "CONDITION")
+		@Assert(expression = "value!=null && value.length>0 && value.length<7", message = "C3")
 		public String zipCode;
 	}
 
@@ -44,9 +44,6 @@ public class ExpressionLanguageJavascriptTest extends TestCase
 		final Person p = new Person();
 		List<ConstraintViolation> violations = validator.validate(p);
 		assertTrue(violations.size() == 3);
-		System.out.println(violations.get(0).getMessage());
-		System.out.println(violations.get(1).getMessage());
-		System.out.println(violations.get(2).getMessage());
 		
 		// test max length
 		p.firstName = "Mike";
@@ -54,13 +51,13 @@ public class ExpressionLanguageJavascriptTest extends TestCase
 		p.zipCode = "1234567";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("CONDITION"));
+		assertTrue(violations.get(0).getMessage().equals("C3"));
 
 		// test not empty
 		p.zipCode = "";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("CONDITION"));
+		assertTrue(violations.get(0).getMessage().equals("C3"));
 		
 		// test ok
 		p.zipCode = "wqeew";

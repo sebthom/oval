@@ -8,11 +8,11 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Scriptable;
 
-public class ExpressionLanguageRhinoImpl implements ExpressionLanguage
+public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 {
 	private final Scriptable parentScope;
 
-	public ExpressionLanguageRhinoImpl()
+	public ExpressionLanguageJavaScriptImpl()
 	{
 		Context ctx = Context.enter();
 		try

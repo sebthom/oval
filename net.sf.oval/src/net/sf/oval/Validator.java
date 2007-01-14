@@ -353,7 +353,8 @@ public class Validator
 		 */
 		if (!check.isSatisfied(validatedObject, valueToValidate, context))
 		{
-			final String errorMessage = renderMessage(context, valueToValidate, check);
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageValues());
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context));
 		}
@@ -521,9 +522,10 @@ public class Validator
 		Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
 		values.put("value", valueToValidate);
 		values.put("this", validatedObject);
-		if (!eng.evaluate(check.getCondition(), values))
+		if (!eng.evaluate(check.getExpression(), values))
 		{
-			final String errorMessage = renderMessage(context, valueToValidate, check);
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageValues());
 
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context));
@@ -543,7 +545,8 @@ public class Validator
 
 		if (childViolations.size() != 0)
 		{
-			final String errorMessage = renderMessage(context, valueToValidate, check);
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageValues());
 
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context, childViolations
@@ -559,7 +562,8 @@ public class Validator
 
 				if (itemViolations.size() != 0)
 				{
-					final String errorMessage = renderMessage(context, item, check);
+					final String errorMessage = renderMessage(context, item, check.getMessage(),
+							check.getMessageValues());
 
 					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
 							context, itemViolations.toArray(new ConstraintViolation[itemViolations
@@ -577,7 +581,8 @@ public class Validator
 
 				if (itemViolations.size() != 0)
 				{
-					final String errorMessage = renderMessage(context, item, check);
+					final String errorMessage = renderMessage(context, item, check.getMessage(),
+							check.getMessageValues());
 
 					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
 							context, itemViolations.toArray(new ConstraintViolation[itemViolations
@@ -591,7 +596,8 @@ public class Validator
 
 				if (itemViolations.size() != 0)
 				{
-					final String errorMessage = renderMessage(context, item, check);
+					final String errorMessage = renderMessage(context, item, check.getMessage(),
+							check.getMessageValues());
 
 					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
 							context, itemViolations.toArray(new ConstraintViolation[itemViolations
@@ -665,7 +671,7 @@ public class Validator
 	{
 		if (ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
 		{
-			registerExpressionLanguage("javascript", new ExpressionLanguageRhinoImpl());
+			registerExpressionLanguage("javascript", new ExpressionLanguageJavaScriptImpl());
 			LOG.info("Expression language 'javascript' registered");
 		}
 	}
@@ -702,18 +708,15 @@ public class Validator
 		return constraintSetsById.remove(id);
 	}
 
-	protected String renderMessage(final OValContext context, final Object value, final Check check)
+	protected String renderMessage(final OValContext context, final Object value,
+			final String messageKey, final String[] messageValues)
 	{
-		if (check instanceof AssertCheck) System.out.println("hi");
-		final String messageKey = check.getMessage();
-
 		String message = messageResolver.getMessage(messageKey);
 		if (message == null) message = messageKey;
 
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
 
-		final String[] messageValues = check.getMessageValues();
 		final int messageValuesCount = messageValues == null ? 0 : messageValues.length;
 
 		message = StringUtils.replaceAll(message, "{0}", context.toString());
@@ -724,7 +727,6 @@ public class Validator
 			message = StringUtils.replaceAll(message, "{" + Integer.toString(i + 2) + "}",
 					messageValues[i]);
 		}
-		if (check instanceof AssertCheck) System.out.println(message);
 		return message;
 		/*
 		 

@@ -22,23 +22,23 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language;
-	private String condition;
+	private String language = "javascript";
+	private String expression;
 
 	@Override
 	public void configure(final Assert constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setCondition(constraintAnnotation.constraint());
+		setExpression(constraintAnnotation.expression());
 		setLanguage(constraintAnnotation.language());
 	}
 
 	/**
-	 * @return the condition
+	 * @return the expression
 	 */
-	public String getCondition()
+	public String getExpression()
 	{
-		return condition;
+		return expression;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{condition};
+		return new String[]{expression};
 	}
 
 	/**
@@ -66,11 +66,11 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	}
 
 	/**
-	 * @param condition the condition to set
+	 * @param expression the expression to set
 	 */
-	public void setCondition(final String condition)
+	public void setExpression(final String expression)
 	{
-		this.condition = condition;
+		this.expression = expression;
 	}
 
 	/**

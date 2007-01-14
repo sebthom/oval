@@ -33,14 +33,17 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 public @interface Assert
 {
 	/**
-	 * formula in the specified scription language describing the condition. the formula returns true if the condition is satisfied.
+	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
 	 * available variables are:<br>
 	 * <b>this</b> -&gt; the validated bean<br>
 	 * <b>value</b> -&gt; the value to validate (e.g. the field value, parameter value, or method return value)
 	 */
-	String constraint();
+	String expression();
 
+	/**
+	 * the expression language that is used
+	 */
 	String language() default "javascript";
 	
 	/**
