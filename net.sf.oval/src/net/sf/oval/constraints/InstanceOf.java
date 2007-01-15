@@ -24,9 +24,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 /**
  * Check if the value is an instance of the given class or interface.
  * 
- * <br><br>
- * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
- * 
  * @author Sebastian Thomschke
  */
 @Documented

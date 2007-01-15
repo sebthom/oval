@@ -22,10 +22,8 @@ import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * check that the value is not a reference to the validated object itself
- * 
- * <br><br>
- * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
+ * Check that the value is not a reference to the validated object itself.<br>
+ * This is useful to avoid circular references.<br>
  * 
  * @author Sebastian Thomschke
  */
@@ -40,5 +38,5 @@ public @interface NotSelfRef
 	 * 
 	 * @see ConstraintsViolatedException
 	 */
-	String message() default "net.sf.oval.constraints.NotThis.violated";
+	String message() default "net.sf.oval.constraints.NotSelfRef.violated";
 }

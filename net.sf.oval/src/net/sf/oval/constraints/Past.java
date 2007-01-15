@@ -22,25 +22,23 @@ import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * Check if the value passes a validation by Validator.validate()
+ * check if the date is in the past
+ * 
+ * <br><br>
+ * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(check = AssertValidCheck.class)
-public @interface AssertValid
+@Constraint(check = PastCheck.class)
+public @interface Past
 {
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */
-	String message() default "net.sf.oval.constraints.AssertValid.violated";
-
-	/**
-	 * Specifies if all the elements of a collection must be valid too.
-	 */
-	boolean requireValidElements() default true;
+	String message() default "net.sf.oval.constraints.Future.violated";
 }
