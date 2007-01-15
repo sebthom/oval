@@ -23,15 +23,15 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
  * Check that the value is not a reference to the validated object itself.<br>
- * This is useful to avoid circular references.<br>
+ * This is e.g. useful to avoid circular references.<br>
  * 
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(check = NotSelfRefCheck.class)
-public @interface NotSelfRef
+@Constraint(check = NoSelfReferenceCheck.class)
+public @interface NoSelfReference
 {
 	/**
 	 * message to be used for the ContraintsViolatedException

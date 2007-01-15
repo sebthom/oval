@@ -22,7 +22,7 @@ import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * check if the number is greater or equal zero
+ * Check if the number is greater or equal zero
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull

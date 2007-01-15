@@ -22,7 +22,7 @@ import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * check if not null
+ * Check if not null
  * 
  * @author Sebastian Thomschke
  */

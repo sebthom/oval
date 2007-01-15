@@ -22,7 +22,7 @@ import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * check if the array or collection has the given size
+ * Check if the array or collection has the given size
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull

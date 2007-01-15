@@ -19,10 +19,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import net.sf.oval.annotations.Constraint;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * Applies the constraints of the specified field to the annotated parameter or getter method.
+ * Checks if the value satsifies the constraints defined for the specified field.
  * 
  * @author Sebastian Thomschke
  */
@@ -32,13 +31,6 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 @Constraint(check = AssertFieldConstraintsCheck.class)
 public @interface AssertFieldConstraints
 {
-	/**
-	 * message to be used for the ContraintsViolatedException
-	 * 
-	 * @see ConstraintsViolatedException
-	 */
-	String message() default "not used";
-
 	/**
 	 * @return name of the field. If not specified, the constraints of the field with the same name as the annotated constructor/method parameter are applied.
 	 */

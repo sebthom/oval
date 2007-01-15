@@ -22,7 +22,7 @@ import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * check the value by a method of the same class that takes the value as argument and returns true if valid
+ * Check the value by a method of the same class that takes the value as argument and returns true if valid
  * and false if invalid<br>
  * 
  * @author Sebastian Thomschke

@@ -21,7 +21,7 @@ import net.sf.oval.contexts.OValContext;
 public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertFieldConstraints>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String fieldName;
 
 	@Override
@@ -37,6 +37,12 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	public String getFieldName()
 	{
 		return fieldName;
+	}
+
+	@Override
+	public String getMessage()
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -55,5 +61,11 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	public void setFieldName(final String fieldName)
 	{
 		this.fieldName = fieldName;
+	}
+
+	@Override
+	public void setMessage(final String message)
+	{
+		throw new UnsupportedOperationException();
 	}
 }

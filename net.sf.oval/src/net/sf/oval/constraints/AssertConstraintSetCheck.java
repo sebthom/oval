@@ -38,6 +38,22 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 		setSource(constraintAnnotation.source());
 	}
 
+	public String getId()
+	{
+		return id;
+	}
+
+	@Override
+	public String getMessage()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public Class getSource()
+	{
+		return source == null ? Object.class : source;
+	}
+
 	/**
 	 *  This method is not used.
 	 *  The validation of this special constraint is directly performed by the Validator class
@@ -48,23 +64,19 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 		return true;
 	}
 
-	public String getId()
-	{
-		return id;
-	}
-
 	public void setId(final String id)
 	{
 		this.id = id;
 	}
 
-	public Class getSource()
+	@Override
+	public void setMessage(final String message)
 	{
-		return source == null ? Object.class : source;
+		throw new UnsupportedOperationException();
 	}
-
+	
 	public void setSource(final Class source)
 	{
 		this.source = source;
-	}
+	}	
 }

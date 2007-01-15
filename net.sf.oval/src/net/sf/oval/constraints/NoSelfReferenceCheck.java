@@ -18,7 +18,7 @@ import net.sf.oval.contexts.OValContext;
 /**
  * @author Sebastian Thomschke
  */
-public class NotSelfRefCheck extends AbstractAnnotationCheck<NotSelfRef>
+public class NoSelfReferenceCheck extends AbstractAnnotationCheck<NoSelfReference>
 {
 	private static final long serialVersionUID = 1L;
 	

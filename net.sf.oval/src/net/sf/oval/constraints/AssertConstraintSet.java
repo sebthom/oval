@@ -21,10 +21,7 @@ import java.lang.annotation.Target;
 import net.sf.oval.annotations.Constraint;
 
 /**
- * check if the value satisfies the specified constraint set
- * 
- * <br><br>
- * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
+ * Check if the value satisfies the all constraints of pecified constraint set
  * 
  * @author Sebastian Thomschke
  */
@@ -35,7 +32,8 @@ import net.sf.oval.annotations.Constraint;
 public @interface AssertConstraintSet
 {
 	/**
-	 * The class in which the constraint set is defined.
+	 * The class in which the constraint set is defined.<br>
+	 * The default value Object.class means in the current class.
 	 */
 	Class source() default Object.class;
 
