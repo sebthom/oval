@@ -20,11 +20,8 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsViolatedAdapter;
+import net.sf.oval.ParameterNameResolverAspectJImpl;
 import net.sf.oval.Validator;
-import net.sf.oval.Guard.ReportingMode;
-import net.sf.oval.annotations.Guarded;
-import net.sf.oval.aspectj.ParameterNameResolverAspectJImpl;
 import net.sf.oval.configuration.XMLConfigurer;
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
@@ -39,6 +36,9 @@ import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.constraints.RegExCheck;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.guard.ConstraintsViolatedAdapter;
+import net.sf.oval.guard.Guarded;
+import net.sf.oval.guard.Guard.ReportingMode;
 import net.sf.oval.test.guard.ParameterConstraintsTest.TestEntity;
 
 /**

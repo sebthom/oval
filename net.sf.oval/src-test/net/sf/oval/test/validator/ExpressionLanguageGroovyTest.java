@@ -22,21 +22,21 @@ import net.sf.oval.constraints.Assert;
 /**
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageJavascriptTest extends TestCase
+public class ExpressionLanguageGroovyTest extends TestCase
 {
 	private static class Person
 	{
-		@Assert(expression = "value!=null", language = "javascript", message = "C1")
+		@Assert(expression = "value!=null", language = "groovy", message = "C1")
 		public String firstName;
 
-		@Assert(expression = "value!=null", language = "javascript", message = "C2")
+		@Assert(expression = "value!=null", language = "groovy", message = "C2")
 		public String lastName;
 
-		@Assert(expression = "value!=null && value.length>0 && value.length<7", language = "javascript", message = "C3")
+		@Assert(expression = "value!=null && value.length()>0 && value.length()<7", language = "groovy", message = "C3")
 		public String zipCode;
 	}
 
-	public void testJavaScriptExpression()
+	public void testGroovyExpression()
 	{
 		final Validator validator = new Validator();
 

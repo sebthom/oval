@@ -14,11 +14,11 @@ package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.Guard.ReportingMode;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard.ReportingMode;
 
 /**
  * @author Sebastian Thomschke

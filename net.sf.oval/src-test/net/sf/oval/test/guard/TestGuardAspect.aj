@@ -12,10 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.test.guard;
 
-import net.sf.oval.Guard;
+import net.sf.oval.ParameterNameResolverAspectJImpl;
 import net.sf.oval.Validator;
-import net.sf.oval.aspectj.GuardAspect;
-import net.sf.oval.aspectj.ParameterNameResolverAspectJImpl;
+import net.sf.oval.guard.Guard;
+import net.sf.oval.guard.GuardAspect;
 
 /**
  * @author Sebastian Thomschke

@@ -13,15 +13,15 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.Guard;
-import net.sf.oval.ConstraintsViolatedAdapter;
-import net.sf.oval.annotations.Guarded;
-import net.sf.oval.annotations.DefineConstraintSet;
 import net.sf.oval.constraints.AssertConstraintSet;
+import net.sf.oval.constraints.ConstraintSet;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotEmpty;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.constraints.RegEx;
+import net.sf.oval.guard.ConstraintsViolatedAdapter;
+import net.sf.oval.guard.Guard;
+import net.sf.oval.guard.Guarded;
 
 /**
  * @author Sebastian Thomschke
@@ -31,7 +31,7 @@ public class ConstraintSetTest extends TestCase
 	@Guarded
 	private class Person
 	{
-		@DefineConstraintSet("zipCode")
+		@ConstraintSet("zipCode")
 		@NotNull(message = "NOT_NULL")
 		@Length(max = 6, message = "LENGTH")
 		@NotEmpty(message = "NOT_EMPTY")

@@ -13,10 +13,10 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.annotations.Guarded;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.guard.Guarded;
 
 /**
  * @author Sebastian Thomschke

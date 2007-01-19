@@ -22,7 +22,7 @@ public class AllTests
 {
 
 	public static Test suite() throws Exception
-	{	
+	{
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
 		//$JUnit-BEGIN$
@@ -33,6 +33,8 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AddingConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ExpressionLanguageGroovyTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ExpressionLanguageJavascriptTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite
@@ -53,10 +55,11 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);
-		suite
-				.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ParameterConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
 		//$JUnit-END$
 		return suite;
