@@ -147,14 +147,12 @@ if(violations.size()&gt;0)
       OVal identifies parameterless non-void methods whose names start 
       with &quot;is&quot; (e.g. <command>public boolean 
       isEnabled()</command> ) or &quot;get&quot; (e.g. <command>public 
-      String getName()</command>) as getter methods. Return value 
-      constraints specified for parameteriezd method are not evaluated during 
-      validation.</para>
+      String getName()</command>) as getter methods. Return value constraints specified for other (void, parameterized, non-getter style) method are ignored.</para>
 
       <para><emphasis>Important:</emphasis> To retrieve the return 
-      value of the getter method it is invoked by the Validator. 
-      Therefore ensure that your getter method really is just a getter 
-      method and doesn&apos;t change the object state.</para>
+      value of the getter method OVal invokes the getter. 
+      Therefore you need to ensure that the getter method really is just a getter 
+      method and does not change the object state.</para>
 
       <programlisting>public class BusinessObject
 {
@@ -192,7 +190,7 @@ if(exs.size()&gt;0)
     <title>Using OVal for programming by contract</title>
 
     <para>By utilizing AspectJ OVal provides support for several 
-    aspects of programming by contract - however it is not a full blown 
+    aspects of programming by contract - however it is not yet a full blown 
     programming by contract implementation.</para>
 
     <para>With OVal you can</para>
@@ -319,8 +317,8 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
       <title>Applying field constraints to constructor/method 
       parameters (pre condition)</title>
 
-      <para>You can apply the constraints specified for a field to any 
-      constructor or method parameter in the same or a parent class by using the 
+      <para>You can apply the constraints specified for a field in the same or a super class
+      to any constructor or method parameter by using the 
       <command>@net.sf.oval.constraints.AssertFieldConstraints</command> 
       annotation.</para>
 
@@ -747,8 +745,8 @@ public @interface UpperCase
   	<programlisting>
 &lt;?xml version="1.0" ?&gt;
 &lt;!DOCTYPE oval PUBLIC 
-   &quot;-//OVal/OVal Configuration DTD 0.8//EN&quot;
-   &quot;http://oval.sourceforge.net/oval-configuration-0.8.dtd&quot;&gt;
+   &quot;-//OVal/OVal Configuration DTD 0.9//EN&quot;
+   &quot;http://oval.sourceforge.net/oval-configuration-0.9.dtd&quot;&gt;
 &lt;oval&gt;
 	&lt;!-- define a constraint set --&gt;
 	&lt;constraintSet id=&quot;user.userid&quot;&gt;
@@ -848,13 +846,33 @@ public @interface UpperCase
         <imagedata format="PNG" depth="38" width="126" fileref="images/docbook.png" />
     </imageobject></inlinemediaobject></ulink>
     
-    <ulink url="http://javolution.org"><inlinemediaobject><imageobject>
+    <ulink url="http://www.junit.org/"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="40" width="142" fileref="images/junit.png" />
+    </imageobject></inlinemediaobject></ulink>
+
+    <ulink url="http://www.eclipse.org/aspectj/"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="38" width="152" fileref="images/aspectj.png" />
+    </imageobject></inlinemediaobject></ulink>    
+
+    <ulink url="http://javolution.org/"><inlinemediaobject><imageobject>
         <imagedata format="PNG" depth="32" width="144" fileref="images/javolution.png" />
     </imageobject></inlinemediaobject></ulink>    
 
-    <ulink url="http://xstream.codehaus.org"><inlinemediaobject><imageobject>
+    <ulink url="http://xstream.codehaus.org/"><inlinemediaobject><imageobject>
         <imagedata format="PNG" depth="37" width="116" fileref="images/xstream.png" />
     </imageobject></inlinemediaobject></ulink>  
+    
+    <ulink url="http://www.mozilla.org/rhino/"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="40" width="80" fileref="images/rhino.png" />
+    </imageobject></inlinemediaobject></ulink>
+
+    <ulink url="http://groovy.codehaus.org/"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="40" width="80" fileref="images/groovy.png" />
+    </imageobject></inlinemediaobject></ulink>
+            
+    <ulink url="http://paranamer.codehaus.org/"><inlinemediaobject><imageobject>
+        <imagedata format="PNG" depth="38" width="232" fileref="images/paranamer.png" />
+    </imageobject></inlinemediaobject></ulink> 
     
     </para>
     
