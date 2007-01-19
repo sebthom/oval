@@ -46,13 +46,13 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	}
 
 	/**
-	 *  This method is not used.
+	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
 	 */
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
-		return true;
+		throw new UnsupportedOperationException();
 	}
 
 	/**

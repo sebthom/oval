@@ -18,11 +18,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.annotations.Constraint;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
- * Check if evaluating the specified condition script returns true.<br>
+ * Check if evaluating the expression in the specified expression language returns true.<br>
  * 
  * @author Sebastian Thomschke
  */
@@ -36,15 +35,15 @@ public @interface Assert
 	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
 	 * available variables are:<br>
-	 * <b>this</b> -&gt; the validated bean<br>
+	 * <b>_this</b> -&gt; the validated bean<br>
 	 * <b>value</b> -&gt; the value to validate (e.g. the field value, parameter value, or method return value)
 	 */
 	String expression();
 
 	/**
-	 * the expression language that is used
+	 * the expression language that is used, e.g. "groovy" or "javascript".
 	 */
-	String language() default "javascript";
+	String language();
 	
 	/**
 	 * message to be used for the ContraintsViolatedException

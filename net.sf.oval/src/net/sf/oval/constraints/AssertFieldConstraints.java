@@ -18,7 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.annotations.Constraint;
 
 /**
  * Checks if the value satsifies the constraints defined for the specified field.

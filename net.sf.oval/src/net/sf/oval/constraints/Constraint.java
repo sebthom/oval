@@ -12,30 +12,28 @@
  *******************************************************************************/
 package net.sf.oval.constraints;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.AnnotationCheck;
 
 /**
- * Check that the value is not a reference to the validated object itself.<br>
- * This is e.g. useful to avoid circular references.<br>
- * 
+ * Annotations tagged with this annotation
+ * represent single-value constraints.<br>
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(check = NoSelfReferenceCheck.class)
-public @interface NoSelfReference
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Constraint
 {
 	/**
-	 * message to be used for the ContraintsViolatedException
-	 * 
-	 * @see ConstraintsViolatedException
+	 * The class implementing the constraint logic. It can 
+	 * check if a value satisfies the constraint.
 	 */
-	String message() default "net.sf.oval.constraints.NotSelfRef.violated";
+	Class< ? extends AnnotationCheck< ? extends Annotation>> check();
 }

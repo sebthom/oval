@@ -14,17 +14,14 @@ package net.sf.oval.configuration.elements;
 
 import java.util.List;
 
+import net.sf.oval.guard.PostCheck;
+
 /**
  * @author Sebastian Thomschke
  */
-public class MethodConfiguration extends ConfigurationElement
+public class MethodPostExecutionConfiguration extends ConfigurationElement
 {
 	private static final long serialVersionUID = 1L;
 
-	public String name;
-	public List<ParameterConfiguration> parameterConfigurations;
-	public MethodReturnValueConfiguration returnValueConfiguration;
-
-	public MethodPostExecutionConfiguration postExecutionConfiguration;
-	public MethodPreExecutionConfiguration preExecutionConfiguration;
+	public List<PostCheck> checks;
 }

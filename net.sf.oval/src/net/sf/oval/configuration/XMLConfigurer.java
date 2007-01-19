@@ -27,9 +27,13 @@ import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
+import net.sf.oval.configuration.elements.MethodPreExecutionConfiguration;
+import net.sf.oval.configuration.elements.MethodPostExecutionConfiguration;
 import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.exceptions.OValException;
+import net.sf.oval.guard.PostCheck;
+import net.sf.oval.guard.PreCheck;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -86,39 +90,72 @@ public class XMLConfigurer implements Configurer
 		xStream.useAttributeFor(Long.class);
 		xStream.useAttributeFor(String.class);
 
+		// <oval> -> net.sf.oval.configuration.POJOConfigurer
 		xStream.alias("oval", POJOConfigurer.class);
-		xStream.addImplicitCollection(POJOConfigurer.class, "classConfigurations",
-				ClassConfiguration.class);
-		xStream.addImplicitCollection(POJOConfigurer.class, "constraintSetConfigurations",
-				ConstraintSetConfiguration.class);
+		{
+			// <constraintSet> -> net.sf.oval.configuration.elements.ConstraintSetConfiguration
+			xStream.addImplicitCollection(POJOConfigurer.class, "constraintSetConfigurations",
+					ConstraintSetConfiguration.class);
+			xStream.alias("constraintSet", ConstraintSetConfiguration.class);
+			xStream.addImplicitCollection(ConstraintSetConfiguration.class, "checks");
 
-		xStream.alias("constraintSet", ConstraintSetConfiguration.class);
-		xStream.addImplicitCollection(ConstraintSetConfiguration.class, "checks");
+			// <class> -> net.sf.oval.configuration.elements.ClassConfiguration
+			xStream.addImplicitCollection(POJOConfigurer.class, "classConfigurations",
+					ClassConfiguration.class);
+			xStream.alias("class", ClassConfiguration.class);
+			{
+				// <field> -> net.sf.oval.configuration.elements.FieldConfiguration
+				xStream.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",
+						FieldConfiguration.class);
+				xStream.alias("field", FieldConfiguration.class);
+				xStream.addImplicitCollection(FieldConfiguration.class, "checks");
 
-		xStream.alias("class", ClassConfiguration.class);
-		xStream.addImplicitCollection(ClassConfiguration.class, "constructorConfigurations",
-				ConstructorConfiguration.class);
-		xStream.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",
-				FieldConfiguration.class);
-		xStream.addImplicitCollection(ClassConfiguration.class, "methodConfigurations",
-				MethodConfiguration.class);
+				// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
+				// used within ConstructorConfiguration and MethodConfiguration
+				xStream.alias("parameter", ParameterConfiguration.class);
+				xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
 
-		xStream.alias("field", FieldConfiguration.class);
-		xStream.addImplicitCollection(FieldConfiguration.class, "checks");
+				// <constructor> -> net.sf.oval.configuration.elements.ConstructorConfiguration 
+				xStream.addImplicitCollection(ClassConfiguration.class,
+						"constructorConfigurations", ConstructorConfiguration.class);
+				xStream.alias("constructor", ConstructorConfiguration.class);
+				{
+					// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
+					xStream.addImplicitCollection(ConstructorConfiguration.class,
+							"parameterConfigurations", ParameterConfiguration.class);
+				}
 
-		xStream.alias("parameter", ParameterConfiguration.class);
-		xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
+				// <method> -> net.sf.oval.configuration.elements.MethodConfiguration
+				xStream.addImplicitCollection(ClassConfiguration.class, "methodConfigurations",
+						MethodConfiguration.class);
+				xStream.alias("method", MethodConfiguration.class);
+				{
+					// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
+					xStream.addImplicitCollection(MethodConfiguration.class,
+							"parameterConfigurations", ParameterConfiguration.class);
 
-		xStream.alias("constructor", ConstructorConfiguration.class);
-		xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations",
-				ParameterConfiguration.class);
+					// <returnValue> -> net.sf.oval.configuration.elements.MethodConfiguration.returnValueConfiguration -> MethodReturnValueConfiguration					
+					xStream.aliasField("returnValue", MethodConfiguration.class,
+							"returnValueConfiguration");
+					xStream.addImplicitCollection(MethodReturnValueConfiguration.class, "checks",
+							Check.class);
 
-		xStream.alias("method", MethodConfiguration.class);
-		xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",
-				ParameterConfiguration.class);
-		xStream.aliasField("returnValue", MethodConfiguration.class, "returnValueConfiguration");
-		//xStream.alias("returnValue", MethodReturnValueConfiguration.class);
-		xStream.addImplicitCollection(MethodReturnValueConfiguration.class, "checks", Check.class);
+					// <pre> -> net.sf.oval.configuration.elements.MethodConfiguration.preConditionsConfiguration -> MethodPreConditionsConfiguration					
+					xStream.aliasField("pre", MethodConfiguration.class,
+							"preConditionsConfiguration");
+					xStream.addImplicitCollection(MethodPostExecutionConfiguration.class, "checks",
+							PreCheck.class);
+					xStream.alias("preCheck", PreCheck.class);
+
+					// <post> -> net.sf.oval.configuration.elements.MethodConfiguration.postConditionsConfiguration -> MethodPostConditionsConfiguration					
+					xStream.aliasField("post", MethodConfiguration.class,
+							"postConditionsConfiguration");
+					xStream.addImplicitCollection(MethodPreExecutionConfiguration.class, "checks",
+							PostCheck.class);
+					xStream.alias("preCheck", PostCheck.class);
+				}
+			}
+		}
 
 	}
 
@@ -180,7 +217,7 @@ public class XMLConfigurer implements Configurer
 	/**
 	 * @param pojoConfigurer the pojoConfigurer to set
 	 */
-	public void setPojoConfigurer(POJOConfigurer pojoConfigurer)
+	public void setPojoConfigurer(final POJOConfigurer pojoConfigurer)
 	{
 		this.pojoConfigurer = pojoConfigurer;
 	}

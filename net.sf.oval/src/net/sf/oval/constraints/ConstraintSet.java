@@ -18,24 +18,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.exceptions.ConstraintsViolatedException;
-
 /**
- * Check that the value is not a reference to the validated object itself.<br>
- * This is e.g. useful to avoid circular references.<br>
+ * defines a constraint set
  * 
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(check = NoSelfReferenceCheck.class)
-public @interface NoSelfReference
+@Target({ElementType.FIELD})
+public @interface ConstraintSet
 {
 	/**
-	 * message to be used for the ContraintsViolatedException
-	 * 
-	 * @see ConstraintsViolatedException
+	 * The local id of the constraint set.<br>
+	 * The constraint set id is <code>[class name] + "." + [local id]</code>
+	 * where [class name] is the name of the class in which this annotation is used.
+	 *  
+	 * @return
 	 */
-	String message() default "net.sf.oval.constraints.NotSelfRef.violated";
+	String value();
 }

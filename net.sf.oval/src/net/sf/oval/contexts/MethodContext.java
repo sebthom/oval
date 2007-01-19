@@ -10,21 +10,38 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration.elements;
+package net.sf.oval.contexts;
 
-import java.util.List;
+import java.lang.reflect.Method;
+
+import net.sf.oval.utils.SerializableMethod;
+import net.sf.oval.utils.StringUtils;
 
 /**
  * @author Sebastian Thomschke
  */
-public class MethodConfiguration extends ConfigurationElement
+public class MethodContext extends OValContext
 {
 	private static final long serialVersionUID = 1L;
 
-	public String name;
-	public List<ParameterConfiguration> parameterConfigurations;
-	public MethodReturnValueConfiguration returnValueConfiguration;
+	private final SerializableMethod method;
 
-	public MethodPostExecutionConfiguration postExecutionConfiguration;
-	public MethodPreExecutionConfiguration preExecutionConfiguration;
+	public MethodContext(final Method method)
+	{
+		this.method = SerializableMethod.getInstance(method);
+	}
+
+	/**
+	 * @return Returns the method.
+	 */
+	public Method getMethod()
+	{
+		return method.getMethod();
+	}
+
+	public String toString()
+	{
+		return method.getDeclaringClass().getName() + "." + method.getName() + "("
+				+ StringUtils.implode(method.getParameterTypes(), ",") + ")";
+	}
 }

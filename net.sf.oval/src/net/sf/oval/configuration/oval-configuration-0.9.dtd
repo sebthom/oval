@@ -7,86 +7,143 @@
   http://en.wikipedia.org/wiki/Document_Type_Definition
 -->
 
-<!-- the root element -->
+<!-- The root configuration element -->
 <!ELEMENT oval ( (constraintSet*|class*)* ) >
 
-<!-- constraint set configuration elements -->
+<!-- Defines a constraint set -->
 <!ELEMENT constraintSet ANY >
 <!ATTLIST constraintSet id NMTOKEN #REQUIRED >
 <!ATTLIST constraintSet overwrite (true|false) #IMPLIED >
 
-<!-- class configuration elements -->
+<!-- Constraints configuration for a specific class -->
 <!ELEMENT class ( (field*|constructor*|method*)* ) >
 <!ATTLIST class applyFieldConstraintsToSetter NMTOKEN #IMPLIED >
 <!ATTLIST class overwrite (true|false) #IMPLIED >
 <!ATTLIST class type CDATA #REQUIRED >
 
-<!-- validation context elements -->
+<!-- Constraints configuration for a field -->
 <!ELEMENT field ANY >
 <!ATTLIST field defineConstraintSet NMTOKEN #IMPLIED >
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field overwrite (true|false) #IMPLIED >
 
-<!ELEMENT constructor ( parameter+ ) >
+<!--Constraints configuration for a constructor.
+To identify the correct constructor you are required to list all parameters, including parameters you are not intending to specify constraints for.-->
+<!ELEMENT constructor (parameter+) >
 <!ATTLIST constructor overwrite (true|false) #IMPLIED >
 
-<!ELEMENT method (parameter*,returnValue?) >
+<!-- Constraints configuration for a method.
+To identify the correct method you are required to list all parameters, including parameters you are not intending to specify constraints for. -->
+<!ELEMENT method (parameter*,returnValue?,pre?,post?) >
 <!ATTLIST method name NMTOKEN #REQUIRED >
 <!ATTLIST method overwrite (true|false) #IMPLIED >
 
+<!-- Constraints configuration for a constructor/method parameter -->
 <!ELEMENT parameter ANY >
 <!ATTLIST parameter overwrite (true|false) #IMPLIED >
 <!ATTLIST parameter type NMTOKEN #REQUIRED >
 
+<!-- Constraints configuration for the return value of a method. -->
 <!ELEMENT returnValue ANY >
 <!ATTLIST returnValue overwrite (true|false) #IMPLIED >
 
-<!-- built-in constraints -->
+<!ELEMENT beforeExcecution (preCheck*)>
+<!ATTLIST beforeExcecution overwrite (true|false) #IMPLIED >
+
+<!ELEMENT afterExcecution (postCheck*) >
+<!ATTLIST afterExcecution overwrite (true|false) #IMPLIED >
+
+<!-- special programming by contract constraints -->
+<!ELEMENT preCheck EMPTY >
+<!ATTLIST preCheck expression CDATA #REQUIRED >
+<!ATTLIST preCheck language NMTOKEN #REQUIRED >
+<!ATTLIST preCheck message CDATA #IMPLIED >
+
+<!ELEMENT postCheck EMPTY >
+<!ATTLIST postCheck expression CDATA #REQUIRED >
+<!ATTLIST postCheck language NMTOKEN #REQUIRED >
+<!ATTLIST postCheck message CDATA #IMPLIED >
+
+<!-- built-in single value constraint -->
+<!ELEMENT net.sf.oval.constraints.AssertCheck EMPTY >
+<!ATTLIST net.sf.oval.constraints.AssertCheck expression CDATA #REQUIRED >
+<!ATTLIST net.sf.oval.constraints.AssertCheck language NMTOKEN #REQUIRED >
+<!ATTLIST net.sf.oval.constraints.AssertCheck message CDATA #IMPLIED >
+
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.AssertConstraintSetCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.AssertConstraintSetCheck id NMTOKEN #REQUIRED >
-<!ATTLIST net.sf.oval.constraints.AssertConstraintSetCheck message CDATA #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.AssertConstraintSetCheck source NMTOKEN #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.AssertFalseCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.AssertFalseCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.AssertFieldConstraintsCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.AssertFieldConstraintsCheck fieldName NMTOKEN #REQUIRED >
-<!ATTLIST net.sf.oval.constraints.AssertFieldConstraintsCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.AssertTrueCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.AssertTrueCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.AssertValidCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.AssertValidCheck message CDATA #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.AssertValidCheck requireValidElements (true|false) #REQUIRED>
 
+<!-- built-in single value constraint -->
+<!ELEMENT net.sf.oval.constraints.FutureCheck EMPTY >
+<!ATTLIST net.sf.oval.constraints.FutureCheck message CDATA #IMPLIED >
+
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.InstanceOfCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.InstanceOfCheck clazz NMTOKEN #REQUIRED >
 <!ATTLIST net.sf.oval.constraints.InstanceOfCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.LengthCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.LengthCheck max NMTOKEN #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.LengthCheck message CDATA #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.LengthCheck min NMTOKEN #IMPLIED >
 
+<!-- built-in single value constraint -->
+<!ELEMENT net.sf.oval.constraints.MaxCheck EMPTY >
+<!ATTLIST net.sf.oval.constraints.MaxCheck max NMTOKEN #IMPLIED >
+<!ATTLIST net.sf.oval.constraints.MaxCheck message CDATA #IMPLIED >
+
+<!-- built-in single value constraint -->
+<!ELEMENT net.sf.oval.constraints.MinCheck EMPTY >
+<!ATTLIST net.sf.oval.constraints.MinCheck message CDATA #IMPLIED >
+<!ATTLIST net.sf.oval.constraints.MinCheck min NMTOKEN #IMPLIED >
+
+<!-- built-in single value constraint -->
+<!ELEMENT net.sf.oval.constraints.NoSelfReferenceCheck EMPTY >
+<!ATTLIST net.sf.oval.constraints.NoSelfReferenceCheck message CDATA #IMPLIED >
+
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.NotEmptyCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.NotEmptyCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.NotNegativeCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.NotNegativeCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.NotNullCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.NotNullCheck message CDATA #IMPLIED >
 
-<!ELEMENT net.sf.oval.constraints.NotSelfRefCheck EMPTY >
-<!ATTLIST net.sf.oval.constraints.NotSelfRefCheck message CDATA #IMPLIED >
+<!-- built-in single value constraint -->
+<!ELEMENT net.sf.oval.constraints.PastCheck EMPTY >
+<!ATTLIST net.sf.oval.constraints.PastCheck message CDATA #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.RangeCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.RangeCheck max NMTOKEN #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.RangeCheck message CDATA #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.RangeCheck min NMTOKEN #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.RegExCheck ( pattern ) >
 <!ATTLIST net.sf.oval.constraints.RegExCheck message CDATA #IMPLIED >
 
@@ -94,11 +151,13 @@
 <!ATTLIST pattern flags NMTOKEN #IMPLIED >
 <!ATTLIST pattern pattern CDATA #REQUIRED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.SizeCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.SizeCheck max NMTOKEN #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.SizeCheck message CDATA #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.SizeCheck min NMTOKEN #IMPLIED >
 
+<!-- built-in single value constraint -->
 <!ELEMENT net.sf.oval.constraints.ValidateWithMethodCheck EMPTY >
 <!ATTLIST net.sf.oval.constraints.ValidateWithMethodCheck ignoreIfNull NMTOKEN #IMPLIED >
 <!ATTLIST net.sf.oval.constraints.ValidateWithMethodCheck message CDATA #IMPLIED >

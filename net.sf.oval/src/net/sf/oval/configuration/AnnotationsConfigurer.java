@@ -20,20 +20,26 @@ import java.util.List;
 
 import net.sf.oval.AnnotationCheck;
 import net.sf.oval.Check;
-import net.sf.oval.annotations.Guarded;
-import net.sf.oval.annotations.Constraint;
-import net.sf.oval.annotations.DefineConstraintSet;
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
+import net.sf.oval.configuration.elements.MethodPreExecutionConfiguration;
+import net.sf.oval.configuration.elements.MethodPostExecutionConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
 import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
+import net.sf.oval.constraints.Constraint;
+import net.sf.oval.constraints.ConstraintSet;
 import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ReflectionException;
+import net.sf.oval.guard.Guarded;
+import net.sf.oval.guard.Post;
+import net.sf.oval.guard.PostCheck;
+import net.sf.oval.guard.Pre;
+import net.sf.oval.guard.PreCheck;
 import net.sf.oval.utils.ReflectionUtils;
 
 /**
@@ -46,8 +52,7 @@ public class AnnotationsConfigurer implements Configurer
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
 		config.applyFieldConstraintsToSetter = config.type.isAnnotationPresent(Guarded.class)
-				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetter()
-				: false;
+				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetter() : false;
 
 		/*
 		 * determine field checks
@@ -67,9 +72,9 @@ public class AnnotationsConfigurer implements Configurer
 				}
 
 				// check if the current annotation is a constraintSet definition
-				else if (annotation instanceof DefineConstraintSet)
+				else if (annotation instanceof ConstraintSet)
 				{
-					definedConstraintSetId = ((DefineConstraintSet) annotation).value();
+					definedConstraintSetId = ((ConstraintSet) annotation).value();
 				}
 			}
 			if (checks.size() > 0)
@@ -134,13 +139,28 @@ public class AnnotationsConfigurer implements Configurer
 			/*
 			 * determine method return value checks
 			 */
-			final List<Check> returnValueChecks = CollectionFactory.INSTANCE.createList(4);
+			final List<Check> returnValueChecks = CollectionFactory.INSTANCE.createList(2);
+			final List<PreCheck> preChecks = CollectionFactory.INSTANCE.createList(2);
+			final List<PostCheck> postChecks = CollectionFactory.INSTANCE.createList(2);
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
 			{
+				if (annotation instanceof Pre)
+				{
+					final PreCheck pc = new PreCheck();
+					pc.configure((Pre) annotation);
+					preChecks.add(pc);
+				}
+				else if (annotation instanceof Post)
+				{
+					final PostCheck pc = new PostCheck();
+					pc.configure((Post) annotation);
+					postChecks.add(pc);
+				}
+				
 				// check if the current annotation is a constraint annotation
-				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				else if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				{
 					returnValueChecks.add(initializeCheck(annotation));
 				}
@@ -191,7 +211,8 @@ public class AnnotationsConfigurer implements Configurer
 				}
 			}
 
-			if (parametersConfig.size() > 0 || returnValueChecks.size() > 0)
+			if (parametersConfig.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0
+					|| postChecks.size() > 0)
 			{
 				if (config.methodConfigurations == null)
 					config.methodConfigurations = CollectionFactory.INSTANCE.createSet(8);
@@ -199,8 +220,21 @@ public class AnnotationsConfigurer implements Configurer
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
 				mc.parameterConfigurations = parametersConfig;
-				mc.returnValueConfiguration = new MethodReturnValueConfiguration();
-				mc.returnValueConfiguration.checks = returnValueChecks;
+				if (returnValueChecks.size() > 0)
+				{
+					mc.returnValueConfiguration = new MethodReturnValueConfiguration();
+					mc.returnValueConfiguration.checks = returnValueChecks;
+				}
+				if (preChecks.size() > 0)
+				{
+					mc.preExecutionConfiguration = new MethodPreExecutionConfiguration();
+					mc.preExecutionConfiguration.checks = preChecks;
+				}
+				if (postChecks.size() > 0)
+				{
+					mc.postExecutionConfiguration = new MethodPostExecutionConfiguration();
+					mc.postExecutionConfiguration.checks = postChecks;
+				}
 				config.methodConfigurations.add(mc);
 			}
 		}

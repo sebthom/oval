@@ -22,7 +22,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language = "javascript";
+	private String language;
 	private String expression;
 
 	@Override
@@ -56,13 +56,13 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	}
 
 	/**
-	 *  This method is not used.
+	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
 	 */
 	public boolean isSatisfied(final Object validatedObject, final Object validatedValue,
 			final OValContext context)
 	{
-		return true;
+		throw new UnsupportedOperationException();
 	}
 
 	/**

@@ -22,42 +22,42 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 {
 	private static final long serialVersionUID = 1L;
 	
-	private Class clazz;
+	private Class type;
 
 	@Override
 	public void configure(final InstanceOf constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setClazz(constraintAnnotation.value());
+		setType(constraintAnnotation.value());
 	}
 
 	/**
 	 * @return the clazz
 	 */
-	public Class getClazz()
+	public Class getType()
 	{
-		return clazz;
+		return type;
 	}
 
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{clazz.getName()};
+		return new String[]{type.getName()};
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context)
 	{
 		if (value == null) return true;
 
-		return clazz.isInstance(value);
+		return type.isInstance(value);
 	}
 
 	/**
-	 * @param clazz the clazz to set
+	 * @param type the clazz to set
 	 */
-	public void setClazz(final Class clazz)
+	public void setType(final Class type)
 	{
-		this.clazz = clazz;
+		this.type = type;
 	}
 
 }
