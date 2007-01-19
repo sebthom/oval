@@ -20,8 +20,8 @@ import java.util.WeakHashMap;
 import net.sf.oval.exceptions.ReflectionException;
 
 /**
- * This implementation determines the names of constructor and method parameters by simply enumerating them based on there index
- *  
+ * This implementation determines the names of constructor and method parameters by simply enumerating them based on there index:
+ * arg0,arg1,arg2,..
  * @author Sebastian Thomschke
  */
 public class ParameterNameResolverEnumerationImpl implements ParameterNameResolver
@@ -40,7 +40,7 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 			parameterNames = new String[parameterCount];
 			for (int i = 0; i < parameterCount; i++)
 			{
-				parameterNames[i] = "parameter" + i;
+				parameterNames[i] = "arg" + i;
 			}
 			parameterNamesCache.put(method, parameterNames);
 		}
@@ -59,7 +59,7 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 			parameterNames = new String[parameterCount];
 			for (int i = 0; i < parameterCount; i++)
 			{
-				parameterNames[i] = "parameter" + i;
+				parameterNames[i] = "arg" + i;
 			}
 			parameterNamesCache.put(constructor, parameterNames);
 		}

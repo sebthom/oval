@@ -53,7 +53,7 @@ class ConstraintSet
 
 				// for performance reasons we are returning the internal set
 				final ClassChecks cc = validator.getClassChecks(f.getDeclaringClass());
-				return cc.checksByField.get(f);
+				return cc.checksForFields.get(f);
 			}
 
 			throw new OValException("Currently unsupported context type " + context);

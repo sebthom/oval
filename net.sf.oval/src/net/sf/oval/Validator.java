@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
@@ -36,6 +37,7 @@ import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
+import net.sf.oval.contexts.MethodContext;
 import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
@@ -45,6 +47,9 @@ import net.sf.oval.exceptions.InvalidConfigurationException;
 import net.sf.oval.exceptions.MethodNotFoundException;
 import net.sf.oval.exceptions.ReflectionException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
+import net.sf.oval.guard.Guard;
+import net.sf.oval.guard.PostCheck;
+import net.sf.oval.guard.PreCheck;
 import net.sf.oval.utils.ListOrderedSet;
 import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.StringUtils;
@@ -57,19 +62,19 @@ public class Validator
 {
 	private final static Logger LOG = Logger.getLogger(Validator.class.getName());
 
-	protected final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
-	protected final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>();
+	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
+	private final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>();
 
-	protected final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
+	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactory.INSTANCE
 			.createMap();
 
-	protected final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
+	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
-	protected MessageResolver messageResolver = new MessageResolverImpl();
+	private MessageResolver messageResolver = new MessageResolverImpl();
 
-	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
+	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
 
-	protected Map<String, ExpressionLanguage> expressionLanguages = CollectionFactory.INSTANCE
+	private Map<String, ExpressionLanguage> expressionLanguages = CollectionFactory.INSTANCE
 			.createMap(2);
 
 	/**
@@ -78,20 +83,33 @@ public class Validator
 	 */
 	public Validator()
 	{
-		initializeJavaScriptEL();
+		initializeDefaultELs();
 
 		configurers.add(new AnnotationsConfigurer());
 	}
 
 	public Validator(final Configurer... configurers)
 	{
-		initializeJavaScriptEL();
+		initializeDefaultELs();
 
-		for (final Configurer configurer : configurers)
-			this.configurers.add(configurer);
+		if (configurers != null)
+		{
+			for (final Configurer configurer : configurers)
+				this.configurers.add(configurer);
+		}
 	}
 
-	protected void addChecks(final ClassConfiguration classConfig)
+	public Validator(final Collection<Configurer> configurers)
+	{
+		initializeDefaultELs();
+
+		if (configurers != null)
+		{
+			this.configurers.addAll(configurers);
+		}
+	}
+
+	private void addChecks(final ClassConfiguration classConfig)
 			throws InvalidConfigurationException, FieldNotFoundException, MethodNotFoundException,
 			ReflectionException
 	{
@@ -183,7 +201,7 @@ public class Validator
 				}
 
 			/*
-			 * apply method parameter and return value checks
+			 * apply method parameter and return value checks and pre/post conditions
 			 */
 			if (classConfig.methodConfigurations != null)
 				for (final MethodConfiguration methodConfig : classConfig.methodConfigurations)
@@ -260,6 +278,46 @@ public class Validator
 											.size()]));
 						}
 					}
+
+					/*
+					 * configure pre conditions
+					 */
+					if (methodConfig.preExecutionConfiguration != null)
+					{
+						if ((methodConfig.preExecutionConfiguration.overwrite != null && methodConfig.preExecutionConfiguration.overwrite))
+						{
+							cc.removeAllPreChecks(method);
+						}
+
+						if (methodConfig.preExecutionConfiguration.checks != null
+								&& methodConfig.preExecutionConfiguration.checks.size() > 0)
+						{
+							cc.addChecks(method, methodConfig.preExecutionConfiguration.checks
+									.toArray(//
+									new PreCheck[methodConfig.preExecutionConfiguration.checks
+											.size()]));
+						}
+					}
+
+					/*
+					 * configure post conditions
+					 */
+					if (methodConfig.postExecutionConfiguration != null)
+					{
+						if ((methodConfig.postExecutionConfiguration.overwrite != null && methodConfig.postExecutionConfiguration.overwrite))
+						{
+							cc.removeAllPostChecks(method);
+						}
+
+						if (methodConfig.postExecutionConfiguration.checks != null
+								&& methodConfig.postExecutionConfiguration.checks.size() > 0)
+						{
+							cc.addChecks(method, methodConfig.postExecutionConfiguration.checks
+									.toArray(//
+									new PostCheck[methodConfig.postExecutionConfiguration.checks
+											.size()]));
+						}
+					}
 				}
 		}
 		catch (SecurityException e)
@@ -276,7 +334,7 @@ public class Validator
 		}
 	}
 
-	protected void addConstraintSet(final ConstraintSet constraintSet)
+	private void addConstraintSet(final ConstraintSet constraintSet)
 			throws ConstraintSetAlreadyDefinedException
 	{
 		if (constraintSetsById.containsKey(constraintSet.id))
@@ -287,10 +345,20 @@ public class Validator
 		constraintSetsById.put(constraintSet.id, constraintSet);
 	}
 
+	/**
+	 * Registers a new constraint set.
+	 * @param constraintSetConfigurations cannot be null
+	 * @return
+	 * @throws ConstraintSetAlreadyDefinedException
+	 * @throws IllegalArgumentException
+	 */
 	public ConstraintSet addConstraintSet(
 			final ConstraintSetConfiguration constraintSetConfigurations)
-			throws ConstraintSetAlreadyDefinedException
+			throws ConstraintSetAlreadyDefinedException, IllegalArgumentException
 	{
+		if (constraintSetConfigurations == null)
+			throw new IllegalArgumentException("constraintSetConfigurations cannot be null");
+
 		final ConstraintSet cs = new ConstraintSet();
 		cs.checks = CollectionFactory.INSTANCE.createSet(constraintSetConfigurations.checks == null
 				? 2 : constraintSetConfigurations.checks.size());
@@ -305,7 +373,7 @@ public class Validator
 		return cs;
 	}
 
-	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
+	private void checkConstraint(final List<ConstraintViolation> violations, final Check check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
 	{
 		/*
@@ -343,7 +411,7 @@ public class Validator
 		 */
 		if (check instanceof AssertCheck)
 		{
-			checkConstraintCondition(violations, (AssertCheck) check, validatedObject,
+			checkConstraintAssert(violations, (AssertCheck) check, validatedObject,
 					valueToValidate, context);
 			return;
 		}
@@ -355,6 +423,24 @@ public class Validator
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
 					check.getMessageValues());
+			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
+					context));
+		}
+	}
+
+	private void checkConstraintAssert(final List<ConstraintViolation> violations,
+			final AssertCheck check, final Object validatedObject, final Object valueToValidate,
+			final OValContext context)
+	{
+		final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
+		Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+		values.put("value", valueToValidate);
+		values.put("_this", validatedObject);
+		if (!eng.evaluate(check.getExpression(), values))
+		{
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageValues());
+
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context));
 		}
@@ -502,7 +588,7 @@ public class Validator
 		}
 
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-		final Collection<Check> referencedChecks = cc.checksByField.get(field);
+		final Collection<Check> referencedChecks = cc.checksForFields.get(field);
 		if (referencedChecks != null && referencedChecks.size() > 0)
 		{
 			for (final Check referencedCheck : referencedChecks)
@@ -510,25 +596,6 @@ public class Validator
 				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate,
 						context);
 			}
-		}
-
-	}
-
-	private void checkConstraintCondition(final List<ConstraintViolation> violations,
-			final AssertCheck check, final Object validatedObject, final Object valueToValidate,
-			final OValContext context)
-	{
-		final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
-		Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
-		values.put("value", valueToValidate);
-		values.put("this", validatedObject);
-		if (!eng.evaluate(check.getExpression(), values))
-		{
-			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
-					check.getMessageValues());
-
-			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
-					context));
 		}
 	}
 
@@ -607,8 +674,18 @@ public class Validator
 		}
 	}
 
-	public ClassChecks getClassChecks(final Class clazz)
+	/**
+	 * Returns the ClassChecks object for the particular class,
+	 * allowing you to modify the checks
+	 * 
+	 * @param clazz cannot be null
+	 * @return returns the ClassChecks for the given class
+	 * @throws IllegalArgumentException
+	 */
+	public ClassChecks getClassChecks(final Class clazz) throws IllegalArgumentException
 	{
+		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
+
 		synchronized (checksByClass)
 		{
 			ClassChecks cc = checksByClass.get(clazz);
@@ -635,7 +712,7 @@ public class Validator
 		return configurers;
 	}
 
-	protected ConstraintSet getConstraintSet(final String constraintSetId)
+	private ConstraintSet getConstraintSet(final String constraintSetId)
 	{
 		ConstraintSet cs = constraintSetsById.get(constraintSetId);
 
@@ -667,12 +744,19 @@ public class Validator
 		return parameterNameResolver;
 	}
 
-	private void initializeJavaScriptEL()
+	private void initializeDefaultELs()
 	{
+		// JavaScript support
 		if (ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
 		{
 			registerExpressionLanguage("javascript", new ExpressionLanguageJavaScriptImpl());
-			LOG.info("Expression language 'javascript' registered");
+			registerExpressionLanguage("js", new ExpressionLanguageJavaScriptImpl());
+		}
+
+		// Groovy support
+		if (ReflectionUtils.isClassPresent("groovy.lang.Binding"))
+		{
+			registerExpressionLanguage("groovy", new ExpressionLanguageGroovyImpl());
 		}
 	}
 
@@ -682,34 +766,56 @@ public class Validator
 	 * @param object
 	 * @return
 	 */
-	protected boolean isCurrentlyValidated(final Object object)
+	private boolean isCurrentlyValidated(final Object object)
 	{
 		return currentlyValidatedObjects.get().contains(object);
 	}
 
-	public boolean isExpressionLanguageAvailable(final String languageName)
+	/**
+	 * 
+	 * @param languageId the id of the language, cannot be null
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public boolean isExpressionLanguageAvailable(final String languageId)
+			throws IllegalArgumentException
 	{
-		return expressionLanguages.get(languageName) != null;
+		if (languageId == null) throw new IllegalArgumentException("languageName cannot be null");
+
+		return expressionLanguages.get(languageId) != null;
 	}
 
-	public void registerExpressionLanguage(final String languageName,
-			final ExpressionLanguage expressionLanguage)
+	/**
+	 * 
+	 * @param languageId
+	 * @param expressionLanguage
+	 * @throws IllegalArgumentException
+	 */
+	public void registerExpressionLanguage(final String languageId,
+			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
 	{
-		expressionLanguages.put(languageName, expressionLanguage);
+		if (languageId == null) throw new IllegalArgumentException("languageId cannot be null");
+		if (expressionLanguage == null)
+			throw new IllegalArgumentException("expressionLanguage cannot be null");
+
+		LOG.info("Expression language '" + languageId + "' registered: " + expressionLanguage);
+		expressionLanguages.put(languageId, expressionLanguage);
 	}
 
 	/**
 	 * Removes the constraint set with the given id
-	 * @param id
+	 * @param id the id of the constraint set to remove, cannot be null
 	 * @return the removed constraint set
+	 * @throws IllegalArgumentException
 	 */
-	public ConstraintSet removeConstraintSet(final String id)
+	public ConstraintSet removeConstraintSet(final String id) throws IllegalArgumentException
 	{
+		if (id == null) throw new IllegalArgumentException("id cannot be null");
 		return constraintSetsById.remove(id);
 	}
 
-	protected String renderMessage(final OValContext context, final Object value,
-			final String messageKey, final String[] messageValues)
+	private String renderMessage(final OValContext context, final Object value,
+			final String messageKey, final String... messageValues)
 	{
 		String message = messageResolver.getMessage(messageKey);
 		if (message == null) message = messageKey;
@@ -728,21 +834,11 @@ public class Validator
 					messageValues[i]);
 		}
 		return message;
-		/*
-		 
-		 final Object[] args = new Object[2 + messageValuesCount];
-		 args[0] = context;
-		 args[1] = value;
-		 if (messageValuesCount > 0)
-		 {
-		 System.arraycopy(messageValues, 0, args, 2, messageValuesCount);
-		 }
-		 return MessageFormat.format(message, args);*/
 	}
 
 	/**
-	 * clears the checks and constraint sets => reconfiguration using the
-	 * registered configurers takes place
+	 * clears the checks and constraint sets => a reconfiguration using the
+	 * currently registered configurers will automatically happen
 	 */
 	public void reset()
 	{
@@ -751,29 +847,41 @@ public class Validator
 	}
 
 	/**
-	 * @param messageResolver the messageResolver to set
+	 * @param messageResolver the messageResolver to set, cannot be null
+	 * @throws IllegalArgumentException
 	 */
 	public void setMessageResolver(final MessageResolver messageResolver)
+			throws IllegalArgumentException
 	{
+		if (messageResolver == null)
+			throw new IllegalArgumentException("messageResolver cannot be null");
 		this.messageResolver = messageResolver;
 	}
 
 	/**
-	 * @param parameterNameResolver the parameterNameResolver to set
+	 * @param parameterNameResolver the parameterNameResolver to set, cannot be null
+	 * @throws IllegalArgumentException
 	 */
 	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
+			throws IllegalArgumentException
 	{
+		if (parameterNameResolver == null)
+			throw new IllegalArgumentException("parameterNameResolver cannot be null");
 		this.parameterNameResolver = parameterNameResolver;
 	}
 
 	/**
 	 * validates the field and getter constrains of the given object
 	 * 
-	 * @param validatedObject
+	 * @param validatedObject the object to validate, cannot be null
 	 * @return  a list with the detected constraint violations. if no violations are detected an empty list is returned
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject)
+			throws IllegalArgumentException
 	{
+		if (validatedObject == null)
+			throw new IllegalArgumentException("validatedObject cannot be null");
+
 		currentlyValidatedObjects.get().add(validatedObject);
 		try
 		{
@@ -788,29 +896,32 @@ public class Validator
 	}
 
 	/**
-	 * used by Guard
+	 * Validates the give arguments against the defined constructor parameter constraints.<br>
+	 * <br>  
+	 * This method is primarily provided for use by the Guard class.<br>
 	 * 
 	 * @return null if no violation, otherwise a list
 	 * @see Guard
 	 */
-	List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
-			final Constructor constructor, final Object[] args)
+	public List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
+			final Constructor constructor, final Object[] argsToValidate)
 	{
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-		final Map<Integer, Collection<Check>> parameterChecks = cc.checksByConstructorParameter
+		final Map<Integer, Collection<Check>> parameterChecks = cc.checksForConstructorParameter
 				.get(constructor);
 
+		// if no parameter checks exist just return null
 		if (parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
 		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
-		for (int i = 0; i < args.length; i++)
+		for (int i = 0; i < argsToValidate.length; i++)
 		{
 			final Collection<Check> checks = parameterChecks.get(i);
 
 			if (checks != null && checks.size() > 0)
 			{
-				final Object valueToValidate = args[i];
+				final Object valueToValidate = argsToValidate[i];
 				final ConstructorParameterContext context = new ConstructorParameterContext(
 						constructor, i, parameterNames[i]);
 
@@ -823,11 +934,35 @@ public class Validator
 		return violations.size() == 0 ? null : violations;
 	}
 
-	protected void validateField(final Object validatedObject, final Field field,
+	/**
+	 * Validates the give value against the defined field constraints.<br>
+	 * 
+	 * @return null if no violation, otherwise a list
+	 */
+	public List<ConstraintViolation> validateField(final Object validatedObject, final Field field,
+			final Object fieldValueToValidate)
+	{
+		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+		final Collection<Check> checks = cc.checksForFields.get(field);
+
+		if (checks == null && checks.size() == 0) return null;
+
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
+
+		final FieldContext context = new FieldContext(field);
+
+		for (final Check check : checks)
+		{
+			checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
+		}
+		return violations.size() == 0 ? null : violations;
+	}
+
+	private void validateField(final Object validatedObject, final Field field,
 			final List<ConstraintViolation> violations)
 	{
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-		final Collection<Check> checks = cc.checksByField.get(field);
+		final Collection<Check> checks = cc.checksForFields.get(field);
 
 		if (checks != null && checks.size() > 0)
 		{
@@ -841,11 +976,18 @@ public class Validator
 		}
 	}
 
-	protected void validateGetter(final Object validatedObject, final Method getter,
+	/**
+	 * Executes the getter method on the validatedObject and validates the return value based on
+	 * the configured constraints. 
+	 * @param validatedObject
+	 * @param getter
+	 * @param violations detected ConstraintViolations will be added to this list
+	 */
+	private void validateGetter(final Object validatedObject, final Method getter,
 			final List<ConstraintViolation> violations)
 	{
 		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
-		final Collection<Check> checks = cc.checksByMethod.get(getter);
+		final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
 
 		if (checks != null && checks.size() > 0)
 		{
@@ -860,38 +1002,82 @@ public class Validator
 	}
 
 	/**
-	 * used by Guard
+	 * Validates the pre conditions for a method call.<br>
+	 * <br>  
+	 * This method is primarily provided for use by the Guard class.<br>
 	 * 
 	 * @return null if no violation, otherwise a list
 	 * @see Guard
 	 */
-	List<ConstraintViolation> validateMethodParameters(final Object validatedObject,
+	public List<ConstraintViolation> validateMethodPre(final Object validatedObject,
 			final Method method, final Object[] args)
 	{
+		final boolean hasParameters = method.getParameterTypes().length > 0;
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		final Map<Integer, Collection<Check>> parameterChecks = cc.checksByMethodParameter
+
+		final Map<Integer, Collection<Check>> parameterChecks = cc.checksForMethodParameters
 				.get(method);
 
-		// check if the method has any parameter checks at all
-		if (parameterChecks == null) return null;
+		final Set<PreCheck> preChecks = cc.checksForMethodsPreExecution.get(method);
+
+		// check if any pre checks for this method exist
+		if (preChecks == null && parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
 
 		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
 
-		for (int i = 0; i < args.length; i++)
+		/*
+		 * parameter constraints validation
+		 */
+		if (parameterChecks != null && hasParameters)
 		{
-			final Collection<Check> checks = parameterChecks.get(i);
-
-			if (checks != null && checks.size() > 0)
+			for (int i = 0; i < args.length; i++)
 			{
-				final Object valueToValidate = args[i];
-				final MethodParameterContext context = new MethodParameterContext(method, i,
-						parameterNames[i]);
+				final Collection<Check> checks = parameterChecks.get(i);
 
-				for (final Check check : checks)
+				if (checks != null && checks.size() > 0)
 				{
-					checkConstraint(violations, check, validatedObject, valueToValidate, context);
+					final Object valueToValidate = args[i];
+					final MethodParameterContext context = new MethodParameterContext(method, i,
+							parameterNames[i]);
+
+					for (final Check check : checks)
+					{
+						checkConstraint(violations, check, validatedObject, valueToValidate,
+								context);
+					}
+				}
+			}
+		}
+
+		/*
+		 * pre conditions validation
+		 */
+		if (preChecks != null)
+		{
+			MethodContext context = new MethodContext(method);
+
+			for (final PreCheck check : preChecks)
+			{
+				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
+				Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+				values.put("_this", validatedObject);
+				if (hasParameters)
+				{
+					values.put("_args", args);
+					for (int i = 0; i < args.length; i++)
+					{
+						values.put(parameterNames[i], args[i]);
+					}
+				}
+				if (!eng.evaluate(check.getExpression(), values))
+				{
+					final String errorMessage = renderMessage(context, null, check.getMessage(),
+							check.getExpression());
+
+					violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
+							context));
 				}
 			}
 		}
@@ -899,16 +1085,18 @@ public class Validator
 	}
 
 	/**
-	 * used by Guard
+	 * Validates the give value against the defined method return value constraints.<br>
+	 * <br>  
+	 * This method is primarily provided for use by the Guard class.<br>
 	 * 
 	 * @return null if no violation, otherwise a list
 	 * @see Guard
 	 */
-	List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
+	public List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
 			final Method method, final Object methodReturnValue)
 	{
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		final Collection<Check> checks = cc.checksByMethod.get(method);
+		final Collection<Check> checks = cc.checksForMethodReturnValues.get(method);
 
 		if (checks != null && checks.size() > 0)
 		{
@@ -928,7 +1116,7 @@ public class Validator
 	/**
 	 * validate validatedObject based on the constraints of the given clazz
 	 */
-	protected void validateObject(final Object validatedObject, final Class< ? > clazz,
+	private void validateObject(final Object validatedObject, final Class< ? > clazz,
 			final List<ConstraintViolation> violations)
 	{
 		// abort if the root class has been reached

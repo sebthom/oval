@@ -40,7 +40,7 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 				final Object val = values.get(key);
 				scope.put(key, scope, Context.javaToJS(val, scope));
 			}
-			final Object result = ctx.evaluateString(scope, constraint, "", 1, null);
+			final Object result = ctx.evaluateString(scope, constraint, "<cmd>", 1, null);
 			if (!(result instanceof Boolean))
 			{
 				throw new ExpressionLanguageException("The script must return a boolean.");

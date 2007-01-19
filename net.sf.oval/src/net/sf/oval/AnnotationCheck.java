@@ -15,8 +15,8 @@ package net.sf.oval;
 import java.lang.annotation.Annotation;
 
 /**
- * interface for classes that can check/validate if the corresponding 
- * constraint annotation is satisfied
+ * Interface for classes that can check/validate if the corresponding 
+ * constraint annotation is satisfied.
  * 
  * @author Sebastian Thomschke
  */

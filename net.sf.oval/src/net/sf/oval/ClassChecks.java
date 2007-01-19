@@ -24,10 +24,15 @@ import java.util.logging.Logger;
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.exceptions.InvalidConfigurationException;
+import net.sf.oval.guard.IsGuarded;
+import net.sf.oval.guard.PostCheck;
+import net.sf.oval.guard.PreCheck;
 import net.sf.oval.utils.ReflectionUtils;
 
 /**
  * This class holds the instantiated checks for a single class
+ * 
+ * Internal implementation.
  * 
  * @author Sebastian Thomschke
  */
@@ -38,35 +43,45 @@ public final class ClassChecks
 	/**
 	 * checks on constructors' parameter values
 	 */
-	final Map<Constructor, Map<Integer, Collection<Check>>> checksByConstructorParameter = CollectionFactory.INSTANCE
+	final Map<Constructor, Map<Integer, Collection<Check>>> checksForConstructorParameter = CollectionFactory.INSTANCE
 			.createMap(4);
 
 	/**
 	 * checks on fields' value
 	 */
-	final Map<Field, Set<Check>> checksByField = CollectionFactory.INSTANCE.createMap();
+	final Map<Field, Set<Check>> checksForFields = CollectionFactory.INSTANCE.createMap();
 
 	/**
 	 * checks on methods' return value
 	 */
-	final Map<Method, Set<Check>> checksByMethod = CollectionFactory.INSTANCE.createMap();
+	final Map<Method, Set<Check>> checksForMethodReturnValues = CollectionFactory.INSTANCE
+			.createMap();
 
 	/**
 	 * checks on methods' parameter values
 	 */
-	final Map<Method, Map<Integer, Collection<Check>>> checksByMethodParameter = CollectionFactory.INSTANCE
+	final Map<Method, Map<Integer, Collection<Check>>> checksForMethodParameters = CollectionFactory.INSTANCE
+			.createMap();
+
+	final Map<Method, Set<PostCheck>> checksForMethodsPostExcecution = CollectionFactory.INSTANCE
+			.createMap();
+
+	final Map<Method, Set<PreCheck>> checksForMethodsPreExecution = CollectionFactory.INSTANCE
 			.createMap();
 
 	final Class clazz;
 
+	/**
+	 * all getters that have value constraints.
+	 * Validator loops over this set during validation.
+	 */
 	final Set<Field> constrainedFields = CollectionFactory.INSTANCE.createSet();
+
+	/**
+	 * all getters that have return value constraints.
+	 * Validator loops over this set during validation.
+	 */
 	final Set<Method> constrainedGetters = CollectionFactory.INSTANCE.createSet();
-	final Set<Method> constrainedMethods = CollectionFactory.INSTANCE.createSet();
-
-	final Set<Constructor> constrainedParameterizedConstructors = CollectionFactory.INSTANCE
-			.createSet(4);
-
-	final Set<Method> constrainedParameterizedMethods = CollectionFactory.INSTANCE.createSet();
 
 	final Map<String, ConstraintSet> constraintSetsByLocalId = CollectionFactory.INSTANCE
 			.createMap();
@@ -111,13 +126,12 @@ public final class ClassChecks
 							+ ". Constraints guarding is not activated for this class.");
 
 		// retrieve the currently registered checks for all parameters of the specified constructor
-		Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+		Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
 				.get(constructor);
 		if (checksOfConstructorByParameter == null)
 		{
 			checksOfConstructorByParameter = CollectionFactory.INSTANCE.createMap(8);
-			checksByConstructorParameter.put(constructor, checksOfConstructorByParameter);
-			constrainedParameterizedConstructors.add(constructor);
+			checksForConstructorParameter.put(constructor, checksOfConstructorByParameter);
 		}
 
 		// retrieve the checks for the specified parameter
@@ -147,11 +161,11 @@ public final class ClassChecks
 			throw new InvalidConfigurationException("Given field does not belong to class "
 					+ clazz.getName());
 
-		Set<Check> checksOfField = checksByField.get(field);
+		Set<Check> checksOfField = checksForFields.get(field);
 		if (checksOfField == null)
 		{
 			checksOfField = CollectionFactory.INSTANCE.createSet(8);
-			checksByField.put(field, checksOfField);
+			checksForFields.put(field, checksOfField);
 			constrainedFields.add(field);
 		}
 
@@ -192,14 +206,13 @@ public final class ClassChecks
 							+ " not following the JavaBean Getter method convention. Constraints guarding is not activated for this class.");
 		}
 
-		constrainedMethods.add(method);
 		if (isGetter) constrainedGetters.add(method);
 
-		Set<Check> methodChecks = checksByMethod.get(method);
+		Set<Check> methodChecks = checksForMethodReturnValues.get(method);
 		if (methodChecks == null)
 		{
 			methodChecks = CollectionFactory.INSTANCE.createSet(checks.length);
-			checksByMethod.put(method, methodChecks);
+			checksForMethodReturnValues.put(method, methodChecks);
 		}
 
 		for (final Check check : checks)
@@ -231,13 +244,12 @@ public final class ClassChecks
 							+ ". Constraints guarding is not activated for this class.");
 
 		// retrieve the currently registered checks for all parameters of the specified method
-		Map<Integer, Collection<Check>> checksOfMethodByParameter = checksByMethodParameter
+		Map<Integer, Collection<Check>> checksOfMethodByParameter = checksForMethodParameters
 				.get(method);
 		if (checksOfMethodByParameter == null)
 		{
 			checksOfMethodByParameter = CollectionFactory.INSTANCE.createMap(8);
-			checksByMethodParameter.put(method, checksOfMethodByParameter);
-			constrainedParameterizedMethods.add(method);
+			checksForMethodParameters.put(method, checksOfMethodByParameter);
 		}
 
 		// retrieve the checks for the specified parameter
@@ -250,6 +262,78 @@ public final class ClassChecks
 
 		for (final Check check : checks)
 			checksOfMethodParameter.add(check);
+	}
+
+	/**
+	 * adds constraint checks to a method's return value
+	 * @param method
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	public synchronized void addChecks(final Method method, final PostCheck... checks)
+			throws InvalidConfigurationException
+	{
+		if (checks == null || checks.length == 0) return;
+
+		if (method.getDeclaringClass() != clazz)
+			throw new InvalidConfigurationException("Given method does not belong to class "
+					+ clazz.getName());
+
+		if (!isGuarded)
+		{
+			throw new InvalidConfigurationException("Cannot apply pre condition for method "
+					+ method + ". Constraints guarding is not activated for this class.");
+		}
+
+		if (ReflectionUtils.isGetter(method)) constrainedGetters.add(method);
+
+		Set<PostCheck> postChecks = checksForMethodsPostExcecution.get(method);
+		if (postChecks == null)
+		{
+			postChecks = CollectionFactory.INSTANCE.createSet(checks.length);
+			checksForMethodsPostExcecution.put(method, postChecks);
+		}
+
+		for (final PostCheck check : checks)
+		{
+			postChecks.add(check);
+		}
+	}
+
+	/**
+	 * adds constraint checks to a method's return value
+	 * @param method
+	 * @param checks
+	 * @throws InvalidConfigurationException
+	 */
+	public synchronized void addChecks(final Method method, final PreCheck... checks)
+			throws InvalidConfigurationException
+	{
+		if (checks == null || checks.length == 0) return;
+
+		if (method.getDeclaringClass() != clazz)
+			throw new InvalidConfigurationException("Given method does not belong to class "
+					+ clazz.getName());
+
+		if (!isGuarded)
+		{
+			throw new InvalidConfigurationException("Cannot apply pre condition for method "
+					+ method + ". Constraints guarding is not activated for this class.");
+		}
+
+		if (ReflectionUtils.isGetter(method)) constrainedGetters.add(method);
+
+		Set<PreCheck> preChecks = checksForMethodsPreExecution.get(method);
+		if (preChecks == null)
+		{
+			preChecks = CollectionFactory.INSTANCE.createSet(checks.length);
+			checksForMethodsPreExecution.put(method, preChecks);
+		}
+
+		for (final PreCheck check : checks)
+		{
+			preChecks.add(check);
+		}
 	}
 
 	ConstraintSet addFieldConstraintSet(final Field field, final String localId)
@@ -266,24 +350,32 @@ public final class ClassChecks
 		return cs;
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllCheck(final Field field) throws InvalidConfigurationException
 	{
-		checksByField.remove(field);
+		checksForFields.remove(field);
 		constrainedFields.remove(field);
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllChecks(final Constructor constructor)
 			throws InvalidConfigurationException
 	{
-		checksByConstructorParameter.remove(constructor);
-		constrainedParameterizedConstructors.remove(constructor);
+		checksForConstructorParameter.remove(constructor);
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllChecks(final Constructor constructor, final int parameterIndex)
 			throws InvalidConfigurationException
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
-		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
 				.get(constructor);
 		if (checksOfConstructorByParameter == null) return;
 
@@ -293,21 +385,27 @@ public final class ClassChecks
 		if (checksOfMethodParameter == null) return;
 
 		checksOfConstructorByParameter.remove(parameterIndex);
-		if (checksOfConstructorByParameter.size() == 0)
-			constrainedParameterizedConstructors.remove(constructor);
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllChecks(final Method method) throws InvalidConfigurationException
 	{
 		removeAllParameterChecks(method);
 		removeAllReturnValueChecks(method);
+		removeAllPreChecks(method);
+		removeAllPostChecks(method);
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllChecks(final Method method, final int parameterIndex)
 			throws InvalidConfigurationException
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
-		final Map<Integer, Collection<Check>> checksOfMethodByParameter = checksByMethodParameter
+		final Map<Integer, Collection<Check>> checksOfMethodByParameter = checksForMethodParameters
 				.get(method);
 		if (checksOfMethodByParameter == null) return;
 
@@ -317,22 +415,41 @@ public final class ClassChecks
 		if (checksOfMethodParameter == null) return;
 
 		checksOfMethodByParameter.remove(parameterIndex);
-		if (checksOfMethodByParameter.size() == 0) constrainedParameterizedMethods.remove(method);
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllParameterChecks(final Method method)
 			throws InvalidConfigurationException
 	{
-		checksByMethodParameter.remove(method);
-		constrainedParameterizedMethods.remove(method);
+		checksForMethodParameters.remove(method);
 	}
 
+	/**
+	 * Used by Validator during configuration
+	 */
+	synchronized void removeAllPostChecks(final Method method) throws InvalidConfigurationException
+	{
+		checksForMethodsPostExcecution.remove(method);
+	}
+
+	/**
+	 * Used by Validator during configuration
+	 */
+	synchronized void removeAllPreChecks(final Method method) throws InvalidConfigurationException
+	{
+		checksForMethodsPreExecution.remove(method);
+	}
+
+	/**
+	 * Used by Validator during configuration
+	 */
 	synchronized void removeAllReturnValueChecks(final Method method)
 			throws InvalidConfigurationException
 	{
-		checksByMethod.remove(method);
+		checksForMethodReturnValues.remove(method);
 		constrainedGetters.remove(method);
-		constrainedMethods.remove(method);
 	}
 
 	public synchronized void removeCheck(final Constructor constructor, final int parameterIndex,
@@ -343,7 +460,7 @@ public final class ClassChecks
 					"Given constructor does not belong to this class" + clazz.getName());
 
 		// retrieve the currently registered checks for all parameters of the specified method
-		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksByConstructorParameter
+		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
 				.get(constructor);
 		if (checksOfConstructorByParameter == null) return;
 
@@ -357,8 +474,6 @@ public final class ClassChecks
 		if (checksOfConstructorParameter.size() == 0)
 		{
 			checksOfConstructorByParameter.remove(parameterIndex);
-			if (checksOfConstructorByParameter.size() == 0)
-				constrainedParameterizedConstructors.remove(constructor);
 		}
 	}
 
@@ -369,14 +484,14 @@ public final class ClassChecks
 			throw new InvalidConfigurationException("Given field does not belong to class "
 					+ clazz.getName());
 
-		final Set<Check> checksOfField = checksByField.get(field);
+		final Set<Check> checksOfField = checksForFields.get(field);
 
 		if (checksOfField == null) return;
 
 		checksOfField.remove(check);
 		if (checksOfField.size() == 0)
 		{
-			checksByField.remove(field);
+			checksForFields.remove(field);
 			constrainedFields.remove(field);
 		}
 	}
@@ -388,16 +503,15 @@ public final class ClassChecks
 			throw new InvalidConfigurationException("Given method does not belong to class "
 					+ clazz.getName());
 
-		final Set<Check> checks = checksByMethod.get(method);
+		final Set<Check> checks = checksForMethodReturnValues.get(method);
 
 		if (checks == null) return;
 
 		checks.remove(check);
 		if (checks.size() == 0)
 		{
-			checksByMethod.remove(method);
+			checksForMethodReturnValues.remove(method);
 			constrainedGetters.remove(method);
-			constrainedMethods.remove(method);
 		}
 	}
 
@@ -409,7 +523,7 @@ public final class ClassChecks
 					+ clazz.getName());
 
 		// retrieve the currently registered checks for all parameters of the specified method
-		final Map<Integer, Collection<Check>> checksOfMethodByParameter = checksByMethodParameter
+		final Map<Integer, Collection<Check>> checksOfMethodByParameter = checksForMethodParameters
 				.get(method);
 		if (checksOfMethodByParameter == null) return;
 
@@ -423,8 +537,42 @@ public final class ClassChecks
 		if (checksOfMethodParameter.size() == 0)
 		{
 			checksOfMethodByParameter.remove(parameterIndex);
-			if (checksOfMethodByParameter.size() == 0)
-				constrainedParameterizedMethods.remove(method);
+		}
+	}
+
+	public synchronized void removeCheck(final Method method, final PostCheck check)
+			throws InvalidConfigurationException
+	{
+		if (method.getDeclaringClass() != clazz)
+			throw new InvalidConfigurationException("Given method does not belong to class "
+					+ clazz.getName());
+
+		final Set<PostCheck> checks = checksForMethodsPostExcecution.get(method);
+
+		if (checks == null) return;
+
+		checks.remove(check);
+		if (checks.size() == 0)
+		{
+			checksForMethodsPostExcecution.remove(method);
+		}
+	}
+
+	public synchronized void removeCheck(final Method method, final PreCheck check)
+			throws InvalidConfigurationException
+	{
+		if (method.getDeclaringClass() != clazz)
+			throw new InvalidConfigurationException("Given method does not belong to class "
+					+ clazz.getName());
+
+		final Set<PreCheck> checks = checksForMethodsPreExecution.get(method);
+
+		if (checks == null) return;
+
+		checks.remove(check);
+		if (checks.size() == 0)
+		{
+			checksForMethodsPreExecution.remove(method);
 		}
 	}
 
@@ -433,15 +581,14 @@ public final class ClassChecks
 		if (LOG.isLoggable(Level.FINE))
 			LOG.fine("Clearing all checks for class " + clazz.getName());
 
-		checksByConstructorParameter.clear();
-		checksByField.clear();
-		checksByMethod.clear();
-		checksByMethodParameter.clear();
+		checksForMethodsPostExcecution.clear();
+		checksForMethodsPreExecution.clear();
+		checksForConstructorParameter.clear();
+		checksForFields.clear();
+		checksForMethodReturnValues.clear();
+		checksForMethodParameters.clear();
 		constrainedFields.clear();
 		constrainedGetters.clear();
-		constrainedMethods.clear();
-		constrainedParameterizedConstructors.clear();
-		constrainedParameterizedMethods.clear();
 		constraintSetsByLocalId.clear();
 	}
 }
