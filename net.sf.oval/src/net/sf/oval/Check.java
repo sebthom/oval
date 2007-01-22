@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -38,6 +38,16 @@ public interface Check extends Serializable
 	 * the first value is used as placeholder {2}, the second value as placeholder {3} etc.
 	 */
 	String[] getMessageValues();
+
+	/**
+	 * @return the profiles, may return null
+	 */
+	String[] getProfiles();
+
+	/**
+	 * @param profiles the profiles to set
+	 */
+	void setProfiles(String[] profiles);
 
 	/**
 	 * This method implements the validation logic

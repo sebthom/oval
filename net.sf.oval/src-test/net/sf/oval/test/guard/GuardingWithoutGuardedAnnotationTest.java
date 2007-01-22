@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -18,7 +18,6 @@ import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
-import net.sf.oval.guard.Guard.ReportingMode;
 
 /**
  * @author Sebastian Thomschke
@@ -61,10 +60,9 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		}
 	}
 
-	public void testConstructorParameterConstraintsInThrowExceptionMode()
+	public void testConstructorParameterConstraints()
 	{
-		GuardingWithoutGuardedAnnotationAspect.guard.setReportingMode(
-				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
 
 		/*
 		 * Testing Constructor 1
@@ -92,11 +90,8 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		new TestEntity(null, 100);
 	}
 
-	public void testMethodParametersInThrowExceptionMode()
+	public void testMethodParameterConstraints()
 	{
-		GuardingWithoutGuardedAnnotationAspect.guard.setReportingMode(
-				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
-
 		try
 		{
 			TestEntity t1 = new TestEntity("");

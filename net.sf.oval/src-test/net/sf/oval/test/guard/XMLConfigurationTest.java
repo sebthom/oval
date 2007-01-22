@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -38,7 +38,6 @@ import net.sf.oval.constraints.RegExCheck;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guarded;
-import net.sf.oval.guard.Guard.ReportingMode;
 import net.sf.oval.test.guard.ParameterConstraintsTest.TestEntity;
 
 /**
@@ -231,8 +230,7 @@ public class XMLConfigurationTest extends TestCase
 
 	private void validateUser()
 	{
-		TestGuardAspect.guard.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
-				TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
 
 		ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
 		TestGuardAspect.guard.addListener(listener, User.class);

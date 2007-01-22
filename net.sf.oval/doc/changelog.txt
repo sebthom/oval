@@ -2,9 +2,9 @@
 [+] Feature added.
 [*] Change.
 
-2007-??-?? v0.9
+2007-01-?? v0.9
 ===============
-~ updated the DTD
+* simplified the OVal XML configuration DTD
 - the ant build script now also creates the dist folder if it does not exist (thanks to tahura)
 * when @AssertValid is used on a map the map's keys and values are now validated too by default (thanks to tahura)
 + added plugabble support for expression languages
@@ -15,10 +15,12 @@
 + introduced @net.sf.oval.constraints.Min
 + introduced @net.sf.oval.constraints.Past
 + introduced @net.sf.oval.constraints.Future
++ constraint violation listeners can now also be registered for interfaces
++ added the concept of constraint profiles
 
 Refactoring:
 * net.sf.oval.constraints.NoSelfReference: renamed @NotSelfRef to @NoSelfReference
-* net.sf.oval.constraints.Constraint: moved from package net.sf.oval.annotations
+* net.sf.oval.Constraint: moved from package net.sf.oval.annotations
 * net.sf.oval.constraints.ConstraintSet: renamed from net.sf.oval.annotations.DefineConstraintSet
 * everything related to programming by contract has been moved into a new net.sf.oval.guard package
   * net.sf.oval.ParamenterNameResolverAspectJImpl: moved from package net.sf.oval.aspectj
@@ -30,6 +32,7 @@ Refactoring:
   * net.sf.oval.guard.IsGuarded: moved from package net.sf.oval
   * net.sf.oval.guard.PostValidateThis: moved from package net.sf.oval.annotations
   * net.sf.oval.guard.PreValidateThis: moved from package net.sf.oval.annotations
+* replaced everything related to Guard.ReportingMode with Guard.isSwallowSetterPreConditionExceptions and Guard.setSwallowSetterPreConditionExceptions
 
 2006-12-10 v0.8
 ===============

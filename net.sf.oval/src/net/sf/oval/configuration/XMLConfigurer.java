@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -27,10 +27,11 @@ import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
-import net.sf.oval.configuration.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.elements.MethodPostExecutionConfiguration;
+import net.sf.oval.configuration.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
+import net.sf.oval.constraints.*;
 import net.sf.oval.exceptions.OValException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
@@ -65,12 +66,6 @@ public class XMLConfigurer implements Configurer
 		configureXStream();
 	}
 
-	public XMLConfigurer(final XStream xStream)
-	{
-		this.xStream = xStream;
-		configureXStream();
-	}
-
 	protected final void configureXStream()
 	{
 		xStream.useAttributeFor(Class.class);
@@ -89,6 +84,28 @@ public class XMLConfigurer implements Configurer
 		xStream.useAttributeFor(Integer.class);
 		xStream.useAttributeFor(Long.class);
 		xStream.useAttributeFor(String.class);
+
+		// constraint check short forms
+		xStream.alias("assert", AssertCheck.class);
+		xStream.alias("assertConstraintSet", AssertConstraintSetCheck.class);
+		xStream.alias("assertFalse", AssertFalseCheck.class);
+		xStream.alias("assertFieldConstraints", AssertFieldConstraintsCheck.class);
+		xStream.alias("assertTrue", AssertTrueCheck.class);
+		xStream.alias("assertValid", AssertValidCheck.class);
+		xStream.alias("future", FutureCheck.class);
+		xStream.alias("instanceOf", InstanceOfCheck.class);
+		xStream.alias("length", LengthCheck.class);
+		xStream.alias("max", MaxCheck.class);
+		xStream.alias("min", MinCheck.class);
+		xStream.alias("noSelfReference", NoSelfReferenceCheck.class);
+		xStream.alias("notEmpty", NotEmptyCheck.class);
+		xStream.alias("notNegative", NotNegativeCheck.class);
+		xStream.alias("notNull", NotNullCheck.class);
+		xStream.alias("past", PastCheck.class);
+		xStream.alias("range", RangeCheck.class);
+		xStream.alias("regEx", RegExCheck.class);
+		xStream.alias("size", SizeCheck.class);
+		xStream.alias("validateWithMethod", ValidateWithMethodCheck.class);
 
 		// <oval> -> net.sf.oval.configuration.POJOConfigurer
 		xStream.alias("oval", POJOConfigurer.class);
@@ -152,7 +169,7 @@ public class XMLConfigurer implements Configurer
 							"postConditionsConfiguration");
 					xStream.addImplicitCollection(MethodPreExecutionConfiguration.class, "checks",
 							PostCheck.class);
-					xStream.alias("preCheck", PostCheck.class);
+					xStream.alias("postCheck", PostCheck.class);
 				}
 			}
 		}

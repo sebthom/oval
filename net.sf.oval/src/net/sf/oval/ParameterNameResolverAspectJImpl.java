@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2006-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials

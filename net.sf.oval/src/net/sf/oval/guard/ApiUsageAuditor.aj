@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
-import net.sf.oval.constraints.Constraint;
+import net.sf.oval.Constraint;
 
 /**
  * @author Sebastian Thomschke

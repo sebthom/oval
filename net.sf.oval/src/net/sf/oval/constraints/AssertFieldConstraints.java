@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -18,6 +18,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.sf.oval.Constraint;
+
 
 /**
  * Checks if the value satsifies the constraints defined for the specified field.
@@ -34,4 +36,9 @@ public @interface AssertFieldConstraints
 	 * @return name of the field. If not specified, the constraints of the field with the same name as the annotated constructor/method parameter are applied.
 	 */
 	String value() default "";
+
+	/**
+	 * The associated validation profiles.
+	 */
+	String[] profiles() default {};
 }

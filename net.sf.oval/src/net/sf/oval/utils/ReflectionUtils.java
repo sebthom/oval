@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -229,7 +229,7 @@ public final class ReflectionUtils
 		final int methodNameLen = methodName.length();
 
 		// check if the method's name starts with setXXX
-		if (!methodName.startsWith("set") || methodNameLen <= 3) return false;
+		if (methodNameLen < 4 || !methodName.startsWith("set")) return false;
 
 		return true;
 	}

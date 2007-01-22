@@ -645,15 +645,15 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
       <listitem>
 
         <para>Create an annotation for your constraint and annotated it 
-        with <command>@net.sf.oval.annotations.Constraint</command>. 
+        with <command>@net.sf.oval.Constraint</command>. 
         Specify your check class as value for parameter 
         &quot;check&quot;.</para>
 
         <programlisting>@Retention(RetentionPolicy.RUNTIME) 
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD}) 
-@net.sf.oval.annotations.Constraint(check = UpperCaseCheck.class) 
-public @interface UpperCase 
-{ 
+@net.sf.oval.Constraint(check = UpperCaseCheck.class) 
+public @interface UpperCase
+{
     /** 
      * message to be used for the ConstraintsViolatedException 
      *  

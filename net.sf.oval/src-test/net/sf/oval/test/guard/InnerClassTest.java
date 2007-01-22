@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -15,7 +15,6 @@ package net.sf.oval.test.guard;
 import junit.framework.TestCase;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
-import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.PostValidateThis;
 
@@ -28,7 +27,7 @@ public class InnerClassTest extends TestCase
 	@Guarded
 	protected static class TestEntity
 	{
-		protected static class InnerClassNonConstrain
+		protected static class InnerClassNotGuarded
 		{
 			@NotNull
 			protected String name;
@@ -37,7 +36,7 @@ public class InnerClassTest extends TestCase
 			 * the @PostValidateObject annotation should lead to a warning by the ApiUsageAuditor
 			 */
 			@PostValidateThis
-			private InnerClassNonConstrain(String name)
+			private InnerClassNotGuarded(String name)
 			{
 				this.name = name;
 			}
@@ -52,13 +51,13 @@ public class InnerClassTest extends TestCase
 		}
 
 		@Guarded(applyFieldConstraintsToSetter = true)
-		protected static class InnerClassConstrain
+		protected static class InnerClassGuarded
 		{
 			@NotNull
 			protected String name;
 
 			@PostValidateThis
-			private InnerClassConstrain(String name)
+			private InnerClassGuarded(String name)
 			{
 				this.name = name;
 			}
@@ -77,31 +76,25 @@ public class InnerClassTest extends TestCase
 	 * test that specified constraints for inner classes not marked with @Constrained
 	 * are ignored
 	 */
-	public void testInnerClassNonConstrain()
+	public void testInnerClassNotGuarded()
 	{
-		TestGuardAspect.guard
-				.setReportingMode(Guard.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
-
-		TestEntity.InnerClassNonConstrain instance = new TestEntity.InnerClassNonConstrain(null);
+		TestEntity.InnerClassNotGuarded instance = new TestEntity.InnerClassNotGuarded(null);
 		instance.setName(null);
 	}
 
-	public void testInnerClassConstrain()
+	public void testInnerClassGuarded()
 	{
-		TestGuardAspect.guard
-				.setReportingMode(Guard.ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION);
-
 		try
 		{
-			new TestEntity.InnerClassConstrain(null);
+			new TestEntity.InnerClassGuarded(null);
 			fail();
 		}
 		catch (ConstraintsViolatedException ex)
 		{}
 
-		TestEntity.InnerClassConstrain instance = null;
+		TestEntity.InnerClassGuarded instance = null;
 
-		instance = new TestEntity.InnerClassConstrain("");
+		instance = new TestEntity.InnerClassGuarded("");
 
 		try
 		{

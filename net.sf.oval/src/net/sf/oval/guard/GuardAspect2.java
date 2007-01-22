@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -76,8 +76,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 
 		final Object result = thisJoinPoint.proceed();
 
-		// @PostValidateThis
-		if (CONSTRUCTOR.isAnnotationPresent(PostValidateThis.class))
+		// post conditions
 		{
 			guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
 		}
@@ -100,15 +99,14 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 		// pre conditions
 		{
 			final boolean valid = guard.guardMethodPre(TARGET, METHOD, args);
-			if (!valid) return null; // this happens in listener mode
+			if (!valid) return null; // this happens if swallow exceptions mode is enabled for this guarded object or class
 		}
 
 		final Object result = thisJoinPoint.proceed();
 
 		// post conditions
 		{
-			final boolean valid = guard.guardMethodPost(TARGET, METHOD, args, result);
-			if (!valid) return null; // this happens in listener mode
+			guard.guardMethodPost(TARGET, METHOD, args, result);
 		}
 
 		return result;

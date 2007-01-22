@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -56,7 +56,7 @@ class ConstraintSet
 				return cc.checksForFields.get(f);
 			}
 
-			throw new OValException("Currently unsupported context type " + context);
+			throw new OValException("Unsupported context type " + context);
 		}
 
 		return checks;

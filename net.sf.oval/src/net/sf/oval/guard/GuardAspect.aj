@@ -98,18 +98,17 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		// pre conditions
 		{
 			final boolean valid = guard.guardMethodPre(TARGET, METHOD, args);
-			if (!valid) return null; // this happens in listener mode
+			if (!valid) return null; // this happens if swallow exceptions mode is enabled for this guarded object or class
 		}
 
 		final Object result = proceed();
 
 		// post conditions
 		{
-			final boolean valid = guard.guardMethodPost(TARGET, METHOD, args, result);
-			if (!valid) return null; // this happens in listener mode
+			guard.guardMethodPost(TARGET, METHOD, args, result);
 		}
 
-		return result;
+		return result; // if listener only mode is activated the invalid value will be returned 
 	}
 
 	@SuppressAjWarnings("adviceDidNotMatch")
@@ -130,8 +129,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 
 		final Object result = proceed();
 
-		// @PostValidateThis
-		if (CONSTRUCTOR.isAnnotationPresent(PostValidateThis.class))
+		// post conditions
 		{
 			guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
 		}

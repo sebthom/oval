@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -28,17 +28,19 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 
 	protected ConstraintAnnotation constraintAnnotation;
 	protected String message;
+	protected String[] profiles;
 
 	public void configure(final ConstraintAnnotation constraintAnnotation)
 	{
 		this.constraintAnnotation = constraintAnnotation;
+
+		final Class< ? > constraintClazz = constraintAnnotation.getClass();
 
 		/*
 		 * Retrieve the message value from the constraint annotation via reflection.
 		 * Using reflection is required because annotations do not support inheritance and 
 		 * therefore cannot implement an interface that could be used for a down cast here.
 		 */
-		final Class< ? > constraintClazz = constraintAnnotation.getClass();
 		try
 		{
 			final Method getMessage = constraintClazz.getDeclaredMethod("message",
@@ -51,8 +53,25 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 				LOG.log(Level.FINE,
 						"Cannot determine constraint error message based on annotation "
 								+ constraintClazz.getName(), e);
+			message = constraintClazz.getName() + ".violated";
 		}
-		if (message == null) message = constraintClazz.getName() + ".violated";
+
+		/*
+		 * Retrieve the profiles value from the constraint annotation via reflection.
+		 */
+		try
+		{
+			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles",
+					(Class< ? >[]) null);
+			profiles = (String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null);
+		}
+		catch (Exception e)
+		{
+			if (LOG.isLoggable(Level.FINE))
+				LOG.log(Level.FINE,
+						"Cannot determine constraint profiles based on annotation "
+								+ constraintClazz.getName(), e);
+		}
 	}
 
 	public ConstraintAnnotation getConstraintAnnotation()
@@ -82,8 +101,18 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		return null;
 	}
 
+	public String[] getProfiles()
+	{
+		return profiles;
+	}
+
 	public void setMessage(final String message)
 	{
 		this.message = message;
+	}
+
+	public void setProfiles(final String[] profiles)
+	{
+		this.profiles = profiles;
 	}
 }

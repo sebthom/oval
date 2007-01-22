@@ -4,6 +4,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.oval.exceptions.ExpressionLanguageException;
 
@@ -17,10 +18,9 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 		try
 		{
 			final Binding binding = new Binding();
-			for (final String key : values.keySet())
+			for (final Entry<String, ? > entry : values.entrySet())
 			{
-				final Object val = values.get(key);
-				binding.setVariable(key, val);
+				binding.setVariable(entry.getKey(), entry.getValue());
 			}
 			final GroovyShell shell = new GroovyShell(binding);
 			final Object result = shell.evaluate(constraint);

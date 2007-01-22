@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -20,7 +20,6 @@ import net.sf.oval.constraints.NotEmpty;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.constraints.RegEx;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
-import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -72,8 +71,8 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person p = new Person();
 
-			TestGuardAspect.guard.setReportingMode(
-					Guard.ReportingMode.NOTIFY_LISTENERS, p);
+			TestGuardAspect.guard.setSwallowPreConditionExceptions(p, true);
+
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 			TestGuardAspect.guard.addListener(va, p);
 
@@ -102,8 +101,8 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person2 p = new Person2();
 
-			TestGuardAspect.guard.setReportingMode(
-					Guard.ReportingMode.NOTIFY_LISTENERS, p);
+			TestGuardAspect.guard.setSwallowPreConditionExceptions(p, true);
+
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 			TestGuardAspect.guard.addListener(va, p);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -18,46 +18,54 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.utils.ListOrderedSet;
+import net.sf.oval.utils.ReflectionUtils;
+import net.sf.oval.utils.ThreadLocalWeakHashSet;
+import net.sf.oval.utils.WeakHashSet;
 
 /**
  * @author Sebastian Thomschke
  */
 public class Guard
 {
+	private final static Logger LOG = Logger.getLogger(Guard.class.getName());
+
+	private boolean isActivated = true;
+
 	/**
-	 * The mode how detected constraint violations should be reported.
-	 * 
-	 * @author Sebastian Thomschke
+	 * Flag that indicates if any listeners were registered at any time.
+	 * Used for performance improvements.
 	 */
-	public static enum ReportingMode
-	{
-		/**
-		 * notify listeners about a detected constraint violation but do not throw
-		 */
-		NOTIFY_LISTENERS,
+	private boolean isListenersFeatureUsed = false;
 
-		/**
-		 * notify listeners about a detected constraint violation and additionally throw a ContraintsViolatatedException 
-		 */
-		NOTIFY_LISTENERS_AND_THROW_EXCEPTION
-	}
+	/**
+	 * Flag that indicates if exception swallowing was used at any time.
+	 * Used for performance improvements.
+	 */
+	private boolean isSwallowFeatureUsed = false;
 
+	private final Set<ConstraintsViolatedListener> listeners = new WeakHashSet<ConstraintsViolatedListener>();
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
-
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
 
 	/**
-	 * default reporting mode
+	 * Classes for OVal suppresses occuring ConstraintViolationExceptions 
+	 * for pre condition violations on setter methods for the current thread.
 	 */
-	private ReportingMode reportingMode = ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION;
+	private final ThreadLocalWeakHashSet<Class> unsafeClasses = new ThreadLocalWeakHashSet<Class>();
 
-	private final Map<Class, ReportingMode> reportingModesByClass = new WeakHashMap<Class, ReportingMode>();
-	private final Map<Object, ReportingMode> reportingModesByObject = new WeakHashMap<Object, ReportingMode>();
+	/**
+	 * Objects for OVal suppresses occuring ConstraintViolationExceptions 
+	 * for pre condition violations on setter methods for the current thread.
+	 */
+	private final ThreadLocalWeakHashSet<Object> unsafeObjects = new ThreadLocalWeakHashSet<Object>();
 
 	private Validator validator;
 
@@ -66,60 +74,81 @@ public class Guard
 		this.validator = validator;
 	}
 
-	public void addListener(final ConstraintsViolatedListener listener, final Class clazz)
-	{
-		if (clazz == null || listener == null) return;
-
-		Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
-
-		if (currentListeners == null)
-		{
-			currentListeners = CollectionFactory.INSTANCE.createSet();
-			listenersByClass.put(clazz, currentListeners);
-		}
-		currentListeners.add(listener);
-	}
-
-	public void addListener(final ConstraintsViolatedListener listener, final Object validatedObject)
-	{
-		if (validatedObject == null || listener == null) return;
-
-		Set<ConstraintsViolatedListener> currentListeners = listenersByObject.get(validatedObject);
-
-		if (currentListeners == null)
-		{
-			currentListeners = CollectionFactory.INSTANCE.createSet(2);
-			listenersByObject.put(validatedObject, currentListeners);
-		}
-		currentListeners.add(listener);
-	}
-
 	/**
-	 * Gets the default  mode.
-	 * @return the mode
+	 * Registers the given listener for <b>all</b> thrown ConstraintViolationExceptions
+	 * @param listener the listener to register
+	 * @return <code>true</code> if the listener was not yet registered
+	 * @throws IllegalArgumentException if <code>listener == null</code>
 	 */
-	public ReportingMode getReportingMode()
+	public boolean addListener(final ConstraintsViolatedListener listener)
+			throws IllegalArgumentException
 	{
-		return reportingMode;
-	}
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
 
-	public ReportingMode getReportingMode(final Class clazz)
-	{
-		if (clazz == null) return reportingMode;
-
-		final ReportingMode classMode = reportingModesByClass.get(clazz);
-		return classMode == null ? reportingMode : classMode;
-	}
-
-	public ReportingMode getReportingMode(final Object validatedObject)
-	{
-		if (validatedObject == null) return reportingMode;
-
-		final ReportingMode objectMode = reportingModesByObject.get(validatedObject);
-		return objectMode == null ? getReportingMode(validatedObject.getClass()) : objectMode;
+		isListenersFeatureUsed = true;
+		return listeners.add(listener);
 	}
 
 	/**
+	 * Registers the given listener for all thrown ConstraintViolationExceptions on objects of the given class
+	 * @param listener the listener to register
+	 * @param guardedClass guarded class or interface
+	 * @return <code>true</code> if the listener was not yet registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code> 
+	 */
+	public boolean addListener(final ConstraintsViolatedListener listener, final Class guardedClass)
+			throws IllegalArgumentException
+	{
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (guardedClass == null)
+			throw new IllegalArgumentException("guardedClass cannot be null");
+
+		isListenersFeatureUsed = true;
+
+		synchronized (listenersByClass)
+		{
+			Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedClass);
+
+			if (classListeners == null)
+			{
+				classListeners = CollectionFactory.INSTANCE.createSet();
+				listenersByClass.put(guardedClass, classListeners);
+			}
+			return classListeners.add(listener);
+		}
+	}
+
+	/**
+	 * Registers the given listener for all thrown ConstraintViolationExceptions on objects of the given object
+	 * @param listener the listener to register
+	 * @param guardedObject
+	 * @return <code>true</code> if the listener was not yet registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedObject == null</code> 
+	 */
+	public boolean addListener(final ConstraintsViolatedListener listener,
+			final Object guardedObject)
+	{
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (guardedObject == null)
+			throw new IllegalArgumentException("guardedObject cannot be null");
+
+		isListenersFeatureUsed = true;
+
+		synchronized (listenersByObject)
+		{
+			Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
+
+			if (objectListeners == null)
+			{
+				objectListeners = CollectionFactory.INSTANCE.createSet(2);
+				listenersByObject.put(guardedObject, objectListeners);
+			}
+			return objectListeners.add(listener);
+		}
+	}
+
+	/**
+	 * Returns the validator used by this guard
 	 * @return the validator
 	 */
 	public Validator getValidator()
@@ -130,38 +159,22 @@ public class Guard
 	/**
 	 * This method is provided for use by guard aspects.
 	 * 
-	 * @return true if valid, false if invalid
-	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
+	 * @throws ConstraintsViolatedException
 	 */
-	void guardConstructorPost(final Object validatedObject, final Constructor constructor,
+	void guardConstructorPost(final Object guardedObject, final Constructor constructor,
 			final Object[] args) throws ConstraintsViolatedException
 	{
+		if (!isActivated) return;
+
 		// @PostValidateThis
 		if (constructor.isAnnotationPresent(PostValidateThis.class))
 		{
-			validate(validatedObject, true);
-		}
-	}
-
-	/**
-	 * This method is provided for use by guard aspects.
-	 * 
-	 * @throws ConstraintsViolatedException if anything is invalid
-	 */
-	void guardConstructorPre(final Object validatedObject, final Constructor constructor,
-			final Object[] args) throws ConstraintsViolatedException
-	{
-		// constructor parameter validation
-		if (args.length > 0)
-		{
-			final List<ConstraintViolation> violations = validator.validateConstructorParameters(
-					validatedObject, constructor, args);
-
-			if (violations != null)
+			final List<ConstraintViolation> violations = validator.validate(guardedObject);
+			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
 						violations.toArray(new ConstraintViolation[violations.size()]));
-				notifyListeners(validatedObject, violationException);
+				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 				throw violationException;
 			}
@@ -171,41 +184,66 @@ public class Guard
 	/**
 	 * This method is provided for use by guard aspects.
 	 * 
-	 * @return true if valid, false if invalid
-	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
+	 * @throws ConstraintsViolatedException if anything precondition is not satisfied
 	 */
-	boolean guardMethodPost(final Object validatedObject, final Method method, final Object[] args,
-			Object returnValue) throws ConstraintsViolatedException
+	void guardConstructorPre(final Object guardedObject, final Constructor constructor,
+			final Object[] args) throws ConstraintsViolatedException
 	{
-		// method return value validation
-		if (method.getReturnType() != void.class)
+		if (!isActivated) return;
+
+		// constructor parameter validation
+		if (args.length > 0)
 		{
-			final List<ConstraintViolation> violations = validator.validateMethodReturnValue(
-					validatedObject, method, returnValue);
+			final List<ConstraintViolation> violations = validator.validateConstructorParameters(
+					guardedObject, constructor, args);
 
 			if (violations != null)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
 						violations.toArray(new ConstraintViolation[violations.size()]));
-				notifyListeners(validatedObject, violationException);
+				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-				if (getReportingMode(validatedObject) == ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION)
-					throw violationException;
-
-				return false;
+				throw violationException;
 			}
 		}
+	}
+
+	/**
+	 * This method is provided for use by guard aspects.
+	 * 
+	 * @throws ConstraintsViolatedException
+	 */
+	void guardMethodPost(final Object guardedObject, final Method method, final Object[] args,
+			Object returnValue) throws ConstraintsViolatedException
+	{
+		if (!isActivated) return;
 
 		// @PostValidateThis
 		if (method.isAnnotationPresent(PostValidateThis.class))
 		{
-			final boolean valid = validate(validatedObject, false);
-			if (!valid) return false;
+			final List<ConstraintViolation> violations = validator.validate(guardedObject);
+			if (violations.size() > 0)
+			{
+				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+						violations.toArray(new ConstraintViolation[violations.size()]));
+				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+
+				throw violationException;
+			}
 		}
 
 		// @Post
-		//guard.validateMethodPost(validatedObject, method, parameters);
-		return true;
+		final List<ConstraintViolation> violations = validator.validateMethodPost(guardedObject,
+				method, args, returnValue);
+
+		if (violations != null)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+					violations.toArray(new ConstraintViolation[violations.size()]));
+			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+
+			throw violationException;
+		}
 	}
 
 	/**
@@ -214,137 +252,319 @@ public class Guard
 	 * @return true if valid, false if invalid
 	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
 	 */
-	boolean guardMethodPre(final Object validatedObject, final Method method, final Object[] args)
+	boolean guardMethodPre(final Object guardedObject, final Method method, final Object[] args)
 			throws ConstraintsViolatedException
 	{
+		if (!isActivated) return true;
+
 		// @PreValidateThis
 		if (method.isAnnotationPresent(PreValidateThis.class))
 		{
-			final boolean valid = validate(validatedObject, false);
-			if (!valid) return false;
-		}
-
-		// @Pre validation and method parameter validation
-		if (args.length > 0)
-		{
-			final List<ConstraintViolation> violations = validator.validateMethodPre(
-					validatedObject, method, args);
-
-			if (violations != null)
+			final List<ConstraintViolation> violations = validator.validate(guardedObject);
+			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
 						violations.toArray(new ConstraintViolation[violations.size()]));
-				notifyListeners(validatedObject, violationException);
+				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-				if (getReportingMode(validatedObject) == ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION)
-					throw violationException;
-				return false;
+				// don't throw an exception if the method is a setter and swallowingfor precondition is enabled 
+				if (isSwallowFeatureUsed && ReflectionUtils.isSetter(method)
+						&& !isSwallowSetterPreConditionExceptions(guardedObject)) return false;
+
+				throw violationException;
 			}
+		}
+
+		// @Pre validation and method parameter validation
+		final List<ConstraintViolation> violations = validator.validateMethodPre(guardedObject,
+				method, args);
+
+		if (violations != null)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+					violations.toArray(new ConstraintViolation[violations.size()]));
+			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+
+			// don't throw an exception if the method is a setter and swallowingfor precondition is enabled 
+			if (isSwallowFeatureUsed && ReflectionUtils.isSetter(method)
+					&& isSwallowSetterPreConditionExceptions(guardedObject)) return false;
+
+			throw violationException;
 		}
 
 		return true;
 	}
 
-	public boolean hasListener(final ConstraintsViolatedListener listener, final Class clazz)
+	/**
+	 * @param listener
+	 * @return <code>true</code> if the listener is registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> 
+	 */
+	public boolean hasListener(final ConstraintsViolatedListener listener)
+			throws IllegalArgumentException
 	{
-		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
 
-		if (currentListeners == null) return false;
-
-		return currentListeners.contains(listener);
+		return listeners.contains(listener);
 	}
 
-	public boolean hasListener(final ConstraintsViolatedListener listener,
-			final Object validatedObject)
+	/**
+	 * @param listener
+	 * @param guardedClass guarded class or interface
+	 * @return <code>true</code> if the listener is registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code> 
+	 */
+	public boolean hasListener(final ConstraintsViolatedListener listener, final Class guardedClass)
+			throws IllegalArgumentException
 	{
-		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
-				.get(validatedObject);
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (guardedClass == null)
+			throw new IllegalArgumentException("guardedClass cannot be null");
 
-		if (currentListeners == null) return false;
+		final Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedClass);
 
-		return currentListeners.contains(listener);
+		if (classListeners == null) return false;
+
+		return classListeners.contains(listener);
+	}
+
+	/**
+	 * @param listener
+	 * @param guardedObject
+	 * @return <code>true</code> if the listener is registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedObject == null</code> 
+	 */
+	public boolean hasListener(final ConstraintsViolatedListener listener,
+			final Object guardedObject) throws IllegalArgumentException
+	{
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (guardedObject == null)
+			throw new IllegalArgumentException("guardedObject cannot be null");
+
+		final Set<ConstraintsViolatedListener> objectListeners = listenersByObject
+				.get(guardedObject);
+
+		if (objectListeners == null) return false;
+
+		return objectListeners.contains(listener);
+	}
+
+	/**
+	 * @return the isEnabled
+	 */
+	public boolean isActivated()
+	{
+		return isActivated;
+	}
+
+	/**
+	 * Determines if ConstraintViolationExceptions for pre condition violations
+	 * on setter methods are not thrown by OVal for the current thread.
+	 *  
+	 * @param guardedClass guarded class or interface
+	 * @return true if exceptions are swallowed
+	 * @throws IllegalArgumentException if <code>guardedClass == null</code>
+	 */
+	public boolean isSwallowSetterPreConditionExceptions(final Class guardedClass)
+			throws IllegalArgumentException
+	{
+		if (guardedClass == null)
+			throw new IllegalArgumentException("guardedClass cannot be null");
+
+		final boolean isSwallow = unsafeClasses.get().contains(guardedClass);
+		if (isSwallow) return true;
+
+		// check the interfaces
+		for (final Class clazz : guardedClass.getInterfaces())
+		{
+			boolean isSwallowI = unsafeClasses.get().contains(clazz);
+			if (isSwallowI) return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Determines if ConstraintViolationExceptions for pre condition violations
+	 * on setter methods are not thrown by OVal for the current thread.
+	 *  
+	 * @param guardedObject
+	 * @return true if exceptions are swallowed
+	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
+	 */
+	public boolean isSwallowSetterPreConditionExceptions(final Object guardedObject)
+			throws IllegalArgumentException
+	{
+		if (guardedObject == null)
+			throw new IllegalArgumentException("guardedObject cannot be null");
+
+		return unsafeObjects.get().contains(guardedObject) ? true
+				: isSwallowSetterPreConditionExceptions(guardedObject.getClass());
 	}
 
 	/**
 	 * notifies all registered validation listener about the occured constraint violation exception
 	 */
-	private void notifyListeners(final Object validatedObject, final ConstraintsViolatedException ex)
+	private void notifyListeners(final Object guardedObject, final ConstraintsViolatedException ex)
 	{
-		final List<ConstraintsViolatedListener> notifiedListeners = CollectionFactory.INSTANCE
-				.createList();
+		final ListOrderedSet<ConstraintsViolatedListener> listenersToNotify = new ListOrderedSet<ConstraintsViolatedListener>();
 
-		// notifiy object listeners
+		// get the object listeners
 		{
-			final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
-					.get(validatedObject);
-			if (currentListeners != null)
+			final Set<ConstraintsViolatedListener> objectListeners = listenersByObject
+					.get(guardedObject);
+			if (objectListeners != null)
 			{
-				for (final ConstraintsViolatedListener listener : currentListeners)
+				listenersToNotify.addAll(objectListeners);
+			}
+		}
+
+		// get the class listeners
+		{
+			final Set<ConstraintsViolatedListener> classListeners = listenersByClass
+					.get(guardedObject.getClass());
+			if (classListeners != null)
+			{
+				listenersToNotify.addAll(classListeners);
+			}
+		}
+
+		// get the interface listeners
+		{
+			for (final Class interfaze : guardedObject.getClass().getInterfaces())
+			{
+				final Set<ConstraintsViolatedListener> interfaceListeners = listenersByClass
+						.get(interfaze);
+				if (interfaceListeners != null)
 				{
-					listener.onConstraintsViolatedException(ex);
-					notifiedListeners.add(listener);
+					listenersToNotify.addAll(interfaceListeners);
 				}
 			}
 		}
 
-		// notifiy class listeners
+		// get the global listeners
+		listenersToNotify.addAll(listeners);
+
+		// notify the listeners
+		for (final ConstraintsViolatedListener listener : listenersToNotify)
 		{
-			final Set<ConstraintsViolatedListener> currentListeners = listenersByClass
-					.get(validatedObject);
-			if (currentListeners != null)
+			try
 			{
-				for (final ConstraintsViolatedListener listener : currentListeners)
-				{
-					if (!notifiedListeners.contains(listener))
-						listener.onConstraintsViolatedException(ex);
-				}
+				listener.onConstraintsViolatedException(ex);
+			}
+			catch (RuntimeException rex)
+			{
+				LOG.log(Level.WARNING, "Notifying listener '" + listener + "'failed.", rex);
 			}
 		}
-	}
 
-	public void removeListener(final ConstraintsViolatedListener listener, final Class clazz)
-	{
-		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(clazz);
-
-		if (currentListeners == null) return;
-
-		currentListeners.remove(listener);
-	}
-
-	public void removeListener(final ConstraintsViolatedListener listener,
-			final Object validatedObject)
-	{
-		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
-				.get(validatedObject);
-
-		if (currentListeners == null) return;
-
-		currentListeners.remove(listener);
 	}
 
 	/**
-	 * Sets the default validation mode for all constrained objects
-	 * accessed within the current thread.
-	 * 
-	 * @param newDefaultReportingMode the validation mode to set
+	 * Removes the given listener
+	 * @param listener
+	 * @return <code>true</code> if the listener was registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> 
 	 */
-	public void setReportingMode(final ReportingMode newDefaultReportingMode)
+	public boolean removeListener(final ConstraintsViolatedListener listener)
+			throws IllegalArgumentException
 	{
-		reportingMode = newDefaultReportingMode;
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+
+		return listeners.remove(listener);
 	}
 
-	public void setReportingMode(final ReportingMode reportingMode, final Class clazz)
+	/**
+	 * Removes the given listener
+	 * @param listener
+	 * @param guardedClass guarded class or interface
+	 * @return <code>true</code> if the listener was registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code> 
+	 */
+	public boolean removeListener(final ConstraintsViolatedListener listener,
+			final Class guardedClass) throws IllegalArgumentException
 	{
-		if (clazz == null || reportingMode == null) return;
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (guardedClass == null)
+			throw new IllegalArgumentException("guardedClass cannot be null");
 
-		reportingModesByClass.put(clazz, reportingMode);
+		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass
+				.get(guardedClass);
+
+		return currentListeners == null ? false : currentListeners.remove(listener);
 	}
 
-	public void setReportingMode(final ReportingMode reportingMode, final Object validatedObject)
+	/**
+	 * Removes the given listener
+	 * @param listener
+	 * @param guardedObject
+	 * @return <code>true</code> if the listener was registered
+	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedObject == null</code> 
+	 */
+	public boolean removeListener(final ConstraintsViolatedListener listener,
+			final Object guardedObject) throws IllegalArgumentException
 	{
-		if (validatedObject == null || reportingMode == null) return;
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (guardedObject == null)
+			throw new IllegalArgumentException("guardedObject cannot be null");
 
-		reportingModesByObject.put(validatedObject, reportingMode);
+		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject
+				.get(guardedObject);
+
+		return currentListeners == null ? false : currentListeners.remove(listener);
+	}
+
+	/**
+	 * If set to false OVal's programming by contract features are disabled
+	 * and constraints are not checked automatically during runtime.
+	 * @param isEnabled the isEnabled to set
+	 */
+	public void setActivated(boolean isActivated)
+	{
+		this.isActivated = isActivated;
+	}
+
+	/**
+	 * Specifies if ConstraintViolationExceptions for pre condition violations
+	 * on setter methods should be suppressed by OVal for the current thread.
+	 * 
+	 * @param guardedObject
+	 * @return true if exceptions are swallowed
+	 * @throws IllegalArgumentException if <code>guardedClass == null</code>
+	 */
+	public void setSwallowPreConditionExceptions(final Class guardedClass, boolean doSwallow)
+			throws IllegalArgumentException
+	{
+		if (guardedClass == null)
+			throw new IllegalArgumentException("guardedClass cannot be null");
+
+		isSwallowFeatureUsed = true;
+
+		if (doSwallow)
+			unsafeClasses.get().add(guardedClass);
+		else
+			unsafeClasses.get().remove(guardedClass);
+	}
+
+	/**
+	 * Specifies if ConstraintViolationExceptions for pre condition violations
+	 * on setter methods should be suppressed by OVal for the current thread.
+	 *   
+	 * @param guardedObject
+	 * @return true if exceptions are swallowed
+	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
+	 */
+	public void setSwallowPreConditionExceptions(final Object guardedObject, boolean doSwallow)
+			throws IllegalArgumentException
+	{
+		if (guardedObject == null)
+			throw new IllegalArgumentException("guardedObject cannot be null");
+
+		isSwallowFeatureUsed = true;
+
+		if (doSwallow)
+			unsafeObjects.get().add(guardedObject);
+		else
+			unsafeObjects.get().remove(guardedObject);
 	}
 
 	/**
@@ -353,39 +573,5 @@ public class Guard
 	public void setValidator(final Validator validator)
 	{
 		this.validator = validator;
-	}
-
-	public void unsetReportingMode(final Class clazz)
-	{
-		reportingModesByClass.remove(clazz);
-	}
-
-	public void unsetReportingMode(final Object validatedObject)
-	{
-		reportingModesByObject.remove(validatedObject);
-	}
-
-	/**
-	 * This method is provided for use by guard aspects.
-	 * 
-	 * @return true if valid, false if invalid
-	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
-	 */
-	private boolean validate(final Object validatedObject, final boolean alwaysThrow)
-			throws ConstraintsViolatedException
-	{
-		final List<ConstraintViolation> violations = validator.validate(validatedObject);
-		if (violations.size() > 0)
-		{
-			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-					violations.toArray(new ConstraintViolation[violations.size()]));
-			notifyListeners(validatedObject, violationException);
-
-			if (alwaysThrow) throw violationException;
-			if (getReportingMode(validatedObject) == ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION)
-				throw violationException;
-
-		}
-		return violations.size() == 0;
 	}
 }

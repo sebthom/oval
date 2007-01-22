@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -50,6 +50,7 @@ import net.sf.oval.exceptions.UndefinedConstraintSetException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
+import net.sf.oval.utils.ArrayUtils;
 import net.sf.oval.utils.ListOrderedSet;
 import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.StringUtils;
@@ -78,6 +79,17 @@ public class Validator
 			.createMap(2);
 
 	/**
+	 * Flag that indicates any configuration method related to profiles was called.
+	 * Used for performance improvements.
+	 */
+	private boolean isProfilesFeatureUsed = false;
+
+	private boolean isAllProfilesEnabledByDefault = true;
+
+	private final Set<String> enabledProfiles = CollectionFactory.INSTANCE.createSet();
+	private final Set<String> disabledProfiles = CollectionFactory.INSTANCE.createSet();
+
+	/**
 	 * Constructs a new validator object and uses a new isntance of
 	 * AnnotationsConfigurer
 	 */
@@ -88,6 +100,16 @@ public class Validator
 		configurers.add(new AnnotationsConfigurer());
 	}
 
+	public Validator(final Collection<Configurer> configurers)
+	{
+		initializeDefaultELs();
+
+		if (configurers != null)
+		{
+			this.configurers.addAll(configurers);
+		}
+	}
+
 	public Validator(final Configurer... configurers)
 	{
 		initializeDefaultELs();
@@ -96,16 +118,6 @@ public class Validator
 		{
 			for (final Configurer configurer : configurers)
 				this.configurers.add(configurer);
-		}
-	}
-
-	public Validator(final Collection<Configurer> configurers)
-	{
-		initializeDefaultELs();
-
-		if (configurers != null)
-		{
-			this.configurers.addAll(configurers);
 		}
 	}
 
@@ -376,6 +388,8 @@ public class Validator
 	private void checkConstraint(final List<ConstraintViolation> violations, final Check check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
 	{
+		if (!isAnyProfileEnabled(check.getProfiles())) return;
+
 		/*
 		 * special handling of the AssertValid constraint
 		 */
@@ -675,6 +689,60 @@ public class Validator
 	}
 
 	/**
+	 * Enables all constraint profiles, i.e. all configured constraint will be validated.
+	 */
+	public synchronized void disableAllProfiles()
+	{
+		isProfilesFeatureUsed = true;
+		isAllProfilesEnabledByDefault = false;
+
+		enabledProfiles.clear();
+		disabledProfiles.clear();
+	}
+
+	/**
+	 * Disables a constraints profile.
+	 * @param profile the id of the profile
+	 * @param enabled
+	 */
+	public void disableProfile(final String profile)
+	{
+		isProfilesFeatureUsed = true;
+		
+		if (isAllProfilesEnabledByDefault)
+			disabledProfiles.add(profile);
+		else
+			enabledProfiles.remove(profile);
+	}
+
+	/**
+	 * Disables all constraint profiles, i.e. no configured constraint will be validated.
+	 */
+	public synchronized void enableAllProfiles()
+	{
+		isProfilesFeatureUsed = true;
+		isAllProfilesEnabledByDefault = true;
+
+		enabledProfiles.clear();
+		disabledProfiles.clear();
+	}
+
+	/**
+	 * Enables a constraints profile.
+	 * @param profile the id of the profile
+	 * @param enabled
+	 */
+	public void enableProfile(final String profile)
+	{
+		isProfilesFeatureUsed = true;
+
+		if (isAllProfilesEnabledByDefault)
+			disabledProfiles.remove(profile);
+		else
+			enabledProfiles.add(profile);
+	}
+
+	/**
 	 * Returns the ClassChecks object for the particular class,
 	 * allowing you to modify the checks
 	 * 
@@ -760,6 +828,20 @@ public class Validator
 		}
 	}
 
+	private boolean isAnyProfileEnabled(final String[] profileIds)
+	{
+		if (profileIds == null || profileIds.length == 0) return isAllProfilesEnabledByDefault;
+
+		for (final String profile : profileIds)
+		{
+			if (isProfileEnabled(profile))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Determines if the given object is currently validated in the current thread
 	 * 
@@ -783,6 +865,22 @@ public class Validator
 		if (languageId == null) throw new IllegalArgumentException("languageName cannot be null");
 
 		return expressionLanguages.get(languageId) != null;
+	}
+
+	/**
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public boolean isProfileEnabled(final String profile)
+	{
+		if (isProfilesFeatureUsed)
+		{
+			if (isAllProfilesEnabledByDefault) return !disabledProfiles.contains(profile);
+
+			return enabledProfiles.contains(profile);
+		}
+		return true;
 	}
 
 	/**
@@ -875,6 +973,7 @@ public class Validator
 	 * 
 	 * @param validatedObject the object to validate, cannot be null
 	 * @return  a list with the detected constraint violations. if no violations are detected an empty list is returned
+	 * @throws IllegalArgumentException
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject)
 			throws IllegalArgumentException
@@ -934,30 +1033,6 @@ public class Validator
 		return violations.size() == 0 ? null : violations;
 	}
 
-	/**
-	 * Validates the give value against the defined field constraints.<br>
-	 * 
-	 * @return null if no violation, otherwise a list
-	 */
-	public List<ConstraintViolation> validateField(final Object validatedObject, final Field field,
-			final Object fieldValueToValidate)
-	{
-		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-		final Collection<Check> checks = cc.checksForFields.get(field);
-
-		if (checks == null && checks.size() == 0) return null;
-
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
-
-		final FieldContext context = new FieldContext(field);
-
-		for (final Check check : checks)
-		{
-			checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
-		}
-		return violations.size() == 0 ? null : violations;
-	}
-
 	private void validateField(final Object validatedObject, final Field field,
 			final List<ConstraintViolation> violations)
 	{
@@ -974,6 +1049,30 @@ public class Validator
 				checkConstraint(violations, check, validatedObject, valueToValidate, context);
 			}
 		}
+	}
+
+	/**
+	 * Validates the give value against the defined field constraints.<br>
+	 * 
+	 * @return null if no violation, otherwise a list
+	 */
+	public List<ConstraintViolation> validateField(final Object validatedObject, final Field field,
+			final Object fieldValueToValidate)
+	{
+		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+		final Collection<Check> checks = cc.checksForFields.get(field);
+
+		if (checks == null || checks.size() == 0) return null;
+
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
+
+		final FieldContext context = new FieldContext(field);
+
+		for (final Check check : checks)
+		{
+			checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
+		}
+		return violations.size() == 0 ? null : violations;
 	}
 
 	/**
@@ -1002,6 +1101,76 @@ public class Validator
 	}
 
 	/**
+	 * Validates the post conditions for a method call.<br>
+	 * <br>  
+	 * This method is primarily provided for use by the Guard class.<br>
+	 * 
+	 * @return null if no violation, otherwise a list
+	 * @see Guard
+	 */
+	public List<ConstraintViolation> validateMethodPost(final Object validatedObject,
+			final Method method, final Object[] args, final Object returnValue)
+	{
+		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+		final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
+		final Set<PostCheck> postChecks = cc.checksForMethodsPostExcecution.get(method);
+
+		// shortcut: check if any post checks for this method exist
+		if (postChecks == null && returnValueChecks == null) return null;
+
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(2);
+
+		// return value 
+		if (returnValueChecks != null && returnValueChecks.size() > 0)
+		{
+			final MethodReturnValueContext context = new MethodReturnValueContext(method);
+
+			for (final Check check : returnValueChecks)
+			{
+				checkConstraint(violations, check, validatedObject, returnValue, context);
+			}
+		}
+
+		// @Post
+		if (postChecks != null)
+		{
+			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
+			final boolean hasParameters = parameterNames.length > 0;
+
+			final MethodContext context = new MethodContext(method);
+
+			for (final PostCheck check : postChecks)
+			{
+				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
+				final Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+				values.put("_this", validatedObject);
+				values.put("_result", returnValue);
+				if (hasParameters)
+				{
+					values.put("_args", args);
+					for (int i = 0; i < args.length; i++)
+					{
+						values.put(parameterNames[i], args[i]);
+					}
+				}
+				else
+					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+
+				if (!eng.evaluate(check.getExpression(), values))
+				{
+					final String errorMessage = renderMessage(context, null, check.getMessage(),
+							check.getExpression());
+
+					violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
+							context));
+				}
+			}
+		}
+
+		return violations.size() == 0 ? null : violations;
+	}
+
+	/**
 	 * Validates the pre conditions for a method call.<br>
 	 * <br>  
 	 * This method is primarily provided for use by the Guard class.<br>
@@ -1012,20 +1181,19 @@ public class Validator
 	public List<ConstraintViolation> validateMethodPre(final Object validatedObject,
 			final Method method, final Object[] args)
 	{
-		final boolean hasParameters = method.getParameterTypes().length > 0;
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-
 		final Map<Integer, Collection<Check>> parameterChecks = cc.checksForMethodParameters
 				.get(method);
-
 		final Set<PreCheck> preChecks = cc.checksForMethodsPreExecution.get(method);
 
-		// check if any pre checks for this method exist
+		// shortcut: check if any pre checks for this method exist
 		if (preChecks == null && parameterChecks == null) return null;
 
 		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
 
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(2);
+
+		final boolean hasParameters = parameterNames.length > 0;
 
 		/*
 		 * parameter constraints validation
@@ -1052,16 +1220,16 @@ public class Validator
 		}
 
 		/*
-		 * pre conditions validation
+		 * @Pre
 		 */
 		if (preChecks != null)
 		{
-			MethodContext context = new MethodContext(method);
+			final MethodContext context = new MethodContext(method);
 
 			for (final PreCheck check : preChecks)
 			{
 				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
-				Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+				final Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
 				values.put("_this", validatedObject);
 				if (hasParameters)
 				{
@@ -1071,6 +1239,9 @@ public class Validator
 						values.put(parameterNames[i], args[i]);
 					}
 				}
+				else
+					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+
 				if (!eng.evaluate(check.getExpression(), values))
 				{
 					final String errorMessage = renderMessage(context, null, check.getMessage(),
@@ -1082,35 +1253,6 @@ public class Validator
 			}
 		}
 		return violations.size() == 0 ? null : violations;
-	}
-
-	/**
-	 * Validates the give value against the defined method return value constraints.<br>
-	 * <br>  
-	 * This method is primarily provided for use by the Guard class.<br>
-	 * 
-	 * @return null if no violation, otherwise a list
-	 * @see Guard
-	 */
-	public List<ConstraintViolation> validateMethodReturnValue(final Object validatedObject,
-			final Method method, final Object methodReturnValue)
-	{
-		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		final Collection<Check> checks = cc.checksForMethodReturnValues.get(method);
-
-		if (checks != null && checks.size() > 0)
-		{
-			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(8);
-
-			final MethodReturnValueContext context = new MethodReturnValueContext(method);
-
-			for (final Check check : checks)
-			{
-				checkConstraint(violations, check, validatedObject, methodReturnValue, context);
-			}
-			return violations.size() == 0 ? null : violations;
-		}
-		return null;
 	}
 
 	/**

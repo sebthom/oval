@@ -1,6 +1,7 @@
 package net.sf.oval;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.oval.exceptions.ExpressionLanguageException;
 
@@ -35,10 +36,9 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 			scope.setPrototype(parentScope);
 			scope.setParentScope(null);
 
-			for (final String key : values.keySet())
+			for (final Entry<String, ? > entry : values.entrySet())
 			{
-				final Object val = values.get(key);
-				scope.put(key, scope, Context.javaToJS(val, scope));
+				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
 			}
 			final Object result = ctx.evaluateString(scope, constraint, "<cmd>", 1, null);
 			if (!(result instanceof Boolean))

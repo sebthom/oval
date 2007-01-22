@@ -5,10 +5,10 @@
 <oval>
 	<!-- define a constraint set -->
 	<constraintSet id="user.userid">
-		<net.sf.oval.constraints.NotNullCheck message="{0} is null" />
-		<net.sf.oval.constraints.RegExCheck message="{0} does not match the pattern {2}">
+		<notNull message="{0} is null" />
+		<regEx message="{0} does not match the pattern {2}">
 			<pattern pattern="^[a-z0-9]{8}$" flags="0" />
-		</net.sf.oval.constraints.RegExCheck>
+		</regEx>
 	</constraintSet>
 
 	<!-- define checks for the net.sf.oval.test.enforcer.XMLConfigurationTest$User class -->
@@ -16,31 +16,31 @@
 	<class type="net.sf.oval.test.guard.XMLConfigurationTest$User" overwrite="false"
 		applyFieldConstraintsToSetter="true">
 		<field name="firstName">
-			<net.sf.oval.constraints.LengthCheck min="0" max="3"
+			<length min="0" max="3"
 				message="{0} is not between {2} and {3} characters long" />
 		</field>
 
 		<field name="lastName">
-			<net.sf.oval.constraints.LengthCheck min="0" max="5"
+			<length min="0" max="5"
 				message="{0} is not between {2} and {3} characters long" />
 		</field>
 
 		<!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
 		<field name="userId" overwrite="true">
 			<!-- use the checks defined for the constaint set "user.userid" -->
-			<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+			<assertConstraintSet id="user.userid" />
 		</field>
 
 		<!-- define constructor parameter checks -->
 		<constructor>
 			<!-- parameter 1 -->
 			<parameter type="java.lang.String">
-				<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+				<assertConstraintSet id="user.userid" />
 			</parameter>
 
 			<!-- parameter 2 -->
 			<parameter type="java.lang.String">
-				<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+				<assertConstraintSet id="user.userid" />
 			</parameter>
 
 			<!-- parameter 3 -->
@@ -52,7 +52,7 @@
 		<method name="getManagerId">
 			<!-- returnValue -  use the checks defined for the constaint set "user.userid" -->
 			<returnValue>
-				<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+				<assertConstraintSet id="user.userid" />
 			</returnValue>
 		</method>
 
@@ -60,7 +60,7 @@
 		<method name="setManagerId">
 			<!-- parameter 1 -->
 			<parameter type="java.lang.String">
-				<net.sf.oval.constraints.AssertConstraintSetCheck id="user.userid" />
+				<assertConstraintSet id="user.userid" />
 			</parameter>
 		</method>
 	</class>

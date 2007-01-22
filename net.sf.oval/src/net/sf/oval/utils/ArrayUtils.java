@@ -10,18 +10,17 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration.elements;
-
-import java.util.List;
-
-import net.sf.oval.guard.PostCheck;
+package net.sf.oval.utils;
 
 /**
+ * 
  * @author Sebastian Thomschke
  */
-public class MethodPostExecutionConfiguration extends ConfigurationElement
+public final class ArrayUtils
 {
-	private static final long serialVersionUID = 1L;
+	private ArrayUtils()
+	{}
 
-	public List<PostCheck> checks;
+	public final static Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+	public final static String[] EMPTY_STRING_ARRAY = new String[0];
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -20,6 +20,7 @@ import java.util.List;
 
 import net.sf.oval.AnnotationCheck;
 import net.sf.oval.Check;
+import net.sf.oval.Constraint;
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
@@ -31,7 +32,6 @@ import net.sf.oval.configuration.elements.MethodConfiguration;
 import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
 import net.sf.oval.constraints.AssertFieldConstraintsCheck;
-import net.sf.oval.constraints.Constraint;
 import net.sf.oval.constraints.ConstraintSet;
 import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ReflectionException;

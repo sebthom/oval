@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -22,7 +22,6 @@ import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.exceptions.ConstraintsViolatedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guarded;
-import net.sf.oval.guard.Guard.ReportingMode;
 
 /**
  * @author Sebastian Thomschke
@@ -66,10 +65,9 @@ public class ParameterConstraintsTest extends TestCase
 		}
 	}
 
-	public void testConstructorParameterConstraintsInNotifyListenersMode()
+	public void testConstructorParameterConstraintsInSwallowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
-				TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
 
 		/*
 		 * Testing Constructor 1
@@ -101,8 +99,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(
-				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
 
 		/*
 		 * Testing Constructor 1
@@ -132,8 +129,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(
-				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
 
 		try
 		{
@@ -162,10 +158,9 @@ public class ParameterConstraintsTest extends TestCase
 		}
 	}
 
-	public void testMethodParametersInNotifyListenersMode()
+	public void testMethodParametersInSwallowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
-				TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
 
 		TestEntity entity = new TestEntity("");
 

@@ -10,18 +10,22 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration.elements;
-
-import java.util.List;
-
-import net.sf.oval.guard.PostCheck;
+package net.sf.oval.utils;
 
 /**
  * @author Sebastian Thomschke
  */
-public class MethodPostExecutionConfiguration extends ConfigurationElement
+public class ThreadLocalWeakHashSet<T> extends ThreadLocal
 {
-	private static final long serialVersionUID = 1L;
+	public WeakHashSet<T> initialValue()
+	{
+		return new WeakHashSet<T>();
+	}
 
-	public List<PostCheck> checks;
+	@SuppressWarnings("unchecked")
+	@Override
+	public WeakHashSet<T> get()
+	{
+		return (WeakHashSet<T>) super.get();
+	}
 }

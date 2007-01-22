@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -17,6 +17,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import net.sf.oval.Constraint;
 
 
 /**
@@ -45,4 +47,9 @@ public @interface AssertConstraintSet
 	 * </ul>
 	 */
 	String id();
+
+	/**
+	 * The associated validation profiles.
+	 */
+	String[] profiles() default {};
 }

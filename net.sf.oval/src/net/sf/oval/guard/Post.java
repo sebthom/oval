@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -36,8 +36,9 @@ public @interface Post
 	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
 	 * available variables are:<br>
-	 * <b>this</b> -&gt; the validated bean<br>
-	 * <b>arg0..n</b> -&gt; the current parameter values<br>
+	 * <b>_this</b> -&gt; the validated bean<br>
+	 * <b>_args[]</b> -&gt; the current parameter values<br>
+	 * <b>_result</b> -&gt; the method's return value
 	 * additionally variables named accordingly to the parameters are available<br>
 	 */
 	String expression();

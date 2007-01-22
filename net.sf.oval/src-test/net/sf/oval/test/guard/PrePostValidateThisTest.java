@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -21,7 +21,6 @@ import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.PostValidateThis;
 import net.sf.oval.guard.PreValidateThis;
-import net.sf.oval.guard.Guard.ReportingMode;
 
 /**
  * @author Sebastian Thomschke
@@ -56,10 +55,9 @@ public class PrePostValidateThisTest extends TestCase
 		}
 	}
 
-	public void testConstructorValidationInNotifyListenersMode()
+	public void testConstructorValidationInSwallowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(ReportingMode.NOTIFY_LISTENERS,
-				TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
 
 		try
 		{
@@ -81,8 +79,7 @@ public class PrePostValidateThisTest extends TestCase
 
 	public void testConstructorValidationInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(
-				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
 
 		try
 		{
@@ -101,26 +98,42 @@ public class PrePostValidateThisTest extends TestCase
 		new TestEntity("test");
 	}
 
-	public void testMethodValidationInNotifyListenersMode()
+	public void testMethodValidationInSwallowExceptionMode()
 	{
 		final TestEntity t = new TestEntity();
 
-		TestGuardAspect.guard.setReportingMode(ReportingMode.NOTIFY_LISTENERS, t);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(t, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		TestGuardAspect.guard.addListener(va, t);
 
-		t.getName();
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-		assertTrue(va.getConstraintViolations().size() == 1);
-		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
-		va.clear();
+		// don't swallow for non-getter methods
+		try
+		{
+			t.getName();
+			fail("Should throw exception");
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+			assertTrue(va.getConstraintViolations().size() == 1);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+			va.clear();
+		}
 
-		t.setName(null);
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-		assertTrue(va.getConstraintViolations().size() == 1);
-		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
-		va.clear();
+		// don't swallow post condition exceptions for setter
+		try
+		{
+			t.setName(null);
+			fail("Should throw exception");
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+			assertTrue(va.getConstraintViolations().size() == 1);
+			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+			va.clear();
+		}
 
 		t.setName("the name");
 		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
@@ -133,8 +146,7 @@ public class PrePostValidateThisTest extends TestCase
 
 	public void testMethodValidationInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setReportingMode(
-				ReportingMode.NOTIFY_LISTENERS_AND_THROW_EXCEPTION, TestEntity.class);
+		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
 
 		final TestEntity t = new TestEntity();
 

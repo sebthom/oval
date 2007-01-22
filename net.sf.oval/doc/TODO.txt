@@ -1,4 +1,1 @@
-
-integration:
-- evaluate if integrating with other validation packages (e.g. commons validator) makes any sense
 - consider constraints specified for method parameters in interfaces

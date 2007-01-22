@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -33,12 +33,13 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AddingConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ExpressionLanguageGroovyTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ExpressionLanguageJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);

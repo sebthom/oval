@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -22,7 +22,13 @@ import net.sf.oval.exceptions.ReflectionException;
  */
 public interface ParameterNameResolver
 {
+	/**
+	 * returns an empty String array if no parameters are declared
+	 */
 	String[] getParameterNames(Method method) throws ReflectionException;
 
+	/**
+	 * returns an empty String array if no parameters are declared
+	 */
 	String[] getParameterNames(Constructor constructor) throws ReflectionException;
 }
