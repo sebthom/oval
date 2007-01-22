@@ -62,7 +62,7 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 
 	public void testConstructorParameterConstraints()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
 
 		/*
 		 * Testing Constructor 1

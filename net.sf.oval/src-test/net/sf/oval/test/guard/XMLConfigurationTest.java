@@ -59,7 +59,9 @@ public class XMLConfigurationTest extends TestCase
 		protected String lastName;
 
 		public User()
-		{}
+		{
+			// do nothing
+		}
 
 		public User(String userId, String managerId, int somethingElse)
 		{
@@ -230,7 +232,7 @@ public class XMLConfigurationTest extends TestCase
 
 	private void validateUser()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
 
 		ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
 		TestGuardAspect.guard.addListener(listener, User.class);

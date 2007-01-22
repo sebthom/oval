@@ -46,10 +46,10 @@ public class Guard
 	private boolean isListenersFeatureUsed = false;
 
 	/**
-	 * Flag that indicates if exception swallowing was used at any time.
+	 * Flag that indicates if exception suppressing was used at any time.
 	 * Used for performance improvements.
 	 */
-	private boolean isSwallowFeatureUsed = false;
+	private boolean isSuppressFeatureUsed = false;
 
 	private final Set<ConstraintsViolatedListener> listeners = new WeakHashSet<ConstraintsViolatedListener>();
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
@@ -267,9 +267,9 @@ public class Guard
 						violations.toArray(new ConstraintViolation[violations.size()]));
 				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-				// don't throw an exception if the method is a setter and swallowingfor precondition is enabled 
-				if (isSwallowFeatureUsed && ReflectionUtils.isSetter(method)
-						&& !isSwallowSetterPreConditionExceptions(guardedObject)) return false;
+				// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
+				if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
+						&& !isSuppressSetterPreConditionExceptions(guardedObject)) return false;
 
 				throw violationException;
 			}
@@ -285,9 +285,9 @@ public class Guard
 					violations.toArray(new ConstraintViolation[violations.size()]));
 			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-			// don't throw an exception if the method is a setter and swallowingfor precondition is enabled 
-			if (isSwallowFeatureUsed && ReflectionUtils.isSetter(method)
-					&& isSwallowSetterPreConditionExceptions(guardedObject)) return false;
+			// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
+			if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
+					&& isSuppressSetterPreConditionExceptions(guardedObject)) return false;
 
 			throw violationException;
 		}
@@ -362,23 +362,23 @@ public class Guard
 	 * on setter methods are not thrown by OVal for the current thread.
 	 *  
 	 * @param guardedClass guarded class or interface
-	 * @return true if exceptions are swallowed
+	 * @return true if exceptions are suppressed
 	 * @throws IllegalArgumentException if <code>guardedClass == null</code>
 	 */
-	public boolean isSwallowSetterPreConditionExceptions(final Class guardedClass)
+	public boolean isSuppressSetterPreConditionExceptions(final Class guardedClass)
 			throws IllegalArgumentException
 	{
 		if (guardedClass == null)
 			throw new IllegalArgumentException("guardedClass cannot be null");
 
-		final boolean isSwallow = unsafeClasses.get().contains(guardedClass);
-		if (isSwallow) return true;
+		final boolean isSuppress = unsafeClasses.get().contains(guardedClass);
+		if (isSuppress) return true;
 
 		// check the interfaces
 		for (final Class clazz : guardedClass.getInterfaces())
 		{
-			boolean isSwallowI = unsafeClasses.get().contains(clazz);
-			if (isSwallowI) return true;
+			boolean isSuppressI = unsafeClasses.get().contains(clazz);
+			if (isSuppressI) return true;
 		}
 		return false;
 	}
@@ -388,17 +388,17 @@ public class Guard
 	 * on setter methods are not thrown by OVal for the current thread.
 	 *  
 	 * @param guardedObject
-	 * @return true if exceptions are swallowed
+	 * @return true if exceptions are suppressed
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 */
-	public boolean isSwallowSetterPreConditionExceptions(final Object guardedObject)
+	public boolean isSuppressSetterPreConditionExceptions(final Object guardedObject)
 			throws IllegalArgumentException
 	{
 		if (guardedObject == null)
 			throw new IllegalArgumentException("guardedObject cannot be null");
 
 		return unsafeObjects.get().contains(guardedObject) ? true
-				: isSwallowSetterPreConditionExceptions(guardedObject.getClass());
+				: isSuppressSetterPreConditionExceptions(guardedObject.getClass());
 	}
 
 	/**
@@ -528,18 +528,18 @@ public class Guard
 	 * on setter methods should be suppressed by OVal for the current thread.
 	 * 
 	 * @param guardedObject
-	 * @return true if exceptions are swallowed
+	 * @return true if exceptions are suppressed
 	 * @throws IllegalArgumentException if <code>guardedClass == null</code>
 	 */
-	public void setSwallowPreConditionExceptions(final Class guardedClass, boolean doSwallow)
+	public void setSuppressPreConditionExceptions(final Class guardedClass, boolean doSuppress)
 			throws IllegalArgumentException
 	{
 		if (guardedClass == null)
 			throw new IllegalArgumentException("guardedClass cannot be null");
 
-		isSwallowFeatureUsed = true;
+		isSuppressFeatureUsed = true;
 
-		if (doSwallow)
+		if (doSuppress)
 			unsafeClasses.get().add(guardedClass);
 		else
 			unsafeClasses.get().remove(guardedClass);
@@ -550,18 +550,18 @@ public class Guard
 	 * on setter methods should be suppressed by OVal for the current thread.
 	 *   
 	 * @param guardedObject
-	 * @return true if exceptions are swallowed
+	 * @return true if exceptions are suppressed
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 */
-	public void setSwallowPreConditionExceptions(final Object guardedObject, boolean doSwallow)
+	public void setSuppressPreConditionExceptions(final Object guardedObject, boolean doSuppress)
 			throws IllegalArgumentException
 	{
 		if (guardedObject == null)
 			throw new IllegalArgumentException("guardedObject cannot be null");
 
-		isSwallowFeatureUsed = true;
+		isSuppressFeatureUsed = true;
 
-		if (doSwallow)
+		if (doSuppress)
 			unsafeObjects.get().add(guardedObject);
 		else
 			unsafeObjects.get().remove(guardedObject);

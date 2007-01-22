@@ -34,7 +34,9 @@ public class PrePostValidateThisTest extends TestCase
 		public String name;
 
 		public TestEntity()
-		{}
+		{
+			// do nothing
+		}
 
 		@PostValidateThis
 		public TestEntity(String name)
@@ -57,7 +59,7 @@ public class PrePostValidateThisTest extends TestCase
 
 	public void testConstructorValidationInSwallowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
 
 		try
 		{
@@ -79,7 +81,7 @@ public class PrePostValidateThisTest extends TestCase
 
 	public void testConstructorValidationInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
 
 		try
 		{
@@ -102,7 +104,7 @@ public class PrePostValidateThisTest extends TestCase
 	{
 		final TestEntity t = new TestEntity();
 
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(t, true);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(t, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		TestGuardAspect.guard.addListener(va, t);
@@ -146,7 +148,7 @@ public class PrePostValidateThisTest extends TestCase
 
 	public void testMethodValidationInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
 
 		final TestEntity t = new TestEntity();
 

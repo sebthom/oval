@@ -18,9 +18,11 @@ package net.sf.oval.utils;
  */
 public final class ArrayUtils
 {
-	private ArrayUtils()
-	{}
-
 	public final static Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 	public final static String[] EMPTY_STRING_ARRAY = new String[0];
+	
+	private ArrayUtils()
+	{
+		// do nothing
+	}
 }

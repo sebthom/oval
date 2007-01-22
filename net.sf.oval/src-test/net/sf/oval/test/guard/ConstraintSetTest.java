@@ -71,7 +71,7 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person p = new Person();
 
-			TestGuardAspect.guard.setSwallowPreConditionExceptions(p, true);
+			TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
 
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 			TestGuardAspect.guard.addListener(va, p);
@@ -101,7 +101,7 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person2 p = new Person2();
 
-			TestGuardAspect.guard.setSwallowPreConditionExceptions(p, true);
+			TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
 
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 			TestGuardAspect.guard.addListener(va, p);

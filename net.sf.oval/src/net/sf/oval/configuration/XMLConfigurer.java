@@ -31,13 +31,35 @@ import net.sf.oval.configuration.elements.MethodPostExecutionConfiguration;
 import net.sf.oval.configuration.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.elements.ParameterConfiguration;
-import net.sf.oval.constraints.*;
+import net.sf.oval.constraints.AssertCheck;
+import net.sf.oval.constraints.AssertConstraintSetCheck;
+import net.sf.oval.constraints.AssertFalseCheck;
+import net.sf.oval.constraints.AssertFieldConstraintsCheck;
+import net.sf.oval.constraints.AssertTrueCheck;
+import net.sf.oval.constraints.AssertValidCheck;
+import net.sf.oval.constraints.FutureCheck;
+import net.sf.oval.constraints.InstanceOfCheck;
+import net.sf.oval.constraints.LengthCheck;
+import net.sf.oval.constraints.MaxCheck;
+import net.sf.oval.constraints.MinCheck;
+import net.sf.oval.constraints.NoSelfReferenceCheck;
+import net.sf.oval.constraints.NotEmptyCheck;
+import net.sf.oval.constraints.NotNegativeCheck;
+import net.sf.oval.constraints.NotNullCheck;
+import net.sf.oval.constraints.PastCheck;
+import net.sf.oval.constraints.RangeCheck;
+import net.sf.oval.constraints.RegExCheck;
+import net.sf.oval.constraints.SizeCheck;
+import net.sf.oval.constraints.ValidateWithMethodCheck;
 import net.sf.oval.exceptions.OValException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
+import net.sf.oval.utils.ReflectionUtils;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.XppDriver;
 
 /**
  * XStream based XML configuration class
@@ -53,16 +75,22 @@ public class XMLConfigurer implements Configurer
 	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
 
 	private final XStream xStream;
-
+	
 	/**
 	 * creates an XMLConfigurer instance backed by a new XStream instance 
 	 * using the com.thoughtworks.xstream.io.xml.StaxDriver for XML parsing 
-	 *
+	 * if the StAX API is available
 	 * @see com.thoughtworks.xstream.io.xml.StaxDriver
 	 */
 	public XMLConfigurer()
 	{
-		xStream = new XStream(new StaxDriver());
+		if (ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader"))
+			xStream = new XStream(new StaxDriver());
+		else if (ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser"))
+			xStream = new XStream(new XppDriver());
+		else
+			xStream = new XStream(new DomDriver());
+
 		configureXStream();
 	}
 

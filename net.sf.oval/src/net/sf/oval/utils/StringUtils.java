@@ -48,5 +48,7 @@ public final class StringUtils
 	 * private constructor
 	 */
 	private StringUtils()
-	{}
+	{
+		// do nothing
+	}
 }

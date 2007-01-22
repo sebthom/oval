@@ -48,7 +48,7 @@ public class InheritanceTest extends TestCase
 
 	public static class EntityImpl extends AbstractEntity
 	{
-
+		// do nothing
 	}
 
 	public void testInheritance()

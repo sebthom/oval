@@ -23,6 +23,4 @@ package net.sf.oval.guard;
  * @see net.sf.oval.guard.GuardAspect
  */
 public interface IsGuarded
-{
-
-}
+{}

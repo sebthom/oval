@@ -113,7 +113,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 	{
 		final Person p = new Person();
 
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(p, true);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		TestGuardAspect.guard.addListener(va, p);

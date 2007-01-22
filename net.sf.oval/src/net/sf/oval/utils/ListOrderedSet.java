@@ -88,6 +88,7 @@ public class ListOrderedSet<E> implements Cloneable, Set<E>, List<E>
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public Object clone() throws CloneNotSupportedException
 	{
 		final ListOrderedSet<E> os = (ListOrderedSet<E>) super.clone();
@@ -225,6 +226,7 @@ public class ListOrderedSet<E> implements Cloneable, Set<E>, List<E>
 		return list.toArray(a);
 	}
 
+	@Override
 	public String toString()
 	{
 		return list.toString();

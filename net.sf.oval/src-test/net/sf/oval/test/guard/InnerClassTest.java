@@ -90,7 +90,9 @@ public class InnerClassTest extends TestCase
 			fail();
 		}
 		catch (ConstraintsViolatedException ex)
-		{}
+		{
+			// expected
+		}
 
 		TestEntity.InnerClassGuarded instance = null;
 
@@ -102,6 +104,8 @@ public class InnerClassTest extends TestCase
 			fail();
 		}
 		catch (ConstraintsViolatedException ex)
-		{}
+		{
+			// expected
+		}
 	}
 }

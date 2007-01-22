@@ -17,6 +17,7 @@ package net.sf.oval.utils;
  */
 public class ThreadLocalWeakHashSet<T> extends ThreadLocal
 {
+	@Override
 	public WeakHashSet<T> initialValue()
 	{
 		return new WeakHashSet<T>();

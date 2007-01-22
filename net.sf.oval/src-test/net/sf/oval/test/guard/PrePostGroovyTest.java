@@ -60,5 +60,21 @@ public class PrePostGroovyTest extends TestCase
 	}
 
 	public void testPostGroovy()
-	{}
+	{
+		TestTransaction t = new TestTransaction();
+
+		try
+		{
+			t.value = new BigDecimal(-2);
+			t.increase2(new BigDecimal(1));
+			fail();
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+		}
+
+		t.value = new BigDecimal(0);
+		t.increase2(new BigDecimal(1));
+	}
 }

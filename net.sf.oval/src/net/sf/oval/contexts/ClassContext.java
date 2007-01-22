@@ -34,6 +34,7 @@ public class ClassContext extends OValContext
 		return clazz;
 	}
 
+	@Override
 	public String toString()
 	{
 		return clazz.getName();

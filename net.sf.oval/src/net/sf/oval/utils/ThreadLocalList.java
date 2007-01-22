@@ -21,6 +21,7 @@ import net.sf.oval.collections.CollectionFactory;
  */
 public class ThreadLocalList<T> extends ThreadLocal
 {
+	@Override
 	public List<T> initialValue()
 	{
 		return CollectionFactory.INSTANCE.createList();

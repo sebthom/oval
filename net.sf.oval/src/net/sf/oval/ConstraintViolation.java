@@ -117,6 +117,7 @@ public class ConstraintViolation implements Serializable
 		}
 	}
 
+	@Override
 	public String toString()
 	{
 		return getClass().getName() + ": " + message;

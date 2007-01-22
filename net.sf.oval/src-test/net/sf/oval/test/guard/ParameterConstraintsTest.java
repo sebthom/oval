@@ -67,7 +67,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInSwallowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
 
 		/*
 		 * Testing Constructor 1
@@ -99,7 +99,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraintsInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
 
 		/*
 		 * Testing Constructor 1
@@ -129,7 +129,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInThrowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, false);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
 
 		try
 		{
@@ -160,7 +160,7 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInSwallowExceptionMode()
 	{
-		TestGuardAspect.guard.setSwallowPreConditionExceptions(TestEntity.class, true);
+		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
 
 		TestEntity entity = new TestEntity("");
 

@@ -28,12 +28,15 @@ public class CollectionFactoryJavalutionImpl extends CollectionFactory
 	public final static CollectionFactoryJavalutionImpl INSTANCE = new CollectionFactoryJavalutionImpl();
 
 	protected CollectionFactoryJavalutionImpl()
-	{}
+	{
+	// do nothing
+	}
 
 	/**
 	 * If Javalution is in the classpath this function returns a new <code>javolution.util.FastTable</code> 
 	 * otherwise a new <code>java.util.ArrayList</code> is returned. 
 	 */
+	@Override
 	public <ItemType> List<ItemType> createList()
 	{
 		return new FastTable<ItemType>();
@@ -43,6 +46,7 @@ public class CollectionFactoryJavalutionImpl extends CollectionFactory
 	 * If Javalution is in the classpath this function returns a new <code>javolution.util.FastTable</code> 
 	 * otherwise a new <code>java.util.ArrayList</code> is returned. 
 	 */
+	@Override
 	public <ItemType> List<ItemType> createList(final int initialCapacity)
 	{
 		return new FastTable<ItemType>(initialCapacity);
@@ -52,6 +56,7 @@ public class CollectionFactoryJavalutionImpl extends CollectionFactory
 	 * If Javalution is in the classpath this function returns a new <code>javolution.util.FastMap</code> 
 	 * otherwise a new <code>java.util.HashMap</code> is returned. 
 	 */
+	@Override
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap()
 	{
 		return new FastMap<KeyType, ValueType>();
@@ -61,6 +66,7 @@ public class CollectionFactoryJavalutionImpl extends CollectionFactory
 	 * If Javalution is in the classpath this function returns a new <code>javolution.util.FastMap</code> 
 	 * otherwise a new <code>java.util.HashMap</code> is returned. 
 	 */
+	@Override
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity)
 	{
 		return new FastMap<KeyType, ValueType>(initialCapacity);
@@ -70,6 +76,7 @@ public class CollectionFactoryJavalutionImpl extends CollectionFactory
 	 * If Javalution is in the classpath this function returns a new <code>javolution.util.FastSet</code> 
 	 * otherwise a new <code>java.util.HashSet</code> is returned. 
 	 */
+	@Override
 	public <ItemType> Set<ItemType> createSet()
 	{
 		return new FastSet<ItemType>();
@@ -79,6 +86,7 @@ public class CollectionFactoryJavalutionImpl extends CollectionFactory
 	 * If Javalution is in the classpath this function returns a new <code>javolution.util.FastSet</code> 
 	 * otherwise a new <code>java.util.HashSet</code> is returned. 
 	 */
+	@Override
 	public <ItemType> Set<ItemType> createSet(final int initialCapacity)
 	{
 		return new FastSet<ItemType>(initialCapacity);

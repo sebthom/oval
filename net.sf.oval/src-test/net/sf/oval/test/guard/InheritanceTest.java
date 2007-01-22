@@ -69,7 +69,9 @@ public class InheritanceTest extends TestCase
 			fail("ConstraintViolationException should have been thrown");
 		}
 		catch (ConstraintsViolatedException ex)
-		{}
+		{
+			// expected
+		}
 
 		try
 		{
@@ -77,6 +79,8 @@ public class InheritanceTest extends TestCase
 			fail("ConstraintViolationException should have been thrown");
 		}
 		catch (ConstraintsViolatedException ex)
-		{}
+		{
+			// expected
+		}
 	}
 }
