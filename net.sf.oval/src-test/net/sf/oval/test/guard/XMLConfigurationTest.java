@@ -35,8 +35,8 @@ import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.LengthCheck;
 import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.constraints.RegExCheck;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
+import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.test.guard.ParameterConstraintsTest.TestEntity;
 

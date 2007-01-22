@@ -20,13 +20,13 @@ import net.sf.oval.utils.StringUtils;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodContext extends OValContext
+public class MethodPostExecutionContext extends OValContext
 {
 	private static final long serialVersionUID = 1L;
 
 	private final SerializableMethod method;
 
-	public MethodContext(final Method method)
+	public MethodPostExecutionContext(final Method method)
 	{
 		this.method = SerializableMethod.getInstance(method);
 	}

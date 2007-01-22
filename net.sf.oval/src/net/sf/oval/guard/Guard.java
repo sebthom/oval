@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.collections.CollectionFactory;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
 import net.sf.oval.utils.ListOrderedSet;
 import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.ThreadLocalWeakHashSet;

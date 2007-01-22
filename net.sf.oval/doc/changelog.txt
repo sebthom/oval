@@ -30,6 +30,7 @@ Refactoring:
   * net.sf.oval.ParamenterNameResolverAspectJImpl: moved from package net.sf.oval.aspectj
   * net.sf.oval.guard.ApiUsageAuditor: moved from package net.sf.oval.aspectj
   * net.sf.oval.guard.ApiUsageAuditor2: moved from package net.sf.oval.aspectj
+  * net.sf.oval.guard.ConstraintsViolatedException: moved from package net.sf.oval.exceptions
   * net.sf.oval.guard.GuardAspect: moved from package net.sf.oval.aspectj
   * net.sf.oval.guard.GuardAspect2: moved from package net.sf.oval.aspectj
   * net.sf.oval.guard.Guarded: moved from package net.sf.oval.guard

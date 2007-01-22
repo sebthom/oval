@@ -19,7 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.ConstraintViolation;
 
 /**
  * Check the value by a method of the same class that takes the value as argument and returns true if valid
@@ -41,7 +41,7 @@ public @interface ValidateWithMethod
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.ValidateWithMethod.violated";
 

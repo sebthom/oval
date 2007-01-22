@@ -6,7 +6,7 @@ import java.util.Date;
 import junit.framework.TestCase;
 import net.sf.oval.constraints.Assert;
 import net.sf.oval.constraints.NotNull;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
 import net.sf.oval.guard.Pre;

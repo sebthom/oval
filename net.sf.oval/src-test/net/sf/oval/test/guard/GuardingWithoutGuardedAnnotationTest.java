@@ -17,7 +17,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.contexts.ConstructorParameterContext;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.guard.ConstraintsViolatedException;
 
 /**
  * @author Sebastian Thomschke

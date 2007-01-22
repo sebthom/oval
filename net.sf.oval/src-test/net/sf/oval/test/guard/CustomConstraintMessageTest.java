@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.constraints.Range;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
 
 /**

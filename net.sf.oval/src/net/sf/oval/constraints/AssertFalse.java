@@ -19,7 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.ConstraintViolation;
 
 /**
  * Check if the value is false.
@@ -36,9 +36,9 @@ import net.sf.oval.exceptions.ConstraintsViolatedException;
 public @interface AssertFalse
 {
 	/**
-	 * message to be used for the ContraintsViolatedException
+	 * message to be used for constructing the ConstraintViolation object
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.AssertFalse.violated";
 	

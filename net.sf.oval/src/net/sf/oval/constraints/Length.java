@@ -19,7 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.ConstraintViolation;
 
 /**
  * Check if the string representation has certain length
@@ -42,7 +42,7 @@ public @interface Length
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.Length.violated";
 

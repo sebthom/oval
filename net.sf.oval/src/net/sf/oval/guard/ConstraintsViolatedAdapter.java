@@ -17,7 +17,6 @@ import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.collections.CollectionFactory;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
  * @author Sebastian Thomschke

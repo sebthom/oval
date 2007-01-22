@@ -19,7 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
-import net.sf.oval.exceptions.ConstraintsViolatedException;
+import net.sf.oval.ConstraintViolation;
 
 /**
  * Check if evaluating the expression in the specified expression language returns true.<br>
@@ -47,9 +47,9 @@ public @interface Assert
 	String language();
 
 	/**
-	 * message to be used for the ContraintsViolatedException
+	 * message to be used for constructing the ConstraintViolation object
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.Assert.violated";
 

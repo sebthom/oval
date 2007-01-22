@@ -10,11 +10,12 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.exceptions;
+package net.sf.oval.guard;
 
 import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.exceptions.OValException;
 
 /**
  * This exception is thrown if one or more constraints are not satisfied during validation.
@@ -31,14 +32,16 @@ public class ConstraintsViolatedException extends OValException
 
 	public ConstraintsViolatedException(final ConstraintViolation... constraintViolations)
 	{
-		super(constraintViolations.length + " constraint violation(s) occured.");
+		// the message of the first occuring constraint violation will be used
+		super(constraintViolations[0].getMessage());
 
 		this.constraintViolations = constraintViolations;
 	}
 
 	public ConstraintsViolatedException(final List<ConstraintViolation> constraintViolations)
 	{
-		super(constraintViolations.size() + " constraint violation(s) occured.");
+		// the message of the first occuring constraint violation will be used
+		super(constraintViolations.get(0).getMessage());
 
 		this.constraintViolations = constraintViolations
 				.toArray(new ConstraintViolation[constraintViolations.size()]);

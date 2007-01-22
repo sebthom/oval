@@ -37,8 +37,9 @@ import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertValidCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.FieldContext;
-import net.sf.oval.contexts.MethodContext;
 import net.sf.oval.contexts.MethodParameterContext;
+import net.sf.oval.contexts.MethodPostExecutionContext;
+import net.sf.oval.contexts.MethodPreExecutionContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException;
@@ -1137,7 +1138,7 @@ public class Validator
 			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
 			final boolean hasParameters = parameterNames.length > 0;
 
-			final MethodContext context = new MethodContext(method);
+			final MethodPostExecutionContext context = new MethodPostExecutionContext(method);
 
 			for (final PostCheck check : postChecks)
 			{
@@ -1224,7 +1225,7 @@ public class Validator
 		 */
 		if (preChecks != null)
 		{
-			final MethodContext context = new MethodContext(method);
+			final MethodPreExecutionContext context = new MethodPreExecutionContext(method);
 
 			for (final PreCheck check : preChecks)
 			{

@@ -18,7 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.exceptions.ConstraintsViolatedException;
 
 /**
  * Before the annotated method is executed the expression is evaluated.<br>
