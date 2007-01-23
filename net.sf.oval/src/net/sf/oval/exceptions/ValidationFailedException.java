@@ -12,39 +12,21 @@
  *******************************************************************************/
 package net.sf.oval.exceptions;
 
-import net.sf.oval.contexts.OValContext;
-
 /**
+ * 
  * @author Sebastian Thomschke
  */
-public class InvokingGetterFailedException extends ReflectionException
+public class ValidationFailedException extends OValException
 {
 	private static final long serialVersionUID = 1L;
 
-	private final OValContext context;
-	private final Object validatedObject;
+	public ValidationFailedException(final String message)
+	{
+		super(message);
+	}
 
-	public InvokingGetterFailedException(final String message, final Object validatedObject,
-			final OValContext context, final Throwable cause)
+	public ValidationFailedException(final String message, final Throwable cause)
 	{
 		super(message, cause);
-		this.context = context;
-		this.validatedObject = validatedObject;
-	}
-
-	/**
-	 * @return Returns the context.
-	 */
-	public OValContext getContext()
-	{
-		return context;
-	}
-
-	/**
-	 * @return the validatedObject
-	 */
-	public Object getValidatedObject()
-	{
-		return validatedObject;
 	}
 }

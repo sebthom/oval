@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.WeakHashMap;
-
-import net.sf.oval.exceptions.NestableIOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Constructor objects since they do not implement Serializable
@@ -26,6 +26,8 @@ import net.sf.oval.exceptions.NestableIOException;
  */
 public class SerializableConstructor implements Serializable
 {
+	private final static Logger LOG = Logger.getLogger(SerializableConstructor.class.getName());
+
 	private static final WeakHashMap<Constructor< ? >, SerializableConstructor> CACHE = new WeakHashMap<Constructor< ? >, SerializableConstructor>();
 
 	private static final long serialVersionUID = 1L;
@@ -49,6 +51,7 @@ public class SerializableConstructor implements Serializable
 	private final Class< ? > declaringClass;
 
 	private final Class< ? >[] parameterTypes;
+
 	protected SerializableConstructor(final Constructor< ? > constructor)
 	{
 		this.constructor = constructor;
@@ -88,13 +91,15 @@ public class SerializableConstructor implements Serializable
 		{
 			constructor = declaringClass.getConstructor(parameterTypes);
 		}
-		catch (SecurityException e)
+		catch (SecurityException ex)
 		{
-			throw new NestableIOException(e);
+			LOG.log(Level.SEVERE, "Unexpected SecurityException occured: " + ex, ex);
+			throw new IOException(ex.getMessage());
 		}
-		catch (NoSuchMethodException e)
+		catch (NoSuchMethodException ex)
 		{
-			throw new NestableIOException(e);
+			LOG.log(Level.SEVERE, "Unexpected NoSuchMethodException occured: " + ex, ex);
+			throw new IOException(ex.getMessage());
 		}
 	}
 }

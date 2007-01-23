@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.exceptions.AccessingFieldValueFailedException;
-import net.sf.oval.exceptions.InvokingGetterFailedException;
+import net.sf.oval.exceptions.InvokingMethodFailedException;
 
 /**
  * @author Sebastian Thomschke
@@ -176,10 +176,10 @@ public final class ReflectionUtils
 	 * @param obj the object on which to invoke the method
 	 * @param args the method arguments
 	 * @return the return value of the invoked method
-	 * @throws InvokingGetterFailedException
+	 * @throws InvokingMethodFailedException
 	 */
 	public static Object invokeMethod(final Method method, final Object obj, final Object... args)
-			throws InvokingGetterFailedException
+			throws InvokingMethodFailedException
 	{
 		try
 		{
@@ -188,7 +188,7 @@ public final class ReflectionUtils
 		}
 		catch (Exception ex)
 		{
-			throw new InvokingGetterFailedException("Executing method " + method.getName()
+			throw new InvokingMethodFailedException("Executing method " + method.getName()
 					+ " failed.", obj, new MethodReturnValueContext(method), ex);
 		}
 	}

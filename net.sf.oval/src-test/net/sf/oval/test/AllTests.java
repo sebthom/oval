@@ -53,6 +53,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToSetterTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ConstraintSetTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.CustomConstraintMessageTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ExceptionTranslatorTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);

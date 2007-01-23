@@ -20,6 +20,7 @@ import net.sf.oval.Validator;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.exceptions.InvalidConfigurationException;
+import net.sf.oval.exceptions.ValidationFailedException;
 
 /**
  * @author Sebastian Thomschke
@@ -84,9 +85,9 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 				validator.validate(t);
 				fail();
 			}
-			catch (InvalidConfigurationException e)
+			catch (ValidationFailedException e)
 			{
-				// expected
+				assert (e.getCause() instanceof InvalidConfigurationException);
 			}
 		}
 	}

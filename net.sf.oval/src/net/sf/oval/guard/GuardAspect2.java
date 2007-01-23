@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.oval.ParameterNameResolverAspectJImpl;
 import net.sf.oval.Validator;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -49,6 +50,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	public GuardAspect2()
 	{
 		this(new Guard(new Validator()));
+		getValidator().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 	}
 
 	public GuardAspect2(final Guard guard)

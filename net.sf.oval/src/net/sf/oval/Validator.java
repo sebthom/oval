@@ -43,11 +43,14 @@ import net.sf.oval.contexts.MethodPreExecutionContext;
 import net.sf.oval.contexts.MethodReturnValueContext;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException;
+import net.sf.oval.exceptions.ExpressionLanguageException;
 import net.sf.oval.exceptions.FieldNotFoundException;
 import net.sf.oval.exceptions.InvalidConfigurationException;
 import net.sf.oval.exceptions.MethodNotFoundException;
+import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ReflectionException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
+import net.sf.oval.exceptions.ValidationFailedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
@@ -122,9 +125,7 @@ public class Validator
 		}
 	}
 
-	private void addChecks(final ClassConfiguration classConfig)
-			throws InvalidConfigurationException, FieldNotFoundException, MethodNotFoundException,
-			ReflectionException
+	private void addChecks(final ClassConfiguration classConfig) throws OValException
 	{
 		if (classConfig.type == null)
 			throw new InvalidConfigurationException("The property 'type' for " + classConfig
@@ -333,17 +334,17 @@ public class Validator
 					}
 				}
 		}
-		catch (SecurityException e)
+		catch (SecurityException ex)
 		{
-			throw new ReflectionException("SecurityException occured", e);
+			throw new ReflectionException("SecurityException occured", ex);
 		}
-		catch (NoSuchMethodException e)
+		catch (NoSuchMethodException ex)
 		{
-			throw new MethodNotFoundException("NoSuchMethodException occured.", e);
+			throw new MethodNotFoundException("NoSuchMethodException occured.", ex);
 		}
-		catch (NoSuchFieldException e)
+		catch (NoSuchFieldException ex)
 		{
-			throw new FieldNotFoundException("FieldNotFoundException occured.", e);
+			throw new FieldNotFoundException("FieldNotFoundException occured.", ex);
 		}
 	}
 
@@ -363,7 +364,7 @@ public class Validator
 	 * @param constraintSetConfigurations cannot be null
 	 * @return
 	 * @throws ConstraintSetAlreadyDefinedException
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException if <code>constraintSetConfigurations == null</code>
 	 */
 	public ConstraintSet addConstraintSet(
 			final ConstraintSetConfiguration constraintSetConfigurations)
@@ -388,6 +389,7 @@ public class Validator
 
 	private void checkConstraint(final List<ConstraintViolation> violations, final Check check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
+			throws OValException
 	{
 		if (!isAnyProfileEnabled(check.getProfiles())) return;
 
@@ -445,7 +447,7 @@ public class Validator
 
 	private void checkConstraintAssert(final List<ConstraintViolation> violations,
 			final AssertCheck check, final Object validatedObject, final Object valueToValidate,
-			final OValContext context)
+			final OValContext context) throws ExpressionLanguageException
 	{
 		final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
 		Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
@@ -463,7 +465,7 @@ public class Validator
 
 	private void checkConstraintAssertConstraintSet(final List<ConstraintViolation> violations,
 			final AssertConstraintSetCheck check, final Object validatedObject,
-			final Object valueToValidate, final OValContext context)
+			final Object valueToValidate, final OValContext context) throws OValException
 	{
 		Class targetClass = check.getSource();
 		if (targetClass == Object.class)
@@ -522,7 +524,7 @@ public class Validator
 
 	private void checkConstraintAssertFieldConstraints(final List<ConstraintViolation> violations,
 			final AssertFieldConstraintsCheck check, final Object validatedObject,
-			final Object valueToValidate, final OValContext context)
+			final Object valueToValidate, final OValContext context) throws OValException
 	{
 		// the lowest class that is expected to declare the field (or one of its super classes)
 		Class targetClass = validatedObject.getClass();
@@ -616,7 +618,7 @@ public class Validator
 
 	private void checkConstraintAssertValid(final List<ConstraintViolation> violations,
 			final AssertValidCheck check, final Object validatedObject,
-			final Object valueToValidate, final OValContext context)
+			final Object valueToValidate, final OValContext context) throws OValException
 	{
 		if (valueToValidate == null) return;
 
@@ -709,7 +711,7 @@ public class Validator
 	public void disableProfile(final String profile)
 	{
 		isProfilesFeatureUsed = true;
-		
+
 		if (isAllProfilesEnabledByDefault)
 			disabledProfiles.add(profile);
 		else
@@ -749,15 +751,18 @@ public class Validator
 	 * 
 	 * @param clazz cannot be null
 	 * @return returns the ClassChecks for the given class
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException if <code>clazz == null</code>
+	 * @throws OValException
 	 */
-	public ClassChecks getClassChecks(final Class clazz) throws IllegalArgumentException
+	public ClassChecks getClassChecks(final Class clazz) throws IllegalArgumentException,
+			OValException
 	{
 		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
 
 		synchronized (checksByClass)
 		{
 			ClassChecks cc = checksByClass.get(clazz);
+
 			if (cc == null)
 			{
 				cc = new ClassChecks(clazz);
@@ -769,6 +774,7 @@ public class Validator
 					if (classConfig != null) addChecks(classConfig);
 				}
 			}
+
 			return cc;
 		}
 	}
@@ -781,7 +787,7 @@ public class Validator
 		return configurers;
 	}
 
-	private ConstraintSet getConstraintSet(final String constraintSetId)
+	private ConstraintSet getConstraintSet(final String constraintSetId) throws OValException
 	{
 		ConstraintSet cs = constraintSetsById.get(constraintSetId);
 
@@ -792,8 +798,10 @@ public class Validator
 				final ConstraintSetConfiguration csc = configurer
 						.getConstraintSetConfiguration(constraintSetId);
 				if (csc != null) cs = addConstraintSet(csc);
+
 			}
 		}
+
 		return cs;
 	}
 
@@ -858,7 +866,7 @@ public class Validator
 	 * 
 	 * @param languageId the id of the language, cannot be null
 	 * @return
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException if <code>languageName == null</code>
 	 */
 	public boolean isExpressionLanguageAvailable(final String languageId)
 			throws IllegalArgumentException
@@ -888,7 +896,7 @@ public class Validator
 	 * 
 	 * @param languageId
 	 * @param expressionLanguage
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException if <code>languageId == null || expressionLanguage == null</code>
 	 */
 	public void registerExpressionLanguage(final String languageId,
 			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
@@ -905,11 +913,12 @@ public class Validator
 	 * Removes the constraint set with the given id
 	 * @param id the id of the constraint set to remove, cannot be null
 	 * @return the removed constraint set
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException if <code>id == null</code>
 	 */
 	public ConstraintSet removeConstraintSet(final String id) throws IllegalArgumentException
 	{
 		if (id == null) throw new IllegalArgumentException("id cannot be null");
+
 		return constraintSetsById.remove(id);
 	}
 
@@ -946,26 +955,28 @@ public class Validator
 	}
 
 	/**
-	 * @param messageResolver the messageResolver to set, cannot be null
-	 * @throws IllegalArgumentException
+	 * @param messageResolver the messageResolver to set
+	 * @throws IllegalArgumentException if <code>messageResolver == null</code>
 	 */
 	public void setMessageResolver(final MessageResolver messageResolver)
 			throws IllegalArgumentException
 	{
 		if (messageResolver == null)
 			throw new IllegalArgumentException("messageResolver cannot be null");
+
 		this.messageResolver = messageResolver;
 	}
 
 	/**
 	 * @param parameterNameResolver the parameterNameResolver to set, cannot be null
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException if <code>parameterNameResolver == null</code>
 	 */
 	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
 			throws IllegalArgumentException
 	{
 		if (parameterNameResolver == null)
 			throw new IllegalArgumentException("parameterNameResolver cannot be null");
+
 		this.parameterNameResolver = parameterNameResolver;
 	}
 
@@ -974,10 +985,11 @@ public class Validator
 	 * 
 	 * @param validatedObject the object to validate, cannot be null
 	 * @return  a list with the detected constraint violations. if no violations are detected an empty list is returned
-	 * @throws IllegalArgumentException
+	 * @throws ValidationFailedException
+	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject)
-			throws IllegalArgumentException
+			throws IllegalArgumentException, ValidationFailedException
 	{
 		if (validatedObject == null)
 			throw new IllegalArgumentException("validatedObject cannot be null");
@@ -987,6 +999,7 @@ public class Validator
 		{
 			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
 			validateObject(validatedObject, validatedObject.getClass(), violations);
+
 			return violations;
 		}
 		finally
@@ -1001,41 +1014,56 @@ public class Validator
 	 * This method is primarily provided for use by the Guard class.<br>
 	 * 
 	 * @return null if no violation, otherwise a list
+	 * @throws ValidationFailedException
 	 * @see Guard
 	 */
 	public List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor constructor, final Object[] argsToValidate)
+			throws ValidationFailedException
 	{
-		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-		final Map<Integer, Collection<Check>> parameterChecks = cc.checksForConstructorParameter
-				.get(constructor);
-
-		// if no parameter checks exist just return null
-		if (parameterChecks == null) return null;
-
-		final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
-		for (int i = 0; i < argsToValidate.length; i++)
+		try
 		{
-			final Collection<Check> checks = parameterChecks.get(i);
+			final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
+			final Map<Integer, Collection<Check>> parameterChecks = cc.checksForConstructorParameter
+					.get(constructor);
 
-			if (checks != null && checks.size() > 0)
+			// if no parameter checks exist just return null
+			if (parameterChecks == null) return null;
+
+			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
+
+			final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
+
+			for (int i = 0; i < argsToValidate.length; i++)
 			{
-				final Object valueToValidate = argsToValidate[i];
-				final ConstructorParameterContext context = new ConstructorParameterContext(
-						constructor, i, parameterNames[i]);
+				final Collection<Check> checks = parameterChecks.get(i);
 
-				for (final Check check : checks)
+				if (checks != null && checks.size() > 0)
 				{
-					checkConstraint(violations, check, validatedObject, valueToValidate, context);
+					final Object valueToValidate = argsToValidate[i];
+					final ConstructorParameterContext context = new ConstructorParameterContext(
+							constructor, i, parameterNames[i]);
+
+					for (final Check check : checks)
+					{
+						checkConstraint(violations, check, validatedObject, valueToValidate,
+								context);
+					}
 				}
 			}
+			return violations.size() == 0 ? null : violations;
 		}
-		return violations.size() == 0 ? null : violations;
+		catch (OValException ex)
+		{
+			throw new ValidationFailedException(
+					"Validation of constructor parameters failed. Constructor: " + constructor
+							+ " Validated object:" + validatedObject, ex);
+		}
+
 	}
 
 	private void validateField(final Object validatedObject, final Field field,
-			final List<ConstraintViolation> violations)
+			final List<ConstraintViolation> violations) throws OValException
 	{
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 		final Collection<Check> checks = cc.checksForFields.get(field);
@@ -1056,24 +1084,33 @@ public class Validator
 	 * Validates the give value against the defined field constraints.<br>
 	 * 
 	 * @return null if no violation, otherwise a list
+	 * @throws ValidationFailedException 
 	 */
 	public List<ConstraintViolation> validateField(final Object validatedObject, final Field field,
-			final Object fieldValueToValidate)
+			final Object fieldValueToValidate) throws ValidationFailedException
 	{
-		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-		final Collection<Check> checks = cc.checksForFields.get(field);
-
-		if (checks == null || checks.size() == 0) return null;
-
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
-
-		final FieldContext context = new FieldContext(field);
-
-		for (final Check check : checks)
+		try
 		{
-			checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
+			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
+			final Collection<Check> checks = cc.checksForFields.get(field);
+
+			if (checks == null || checks.size() == 0) return null;
+
+			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
+
+			final FieldContext context = new FieldContext(field);
+
+			for (final Check check : checks)
+			{
+				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
+			}
+			return violations.size() == 0 ? null : violations;
 		}
-		return violations.size() == 0 ? null : violations;
+		catch (OValException ex)
+		{
+			throw new ValidationFailedException("Field validation failed. Field: " + field
+					+ " Validated object: " + validatedObject, ex);
+		}
 	}
 
 	/**
@@ -1082,9 +1119,10 @@ public class Validator
 	 * @param validatedObject
 	 * @param getter
 	 * @param violations detected ConstraintViolations will be added to this list
+	 * @throws OValException 
 	 */
 	private void validateGetter(final Object validatedObject, final Method getter,
-			final List<ConstraintViolation> violations)
+			final List<ConstraintViolation> violations) throws OValException
 	{
 		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
 		final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
@@ -1107,68 +1145,79 @@ public class Validator
 	 * This method is primarily provided for use by the Guard class.<br>
 	 * 
 	 * @return null if no violation, otherwise a list
+	 * @throws ValidationFailedException  
 	 * @see Guard
 	 */
 	public List<ConstraintViolation> validateMethodPost(final Object validatedObject,
 			final Method method, final Object[] args, final Object returnValue)
+			throws ValidationFailedException
 	{
-		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
-		final Set<PostCheck> postChecks = cc.checksForMethodsPostExcecution.get(method);
-
-		// shortcut: check if any post checks for this method exist
-		if (postChecks == null && returnValueChecks == null) return null;
-
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(2);
-
-		// return value 
-		if (returnValueChecks != null && returnValueChecks.size() > 0)
+		try
 		{
-			final MethodReturnValueContext context = new MethodReturnValueContext(method);
+			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+			final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
+			final Set<PostCheck> postChecks = cc.checksForMethodsPostExcecution.get(method);
 
-			for (final Check check : returnValueChecks)
+			// shortcut: check if any post checks for this method exist
+			if (postChecks == null && returnValueChecks == null) return null;
+
+			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(2);
+
+			// return value 
+			if (returnValueChecks != null && returnValueChecks.size() > 0)
 			{
-				checkConstraint(violations, check, validatedObject, returnValue, context);
-			}
-		}
+				final MethodReturnValueContext context = new MethodReturnValueContext(method);
 
-		// @Post
-		if (postChecks != null)
-		{
-			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
-			final boolean hasParameters = parameterNames.length > 0;
-
-			final MethodPostExecutionContext context = new MethodPostExecutionContext(method);
-
-			for (final PostCheck check : postChecks)
-			{
-				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
-				final Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
-				values.put("_this", validatedObject);
-				values.put("_result", returnValue);
-				if (hasParameters)
+				for (final Check check : returnValueChecks)
 				{
-					values.put("_args", args);
-					for (int i = 0; i < args.length; i++)
+					checkConstraint(violations, check, validatedObject, returnValue, context);
+				}
+			}
+
+			// @Post
+			if (postChecks != null)
+			{
+				final String[] parameterNames = parameterNameResolver.getParameterNames(method);
+				final boolean hasParameters = parameterNames.length > 0;
+
+				final MethodPostExecutionContext context = new MethodPostExecutionContext(method);
+
+				for (final PostCheck check : postChecks)
+				{
+					final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
+					final Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+					values.put("_this", validatedObject);
+					values.put("_result", returnValue);
+					if (hasParameters)
 					{
-						values.put(parameterNames[i], args[i]);
+						values.put("_args", args);
+						for (int i = 0; i < args.length; i++)
+						{
+							values.put(parameterNames[i], args[i]);
+						}
+					}
+					else
+						values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+
+					if (!eng.evaluate(check.getExpression(), values))
+					{
+						final String errorMessage = renderMessage(context, null,
+								check.getMessage(), check.getExpression());
+
+						violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
+								context));
 					}
 				}
-				else
-					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
-
-				if (!eng.evaluate(check.getExpression(), values))
-				{
-					final String errorMessage = renderMessage(context, null, check.getMessage(),
-							check.getExpression());
-
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
-							context));
-				}
 			}
-		}
 
-		return violations.size() == 0 ? null : violations;
+			return violations.size() == 0 ? null : violations;
+		}
+		catch (OValException ex)
+		{
+			throw new ValidationFailedException(
+					"Method post conditions validation failed. Method: " + method
+							+ " Validated object: " + validatedObject, ex);
+		}
 	}
 
 	/**
@@ -1176,110 +1225,128 @@ public class Validator
 	 * <br>  
 	 * This method is primarily provided for use by the Guard class.<br>
 	 * 
-	 * @return null if no violation, otherwise a list
+	 * @return null if no violation, otherwise a list 
+	 * @throws ValidationFailedException 
 	 * @see Guard
 	 */
 	public List<ConstraintViolation> validateMethodPre(final Object validatedObject,
-			final Method method, final Object[] args)
+			final Method method, final Object[] args) throws ValidationFailedException
 	{
-		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		final Map<Integer, Collection<Check>> parameterChecks = cc.checksForMethodParameters
-				.get(method);
-		final Set<PreCheck> preChecks = cc.checksForMethodsPreExecution.get(method);
-
-		// shortcut: check if any pre checks for this method exist
-		if (preChecks == null && parameterChecks == null) return null;
-
-		final String[] parameterNames = parameterNameResolver.getParameterNames(method);
-
-		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(2);
-
-		final boolean hasParameters = parameterNames.length > 0;
-
-		/*
-		 * parameter constraints validation
-		 */
-		if (parameterChecks != null && hasParameters)
+		try
 		{
-			for (int i = 0; i < args.length; i++)
+			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+			final Map<Integer, Collection<Check>> parameterChecks = cc.checksForMethodParameters
+					.get(method);
+			final Set<PreCheck> preChecks = cc.checksForMethodsPreExecution.get(method);
+
+			// shortcut: check if any pre checks for this method exist
+			if (preChecks == null && parameterChecks == null) return null;
+
+			final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(2);
+
+			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
+
+			final boolean hasParameters = parameterNames.length > 0;
+
+			/*
+			 * parameter constraints validation
+			 */
+			if (parameterChecks != null && hasParameters)
 			{
-				final Collection<Check> checks = parameterChecks.get(i);
-
-				if (checks != null && checks.size() > 0)
+				for (int i = 0; i < args.length; i++)
 				{
-					final Object valueToValidate = args[i];
-					final MethodParameterContext context = new MethodParameterContext(method, i,
-							parameterNames[i]);
+					final Collection<Check> checks = parameterChecks.get(i);
 
-					for (final Check check : checks)
+					if (checks != null && checks.size() > 0)
 					{
-						checkConstraint(violations, check, validatedObject, valueToValidate,
-								context);
+						final Object valueToValidate = args[i];
+						final MethodParameterContext context = new MethodParameterContext(method,
+								i, parameterNames[i]);
+
+						for (final Check check : checks)
+						{
+							checkConstraint(violations, check, validatedObject, valueToValidate,
+									context);
+						}
 					}
 				}
 			}
-		}
 
-		/*
-		 * @Pre
-		 */
-		if (preChecks != null)
-		{
-			final MethodPreExecutionContext context = new MethodPreExecutionContext(method);
-
-			for (final PreCheck check : preChecks)
+			/*
+			 * @Pre
+			 */
+			if (preChecks != null)
 			{
-				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
-				final Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
-				values.put("_this", validatedObject);
-				if (hasParameters)
+				final MethodPreExecutionContext context = new MethodPreExecutionContext(method);
+
+				for (final PreCheck check : preChecks)
 				{
-					values.put("_args", args);
-					for (int i = 0; i < args.length; i++)
+					final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
+					final Map<String, Object> values = CollectionFactory.INSTANCE.createMap();
+					values.put("_this", validatedObject);
+					if (hasParameters)
 					{
-						values.put(parameterNames[i], args[i]);
+						values.put("_args", args);
+						for (int i = 0; i < args.length; i++)
+						{
+							values.put(parameterNames[i], args[i]);
+						}
+					}
+					else
+						values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+
+					if (!eng.evaluate(check.getExpression(), values))
+					{
+						final String errorMessage = renderMessage(context, null,
+								check.getMessage(), check.getExpression());
+
+						violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
+								context));
 					}
 				}
-				else
-					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
-
-				if (!eng.evaluate(check.getExpression(), values))
-				{
-					final String errorMessage = renderMessage(context, null, check.getMessage(),
-							check.getExpression());
-
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
-							context));
-				}
 			}
+			return violations.size() == 0 ? null : violations;
 		}
-		return violations.size() == 0 ? null : violations;
+		catch (OValException ex)
+		{
+			throw new ValidationFailedException(
+					"Method post conditions validation failed. Method: " + method
+							+ " Validated object: " + validatedObject, ex);
+		}
 	}
 
 	/**
-	 * validate validatedObject based on the constraints of the given clazz
+	 * validate validatedObject based on the constraints of the given clazz 
 	 */
 	private void validateObject(final Object validatedObject, final Class< ? > clazz,
-			final List<ConstraintViolation> violations)
+			final List<ConstraintViolation> violations) throws ValidationFailedException
 	{
 		// abort if the root class has been reached
 		if (clazz == Object.class) return;
 
-		final ClassChecks cc = getClassChecks(clazz);
-
-		// validate field constraints
-		for (final Field field : cc.constrainedFields)
+		try
 		{
-			validateField(validatedObject, field, violations);
-		}
+			final ClassChecks cc = getClassChecks(clazz);
 
-		// validate constraints on getter methods
-		for (final Method getter : cc.constrainedGetters)
+			// validate field constraints
+			for (final Field field : cc.constrainedFields)
+			{
+				validateField(validatedObject, field, violations);
+			}
+
+			// validate constraints on getter methods
+			for (final Method getter : cc.constrainedGetters)
+			{
+				validateGetter(validatedObject, getter, violations);
+			}
+
+			// if the super class is annotated to be validatable also validate it against the object
+			validateObject(validatedObject, clazz.getSuperclass(), violations);
+		}
+		catch (OValException ex)
 		{
-			validateGetter(validatedObject, getter, violations);
+			throw new ValidationFailedException("Object validation failed. Class: " + clazz
+					+ " Validated object: " + validatedObject, ex);
 		}
-
-		// if the super class is annotated to be validatable also validate it against the object
-		validateObject(validatedObject, clazz.getSuperclass(), violations);
 	}
 }

@@ -15,6 +15,7 @@ package net.sf.oval;
 import java.io.Serializable;
 
 import net.sf.oval.contexts.OValContext;
+import net.sf.oval.exceptions.OValException;
 
 /**
  * interface for classes that can check/validate if a single constraint is satisfied
@@ -53,11 +54,11 @@ public interface Check extends Serializable
 	 * This method implements the validation logic
 	 * 
 	 * @param validatedObject the object to validate the value against
-	 * @param validatedValue the value to validate
+	 * @param valueToValidate the value to validate
 	 * @param context the validation context (e.g. a field, a constructor parameter or a method parameter)
 	 * @return true if the value satisfies the checked constraint
 	 */
-	boolean isSatisfied(Object validatedObject, Object validatedValue, OValContext context);
+	boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context) throws OValException;
 
 	/**
 	 * sets the default message is displayed if a corresponding message key

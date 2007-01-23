@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ *
  * @author Sebastian Thomschke
  */
 public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annotation>
@@ -26,14 +27,11 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 {
 	private final static Logger LOG = Logger.getLogger(AbstractAnnotationCheck.class.getName());
 
-	protected ConstraintAnnotation constraintAnnotation;
 	protected String message;
 	protected String[] profiles;
 
 	public void configure(final ConstraintAnnotation constraintAnnotation)
 	{
-		this.constraintAnnotation = constraintAnnotation;
-
 		final Class< ? > constraintClazz = constraintAnnotation.getClass();
 
 		/*
@@ -72,11 +70,6 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 						"Cannot determine constraint profiles based on annotation "
 								+ constraintClazz.getName(), e);
 		}
-	}
-
-	public ConstraintAnnotation getConstraintAnnotation()
-	{
-		return constraintAnnotation;
 	}
 
 	public String getMessage()

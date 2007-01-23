@@ -18,6 +18,7 @@ import java.util.Set;
 
 import net.sf.oval.contexts.FieldContext;
 import net.sf.oval.contexts.OValContext;
+import net.sf.oval.exceptions.InvalidConfigurationException;
 import net.sf.oval.exceptions.OValException;
 
 /**
@@ -33,7 +34,7 @@ class ConstraintSet
 	OValContext context;
 
 	String localId;
-	
+
 	/**
 	 * the id of the constraint set
 	 */
@@ -56,7 +57,8 @@ class ConstraintSet
 				return cc.checksForFields.get(f);
 			}
 
-			throw new OValException("Unsupported context type " + context);
+			throw new InvalidConfigurationException("Unsupported context type "
+					+ context);
 		}
 
 		return checks;

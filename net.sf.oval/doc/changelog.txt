@@ -21,6 +21,8 @@
 + constraint violation listeners can now also be registered for interfaces
 + added the concept of constraint profiles
 + added polish translation of the constraint violation messages (thanks to szymon_eu)
+* ConstraintsViolatedException.getMessage() now returns the message of the first constraint violation (thanks to szymon_eu)
++ added Guard.setExceptionTranslator() allowing you to change the type of exception that is thrown on constraint violations 
 
 Refactoring:
 * net.sf.oval.constraints.NoSelfReference: renamed @NotSelfRef to @NoSelfReference

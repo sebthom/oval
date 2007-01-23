@@ -10,28 +10,23 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.exceptions;
+package net.sf.oval.guard;
 
-import java.io.IOException;
+import net.sf.oval.exceptions.OValException;
 
 /**
+ * An exception translater for all exception thrown by the guard
+ * during runtime when performing constraint validations on guarded objects.
+ * 
  * @author Sebastian Thomschke
  */
-public class NestableIOException extends IOException
+public interface ExceptionTranslator
 {
-	private static final long serialVersionUID = 1L;
-
-	private final Throwable cause;
-
-	public NestableIOException(final Throwable cause)
-	{
-		super((cause == null ? null : cause.toString()));
-		this.cause = cause;
-	}
-
-	@Override
-	public Throwable getCause()
-	{
-		return cause;
-	}
+	/**
+	 * If this method returns null, the original exception is thrown.
+	 * 
+	 * @param ex
+	 * @return the exception to throw
+	 */
+	RuntimeException translateException(OValException ex);
 }

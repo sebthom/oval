@@ -24,6 +24,8 @@ import java.util.logging.Logger;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.collections.CollectionFactory;
+import net.sf.oval.exceptions.OValException;
+import net.sf.oval.exceptions.ValidationFailedException;
 import net.sf.oval.utils.ListOrderedSet;
 import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.ThreadLocalWeakHashSet;
@@ -53,6 +55,8 @@ public class Guard
 	private final Set<ConstraintsViolatedListener> listeners = new WeakHashSet<ConstraintsViolatedListener>();
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
+
+	private ExceptionTranslator exceptionTranslator;
 
 	/**
 	 * Classes for OVal suppresses occuring ConstraintViolationExceptions 
@@ -147,6 +151,14 @@ public class Guard
 	}
 
 	/**
+	 * @return the exceptionProcessor
+	 */
+	public ExceptionTranslator getExceptionTranslator()
+	{
+		return exceptionTranslator;
+	}
+
+	/**
 	 * Returns the validator used by this guard
 	 * @return the validator
 	 */
@@ -159,23 +171,31 @@ public class Guard
 	 * This method is provided for use by guard aspects.
 	 * 
 	 * @throws ConstraintsViolatedException
+	 * @throws ValidationFailedException
 	 */
 	void guardConstructorPost(final Object guardedObject, final Constructor constructor,
-			final Object[] args) throws ConstraintsViolatedException
+			final Object[] args) throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return;
 
 		// @PostValidateThis
 		if (constructor.isAnnotationPresent(PostValidateThis.class))
 		{
-			final List<ConstraintViolation> violations = validator.validate(guardedObject);
-			if (violations.size() > 0)
+			try
 			{
-				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-						violations.toArray(new ConstraintViolation[violations.size()]));
-				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+				final List<ConstraintViolation> violations = validator.validate(guardedObject);
+				if (violations.size() > 0)
+				{
+					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+							violations.toArray(new ConstraintViolation[violations.size()]));
+					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-				throw violationException;
+					throwException(violationException);
+				}
+			}
+			catch (ValidationFailedException ex)
+			{
+				throwException(ex);
 			}
 		}
 	}
@@ -184,17 +204,67 @@ public class Guard
 	 * This method is provided for use by guard aspects.
 	 * 
 	 * @throws ConstraintsViolatedException if anything precondition is not satisfied
+	 * @throws ValidationFailedException 
 	 */
 	void guardConstructorPre(final Object guardedObject, final Constructor constructor,
-			final Object[] args) throws ConstraintsViolatedException
+			final Object[] args) throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return;
 
 		// constructor parameter validation
 		if (args.length > 0)
 		{
-			final List<ConstraintViolation> violations = validator.validateConstructorParameters(
-					guardedObject, constructor, args);
+			try
+			{
+				final List<ConstraintViolation> violations = validator
+						.validateConstructorParameters(guardedObject, constructor, args);
+
+				if (violations != null)
+				{
+					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+							violations.toArray(new ConstraintViolation[violations.size()]));
+					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+
+					throwException(violationException);
+				}
+			}
+			catch (ValidationFailedException ex)
+			{
+				throwException(ex);
+			}
+		}
+	}
+
+	/**
+	 * This method is provided for use by guard aspects.
+	 *  
+	 * @throws ConstraintsViolatedException
+	 * @throws ValidationFailedException
+	 */
+	void guardMethodPost(final Object guardedObject, final Method method, final Object[] args,
+			Object returnValue) throws ConstraintsViolatedException, ValidationFailedException
+	{
+		if (!isActivated) return;
+
+		try
+		{
+			// @PostValidateThis
+			if (method.isAnnotationPresent(PostValidateThis.class))
+			{
+				final List<ConstraintViolation> violations = validator.validate(guardedObject);
+				if (violations.size() > 0)
+				{
+					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+							violations.toArray(new ConstraintViolation[violations.size()]));
+					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+
+					throwException(violationException);
+				}
+			}
+
+			// @Post
+			final List<ConstraintViolation> violations = validator.validateMethodPost(
+					guardedObject, method, args, returnValue);
 
 			if (violations != null)
 			{
@@ -202,46 +272,12 @@ public class Guard
 						violations.toArray(new ConstraintViolation[violations.size()]));
 				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-				throw violationException;
+				throwException(violationException);
 			}
 		}
-	}
-
-	/**
-	 * This method is provided for use by guard aspects.
-	 * 
-	 * @throws ConstraintsViolatedException
-	 */
-	void guardMethodPost(final Object guardedObject, final Method method, final Object[] args,
-			Object returnValue) throws ConstraintsViolatedException
-	{
-		if (!isActivated) return;
-
-		// @PostValidateThis
-		if (method.isAnnotationPresent(PostValidateThis.class))
+		catch (ValidationFailedException ex)
 		{
-			final List<ConstraintViolation> violations = validator.validate(guardedObject);
-			if (violations.size() > 0)
-			{
-				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-						violations.toArray(new ConstraintViolation[violations.size()]));
-				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
-
-				throw violationException;
-			}
-		}
-
-		// @Post
-		final List<ConstraintViolation> violations = validator.validateMethodPost(guardedObject,
-				method, args, returnValue);
-
-		if (violations != null)
-		{
-			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-					violations.toArray(new ConstraintViolation[violations.size()]));
-			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
-
-			throw violationException;
+			throwException(ex);
 		}
 	}
 
@@ -250,17 +286,39 @@ public class Guard
 	 * 
 	 * @return true if valid, false if invalid
 	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
+	 * @throws ValidationFailedException 
 	 */
 	boolean guardMethodPre(final Object guardedObject, final Method method, final Object[] args)
-			throws ConstraintsViolatedException
+			throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return true;
 
-		// @PreValidateThis
-		if (method.isAnnotationPresent(PreValidateThis.class))
+		try
 		{
-			final List<ConstraintViolation> violations = validator.validate(guardedObject);
-			if (violations.size() > 0)
+			// @PreValidateThis
+			if (method.isAnnotationPresent(PreValidateThis.class))
+			{
+				final List<ConstraintViolation> violations = validator.validate(guardedObject);
+				if (violations.size() > 0)
+				{
+					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+							violations.toArray(new ConstraintViolation[violations.size()]));
+					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+
+					// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
+					if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
+							&& !isSuppressSetterPreConditionExceptions(guardedObject))
+						return false;
+
+					throwException(violationException);
+				}
+			}
+
+			// @Pre validation and method parameter validation
+			final List<ConstraintViolation> violations = validator.validateMethodPre(guardedObject,
+					method, args);
+
+			if (violations != null)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
 						violations.toArray(new ConstraintViolation[violations.size()]));
@@ -268,29 +326,16 @@ public class Guard
 
 				// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
 				if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
-						&& !isSuppressSetterPreConditionExceptions(guardedObject)) return false;
+						&& isSuppressSetterPreConditionExceptions(guardedObject)) return false;
 
-				throw violationException;
+				throwException(violationException);
 			}
 		}
-
-		// @Pre validation and method parameter validation
-		final List<ConstraintViolation> violations = validator.validateMethodPre(guardedObject,
-				method, args);
-
-		if (violations != null)
+		catch (ValidationFailedException ex)
 		{
-			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-					violations.toArray(new ConstraintViolation[violations.size()]));
-			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
-
-			// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
-			if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
-					&& isSuppressSetterPreConditionExceptions(guardedObject)) return false;
-
-			throw violationException;
+			throwException(ex);
 		}
-
+		
 		return true;
 	}
 
@@ -523,6 +568,14 @@ public class Guard
 	}
 
 	/**
+	 * @param exceptionTranslator the exceptionTranslator to set
+	 */
+	public void setExceptionTranslator(final ExceptionTranslator exceptionTranslator)
+	{
+		this.exceptionTranslator = exceptionTranslator;
+	}
+
+	/**
 	 * Specifies if ConstraintViolationExceptions for pre condition violations
 	 * on setter methods should be suppressed by OVal for the current thread.
 	 * 
@@ -572,5 +625,22 @@ public class Guard
 	public void setValidator(final Validator validator)
 	{
 		this.validator = validator;
+	}
+
+	/**
+	 * This method will process the exception via the registered ExceptionProcessor
+	 * and then throw it.
+	 *  
+	 * @param ex
+	 * @throws RuntimeException
+	 */
+	public void throwException(final OValException ex) throws RuntimeException
+	{
+		if (exceptionTranslator != null)
+		{
+			final RuntimeException rex = exceptionTranslator.translateException(ex);
+			if (rex == null) throw rex;
+		}
+		throw ex;
 	}
 }

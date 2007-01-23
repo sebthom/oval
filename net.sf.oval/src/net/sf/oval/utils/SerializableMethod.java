@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.WeakHashMap;
-
-import net.sf.oval.exceptions.NestableIOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
@@ -26,6 +26,8 @@ import net.sf.oval.exceptions.NestableIOException;
  */
 public class SerializableMethod implements Serializable
 {
+	private final static Logger LOG = Logger.getLogger(SerializableMethod.class.getName());
+	
 	private static final WeakHashMap<Method, SerializableMethod> CACHE = new WeakHashMap<Method, SerializableMethod>();
 
 	private static final long serialVersionUID = 1L;
@@ -98,13 +100,15 @@ public class SerializableMethod implements Serializable
 		{
 			method = declaringClass.getMethod(name, parameterTypes);
 		}
-		catch (SecurityException e)
+		catch (SecurityException ex)
 		{
-			throw new NestableIOException(e);
+			LOG.log(Level.SEVERE, "Unexpected SecurityException occured: " + ex, ex);
+			throw new IOException(ex.getMessage());
 		}
-		catch (NoSuchMethodException e)
+		catch (NoSuchMethodException ex)
 		{
-			throw new NestableIOException(e);
+			LOG.log(Level.SEVERE, "Unexpected NoSuchMethodException occured: " + ex, ex);
+			throw new IOException(ex.getMessage());
 		}
 	}
 }

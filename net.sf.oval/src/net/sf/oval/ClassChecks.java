@@ -152,8 +152,9 @@ public final class ClassChecks
 	 *  
 	 * @param field
 	 * @param checks
+	 * @throws InvalidConfigurationException 
 	 */
-	public synchronized void addChecks(final Field field, final Check... checks)
+	public synchronized void addChecks(final Field field, final Check... checks) throws InvalidConfigurationException
 	{
 		if (checks == null || checks.length == 0) return;
 
@@ -336,7 +337,7 @@ public final class ClassChecks
 		}
 	}
 
-	ConstraintSet addFieldConstraintSet(final Field field, final String localId)
+	ConstraintSet addFieldConstraintSet(final Field field, final String localId) throws InvalidConfigurationException
 	{
 		if (field.getDeclaringClass() != clazz)
 			throw new InvalidConfigurationException("Given field does not belong to this class"
@@ -353,7 +354,7 @@ public final class ClassChecks
 	/**
 	 * Used by Validator during configuration
 	 */
-	synchronized void removeAllCheck(final Field field) throws InvalidConfigurationException
+	synchronized void removeAllCheck(final Field field)
 	{
 		checksForFields.remove(field);
 		constrainedFields.remove(field);
@@ -363,7 +364,6 @@ public final class ClassChecks
 	 * Used by Validator during configuration
 	 */
 	synchronized void removeAllChecks(final Constructor constructor)
-			throws InvalidConfigurationException
 	{
 		checksForConstructorParameter.remove(constructor);
 	}
@@ -372,7 +372,6 @@ public final class ClassChecks
 	 * Used by Validator during configuration
 	 */
 	synchronized void removeAllChecks(final Constructor constructor, final int parameterIndex)
-			throws InvalidConfigurationException
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
 		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
@@ -390,7 +389,7 @@ public final class ClassChecks
 	/**
 	 * Used by Validator during configuration
 	 */
-	synchronized void removeAllChecks(final Method method) throws InvalidConfigurationException
+	synchronized void removeAllChecks(final Method method)
 	{
 		removeAllParameterChecks(method);
 		removeAllReturnValueChecks(method);
@@ -402,7 +401,6 @@ public final class ClassChecks
 	 * Used by Validator during configuration
 	 */
 	synchronized void removeAllChecks(final Method method, final int parameterIndex)
-			throws InvalidConfigurationException
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
 		final Map<Integer, Collection<Check>> checksOfMethodByParameter = checksForMethodParameters
@@ -421,7 +419,6 @@ public final class ClassChecks
 	 * Used by Validator during configuration
 	 */
 	synchronized void removeAllParameterChecks(final Method method)
-			throws InvalidConfigurationException
 	{
 		checksForMethodParameters.remove(method);
 	}
@@ -429,7 +426,7 @@ public final class ClassChecks
 	/**
 	 * Used by Validator during configuration
 	 */
-	synchronized void removeAllPostChecks(final Method method) throws InvalidConfigurationException
+	synchronized void removeAllPostChecks(final Method method)
 	{
 		checksForMethodsPostExcecution.remove(method);
 	}
@@ -437,7 +434,7 @@ public final class ClassChecks
 	/**
 	 * Used by Validator during configuration
 	 */
-	synchronized void removeAllPreChecks(final Method method) throws InvalidConfigurationException
+	synchronized void removeAllPreChecks(final Method method)
 	{
 		checksForMethodsPreExecution.remove(method);
 	}
@@ -446,7 +443,6 @@ public final class ClassChecks
 	 * Used by Validator during configuration
 	 */
 	synchronized void removeAllReturnValueChecks(final Method method)
-			throws InvalidConfigurationException
 	{
 		checksForMethodReturnValues.remove(method);
 		constrainedGetters.remove(method);

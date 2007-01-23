@@ -15,17 +15,11 @@ package net.sf.oval;
 import java.lang.annotation.Annotation;
 
 /**
- * Interface for classes that can check/validate if the corresponding 
- * constraint annotation is satisfied.
+ * Interface for constraint checks that are configurable via annotations.
  * 
  * @author Sebastian Thomschke
  */
 public interface AnnotationCheck<ConstraintAnnotation extends Annotation> extends Check
 {
-	/**
-	 * @return the constraint annotation used to configure this check
-	 */
-	ConstraintAnnotation getConstraintAnnotation();
-
 	void configure(ConstraintAnnotation constraintAnnotation);
 }

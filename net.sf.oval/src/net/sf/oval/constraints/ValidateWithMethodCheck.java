@@ -69,7 +69,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context)
+			final OValContext context) throws ReflectionException
 	{
 		if (value == null && ignoreIfNull) return true;
 		
