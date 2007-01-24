@@ -93,10 +93,10 @@ public class ApplyFieldConstraintsToSetterTest extends TestCase
 	{
 		final Person p = new Person();
 
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
+		TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.guard.addListener(va, p);
+		TestGuardAspect.aspectOf().getGuard().addListener(va, p);
 
 		// test @Length(max=)
 		p.setFirstName("Mike");

@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.contexts.FieldContext;
+import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
@@ -27,7 +28,7 @@ import net.sf.oval.guard.PreValidateThis;
  */
 public class PrePostValidateThisTest extends TestCase
 {
-	@Guarded(applyFieldConstraintsToSetter = false)
+	@Guarded(applyFieldConstraintsToSetter = true)
 	public static class TestEntity
 	{
 		@NotNull(message = "NOT_NULL")
@@ -35,7 +36,7 @@ public class PrePostValidateThisTest extends TestCase
 
 		public TestEntity()
 		{
-			// do nothing
+		// do nothing
 		}
 
 		@PostValidateThis
@@ -50,39 +51,20 @@ public class PrePostValidateThisTest extends TestCase
 			return name;
 		}
 
-		@PostValidateThis
 		public void setName(String name)
+		{
+			this.name = name;
+		}
+		
+		@PostValidateThis
+		public void setNamePost(String name)
 		{
 			this.name = name;
 		}
 	}
 
-	public void testConstructorValidationInSwallowExceptionMode()
+	public void testConstructorValidation()
 	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
-
-		try
-		{
-			new TestEntity(null);
-
-			// even in silent mode an exception should be thrown to prevent the returning of a reference to that new object instance
-			fail();
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-			assertTrue(violations[0].getContext() instanceof FieldContext);
-		}
-
-		new TestEntity("test");
-	}
-
-	public void testConstructorValidationInThrowExceptionMode()
-	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
-
 		try
 		{
 			new TestEntity(null);
@@ -100,56 +82,46 @@ public class PrePostValidateThisTest extends TestCase
 		new TestEntity("test");
 	}
 
-	public void testMethodValidationInSwallowExceptionMode()
+	public void testMethodValidationInProbeMode()
 	{
 		final TestEntity t = new TestEntity();
 
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(t, true);
+		TestGuardAspect.aspectOf().getGuard().setInProbeMode(t, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.guard.addListener(va, t);
+		TestGuardAspect.aspectOf().getGuard().addListener(va, t);
 
-		// don't swallow for non-getter methods
-		try
-		{
-			t.getName();
-			fail("Should throw exception");
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
-			va.clear();
-		}
+		// test non-getter precondition failed
+		t.getName();
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+		assertTrue(va.getConstraintViolations().size() == 1);
+		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+		va.clear();
 
-		// don't swallow post condition exceptions for setter
-		try
-		{
-			t.setName(null);
-			fail("Should throw exception");
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
-			va.clear();
-		}
+		t.setName(null);
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+		assertTrue(va.getConstraintViolations().size() == 1);
+		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+		va.clear();
+		
+		// test post-condition ignored even if pre-conditions satisfied
+		t.setNamePost(null);
+		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 
+		// test setter 
 		t.setName("the name");
 		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 		assertTrue(va.getConstraintViolations().size() == 0);
 
-		assertNotNull(t.getName());
+		// test getter returns null because we are in probe mode
+		t.name = "the name";
+		assertNull(t.getName());
 		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 		assertTrue(va.getConstraintViolations().size() == 0);
 	}
 
-	public void testMethodValidationInThrowExceptionMode()
+	public void testMethodValidation()
 	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
-
 		final TestEntity t = new TestEntity();
 
 		try
@@ -177,7 +149,7 @@ public class PrePostValidateThisTest extends TestCase
 			ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-			assertTrue(violations[0].getContext() instanceof FieldContext);
+			assertTrue(violations[0].getContext() instanceof MethodParameterContext);
 		}
 
 		t.setName("the name");

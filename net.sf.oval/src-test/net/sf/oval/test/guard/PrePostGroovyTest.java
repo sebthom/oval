@@ -22,6 +22,7 @@ public class PrePostGroovyTest extends TestCase
 		@SuppressWarnings("unused")
 		private String description;
 
+		
 		private BigDecimal value;
 
 		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "groovy", message = "PRE")
@@ -32,7 +33,7 @@ public class PrePostGroovyTest extends TestCase
 			value = value.add(value2add);
 		}
 
-		@Post(expression = "_this.value!=null && _this.value>0", language = "groovy", message = "POST")
+		@Post(expression = "_this.value>0", language = "groovy", message = "POST")
 		public void increase2(@NotNull
 		BigDecimal value2add)
 		{
@@ -46,17 +47,32 @@ public class PrePostGroovyTest extends TestCase
 
 		try
 		{
-			t.value = new BigDecimal(-2);
-			t.increase2(new BigDecimal(1));
+			t.increase1(new BigDecimal(1));
 			fail();
 		}
 		catch (ConstraintsViolatedException ex)
 		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
 		}
 
-		t.value = new BigDecimal(0);
-		t.increase2(new BigDecimal(1));
+		try
+		{
+			t.value = new BigDecimal(2);
+			t.increase1(null);
+			fail();
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
+		}
+		try
+		{
+			t.increase1(new BigDecimal(1));
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			System.out.println(ex.getConstraintViolations()[0].getMessage());
+		}
 	}
 
 	public void testPostGroovy()

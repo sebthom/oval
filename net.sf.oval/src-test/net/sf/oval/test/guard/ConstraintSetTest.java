@@ -71,10 +71,10 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person p = new Person();
 
-			TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
+			TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
 
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-			TestGuardAspect.guard.addListener(va, p);
+			TestGuardAspect.aspectOf().getGuard().addListener(va, p);
 
 			// test @Length(max=)
 			p.setZipCode("1234567");
@@ -101,10 +101,10 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person2 p = new Person2();
 
-			TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
+			TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
 
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-			TestGuardAspect.guard.addListener(va, p);
+			TestGuardAspect.aspectOf().getGuard().addListener(va, p);
 
 			// test @Length(max=)
 			p.setZipCode("1234567");

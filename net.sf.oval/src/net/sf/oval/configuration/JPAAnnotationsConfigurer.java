@@ -32,7 +32,7 @@ import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.exceptions.OValException;
 
 /**
- * Constraints configurer that interprets EJB3 JPA annotations:
+ * Constraints configurer that interprets certain EJB3 JPA annotations:
  * <ul>
  * <li>javax.persistence.Basic(optional=false)     => net.sf.oval.constraints.NotNullCheck
  * <li>javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraints.NotNullCheck

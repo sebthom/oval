@@ -54,7 +54,7 @@ public interface Check extends Serializable
 	 * This method implements the validation logic
 	 * 
 	 * @param validatedObject the object to validate the value against
-	 * @param valueToValidate the value to validate
+	 * @param valueToValidate the value to validate, may be null when validating pre conditions for static methods
 	 * @param context the validation context (e.g. a field, a constructor parameter or a method parameter)
 	 * @return true if the value satisfies the checked constraint
 	 */

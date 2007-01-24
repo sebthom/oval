@@ -15,55 +15,38 @@ package net.sf.oval.test.guard;
 import junit.framework.TestCase;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
-import net.sf.oval.guard.ExceptionTranslatorJREExceptionsImpl;
+import net.sf.oval.guard.Guarded;
 
 /**
- * 
  * @author Sebastian Thomschke
  */
-public class ExceptionTranslatorTest extends TestCase
+public class StaticMethodsTest extends TestCase
 {
-	public final static class TestEntity
+	@Guarded
+	private static class Person
 	{
-		public void setName(@NotNull(message = "NULL")
-		String name)
+		public static void doSomthing(@NotNull(message = "NULL")
+		String dummyFirstName)
 		{
-		// ...
+			//
 		}
 	}
 
-	public void testExceptionTranslator()
+	/**
+	 * by default constraints specified for a field are also used for validating
+	 * method parameters of the corresponding setter methods 
+	 */
+	public void testSetterValidation() throws Exception
 	{
-		assertNull(TestGuardAspect.aspectOf().getGuard().getExceptionTranslator());
-
 		try
 		{
-			final TestEntity t = new TestEntity();
-			t.setName(null);
+			Person.doSomthing(null);
+			fail();
 		}
 		catch (ConstraintsViolatedException ex)
 		{
-			assertEquals(ex.getMessage(), "NULL");
-		}
-
-		try
-		{
-			TestGuardAspect.aspectOf().getGuard().setExceptionTranslator(
-					new ExceptionTranslatorJREExceptionsImpl());
-			try
-			{
-				final TestEntity t = new TestEntity();
-				t.setName(null);
-			}
-			catch (IllegalArgumentException ex)
-			{
-				assertEquals(ex.getMessage(), "NULL");
-			}
-
-		}
-		finally
-		{
-			TestGuardAspect.aspectOf().getGuard().setExceptionTranslator(null);
+			assertTrue(ex.getConstraintViolations().length == 1);
+			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
 		}
 	}
 }

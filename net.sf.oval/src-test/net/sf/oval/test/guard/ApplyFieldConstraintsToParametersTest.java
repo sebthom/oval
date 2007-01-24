@@ -113,10 +113,10 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 	{
 		final Person p = new Person();
 
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(p, true);
+		TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.guard.addListener(va, p);
+		TestGuardAspect.aspectOf().getGuard().addListener(va, p);
 
 		// test @Length(max=)
 		p.setFirstName("Mike");
@@ -155,7 +155,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
 		va.clear();
 
-		final ClassChecks cc = TestGuardAspect.validator.getClassChecks(Person.class);
+		final ClassChecks cc = TestGuardAspect.aspectOf().getValidator().getClassChecks(Person.class);
 		// test dynamic introduction of FieldConstraintsCheck
 		{
 			p.setZipCode2("dffd34");

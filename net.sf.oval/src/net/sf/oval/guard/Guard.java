@@ -27,7 +27,6 @@ import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ValidationFailedException;
 import net.sf.oval.utils.ListOrderedSet;
-import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.ThreadLocalWeakHashSet;
 import net.sf.oval.utils.WeakHashSet;
 
@@ -50,19 +49,13 @@ public class Guard
 	 * Flag that indicates if exception suppressing was used at any time.
 	 * Used for performance improvements.
 	 */
-	private boolean isSuppressFeatureUsed = false;
+	private boolean isProbeModeFeatureUsed = false;
 
 	private final Set<ConstraintsViolatedListener> listeners = new WeakHashSet<ConstraintsViolatedListener>();
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
 
 	private ExceptionTranslator exceptionTranslator;
-
-	/**
-	 * Classes for OVal suppresses occuring ConstraintViolationExceptions 
-	 * for pre condition violations on setter methods for the current thread.
-	 */
-	private final ThreadLocalWeakHashSet<Class> unsafeClasses = new ThreadLocalWeakHashSet<Class>();
 
 	/**
 	 * Objects for OVal suppresses occuring ConstraintViolationExceptions 
@@ -306,9 +299,7 @@ public class Guard
 					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 					// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
-					if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
-							&& !isSuppressSetterPreConditionExceptions(guardedObject))
-						return false;
+					if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return false;
 
 					throwException(violationException);
 				}
@@ -325,17 +316,19 @@ public class Guard
 				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 				// don't throw an exception if the method is a setter and suppressingfor precondition is enabled 
-				if (isSuppressFeatureUsed && ReflectionUtils.isSetter(method)
-						&& isSuppressSetterPreConditionExceptions(guardedObject)) return false;
+				if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return false;
 
 				throwException(violationException);
 			}
+
+			// abort method execution if in probe mode
+			if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return false;
 		}
 		catch (ValidationFailedException ex)
 		{
 			throwException(ex);
 		}
-		
+
 		return true;
 	}
 
@@ -402,47 +395,23 @@ public class Guard
 	}
 
 	/**
-	 * Determines if ConstraintViolationExceptions for pre condition violations
-	 * on setter methods are not thrown by OVal for the current thread.
-	 *  
-	 * @param guardedClass guarded class or interface
-	 * @return true if exceptions are suppressed
-	 * @throws IllegalArgumentException if <code>guardedClass == null</code>
-	 */
-	public boolean isSuppressSetterPreConditionExceptions(final Class guardedClass)
-			throws IllegalArgumentException
-	{
-		if (guardedClass == null)
-			throw new IllegalArgumentException("guardedClass cannot be null");
-
-		final boolean isSuppress = unsafeClasses.get().contains(guardedClass);
-		if (isSuppress) return true;
-
-		// check the interfaces
-		for (final Class clazz : guardedClass.getInterfaces())
-		{
-			boolean isSuppressI = unsafeClasses.get().contains(clazz);
-			if (isSuppressI) return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Determines if ConstraintViolationExceptions for pre condition violations
-	 * on setter methods are not thrown by OVal for the current thread.
-	 *  
+	 * Determines if the probe mode is enabled for the given object in the current thread.
+	 * In probe mode calls to methods of an object are not actually executed. OVal only 
+	 * validates method pre-conditions and notifies ConstraintViolationListeners but
+	 * does not throw ConstraintViolationExceptions. Methods with return values will return null. 
+	 * 
 	 * @param guardedObject
 	 * @return true if exceptions are suppressed
-	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 */
-	public boolean isSuppressSetterPreConditionExceptions(final Object guardedObject)
-			throws IllegalArgumentException
+	public boolean isInProbeMode(final Object guardedObject)
 	{
+		// guardedObject may be null if isInProbeMode is called when validating pre conditions of a static method
 		if (guardedObject == null)
-			throw new IllegalArgumentException("guardedObject cannot be null");
+		{
+			return false;
+		}
 
-		return unsafeObjects.get().contains(guardedObject) ? true
-				: isSuppressSetterPreConditionExceptions(guardedObject.getClass());
+		return unsafeObjects.get().contains(guardedObject);
 	}
 
 	/**
@@ -450,6 +419,9 @@ public class Guard
 	 */
 	private void notifyListeners(final Object guardedObject, final ConstraintsViolatedException ex)
 	{
+		// happens for static methods
+		if (guardedObject == null) return;
+		
 		final ListOrderedSet<ConstraintsViolatedListener> listenersToNotify = new ListOrderedSet<ConstraintsViolatedListener>();
 
 		// get the object listeners
@@ -576,42 +548,27 @@ public class Guard
 	}
 
 	/**
-	 * Specifies if ConstraintViolationExceptions for pre condition violations
-	 * on setter methods should be suppressed by OVal for the current thread.
+	 * Enable or disable the probe mode for the given object in the current thread.
+	 * In probe mode calls to methods of an object are not actually executed. OVal only 
+	 * validates method pre-conditions and notifies ConstraintViolationListeners but
+	 * does not throw ConstraintViolationExceptions. Methods with return values will return null. 
 	 * 
-	 * @param guardedObject
-	 * @return true if exceptions are suppressed
-	 * @throws IllegalArgumentException if <code>guardedClass == null</code>
-	 */
-	public void setSuppressPreConditionExceptions(final Class guardedClass, boolean doSuppress)
-			throws IllegalArgumentException
-	{
-		if (guardedClass == null)
-			throw new IllegalArgumentException("guardedClass cannot be null");
-
-		isSuppressFeatureUsed = true;
-
-		if (doSuppress)
-			unsafeClasses.get().add(guardedClass);
-		else
-			unsafeClasses.get().remove(guardedClass);
-	}
-
-	/**
-	 * Specifies if ConstraintViolationExceptions for pre condition violations
-	 * on setter methods should be suppressed by OVal for the current thread.
-	 *   
 	 * @param guardedObject
 	 * @return true if exceptions are suppressed
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 */
-	public void setSuppressPreConditionExceptions(final Object guardedObject, boolean doSuppress)
+	public void setInProbeMode(final Object guardedObject, boolean doSuppress)
 			throws IllegalArgumentException
 	{
 		if (guardedObject == null)
 			throw new IllegalArgumentException("guardedObject cannot be null");
 
-		isSuppressFeatureUsed = true;
+		if (guardedObject instanceof Class)
+		{
+			LOG.warning("Enabling probe mode for a class looks like a programming error. Class: "
+					+ guardedObject);
+		}
+		isProbeModeFeatureUsed = true;
 
 		if (doSuppress)
 			unsafeObjects.get().add(guardedObject);

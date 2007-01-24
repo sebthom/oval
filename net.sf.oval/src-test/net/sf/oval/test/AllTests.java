@@ -62,6 +62,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostGroovyTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.StaticMethodsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
 		//$JUnit-END$
 		return suite;

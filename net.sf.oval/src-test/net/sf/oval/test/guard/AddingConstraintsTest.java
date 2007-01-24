@@ -112,7 +112,7 @@ public class AddingConstraintsTest extends TestCase
 				fail();
 			}
 
-			final ClassChecks cc = TestGuardAspect.validator.getClassChecks(setter.getDeclaringClass());
+			final ClassChecks cc = TestGuardAspect.aspectOf().getValidator().getClassChecks(setter.getDeclaringClass());
 			
 			// adding a constraint
 			cc.addChecks(setter, 0, notNullCheck);
@@ -170,7 +170,7 @@ public class AddingConstraintsTest extends TestCase
 		// testing without constraint
 		new TestEntity2(null);
 
-		final ClassChecks cc = TestGuardAspect.validator.getClassChecks(constructor.getDeclaringClass());
+		final ClassChecks cc = TestGuardAspect.aspectOf().getValidator().getClassChecks(constructor.getDeclaringClass());
 		
 		// adding a constraint
 		cc.addChecks(constructor, 0, notNullCheck);
@@ -198,7 +198,7 @@ public class AddingConstraintsTest extends TestCase
 	public void testAddConstraintToField() throws Exception
 	{
 		TestEntity3 entity = new TestEntity3(null);
-		assertTrue(TestGuardAspect.validator.validate(entity).size() == 0);
+		assertTrue(TestGuardAspect.aspectOf().getValidator().validate(entity).size() == 0);
 
 		Field field = TestEntity3.class.getDeclaredField("name");
 		NotNullCheck notNullCheck = new NotNullCheck();
@@ -206,19 +206,17 @@ public class AddingConstraintsTest extends TestCase
 
 		// testing without constraint
 		{
-			List<ConstraintViolation> violations = TestGuardAspect.validator
-					.validate(entity);
+			List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getValidator().validate(entity);
 			assertTrue(violations.size() == 0);
 		}
 
-		final ClassChecks cc = TestGuardAspect.validator.getClassChecks(field.getDeclaringClass());
+		final ClassChecks cc = TestGuardAspect.aspectOf().getValidator().getClassChecks(field.getDeclaringClass());
 		
 		// adding a constraint
 		{
 			cc.addChecks(field, notNullCheck);
 
-			List<ConstraintViolation> violations = TestGuardAspect.validator
-					.validate(entity);
+			List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getValidator().validate(entity);
 			assertTrue(violations.size() == 1);
 			assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 		}
@@ -227,8 +225,7 @@ public class AddingConstraintsTest extends TestCase
 		{
 			cc.removeCheck(field, notNullCheck);
 
-			List<ConstraintViolation> violations = TestGuardAspect.validator
-					.validate(entity);
+			List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getValidator().validate(entity);
 			assertTrue(violations.size() == 0);
 		}
 	}

@@ -234,6 +234,14 @@ public final class ReflectionUtils
 		return true;
 	}
 
+	/**
+	 * determines if a method is a void method
+	 */
+	public static boolean isVoidMethod(final Method method)
+	{
+		return method.getReturnType() == void.class;
+	}
+
 	public static boolean isStatic(final Field field)
 	{
 		return (field.getModifiers() & Modifier.STATIC) != 0;

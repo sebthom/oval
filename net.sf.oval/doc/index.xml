@@ -23,7 +23,7 @@
       </listitem>
 
       <listitem>
-        <para>to validate objects based on certain EJB3 JPA annotations (namely all field annotations that eventually require a not-null value)</para>
+        <para>to validate objects based on certain EJB3 JPA annotations (namely all field annotations that eventually a not-null value)</para>
       </listitem>
 
       <listitem>
@@ -31,48 +31,47 @@
       </listitem>
 
       <listitem>
-        <para>to develop custom configuration mechanisms</para>
-      </listitem>
-      
-      <listitem>
         <para>to easily create custom constraints</para>
       </listitem>
       
+      <listitem>
+        <para>to develop custom constraint configuration mechanisms</para>
+      </listitem>
+
     </itemizedlist>
 
-	<para>When using AspectJ additional features are available:</para>
+	<para>When using AspectJ programming by contract features are available:</para>
 	
     <itemizedlist>
 
       <listitem>
         <para>specify constraints for <emphasis>constructor parameters</emphasis> that 
-        are automatically checked when the constructor is called</para>
+        are automatically checked when the constructor is called (pre-conditions)</para>
       </listitem>
 
       <listitem>
         <para>specify constraints for <emphasis>method parameters</emphasis> that are 
-        automatically checked when the method is called</para>
+        automatically checked when the method is called (pre-conditions)</para>
       </listitem>
 
       <listitem>
         <para>enforce full object validation after an object 
-        instance has been created</para>
+        instance has been created (post-conditions/invariant)</para>
       </listitem>
 
       <listitem>
         <para>enforce full object validation before a method of the 
-        object is called</para>
+        object is called (pre-condition/invariant)</para>
       </listitem>
 
       <listitem>
-        <para>enforce full object validation after a method of the 
-        object is called</para>
+        <para>enforce full object validation after a new 
+        object was created (post-condition/invariant)</para>
       </listitem>
       
       <listitem>
-        <para>either let OVal throw constraint violation exceptions 
-        during automatic checks or alternatively notify registered constraint 
-        violation listeners.</para>
+        <para>enforce full object validation after a method of the 
+        object is called (post-condition/invariant)</para>
       </listitem>
 
     </itemizedlist>
@@ -84,7 +83,7 @@
     <title>Prerequisites</title>
 
     <para>OVal requires Java 5 or later. Java 5 is mainly required for annotation support
-    but other new language features (generics, for each loop, etc.) are used across OVal too.</para>
+    but other new language features (generics, for each loop, etc.) are used the across OVal code too.</para>
     
     <para>AspectJ is required if you want to use the programming by contract features 
     (e.g. to enforce constraints for constructor and method parameters).
@@ -147,10 +146,11 @@ if(violations.size()&gt;0)
       OVal identifies parameterless non-void methods whose names start 
       with &quot;is&quot; (e.g. <command>public boolean 
       isEnabled()</command> ) or &quot;get&quot; (e.g. <command>public 
-      String getName()</command>) as getter methods. Return value constraints specified for other (void, parameterized, non-getter style) method are ignored.</para>
+      String getName()</command>) as getter methods. Return value constraints specified for other 
+      (void, parameterized, non-getter style) methods are ignored.</para>
 
       <para><emphasis>Important:</emphasis> To retrieve the return 
-      value of the getter method OVal invokes the getter. 
+      value of the getter method OVal invokes the getter during validation. 
       Therefore you need to ensure that the getter method really is just a getter 
       method and does not change the object state.</para>
 
@@ -200,29 +200,28 @@ if(exs.size()&gt;0)
       <listitem>
 
         <para>enforce that a parameterized constructor/method is invoked only 
-        if the given arguments satisfy prior defined constraints (pre 
-        condition)</para>
+        if the given arguments satisfy prior defined constraints (pre-condition)</para>
 
       </listitem>
 
       <listitem>
 
         <para>enforce that a method is invoked only if the object is in a 
-        certain state (pre condition)</para>
+        certain state (pre-condition/invariant)</para>
 
       </listitem>
 
       <listitem>
 
         <para>enforce that the return value of a method must satisfy 
-        prior defined constraints (post condition)</para>
+        prior defined constraints (post-condition)</para>
 
       </listitem>
 
       <listitem>
 
         <para>enforce that the object must be in a certain state after a 
-        method has been executed (post condition)</para>
+        method has been executed (post-condition/invariant)</para>
 
       </listitem>
 
@@ -248,14 +247,14 @@ if(exs.size()&gt;0)
 
       <para>Create a new aspect via <command>File -&gt; New -&gt; 
       Aspect</command> that extends the abstract aspect <command>
-      net.sf.oval.aspectj.GuardAspect</command>. When the 
+      net.sf.oval.guard.GuardAspect</command>. When the 
       new aspect is created the AspectJ builder will automatically 
       weave the validation related code into your compiled classes 
       annotated with <command>
-      @net.sf.oval.annotations.Guarded</command>.</para>
+      @net.sf.oval.guard.Guarded</command>.</para>
 
       <para>Now you can create all your business classes, add the 
-      <command>@net.sf.oval.annotations.Guarded</command> 
+      <command>@net.sf.oval.guard.Guarded</command> 
       annotation and define the required constraints using the built-in 
       or custom constraint annotations.</para>
 
@@ -269,10 +268,10 @@ if(exs.size()&gt;0)
       <para>Constraints specified for constructor parameters are 
       automatically checked when the constructor is invoked. Invocations of 
       the constructor will be prohibited if any of the constraints is not satisfied.
-      In such a case a <command>net.sf.oval.constraints.ConstraintsViolatedException</command> 
+      In such a case a <command>net.sf.oval.guard.ConstraintsViolatedException</command> 
       wil be thrown.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     public BusinessObject(@NotNull String name)
@@ -294,10 +293,10 @@ public class BusinessObject
       <para>Constraints specified for method parameters are 
       automatically checked when the method is invoked. Invocations of to the 
       method will be prohibited if any of the constraints is not satisfied.
-      In such a case a <command>net.sf.oval.constraints.ConstraintsViolatedException</command> 
+      In such a case a <command>net.sf.oval.guard.ConstraintsViolatedException</command> 
       wil be thrown.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     public void setName(@NotNull String name)
@@ -332,7 +331,7 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
       the constraints of the field with the specified name are applied 
       to the annotated parameter.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     @NotNull
@@ -370,13 +369,13 @@ bo.setAlternativeName(null); // throws a ConstraintsViolatedException because pa
       <para>To enforce that all field and getter constraints are 
       checked before a method is executed, annotate the respective 
       method with <command>
-      @net.sf.oval.annotations.PreValidateThis</command>.</para>
+      @net.sf.oval.guard.PreValidateThis</command>.</para>
 
       <para>In case of constraint violations a 
       ConstraintsViolatedException is thrown and the method will not be 
       executed.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     @NotNull
@@ -418,7 +417,7 @@ bo.save();</programlisting>
       the <command>Validator.validate(Object)</command> method on an 
       object of this type.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     private String name = null;
@@ -460,7 +459,7 @@ List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);</programlis
       <para>To enforce that all field and getter constraints are 
       checked after an object has been instantiated, annotate the 
       constructors of the corresponding class with <command>
-      @net.sf.oval.annotations.PostValidateThis</command>.</para>
+      @net.sf.oval.guard.PostValidateThis</command>.</para>
 
       <para>In case of constraint violations the constructor will throw 
       a ConstraintsViolatedException which effectively means the code 
@@ -468,7 +467,7 @@ List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);</programlis
       to the object being in an invalidate state and the invalid object 
       will get garbage collected.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     @NotNull
@@ -494,7 +493,7 @@ BusinessObject bo = new BusinessObject();</programlisting>
       <para>To enforce that all field and getter constraints are 
       checked after a method of an object has been executed, annotate 
       the method with <command>
-      @net.sf.oval.annotations.PostValidateThis</command>.</para>
+      @net.sf.oval.guard.PostValidateThis</command>.</para>
 
       <para>In case of constraint violations the method will throw an 
       ConstraintsViolatedException.</para>
@@ -503,7 +502,7 @@ BusinessObject bo = new BusinessObject();</programlisting>
       method code still has been executed, you have to manually 
       rollback the changes performed by this method.</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
     @Length(max=10)
@@ -524,11 +523,11 @@ bo.appendToName(&quot;123456&quot;); // throws a ConstraintsViolatedException be
 
     <section>
 
-      <title>Getting notified about constraint violations</title>
+      <title>Using the probe mode to simplify UI validation</title>
 
-      <para>Alternatively to letting OVal throw 
-      ConstraintsViolatedExceptions you can configure it to notify a 
-      listener about any occuring constraint violation.</para>
+      <para>OVal provides a so called probe mode in which you can execute all methods
+      of an object and the guard will only check the pre conditions (e.g. parameter 
+      constraints) and not execute the method.</para>
 
       <para>This is especially useful if you want to test input values 
       received from the end user in the UI layer against the setter 
@@ -538,19 +537,15 @@ bo.appendToName(&quot;123456&quot;); // throws a ConstraintsViolatedException be
       report all violations back to the UI layer and have them 
       displayed to the end user.</para>
 
-      <para><emphasis>Note:</emphasis> For constructor parameter 
-      constraint violations OVal always throws an exception as this is 
-      the only way of preventing the constructor being executed.</para>
-
       <para>Example business object:</para>
 
-      <programlisting>@net.sf.oval.annotations.Guarded
+      <programlisting>@net.sf.oval.guard.Guarded
 public class Person
 {
     @NotNegative
     private int age;
 
-    @Length(min=5)
+    @Min(5)
     private String name = &quot;&quot;;
 
     @Length(min=5, max=5)
@@ -579,7 +574,7 @@ public class Person
  * *****************************************************/
 inputForm.setName(&quot;1234&quot;);
 inputForm.setAge(-4);
-inputForm.setZipCode(123);
+inputForm.setZipCode(&quot;123&quot;);
 
 /* *****************************************************
  * later in the model layer 
@@ -588,18 +583,22 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
 {
   Person person = new Person();
 
-  // specify that no ConstraintsViolatedExceptions are thrown for the object bo
-  MyGuardAspect.getGuard().setMode(Guard.Mode.NOTIFY_LISTENERS, person);
+  // enable the probe mode in the current thread for the person object
+  MyGuardAspect.aspectOf().getGuard().setInProbeMode(person, true);
 
   // add a ConstraintsViolatedListener
   ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter(); 
-  MyGuardAspect.getGuard().addListener(listener, p);
+  MyGuardAspect.aspectOf().getGuard().addListener(listener, p);
 
-  person.setName(inputForm.getName()); // constraint violated: name length &lt; 5
+  person.setName(inputForm.getName()); // constraint violated: name too short
   person.setAge(inputForm.getAge()); // constraint violated: age is negative
   person.setZipCode(inputForm.getZipCode); // constraint violated: zip code length != 5
 
-  MyGuardAspect.getGuard().removeListener(listener, p);
+  // disable the probe mode in the current thread for the person object
+  MyGuardAspect.aspectOf().getGuard().setInProbeMode(person, false);
+  
+  // remove the ConstraintsViolatedListener
+  MyGuardAspect.aspectOf().getGuard().removeListener(listener, p);
 
   // check if any constraint violations occured
   if(va.getConstraintViolations().size() &gt; 0)
@@ -613,6 +612,38 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
 </programlisting>
     </section>
 
+    <section>
+    
+    	<title>Converting constraint violation exceptions</title>
+    	
+    	<para>
+    	When calling methods on guarded objects these methods will throw ConstraintsViolatedExceptions
+    	in case any pre or post conditions are violated. Their might be good reasons why you may
+    	want to have other exceptions thrown instead of OVals proprietary exceptions, e.g. JRE standard 
+    	exceptions such as IllegalArgumentException or IllegalStateException.</para>
+    	
+    	<para>OVal's Guard class allows you	to register a so called ExceptionTranslator. The ExceptionTranslator 
+    	defines a translateException() method that is executed for all occuring exceptions during runtime validation.
+    	This allows you to translate any OValException thrown during validation into another RuntimeTimeException
+    	which will be thrown instead. As an example have a look	at the
+    	<command>net.sf.oval.guard.ExceptionTranslatorJREExceptionsImpl</command> class how an implementation could look like.
+    	</para>
+    	
+        <para>Example usage:</para>
+        
+<programlisting>
+    public aspect MyAspect extends GuardAspect
+    {
+        public MyAspect()
+        {
+            super();
+
+            // specify an exception translator
+            MyAspect.getGuard().setExceptionTranslator(new net.sf.oval.guard.ExceptionTranslatorJREExceptionsImpl());
+        }
+	}</programlisting>
+
+    </section>	
   </section>
 
   <section>
@@ -639,7 +670,7 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
         String val = value.toString();
         return val.equals(val.toUpperCase()); 
     } 
-}</programlisting>
+}     </programlisting>
       </listitem>
 
       <listitem>
@@ -736,8 +767,9 @@ public @interface UpperCase
   	<para>You can used the <command>net.sf.oval.configuration.XMLConfigurer</command> for loading constraint definitions from an XML file:</para>
   	
 	<programlisting>
-	XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval.xml");
+	XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml");
 	Validator validator = new Validator(xmlConfigurer);
+	Guard guard = new Guard(validator);
 	</programlisting>
   	
   	<para>Here is an example XML configuration:</para>
@@ -750,39 +782,39 @@ public @interface UpperCase
 &lt;oval&gt;
 	&lt;!-- define a constraint set --&gt;
 	&lt;constraintSet id=&quot;user.userid&quot;&gt;
-		&lt;net.sf.oval.constraints.NotNullCheck /&gt;
-		&lt;net.sf.oval.constraints.RegExCheck&gt;
+		&lt;notNull /&gt;
+		&lt;regEx&gt;
 			&lt;pattern pattern=&quot;^[a-z0-9]{8}$&quot; flags=&quot;0&quot; /&gt;
-		&lt;/net.sf.oval.constraints.RegExCheck&gt;
+		&lt;/regEx&gt;
 	&lt;/constraintSet&gt;
 
 	&lt;!-- define checks for the acme.model.User class --&gt;
 	&lt;!-- overwrite=false means already defined checks for this class will not be removed --&gt;
 	&lt;class type=&quot;acme.model.User&quot; overwrite=&quot;false&quot; applyFieldConstraintsToSetter=&quot;true&quot;&gt;
 		&lt;field name=&quot;firstName&quot;&gt;
-			&lt;net.sf.oval.constraints.LengthCheck min=&quot;0&quot; max=&quot;3&quot; /&gt;
+			&lt;length min=&quot;0&quot; max=&quot;3&quot; /&gt;
 		&lt;/field&gt;
 
 		&lt;field name=&quot;lastName&quot;&gt;
-			&lt;net.sf.oval.constraints.LengthCheck min=&quot;0&quot; max=&quot;5&quot; /&gt;
+			&lt;length min=&quot;0&quot; max=&quot;5&quot; /&gt;
 		&lt;/field&gt;
 
 		&lt;!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here --&gt;
 		&lt;field name=&quot;managerId&quot; overwrite=&quot;true&quot;&gt;
 			&lt;!-- use the checks defined for the constaint set &quot;user.userid&quot; --&gt;
-			&lt;net.sf.oval.constraints.AssertConstraintSetCheck id=&quot;user.userid&quot; /&gt;
+			&lt;assertConstraint id=&quot;user.userid&quot; /&gt;
 		&lt;/field&gt;
 
 		&lt;field name=&quot;userId&quot; overwrite=&quot;true&quot;&gt;
 			&lt;!-- use the checks defined for the constaint set &quot;user.userid&quot; --&gt;
-			&lt;net.sf.oval.constraints.AssertConstraintSetCheck id=&quot;user.userid&quot; /&gt;
+			&lt;assertConstraintSet id=&quot;user.userid&quot; /&gt;
 		&lt;/field&gt;
 
 		&lt;!-- define constructor parameter checks --&gt;
 		&lt;constructor&gt;
 			&lt;!-- parameter 1 --&gt;
 			&lt;parameter type=&quot;java.lang.String&quot;&gt;
-				&lt;net.sf.oval.constraints.NotNullCheck /&gt;
+				&lt;notNull /&gt;
 			&lt;/parameter&gt;
 
 			&lt;!-- parameter 2 --&gt;
@@ -794,7 +826,7 @@ public @interface UpperCase
 		&lt;method name=&quot;setPasswordExpirationDays&quot;&gt;
 			&lt;!-- parameter 1 --&gt;
 			&lt;parameter type=&quot;int&quot;&gt;
-				&lt;net.sf.oval.constraints.NotNullCheck /&gt;
+				&lt;notNull /&gt;
 			&lt;/parameter&gt;
 		&lt;/method&gt;
 	&lt;/class&gt;

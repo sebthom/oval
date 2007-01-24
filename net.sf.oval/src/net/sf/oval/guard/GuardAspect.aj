@@ -100,7 +100,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		// pre conditions
 		{
 			final boolean valid = guard.guardMethodPre(TARGET, METHOD, args);
-			if (!valid) return null; // this happens if swallow exceptions mode is enabled for this guarded object or class
+			if (!valid) return null; // returns null if probe mode is enabled for the guarded object
 		}
 
 		final Object result = proceed();
@@ -110,7 +110,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 			guard.guardMethodPost(TARGET, METHOD, args, result);
 		}
 
-		return result; // if listener only mode is activated the invalid value will be returned 
+		return result; 
 	}
 
 	@SuppressAjWarnings("adviceDidNotMatch")

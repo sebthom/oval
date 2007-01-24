@@ -12,9 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.test.guard;
 
-import net.sf.oval.ParameterNameResolverAspectJImpl;
-import net.sf.oval.Validator;
-import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.GuardAspect;
 
 /**
@@ -22,15 +19,8 @@ import net.sf.oval.guard.GuardAspect;
  */
 public aspect TestGuardAspect extends GuardAspect
 {
-	public final static Validator validator = new Validator();
-	public final static Guard guard = new Guard(validator);
-
-	static TestGuardAspect INSTANCE;
-
 	public TestGuardAspect()
 	{
-		super(guard);
-		INSTANCE = this;
-		validator.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		super();
 	}
 }

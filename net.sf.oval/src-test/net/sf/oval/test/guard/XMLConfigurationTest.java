@@ -93,7 +93,7 @@ public class XMLConfigurationTest extends TestCase
 
 		Validator v = new Validator(x);
 		v.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-		TestGuardAspect.INSTANCE.getGuard().setValidator(v);
+		TestGuardAspect.aspectOf().getGuard().setValidator(v);
 
 		validateUser();
 	}
@@ -225,17 +225,15 @@ public class XMLConfigurationTest extends TestCase
 
 		Validator v = new Validator(x);
 		v.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-		TestGuardAspect.INSTANCE.getGuard().setValidator(v);
+		TestGuardAspect.aspectOf().getGuard().setValidator(v);
 
 		validateUser();
 	}
 
 	private void validateUser()
 	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
-
 		ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
-		TestGuardAspect.guard.addListener(listener, User.class);
+		TestGuardAspect.aspectOf().getGuard().addListener(listener, User.class);
 
 		listener.clear();
 		try

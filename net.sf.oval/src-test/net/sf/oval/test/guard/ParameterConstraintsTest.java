@@ -65,42 +65,8 @@ public class ParameterConstraintsTest extends TestCase
 		}
 	}
 
-	public void testConstructorParameterConstraintsInSwallowExceptionMode()
+	public void testConstructorParameterConstraints()
 	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
-
-		/*
-		 * Testing Constructor 1
-		 */
-		try
-		{
-			new TestEntity(null);
-
-			// even in silent mode an exception should be thrown to prevent the returning of a reference to that new object instance
-			fail();
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-			assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
-		}
-
-		new TestEntity("test");
-
-		/*
-		 * Testing Constructor 2
-		 */
-		// the constructor should not result in an any auto validation,
-		// therefore the construction with a null value for the name parameter should succeed
-		new TestEntity(null, 100);
-	}
-
-	public void testConstructorParameterConstraintsInThrowExceptionMode()
-	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
-
 		/*
 		 * Testing Constructor 1
 		 */
@@ -127,10 +93,8 @@ public class ParameterConstraintsTest extends TestCase
 		new TestEntity(null, 100);
 	}
 
-	public void testMethodParametersInThrowExceptionMode()
+	public void testMethodParameters()
 	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, false);
-
 		try
 		{
 			TestEntity t1 = new TestEntity("");
@@ -158,14 +122,14 @@ public class ParameterConstraintsTest extends TestCase
 		}
 	}
 
-	public void testMethodParametersInSwallowExceptionMode()
+	public void testMethodParametersInProbeMode()
 	{
-		TestGuardAspect.guard.setSuppressPreConditionExceptions(TestEntity.class, true);
-
 		TestEntity entity = new TestEntity("");
 
+		TestGuardAspect.aspectOf().getGuard().setInProbeMode(entity, true);
+		
 		ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.guard.addListener(va, entity);
+		TestGuardAspect.aspectOf().getGuard().addListener(va, entity);
 
 		entity.setName(null);
 		entity.setName("12345678");
@@ -174,6 +138,6 @@ public class ParameterConstraintsTest extends TestCase
 		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 		assertTrue(violations.get(1).getMessage().equals("LENGTH"));
 
-		TestGuardAspect.guard.removeListener(va, entity);
+		TestGuardAspect.aspectOf().getGuard().removeListener(va, entity);
 	}
 }

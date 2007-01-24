@@ -33,7 +33,7 @@ public class PrePostJavascriptTest extends TestCase
 			value = value.add(value2add);
 		}
 
-		@Post(expression = "_this.value!=null && _this.value>0", language = "groovy", message = "POST")
+		@Post(expression = "_this.value>0", language = "groovy", message = "POST")
 		public void increase2(@NotNull
 		BigDecimal value2add)
 		{
@@ -44,6 +44,7 @@ public class PrePostJavascriptTest extends TestCase
 	public void testPreJavascript()
 	{
 		TestTransaction t = new TestTransaction();
+		
 		try
 		{
 			t.increase1(new BigDecimal(1));
