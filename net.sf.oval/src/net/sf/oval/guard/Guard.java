@@ -596,7 +596,7 @@ public class Guard
 		if (exceptionTranslator != null)
 		{
 			final RuntimeException rex = exceptionTranslator.translateException(ex);
-			if (rex == null) throw rex;
+			if (rex != null) throw rex;
 		}
 		throw ex;
 	}

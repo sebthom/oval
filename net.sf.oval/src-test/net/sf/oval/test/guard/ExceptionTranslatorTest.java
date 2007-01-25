@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.ExceptionTranslatorJREExceptionsImpl;
+import net.sf.oval.guard.Guarded;
 
 /**
  * 
@@ -23,6 +24,7 @@ import net.sf.oval.guard.ExceptionTranslatorJREExceptionsImpl;
  */
 public class ExceptionTranslatorTest extends TestCase
 {
+	@Guarded
 	public final static class TestEntity
 	{
 		public void setName(@NotNull(message = "NULL")
@@ -54,6 +56,7 @@ public class ExceptionTranslatorTest extends TestCase
 			{
 				final TestEntity t = new TestEntity();
 				t.setName(null);
+				fail();
 			}
 			catch (IllegalArgumentException ex)
 			{
