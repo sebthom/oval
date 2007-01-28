@@ -27,6 +27,7 @@ import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ValidationFailedException;
 import net.sf.oval.utils.ListOrderedSet;
+import net.sf.oval.utils.ReflectionUtils;
 import net.sf.oval.utils.ThreadLocalWeakHashSet;
 import net.sf.oval.utils.WeakHashSet;
 
@@ -234,10 +235,14 @@ public class Guard
 	 * @throws ConstraintsViolatedException
 	 * @throws ValidationFailedException
 	 */
-	void guardMethodPost(final Object guardedObject, final Method method, final Object[] args,
+	void guardMethodPost(Object guardedObject, final Method method, final Object[] args,
 			Object returnValue) throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return;
+
+		// if static method use the declaring class as guardedObject
+		if (guardedObject == null && ReflectionUtils.isStatic(method))
+			guardedObject = method.getDeclaringClass();
 
 		try
 		{
@@ -281,10 +286,14 @@ public class Guard
 	 * @throws ConstraintsViolatedException if ValidationMode is set to THROW_EXCEPTION or if parameter alwaysThrow is true
 	 * @throws ValidationFailedException 
 	 */
-	boolean guardMethodPre(final Object guardedObject, final Method method, final Object[] args)
+	boolean guardMethodPre(Object guardedObject, final Method method, final Object[] args)
 			throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return true;
+
+		// if static method use the declaring class as guardedObject
+		if (guardedObject == null && ReflectionUtils.isStatic(method))
+			guardedObject = method.getDeclaringClass();
 
 		try
 		{
@@ -421,7 +430,7 @@ public class Guard
 	{
 		// happens for static methods
 		if (guardedObject == null) return;
-		
+
 		final ListOrderedSet<ConstraintsViolatedListener> listenersToNotify = new ListOrderedSet<ConstraintsViolatedListener>();
 
 		// get the object listeners

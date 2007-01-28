@@ -72,13 +72,25 @@ public final class ClassChecks
 	final Class clazz;
 
 	/**
-	 * all getters that have value constraints.
+	 * all non-static fields that have value constraints.
+	 * Validator loops over this set during validation.
+	 */
+	final Set<Field> constrainedStaticFields = CollectionFactory.INSTANCE.createSet();
+
+	/**
+	 * all non-static getters that have return value constraints.
+	 * Validator loops over this set during validation.
+	 */
+	final Set<Method> constrainedStaticGetters = CollectionFactory.INSTANCE.createSet();
+
+	/**
+	 * all non-static fields that have value constraints.
 	 * Validator loops over this set during validation.
 	 */
 	final Set<Field> constrainedFields = CollectionFactory.INSTANCE.createSet();
 
 	/**
-	 * all getters that have return value constraints.
+	 * all non-static getters that have return value constraints.
 	 * Validator loops over this set during validation.
 	 */
 	final Set<Method> constrainedGetters = CollectionFactory.INSTANCE.createSet();
@@ -154,7 +166,8 @@ public final class ClassChecks
 	 * @param checks
 	 * @throws InvalidConfigurationException 
 	 */
-	public synchronized void addChecks(final Field field, final Check... checks) throws InvalidConfigurationException
+	public synchronized void addChecks(final Field field, final Check... checks)
+			throws InvalidConfigurationException
 	{
 		if (checks == null || checks.length == 0) return;
 
@@ -167,7 +180,10 @@ public final class ClassChecks
 		{
 			checksOfField = CollectionFactory.INSTANCE.createSet(8);
 			checksForFields.put(field, checksOfField);
-			constrainedFields.add(field);
+			if (ReflectionUtils.isStatic(field))
+				constrainedStaticFields.add(field);
+			else
+				constrainedFields.add(field);
 		}
 
 		for (final Check check : checks)
@@ -207,7 +223,13 @@ public final class ClassChecks
 							+ " not following the JavaBean Getter method convention. Constraints guarding is not activated for this class.");
 		}
 
-		if (isGetter) constrainedGetters.add(method);
+		if (isGetter)
+		{
+			if (ReflectionUtils.isStatic(method))
+				constrainedStaticGetters.add(method);
+			else
+				constrainedGetters.add(method);
+		}
 
 		Set<Check> methodChecks = checksForMethodReturnValues.get(method);
 		if (methodChecks == null)
@@ -286,8 +308,6 @@ public final class ClassChecks
 					+ method + ". Constraints guarding is not activated for this class.");
 		}
 
-		if (ReflectionUtils.isGetter(method)) constrainedGetters.add(method);
-
 		Set<PostCheck> postChecks = checksForMethodsPostExcecution.get(method);
 		if (postChecks == null)
 		{
@@ -322,8 +342,6 @@ public final class ClassChecks
 					+ method + ". Constraints guarding is not activated for this class.");
 		}
 
-		if (ReflectionUtils.isGetter(method)) constrainedGetters.add(method);
-
 		Set<PreCheck> preChecks = checksForMethodsPreExecution.get(method);
 		if (preChecks == null)
 		{
@@ -337,7 +355,8 @@ public final class ClassChecks
 		}
 	}
 
-	ConstraintSet addFieldConstraintSet(final Field field, final String localId) throws InvalidConfigurationException
+	ConstraintSet addFieldConstraintSet(final Field field, final String localId)
+			throws InvalidConfigurationException
 	{
 		if (field.getDeclaringClass() != clazz)
 			throw new InvalidConfigurationException("Given field does not belong to this class"
@@ -358,6 +377,7 @@ public final class ClassChecks
 	{
 		checksForFields.remove(field);
 		constrainedFields.remove(field);
+		constrainedStaticFields.remove(field);
 	}
 
 	/**
@@ -446,6 +466,7 @@ public final class ClassChecks
 	{
 		checksForMethodReturnValues.remove(method);
 		constrainedGetters.remove(method);
+		constrainedStaticGetters.remove(method);
 	}
 
 	public synchronized void removeCheck(final Constructor constructor, final int parameterIndex,
@@ -489,6 +510,7 @@ public final class ClassChecks
 		{
 			checksForFields.remove(field);
 			constrainedFields.remove(field);
+			constrainedStaticFields.remove(field);
 		}
 	}
 
@@ -508,6 +530,7 @@ public final class ClassChecks
 		{
 			checksForMethodReturnValues.remove(method);
 			constrainedGetters.remove(method);
+			constrainedStaticGetters.remove(method);
 		}
 	}
 
@@ -584,7 +607,9 @@ public final class ClassChecks
 		checksForMethodReturnValues.clear();
 		checksForMethodParameters.clear();
 		constrainedFields.clear();
+		constrainedStaticFields.clear();
 		constrainedGetters.clear();
+		constrainedStaticGetters.clear();
 		constraintSetsByLocalId.clear();
 	}
 }

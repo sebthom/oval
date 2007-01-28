@@ -41,6 +41,7 @@ public class AllTests
 				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);

@@ -994,6 +994,8 @@ public class Validator
 		if (validatedObject == null)
 			throw new IllegalArgumentException("validatedObject cannot be null");
 
+		if (validatedObject instanceof Class) return validate((Class) validatedObject);
+
 		currentlyValidatedObjects.get().add(validatedObject);
 		try
 		{
@@ -1006,6 +1008,54 @@ public class Validator
 		{
 			currentlyValidatedObjects.get().remove(validatedObject);
 		}
+	}
+
+	/**
+	 * Validates the static field and getter constrains of the given class.
+	 * Constraints specified for super classes are not taken in account.
+	 */
+	private List<ConstraintViolation> validate(final Class validatedClass)
+			throws IllegalArgumentException, ValidationFailedException
+	{
+		final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList();
+
+		final ClassChecks cc = getClassChecks(validatedClass);
+
+		// validate static field constraints
+		for (final Field field : cc.constrainedStaticFields)
+		{
+			final Collection<Check> checks = cc.checksForFields.get(field);
+
+			if (checks != null && checks.size() > 0)
+			{
+				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
+				final FieldContext context = new FieldContext(field);
+
+				for (final Check check : checks)
+				{
+					checkConstraint(violations, check, validatedClass, valueToValidate, context);
+				}
+			}
+		}
+
+		// validate constraints on getter methods
+		for (final Method getter : cc.constrainedStaticGetters)
+		{
+			final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
+
+			if (checks != null && checks.size() > 0)
+			{
+				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
+				final MethodReturnValueContext context = new MethodReturnValueContext(getter);
+
+				for (final Check check : checks)
+				{
+					checkConstraint(violations, check, validatedClass, valueToValidate, context);
+				}
+			}
+		}
+
+		return violations;
 	}
 
 	/**
@@ -1062,24 +1112,6 @@ public class Validator
 
 	}
 
-	private void validateField(final Object validatedObject, final Field field,
-			final List<ConstraintViolation> violations) throws OValException
-	{
-		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-		final Collection<Check> checks = cc.checksForFields.get(field);
-
-		if (checks != null && checks.size() > 0)
-		{
-			final Object valueToValidate = ReflectionUtils.getFieldValue(field, validatedObject);
-			final FieldContext context = new FieldContext(field);
-
-			for (final Check check : checks)
-			{
-				checkConstraint(violations, check, validatedObject, valueToValidate, context);
-			}
-		}
-	}
-
 	/**
 	 * Validates the give value against the defined field constraints.<br>
 	 * 
@@ -1110,32 +1142,6 @@ public class Validator
 		{
 			throw new ValidationFailedException("Field validation failed. Field: " + field
 					+ " Validated object: " + validatedObject, ex);
-		}
-	}
-
-	/**
-	 * Executes the getter method on the validatedObject and validates the return value based on
-	 * the configured constraints. 
-	 * @param validatedObject
-	 * @param getter
-	 * @param violations detected ConstraintViolations will be added to this list
-	 * @throws OValException 
-	 */
-	private void validateGetter(final Object validatedObject, final Method getter,
-			final List<ConstraintViolation> violations) throws OValException
-	{
-		final ClassChecks cc = getClassChecks(getter.getDeclaringClass());
-		final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
-
-		if (checks != null && checks.size() > 0)
-		{
-			final Object valueToValidate = ReflectionUtils.invokeMethod(getter, validatedObject);
-			final MethodReturnValueContext context = new MethodReturnValueContext(getter);
-
-			for (final Check check : checks)
-			{
-				checkConstraint(violations, check, validatedObject, valueToValidate, context);
-			}
 		}
 	}
 
@@ -1331,13 +1337,39 @@ public class Validator
 			// validate field constraints
 			for (final Field field : cc.constrainedFields)
 			{
-				validateField(validatedObject, field, violations);
+				final Collection<Check> checks = cc.checksForFields.get(field);
+
+				if (checks != null && checks.size() > 0)
+				{
+					final Object valueToValidate = ReflectionUtils.getFieldValue(field,
+							validatedObject);
+					final FieldContext context = new FieldContext(field);
+
+					for (final Check check : checks)
+					{
+						checkConstraint(violations, check, validatedObject, valueToValidate,
+								context);
+					}
+				}
 			}
 
 			// validate constraints on getter methods
 			for (final Method getter : cc.constrainedGetters)
 			{
-				validateGetter(validatedObject, getter, violations);
+				final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
+
+				if (checks != null && checks.size() > 0)
+				{
+					final Object valueToValidate = ReflectionUtils.invokeMethod(getter,
+							validatedObject);
+					final MethodReturnValueContext context = new MethodReturnValueContext(getter);
+
+					for (final Check check : checks)
+					{
+						checkConstraint(violations, check, validatedObject, valueToValidate,
+								context);
+					}
+				}
 			}
 
 			// if the super class is annotated to be validatable also validate it against the object

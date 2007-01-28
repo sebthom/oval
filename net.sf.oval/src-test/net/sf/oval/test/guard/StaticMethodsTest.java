@@ -13,9 +13,12 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
+import net.sf.oval.constraints.AssertFieldConstraints;
 import net.sf.oval.constraints.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
+import net.sf.oval.guard.PostValidateThis;
+import net.sf.oval.guard.PreValidateThis;
 
 /**
  * @author Sebastian Thomschke
@@ -23,24 +26,73 @@ import net.sf.oval.guard.Guarded;
 public class StaticMethodsTest extends TestCase
 {
 	@Guarded
-	private static class Person
+	private static class TestEntity
 	{
-		public static void doSomthing(@NotNull(message = "NULL")
-		String dummyFirstName)
+		@NotNull(message = "NULL")
+		public static String value;
+
+		public static void setValue(@AssertFieldConstraints
+		String value)
 		{
-			//
+			TestEntity.value = value;
+		}
+
+		@PreValidateThis
+		public static void doSomethingPre()
+		{
+		//
+		}
+		
+		@PostValidateThis
+		public static void doSomethingPost()
+		{
+		//
 		}
 	}
 
-	/**
-	 * by default constraints specified for a field are also used for validating
-	 * method parameters of the corresponding setter methods 
-	 */
+	public void testPreValidateThis() throws Exception
+	{
+		TestEntity.value = null;
+
+		try
+		{
+			TestEntity.doSomethingPre();
+			fail();
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertTrue(ex.getConstraintViolations().length == 1);
+			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
+		}
+		
+		TestEntity.value = "";
+		TestEntity.doSomethingPre();
+	}
+	
+	public void testPostValidateThis() throws Exception
+	{
+		TestEntity.value = null;
+
+		try
+		{
+			TestEntity.doSomethingPost();
+			fail();
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertTrue(ex.getConstraintViolations().length == 1);
+			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
+		}
+		
+		TestEntity.value = "";
+		TestEntity.doSomethingPost();
+	}
+
 	public void testSetterValidation() throws Exception
 	{
 		try
 		{
-			Person.doSomthing(null);
+			TestEntity.setValue(null);
 			fail();
 		}
 		catch (ConstraintsViolatedException ex)
