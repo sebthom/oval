@@ -1,1 +1,2 @@
 - support constraints specified for method parameters in interfaces
+- multi-lingual support for all exceptions

@@ -49,7 +49,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		{
 			if (LOG.isLoggable(Level.FINE))
 				LOG.log(Level.FINE,
-						"Cannot determine constraint error message based on annotation "
+						"Cannot determine constraint violation message based on annotation "
 								+ constraintClazz.getName(), e);
 			message = constraintClazz.getName() + ".violated";
 		}
