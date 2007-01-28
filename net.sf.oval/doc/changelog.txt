@@ -23,6 +23,7 @@
 + added polish translation of the constraint violation messages (thanks to szymon_eu)
 * ConstraintsViolatedException.getMessage() now returns the message of the first constraint violation (thanks to szymon_eu)
 + added Guard.setExceptionTranslator() allowing you to change the type of exception that is thrown on constraint violations 
++ Validation/Guarding of static fields and methods is now supported
 
 Refactoring:
 * net.sf.oval.constraints.NoSelfReference: renamed @NotSelfRef to @NoSelfReference

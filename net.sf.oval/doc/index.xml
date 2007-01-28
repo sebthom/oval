@@ -120,7 +120,7 @@
 
 BusinessObject bo = new BusinessObject(); // name is null
 
-// collect the violated constraints
+// collect the constraint violations
 List&lt;ConstraintViolation&gt; violations = validator.validate(bo);
 
 if(violations.size()&gt;0)
@@ -173,7 +173,7 @@ if(violations.size()&gt;0)
 
 BusinessObject bo = new BusinessObject(&quot;blabla&quot;);
  
-// collect the violated constraints
+// collect the constraint violations
 List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);
 
 if(exs.size()&gt;0)
@@ -183,6 +183,58 @@ if(exs.size()&gt;0)
 }</programlisting>
     </section>
 
+    <section>
+
+      <title>Interpreting EJB3 JPA annotations</title>
+
+      <para>OVal's configuration mechanism is highly customizable.
+      Using the <command>net.sf.oval.configuration.Configurer</command> interface you can write
+      your own constraint configurers configuring OVal based on other XML schemas, other
+      sets of annotations or anything else you like.</para>
+      
+      <para>OVal comes with an example configurer that is capable of translating
+      certain EJB3 JPA annotations into equivalent OVal constraints. The <command>net.sf.oval.configuration.JPAAnnotationsConfigurer</command>
+      configures OVal as follows:
+      </para>
+      
+      <itemizedlist>
+	    <listitem><para>@javax.persistence.Basic(optional=false)      =&gt; @net.sf.oval.constraints.NotNull</para></listitem>
+		<listitem><para>@javax.persistence.OneToOne(optional=false)   =&gt; @net.sf.oval.constraints.NotNull</para></listitem>
+		<listitem><para>@javax.persistence.ManyToOne(optional=false)  =&gt; @net.sf.oval.constraints.NotNull</para></listitem>
+		<listitem><para>@javax.persistence.Column(nullable=false)     =&gt; @net.sf.oval.constraints.NotNull</para></listitem>
+		<listitem><para>@javax.persistence.Column(length=5)           =&gt; @net.sf.oval.constraints.Length</para></listitem>
+      </itemizedlist>
+      
+      <programlisting>@Entity
+public class MyEntity
+{
+    @Basic(optional = false)
+    @Column(length = 4)
+    public String id;
+
+    @Column(nullable = false)
+    public String descr;
+
+    @ManyToOne(optional = false)
+	public MyEntity parent;
+}</programlisting>
+
+      <para>Example usage:</para>
+      
+       <programlisting>// configure OVal to interprete OVal constraint annotations
+// as well as EJB3 JPA annotations
+Validator validator = new Validator(new AnnotationsConfigurer(), new JPAAnnotationsConfigurer());
+
+MyEntity entity = new MyEntity();
+		
+entity.id = "12345"; // violation - the max length is 4
+entity.descr = null; // violation - cannot be null
+entity.parent = null; // violation - cannot be null
+
+// collect the constraint violations
+List&lt;ConstraintViolation&gt; violations = validator.validate(entity);</programlisting>
+
+    </section>      
   </section>
 
   <section>

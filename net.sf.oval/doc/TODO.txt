@@ -1,1 +1,1 @@
-- consider constraints specified for method parameters in interfaces
+- support constraints specified for method parameters in interfaces
