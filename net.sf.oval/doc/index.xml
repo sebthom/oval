@@ -101,7 +101,7 @@
 
       <para>You can add constraint annotations to class fields that are 
       checked when an object validation is performed. An object can be 
-      validated by using the <command>public static validate(Object 
+      validated by using the <command>public validate(Object 
       validatedObject)</command> method of <command>
       net.sf.oval.Validator</command></para>
 
@@ -174,7 +174,7 @@ if(violations.size()&gt;0)
 BusinessObject bo = new BusinessObject(&quot;blabla&quot;);
  
 // collect the constraint violations
-List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);
+List&lt;ConstraintViolation&gt; violations = validator.validate(bo);
 
 if(exs.size()&gt;0)
 {
@@ -452,8 +452,7 @@ bo.save();</programlisting>
 
     <section>
 
-      <title>Specifying method return value constraints (post 
-      condition)</title>
+      <title>Specifying method return value constraints (post condition)</title>
 
       <para>By adding constraint annotations to a non-void method you 
       can specify constraints for the method's return value. 
@@ -499,8 +498,10 @@ bo.getName();
 // throws a ConstraintsViolatedException because the field &quot;name&quot; is null and therefore the default parameter will be returned which has a length &lt; 4 characters
 bo.getNameOrDefault(&quot;abc&quot;); 
 
+Validator validator = new Validator();
+
 // returns one ConstraintViolation because calling the getter method getName() returns a value (null) that does not satisfies the getter&apos;s return value constraints
-List&lt;ConstraintViolation&gt; violations = Validator.validate(bo);</programlisting>
+List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlisting>
     </section>
 
     <section>
@@ -818,11 +819,9 @@ public @interface UpperCase
   	
   	<para>You can used the <command>net.sf.oval.configuration.XMLConfigurer</command> for loading constraint definitions from an XML file:</para>
   	
-	<programlisting>
-	XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml");
-	Validator validator = new Validator(xmlConfigurer);
-	Guard guard = new Guard(validator);
-	</programlisting>
+	<programlisting>XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml");
+Validator validator = new Validator(xmlConfigurer);
+Guard guard = new Guard(validator);</programlisting>
   	
   	<para>Here is an example XML configuration:</para>
   	
