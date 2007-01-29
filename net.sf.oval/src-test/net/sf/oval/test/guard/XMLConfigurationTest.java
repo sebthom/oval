@@ -38,7 +38,6 @@ import net.sf.oval.constraints.RegExCheck;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
-import net.sf.oval.test.guard.ParameterConstraintsTest.TestEntity;
 
 /**
  * @author Sebastian Thomschke
