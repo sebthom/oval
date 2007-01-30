@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import net.sf.oval.ClassChecks;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.NotNullCheck;
+import net.sf.oval.checks.NotNullCheck;
 import net.sf.oval.exceptions.InvalidConfigurationException;
 
 /**

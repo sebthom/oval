@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.aspectj.runtime,
  org.eclipse.core.runtime
 Export-Package: net.sf.oval,
+ net.sf.oval.checks,
  net.sf.oval.collections,
  net.sf.oval.configuration,
  net.sf.oval.configuration.elements,

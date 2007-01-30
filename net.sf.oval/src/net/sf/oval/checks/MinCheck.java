@@ -10,18 +10,42 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.Min;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
+public class MinCheck extends AbstractAnnotationCheck<Min>
 {
 	private static final long serialVersionUID = 1L;
-	
+
+	private long min;
+
+	@Override
+	public void configure(final Min constraintAnnotation)
+	{
+		super.configure(constraintAnnotation);
+		setMin(constraintAnnotation.value());
+	}
+
+	@Override
+	public String[] getMessageValues()
+	{
+		return new String[]{Long.toString(min)};
+	}
+
+	/**
+	 * @return the min
+	 */
+	public long getMin()
+	{
+		return min;
+	}
+
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
@@ -31,19 +55,30 @@ public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 		{
 			if (value instanceof Float || value instanceof Double)
 			{
-				return ((Number) value).doubleValue() >= 0;
+				final double doubleValue = ((Number) value).doubleValue();
+				return doubleValue >= min;
 			}
-			return ((Number) value).longValue() >= 0;
+			final long longValue = ((Number) value).longValue();
+			return longValue >= min;
 		}
 
 		final String stringValue = value.toString();
 		try
 		{
-			return Double.parseDouble(stringValue) >= 0;
+			final double doubleValue = Double.parseDouble(stringValue);
+			return doubleValue >= min;
 		}
 		catch (NumberFormatException e)
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * @param min the min to set
+	 */
+	public void setMin(final long min)
+	{
+		this.min = min;
 	}
 }

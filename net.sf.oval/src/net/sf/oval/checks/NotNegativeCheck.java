@@ -10,15 +10,16 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.NotNegative;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class NotEmptyCheck extends AbstractAnnotationCheck<NotEmpty>
+public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -27,6 +28,23 @@ public class NotEmptyCheck extends AbstractAnnotationCheck<NotEmpty>
 	{
 		if (value == null) return true;
 
-		return value != null && value.toString().length() > 0;
+		if (value instanceof Number)
+		{
+			if (value instanceof Float || value instanceof Double)
+			{
+				return ((Number) value).doubleValue() >= 0;
+			}
+			return ((Number) value).longValue() >= 0;
+		}
+
+		final String stringValue = value.toString();
+		try
+		{
+			return Double.parseDouble(stringValue) >= 0;
+		}
+		catch (NumberFormatException e)
+		{
+			return false;
+		}
 	}
 }

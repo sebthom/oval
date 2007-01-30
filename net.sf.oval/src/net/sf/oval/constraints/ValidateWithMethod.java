@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.checks.ValidateWithMethodCheck;
 
 /**
  * Check the value by a method of the same class that takes the value as argument and returns true if valid

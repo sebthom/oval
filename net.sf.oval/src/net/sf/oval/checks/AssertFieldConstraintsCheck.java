@@ -10,75 +10,63 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.AssertFieldConstraints;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertCheck extends AbstractAnnotationCheck<Assert>
+public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertFieldConstraints>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language;
-	private String expression;
+	private String fieldName;
 
 	@Override
-	public void configure(final Assert constraintAnnotation)
+	public void configure(final AssertFieldConstraints constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setExpression(constraintAnnotation.expression());
-		setLanguage(constraintAnnotation.language());
+		setFieldName(constraintAnnotation.value());
 	}
 
 	/**
-	 * @return the expression
+	 * @return the fieldName
 	 */
-	public String getExpression()
+	public String getFieldName()
 	{
-		return expression;
-	}
-
-	/**
-	 * @return the language
-	 */
-	public String getLanguage()
-	{
-		return language;
+		return fieldName;
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public String getMessage()
 	{
-		return new String[]{expression};
+		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
 	 */
-	public boolean isSatisfied(final Object validatedObject, final Object validatedValue,
+	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * @param expression the expression to set
+	 * @param fieldName the fieldName to set
 	 */
-	public void setExpression(final String expression)
+	public void setFieldName(final String fieldName)
 	{
-		this.expression = expression;
+		this.fieldName = fieldName;
 	}
 
-	/**
-	 * @param language the language to set
-	 */
-	public void setLanguage(final String language)
+	@Override
+	public void setMessage(final String message)
 	{
-		this.language = language;
+		throw new UnsupportedOperationException();
 	}
-
 }

@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.checks.NotEmptyCheck;
 
 /**
  * Check if the string representation is not empty

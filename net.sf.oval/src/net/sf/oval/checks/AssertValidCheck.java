@@ -10,9 +10,10 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.AssertValid;
 import net.sf.oval.contexts.OValContext;
 
 /**

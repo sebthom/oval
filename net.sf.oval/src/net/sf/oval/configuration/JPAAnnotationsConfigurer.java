@@ -23,12 +23,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import net.sf.oval.Check;
+import net.sf.oval.checks.LengthCheck;
+import net.sf.oval.checks.NotNullCheck;
 import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.configuration.elements.ClassConfiguration;
 import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
-import net.sf.oval.constraints.LengthCheck;
-import net.sf.oval.constraints.NotNullCheck;
 import net.sf.oval.exceptions.OValException;
 
 /**

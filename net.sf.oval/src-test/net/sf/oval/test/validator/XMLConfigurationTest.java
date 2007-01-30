@@ -26,6 +26,10 @@ import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
+import net.sf.oval.checks.AssertConstraintSetCheck;
+import net.sf.oval.checks.LengthCheck;
+import net.sf.oval.checks.NotNullCheck;
+import net.sf.oval.checks.RegExCheck;
 import net.sf.oval.configuration.POJOConfigurer;
 import net.sf.oval.configuration.XMLConfigurer;
 import net.sf.oval.configuration.elements.ClassConfiguration;
@@ -33,11 +37,7 @@ import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.elements.FieldConfiguration;
 import net.sf.oval.configuration.elements.MethodConfiguration;
 import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
-import net.sf.oval.constraints.AssertConstraintSetCheck;
 import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.LengthCheck;
-import net.sf.oval.constraints.NotNullCheck;
-import net.sf.oval.constraints.RegExCheck;
 
 /**
  * @author Sebastian Thomschke

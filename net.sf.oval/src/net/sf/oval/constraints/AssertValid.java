@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.checks.AssertValidCheck;
 
 /**
  * Check if the value passes a validation by Validator.validate()

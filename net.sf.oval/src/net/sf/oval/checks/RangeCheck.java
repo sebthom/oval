@@ -10,31 +10,42 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.Range;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class MinCheck extends AbstractAnnotationCheck<Min>
+public class RangeCheck extends AbstractAnnotationCheck<Range>
 {
 	private static final long serialVersionUID = 1L;
 
-	private long min;
+	private long min = Long.MIN_VALUE;
+	private long max = Long.MAX_VALUE;
 
 	@Override
-	public void configure(final Min constraintAnnotation)
+	public void configure(final Range constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setMin(constraintAnnotation.value());
+		setMax(constraintAnnotation.max());
+		setMin(constraintAnnotation.min());
+	}
+
+	/**
+	 * @return the max
+	 */
+	public long getMax()
+	{
+		return max;
 	}
 
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{Long.toString(min)};
+		return new String[]{Long.toString(min), Long.toString(max)};
 	}
 
 	/**
@@ -55,22 +66,30 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 			if (value instanceof Float || value instanceof Double)
 			{
 				final double doubleValue = ((Number) value).doubleValue();
-				return doubleValue >= min;
+				return doubleValue >= min && doubleValue <= max;
 			}
 			final long longValue = ((Number) value).longValue();
-			return longValue >= min;
+			return longValue >= min && longValue <= max;
 		}
 
 		final String stringValue = value.toString();
 		try
 		{
 			final double doubleValue = Double.parseDouble(stringValue);
-			return doubleValue >= min;
+			return doubleValue >= min && doubleValue <= max;
 		}
 		catch (NumberFormatException e)
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * @param max the max to set
+	 */
+	public void setMax(final long max)
+	{
+		this.max = max;
 	}
 
 	/**

@@ -38,16 +38,4 @@ public @interface Guarded
 	 * <br><br>
 	 */
 	boolean applyFieldConstraintsToSetter() default false;
-
-	/**
-	 * check invariants (constraints on fields and getter method return values) BEFORE any method
-	 * is executed from outside the current class
-	 */
-	boolean autoPreValidateThis() default false;
-
-	/**
-	 * check invariants (constraints on fields and getter method return values) AFTER any method
-	 * is executed from outside the current class
-	 */
-	boolean autoPostValidateThis() default false;
 }

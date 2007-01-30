@@ -10,27 +10,51 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.Past;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
+public class PastCheck extends AbstractAnnotationCheck<Past>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
 		if (value == null) return true;
 
-		if (value instanceof Boolean)
+		// check if the value is a Date
+		if (value instanceof Date)
 		{
-			return ((Boolean) value).booleanValue();
+			return ((Date) value).before(new Date());
 		}
-		return false;
+
+		// check if the value is a Calendar
+		if (value instanceof Calendar)
+		{
+			return ((Calendar) value).before(Calendar.getInstance());
+		}
+
+		// see if we can extract a date based on the object's String representation
+		final String stringValue = value.toString();
+		try
+		{
+			Date date = DateFormat.getDateTimeInstance().parse(stringValue);
+			return date.before(new Date());
+		}
+		catch (ParseException ex)
+		{
+			return false;
+		}
 	}
 }

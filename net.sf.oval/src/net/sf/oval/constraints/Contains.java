@@ -20,10 +20,10 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.checks.RangeCheck;
+import net.sf.oval.checks.ContainsCheck;
 
 /**
- * Check if the number is in the given range
+ * Check if the string contains a certain substring
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
@@ -33,19 +33,19 @@ import net.sf.oval.checks.RangeCheck;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(check = RangeCheck.class)
-public @interface Range
+@Constraint(check = ContainsCheck.class)
+public @interface Contains
 {
-	long min() default Long.MIN_VALUE;
+	boolean ignoreCase() default false;
 
-	long max() default Long.MAX_VALUE;
-
+	String substring();
+	
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Range.violated";
+	String message() default "net.sf.oval.constraints.Contains.violated";
 
 	/**
 	 * The associated validation profiles.

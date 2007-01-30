@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.checks.MaxCheck;
 
 /**
  * Check if the number is smaller than or equal to X

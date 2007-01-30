@@ -10,62 +10,56 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.MaxLength;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertFieldConstraints>
+public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String fieldName;
+	private int max;
 
 	@Override
-	public void configure(final AssertFieldConstraints constraintAnnotation)
+	public void configure(final MaxLength constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setFieldName(constraintAnnotation.value());
+		setMax(constraintAnnotation.value());
 	}
 
 	/**
-	 * @return the fieldName
+	 * @return the max
 	 */
-	public String getFieldName()
+	public int getMax()
 	{
-		return fieldName;
+		return max;
 	}
 
 	@Override
-	public String getMessage()
+	public String[] getMessageValues()
 	{
-		throw new UnsupportedOperationException();
+		return new String[]{Integer.toString(max)};
 	}
 
-	/**
-	 *  <b>This method is not used.</b><br>
-	 *  The validation of this special constraint is directly performed by the Validator class
-	 */
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
-		throw new UnsupportedOperationException();
+		if (value == null) return true;
+
+		final int len = value.toString().length();
+		return len <= max;
 	}
 
 	/**
-	 * @param fieldName the fieldName to set
+	 * @param max the max to set
 	 */
-	public void setFieldName(final String fieldName)
+	public void setMax(final int max)
 	{
-		this.fieldName = fieldName;
-	}
-
-	@Override
-	public void setMessage(final String message)
-	{
-		throw new UnsupportedOperationException();
+		this.max = max;
 	}
 }

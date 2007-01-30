@@ -10,31 +10,34 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.Length;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class MaxCheck extends AbstractAnnotationCheck<Max>
+public class LengthCheck extends AbstractAnnotationCheck<Length>
 {
 	private static final long serialVersionUID = 1L;
-
-	private long max;
+	
+	private int min;
+	private int max;
 
 	@Override
-	public void configure(final Max constraintAnnotation)
+	public void configure(final Length constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setMax(constraintAnnotation.value());
+		setMax(constraintAnnotation.max());
+		setMin(constraintAnnotation.min());
 	}
 
 	/**
 	 * @return the max
 	 */
-	public long getMax()
+	public int getMax()
 	{
 		return max;
 	}
@@ -42,7 +45,15 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{Long.toString(max)};
+		return new String[]{Integer.toString(min), Integer.toString(max)};
+	}
+
+	/**
+	 * @return the min
+	 */
+	public int getMin()
+	{
+		return min;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
@@ -50,34 +61,24 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	{
 		if (value == null) return true;
 
-		if (value instanceof Number)
-		{
-			if (value instanceof Float || value instanceof Double)
-			{
-				final double doubleValue = ((Number) value).doubleValue();
-				return doubleValue <= max;
-			}
-			final long longValue = ((Number) value).longValue();
-			return longValue <= max;
-		}
-
-		final String stringValue = value.toString();
-		try
-		{
-			final double doubleValue = Double.parseDouble(stringValue);
-			return doubleValue <= max;
-		}
-		catch (NumberFormatException e)
-		{
-			return false;
-		}
+		final int len = value.toString().length();
+		return len >= min && len <= max;
 	}
 
 	/**
 	 * @param max the max to set
 	 */
-	public void setMax(final long max)
+	public void setMax(final int max)
 	{
 		this.max = max;
 	}
+
+	/**
+	 * @param min the min to set
+	 */
+	public void setMin(final int min)
+	{
+		this.min = min;
+	}
+
 }

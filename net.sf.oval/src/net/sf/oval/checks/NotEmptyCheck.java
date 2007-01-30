@@ -10,15 +10,16 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.NotEmpty;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
+public class NotEmptyCheck extends AbstractAnnotationCheck<NotEmpty>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -27,10 +28,6 @@ public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
 	{
 		if (value == null) return true;
 
-		if (value instanceof Boolean)
-		{
-			return !((Boolean) value).booleanValue();
-		}
-		return false;
+		return value != null && value.toString().length() > 0;
 	}
 }

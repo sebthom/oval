@@ -20,7 +20,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ClassChecks;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.constraints.NotNullCheck;
+import net.sf.oval.checks.NotNullCheck;
 import net.sf.oval.contexts.ConstructorParameterContext;
 import net.sf.oval.contexts.MethodParameterContext;
 import net.sf.oval.exceptions.InvalidConfigurationException;

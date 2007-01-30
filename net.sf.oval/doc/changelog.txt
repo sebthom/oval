@@ -15,6 +15,10 @@
 + introduced @net.sf.oval.constraints.Assert for use with expression languages
 + introduced @net.sf.oval.constraints.Max
 + introduced @net.sf.oval.constraints.Min
++ introduced @net.sf.oval.constraints.MaxLength
++ introduced @net.sf.oval.constraints.MinLength
++ introduced @net.sf.oval.constraints.MaxSize
++ introduced @net.sf.oval.constraints.MinSize
 + introduced @net.sf.oval.constraints.Past
 + introduced @net.sf.oval.constraints.Future
 + introduced @net.sf.oval.guard.Pre for declaring pre conditions with an expression language
@@ -30,6 +34,7 @@ Refactoring:
 * net.sf.oval.constraints.NoSelfReference: renamed @NotSelfRef to @NoSelfReference
 * net.sf.oval.Constraint: moved from package net.sf.oval.annotations
 * net.sf.oval.constraints.ConstraintSet: renamed from net.sf.oval.annotations.DefineConstraintSet
+* moved the constraint check classes from net.sf.oval.constraints to net.sf.oval.checks
 * everything related to programming by contract has been moved into a new net.sf.oval.guard package
   * net.sf.oval.ParamenterNameResolverAspectJImpl: moved from package net.sf.oval.aspectj
   * net.sf.oval.guard.ApiUsageAuditor: moved from package net.sf.oval.aspectj

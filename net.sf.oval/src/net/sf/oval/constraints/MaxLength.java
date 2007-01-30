@@ -20,10 +20,10 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.checks.RangeCheck;
+import net.sf.oval.checks.MaxLengthCheck;
 
 /**
- * Check if the number is in the given range
+ * Check if the string representation does not exceed the given length
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
@@ -33,19 +33,17 @@ import net.sf.oval.checks.RangeCheck;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(check = RangeCheck.class)
-public @interface Range
+@Constraint(check = MaxLengthCheck.class)
+public @interface MaxLength
 {
-	long min() default Long.MIN_VALUE;
-
-	long max() default Long.MAX_VALUE;
+	int value();
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Range.violated";
+	String message() default "net.sf.oval.constraints.MaxLength.violated";
 
 	/**
 	 * The associated validation profiles.

@@ -10,21 +10,28 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.AssertFalse;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class NotNullCheck extends AbstractAnnotationCheck<NotNull>
+public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
 {
 	private static final long serialVersionUID = 1L;
-
+	
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context)
 	{
-		return value != null;
+		if (value == null) return true;
+
+		if (value instanceof Boolean)
+		{
+			return !((Boolean) value).booleanValue();
+		}
+		return false;
 	}
 }

@@ -10,15 +10,20 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
+
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Map;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.Size;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class LengthCheck extends AbstractAnnotationCheck<Length>
+public class SizeCheck extends AbstractAnnotationCheck<Size>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -26,7 +31,7 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	private int max;
 
 	@Override
-	public void configure(final Length constraintAnnotation)
+	public void configure(final Size constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setMax(constraintAnnotation.max());
@@ -60,8 +65,22 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	{
 		if (value == null) return true;
 
-		final int len = value.toString().length();
-		return len >= min && len <= max;
+		if (value.getClass().isArray())
+		{
+			final int size = Array.getLength(value);
+			return size >= min && size <= max;
+		}
+		if (value instanceof Collection)
+		{
+			final int size = ((Collection) value).size();
+			return size >= min && size <= max;
+		}
+		if (value instanceof Map)
+		{
+			final int size = ((Map) value).size();
+			return size >= min && size <= max;
+		}
+		return false;
 	}
 
 	/**
@@ -79,5 +98,4 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	{
 		this.min = min;
 	}
-
 }

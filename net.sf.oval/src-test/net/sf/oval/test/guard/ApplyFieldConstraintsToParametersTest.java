@@ -16,8 +16,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import net.sf.oval.ClassChecks;
+import net.sf.oval.checks.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertFieldConstraints;
-import net.sf.oval.constraints.AssertFieldConstraintsCheck;
 import net.sf.oval.constraints.AssertTrue;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.constraints.NotEmpty;

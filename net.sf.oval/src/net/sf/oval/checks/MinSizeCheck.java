@@ -10,41 +10,44 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
-import java.util.regex.Pattern;
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Map;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.MinSize;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class RegExCheck extends AbstractAnnotationCheck<RegEx>
+public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 {
 	private static final long serialVersionUID = 1L;
-	
-	private Pattern pattern;
+
+	private int min;
 
 	@Override
-	public void configure(final RegEx constraintAnnotation)
+	public void configure(final MinSize constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		pattern = Pattern.compile(constraintAnnotation.pattern(), constraintAnnotation.flags());
+		setMin(constraintAnnotation.value());
 	}
 
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{pattern.pattern()};
+		return new String[]{Integer.toString(min)};
 	}
 
 	/**
-	 * @return the pattern
+	 * @return the min
 	 */
-	public Pattern getPattern()
+	public int getMin()
 	{
-		return pattern;
+		return min;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
@@ -52,14 +55,29 @@ public class RegExCheck extends AbstractAnnotationCheck<RegEx>
 	{
 		if (value == null) return true;
 
-		return pattern.matcher(value.toString()).matches();
+		if (value.getClass().isArray())
+		{
+			final int size = Array.getLength(value);
+			return size >= min;
+		}
+		if (value instanceof Collection)
+		{
+			final int size = ((Collection) value).size();
+			return size >= min;
+		}
+		if (value instanceof Map)
+		{
+			final int size = ((Map) value).size();
+			return size >= min;
+		}
+		return false;
 	}
 
 	/**
-	 * @param pattern the pattern to set
+	 * @param min the min to set
 	 */
-	public void setPattern(final Pattern pattern)
+	public void setMin(final int min)
 	{
-		this.pattern = pattern;
+		this.min = min;
 	}
 }

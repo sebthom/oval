@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 
 import net.sf.oval.Constraint;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.checks.NoSelfReferenceCheck;
 
 /**
  * Check that the value is not a reference to the validated object itself.<br>

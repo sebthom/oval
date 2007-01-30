@@ -10,27 +10,26 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.Max;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class RangeCheck extends AbstractAnnotationCheck<Range>
+public class MaxCheck extends AbstractAnnotationCheck<Max>
 {
 	private static final long serialVersionUID = 1L;
 
-	private long min = Long.MIN_VALUE;
-	private long max = Long.MAX_VALUE;
+	private long max;
 
 	@Override
-	public void configure(final Range constraintAnnotation)
+	public void configure(final Max constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setMax(constraintAnnotation.max());
-		setMin(constraintAnnotation.min());
+		setMax(constraintAnnotation.value());
 	}
 
 	/**
@@ -44,15 +43,7 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{Long.toString(min), Long.toString(max)};
-	}
-
-	/**
-	 * @return the min
-	 */
-	public long getMin()
-	{
-		return min;
+		return new String[]{Long.toString(max)};
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
@@ -65,17 +56,17 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 			if (value instanceof Float || value instanceof Double)
 			{
 				final double doubleValue = ((Number) value).doubleValue();
-				return doubleValue >= min && doubleValue <= max;
+				return doubleValue <= max;
 			}
 			final long longValue = ((Number) value).longValue();
-			return longValue >= min && longValue <= max;
+			return longValue <= max;
 		}
 
 		final String stringValue = value.toString();
 		try
 		{
 			final double doubleValue = Double.parseDouble(stringValue);
-			return doubleValue >= min && doubleValue <= max;
+			return doubleValue <= max;
 		}
 		catch (NumberFormatException e)
 		{
@@ -89,13 +80,5 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	public void setMax(final long max)
 	{
 		this.max = max;
-	}
-
-	/**
-	 * @param min the min to set
-	 */
-	public void setMin(final long min)
-	{
-		this.min = min;
 	}
 }

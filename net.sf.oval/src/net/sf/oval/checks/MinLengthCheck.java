@@ -10,54 +10,56 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraints;
+package net.sf.oval.checks;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.constraints.MinLength;
 import net.sf.oval.contexts.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
+public class MinLengthCheck extends AbstractAnnotationCheck<MinLength>
 {
 	private static final long serialVersionUID = 1L;
-	
-	private Class type;
+
+	private int min;
 
 	@Override
-	public void configure(final InstanceOf constraintAnnotation)
+	public void configure(final MinLength constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setType(constraintAnnotation.value());
-	}
-
-	/**
-	 * @return the clazz
-	 */
-	public Class getType()
-	{
-		return type;
+		setMin(constraintAnnotation.value());
 	}
 
 	@Override
 	public String[] getMessageValues()
 	{
-		return new String[]{type.getName()};
-	}
-
-	public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context)
-	{
-		if (value == null) return true;
-
-		return type.isInstance(value);
+		return new String[]{Integer.toString(min)};
 	}
 
 	/**
-	 * @param type the clazz to set
+	 * @return the min
 	 */
-	public void setType(final Class type)
+	public int getMin()
 	{
-		this.type = type;
+		return min;
 	}
 
+	public boolean isSatisfied(final Object validatedObject, final Object value,
+			final OValContext context)
+	{
+		if (value == null) return true;
+
+		final int len = value.toString().length();
+		return len >= min;
+	}
+
+	/**
+	 * @param min the min to set
+	 */
+	public void setMin(final int min)
+	{
+		this.min = min;
+	}
 }
