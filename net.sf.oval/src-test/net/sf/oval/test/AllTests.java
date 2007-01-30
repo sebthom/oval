@@ -35,10 +35,10 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
+		suite
+		.addTestSuite(net.sf.oval.test.validator.GetterReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
-		suite
-				.addTestSuite(net.sf.oval.test.validator.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);

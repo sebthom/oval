@@ -43,7 +43,7 @@ public final class ClassChecks
 	/**
 	 * checks on constructors' parameter values
 	 */
-	final Map<Constructor, Map<Integer, Collection<Check>>> checksForConstructorParameter = CollectionFactory.INSTANCE
+	final Map<Constructor, Map<Integer, Collection<Check>>> checksForConstructorParameters = CollectionFactory.INSTANCE
 			.createMap(4);
 
 	/**
@@ -138,12 +138,12 @@ public final class ClassChecks
 							+ ". Constraints guarding is not activated for this class.");
 
 		// retrieve the currently registered checks for all parameters of the specified constructor
-		Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
+		Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameters
 				.get(constructor);
 		if (checksOfConstructorByParameter == null)
 		{
 			checksOfConstructorByParameter = CollectionFactory.INSTANCE.createMap(8);
-			checksForConstructorParameter.put(constructor, checksOfConstructorByParameter);
+			checksForConstructorParameters.put(constructor, checksOfConstructorByParameter);
 		}
 
 		// retrieve the checks for the specified parameter
@@ -385,7 +385,7 @@ public final class ClassChecks
 	 */
 	synchronized void removeAllChecks(final Constructor constructor)
 	{
-		checksForConstructorParameter.remove(constructor);
+		checksForConstructorParameters.remove(constructor);
 	}
 
 	/**
@@ -394,7 +394,7 @@ public final class ClassChecks
 	synchronized void removeAllChecks(final Constructor constructor, final int parameterIndex)
 	{
 		// retrieve the currently registered checks for all parameters of the specified method
-		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
+		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameters
 				.get(constructor);
 		if (checksOfConstructorByParameter == null) return;
 
@@ -477,7 +477,7 @@ public final class ClassChecks
 					"Given constructor does not belong to this class" + clazz.getName());
 
 		// retrieve the currently registered checks for all parameters of the specified method
-		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameter
+		final Map<Integer, Collection<Check>> checksOfConstructorByParameter = checksForConstructorParameters
 				.get(constructor);
 		if (checksOfConstructorByParameter == null) return;
 
@@ -602,7 +602,7 @@ public final class ClassChecks
 
 		checksForMethodsPostExcecution.clear();
 		checksForMethodsPreExecution.clear();
-		checksForConstructorParameter.clear();
+		checksForConstructorParameters.clear();
 		checksForFields.clear();
 		checksForMethodReturnValues.clear();
 		checksForMethodParameters.clear();

@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 
 /**
  * After the annotated method has been executed all field and getter constraints 
- * of this object are validated.<br>
+ * (invariants) of this object are validated.<br>
  * <br>
  * In case of constraint violations the annotated method will throw an ConstraintsViolatedException.<br>
  * <br>

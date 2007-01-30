@@ -34,8 +34,20 @@ import java.lang.annotation.Target;
 public @interface Guarded
 {
 	/**
-	 * apply constraints specified for fields to the parameter value of the corresponding setter method
+	 * apply constraints specified for fields to the parameter of the corresponding setter methods
 	 * <br><br>
 	 */
 	boolean applyFieldConstraintsToSetter() default false;
+
+	/**
+	 * check invariants (constraints on fields and getter method return values) BEFORE any method
+	 * is executed from outside the current class
+	 */
+	boolean autoPreValidateThis() default false;
+
+	/**
+	 * check invariants (constraints on fields and getter method return values) AFTER any method
+	 * is executed from outside the current class
+	 */
+	boolean autoPostValidateThis() default false;
 }

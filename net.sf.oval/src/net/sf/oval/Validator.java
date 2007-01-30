@@ -1074,7 +1074,7 @@ public class Validator
 		try
 		{
 			final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-			final Map<Integer, Collection<Check>> parameterChecks = cc.checksForConstructorParameter
+			final Map<Integer, Collection<Check>> parameterChecks = cc.checksForConstructorParameters
 					.get(constructor);
 
 			// if no parameter checks exist just return null

@@ -25,7 +25,7 @@ import net.sf.oval.exceptions.ValidationFailedException;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodReturnValueConstraintsValidationTest extends TestCase
+public class GetterReturnValueConstraintsValidationTest extends TestCase
 {
 	public static class TestEntity
 	{

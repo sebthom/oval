@@ -5,6 +5,7 @@
 2007-01-?? v0.9
 ===============
 - the ant build script now also creates the dist folder if it does not exist (thanks to tahura)
+* the ant build script now generates "with-depedencies" distribution archives
 - XML configuration now also works for JREs without having the StAX API present
 * simplified the OVal XML configuration DTD
 * when @AssertValid is used on a map the map's keys and values are now validated too by default (thanks to tahura)

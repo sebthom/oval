@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project name="OVal">
 
 	<description>
-    	OVal is a generic based object validation framework for Java(tm) 5 or later
+    	OVal is an extensible object validation framework for Java(tm) 5 or later
     </description>
 
 	<tstamp>
@@ -17,7 +17,7 @@
 	<property name="buildversion" value="${version}.${NOW}" />
 	<property name="jar.basename" value="net.sf.oval" />
 	<property name="dist.basename" value="net.sf.oval" />
-		
+
 	<!-- ================================ -->
 	<!-- Project directories              -->
 	<!-- ================================ -->
@@ -53,7 +53,7 @@
 			
 			<include name="org.eclipse.osgi_*.jar"/>
 		</fileset>
-		
+
 	</path>
 
 	<!-- ================================ -->
@@ -130,6 +130,9 @@
 		</copy>
 	</target>
 
+	<!-- ================================ -->
+	<!-- Target: jar                      -->
+	<!-- ================================ -->
 	<target name="jar" depends="compile">
 
 		<jar jarfile="${build}/${jar.basename}_${version}.jar" basedir="${bin}" manifest="${basedir}/META-INF/MANIFEST.MF">
@@ -159,12 +162,18 @@
 
 	</target>
 
+	<!-- ================================ -->
+	<!-- Target: dist                     -->
+	<!-- ================================ -->
 	<target name="dist" depends="jar,create_docs">
 		
 		<description>Creates all distribution files</description>
-		
+
+		<!-- ************************************** -->
+		<!-- generate the dist without dependencies -->
+		<!-- ************************************** -->
 		<mkdir dir="${dist}"/>
-			
+
 		<copy todir="${build}/">
 			<fileset
 				dir="${doc}"
@@ -188,6 +197,7 @@
 			<fileset dir="${dist}" includes="${dist.basename}_${buildversion}*"/>
 		</delete>
 		
+		
 		<tar destfile="${dist}/${dist.basename}_${buildversion}.tar.gz" compression="gzip" longfile="gnu">
 			<tarfileset dir="${build}" excludes="bin/**"/>
 		</tar>
@@ -198,8 +208,31 @@
 			excludes="bin/**"
 		/>
 	
-	
+		<!-- *********************************** -->
+		<!-- generate the dist with dependencies -->
+		<!-- *********************************** -->
+		<mkdir dir="${build}/lib"/>		
+		<copy todir="${build}/lib/">
+			<fileset
+				dir="${res}"
+				includes="**/*"
+				excludes="docbook/**, maven/**, links/**, *.xml"
+			/>
+		</copy>
+
+		<tar destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.tar.gz" compression="gzip" longfile="gnu">
+			<tarfileset dir="${build}" excludes="bin/**"/>
+		</tar>
+				
+		<zip 
+			basedir="${build}"
+			destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.zip"
+			excludes="bin/**"
+		/>
+		
+		<!-- ************************* -->
 		<!-- generate the maven bundle -->
+		<!-- ************************* -->
 		<mkdir dir="${build}/maven"/>
 		
 		<copy tofile="${build}/maven/${jar.basename}-${version}.jar">
@@ -222,11 +255,14 @@
 		
 		<replace file="${build}/maven/pom.xml" token="$VERSION$" value="${version}"/>
 		
-		<jar 
+		<jar
 			basedir="${build}/maven"
 			destfile="${dist}/${jar.basename}-${version}-bundle.jar"
 		/>
 		
+		<!-- ******** -->
+		<!-- clean up -->
+		<!-- ******** -->
 		<delete dir="${build}" />
 	</target>
 </project>
