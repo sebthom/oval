@@ -36,7 +36,7 @@ import net.sf.oval.utils.ReflectionUtils;
  * 
  * @author Sebastian Thomschke
  */
-public final class ClassChecks
+public class ClassChecks
 {
 	private static final Logger LOG = Logger.getLogger(ClassChecks.class.getName());
 
@@ -106,7 +106,7 @@ public final class ClassChecks
 	 * @param clazz
 	 */
 	@SuppressWarnings("unchecked")
-	ClassChecks(final Class clazz)
+	protected ClassChecks(final Class clazz)
 	{
 		if (LOG.isLoggable(Level.FINE))
 			LOG.fine("Initializing constraints configuration for class " + clazz);
@@ -121,7 +121,7 @@ public final class ClassChecks
 	 * @param constructor
 	 * @param parameterIndex
 	 * @param checks
-	 * @throws InvalidConfigurationException
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
 	 */
 	public synchronized void addChecks(final Constructor constructor, final int parameterIndex,
 			final Check... checks) throws InvalidConfigurationException
@@ -250,7 +250,7 @@ public final class ClassChecks
 	 * @param method
 	 * @param parameterIndex
 	 * @param checks
-	 * @throws InvalidConfigurationException
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
 	public synchronized void addChecks(final Method method, final int parameterIndex,
 			final Check... checks) throws InvalidConfigurationException
@@ -291,7 +291,7 @@ public final class ClassChecks
 	 * adds constraint checks to a method's return value
 	 * @param method
 	 * @param checks
-	 * @throws InvalidConfigurationException
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
 	public synchronized void addChecks(final Method method, final PostCheck... checks)
 			throws InvalidConfigurationException
@@ -325,7 +325,7 @@ public final class ClassChecks
 	 * adds constraint checks to a method's return value
 	 * @param method
 	 * @param checks
-	 * @throws InvalidConfigurationException
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
 	public synchronized void addChecks(final Method method, final PreCheck... checks)
 			throws InvalidConfigurationException

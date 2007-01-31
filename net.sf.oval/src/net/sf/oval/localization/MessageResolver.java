@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval;
+package net.sf.oval.localization;
 
 /**
  * @author Sebastian Thomschke

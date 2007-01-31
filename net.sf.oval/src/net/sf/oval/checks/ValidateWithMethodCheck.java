@@ -13,8 +13,10 @@
 package net.sf.oval.checks;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.ValidateWithMethod;
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.ReflectionException;
@@ -25,7 +27,7 @@ import net.sf.oval.exceptions.ReflectionException;
 public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private boolean ignoreIfNull;
 	private String methodName;
 	private Class parameterType;
@@ -40,9 +42,13 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{methodName, parameterType.getName()};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(4);
+		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+		messageVariables.put("methodName", methodName);
+		messageVariables.put("parameterType", parameterType.getName());
+		return messageVariables;
 	}
 
 	/**
@@ -73,7 +79,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 			final OValContext context) throws ReflectionException
 	{
 		if (value == null && ignoreIfNull) return true;
-		
+
 		try
 		{
 			final Method method = validatedObject.getClass().getDeclaredMethod(methodName,

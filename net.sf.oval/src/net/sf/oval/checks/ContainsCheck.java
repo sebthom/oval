@@ -12,7 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
+
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.Contains;
 import net.sf.oval.contexts.OValContext;
 
@@ -37,9 +40,12 @@ public class ContainsCheck extends AbstractAnnotationCheck<Contains>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{Boolean.toString(ignoreCase)};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
+		messageVariables.put("substring", substring);
+		return messageVariables;
 	}
 
 	/**
@@ -82,8 +88,6 @@ public class ContainsCheck extends AbstractAnnotationCheck<Contains>
 	public void setSubstring(final String substring)
 	{
 		this.substring = substring;
-
 		substringLowerCase = substring.toLowerCase();
 	}
-
 }

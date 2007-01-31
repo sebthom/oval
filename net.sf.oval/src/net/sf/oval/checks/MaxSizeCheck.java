@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.MaxSize;
 import net.sf.oval.contexts.OValContext;
 
@@ -45,9 +46,11 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{Integer.toString(max)};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		return messageVariables;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,

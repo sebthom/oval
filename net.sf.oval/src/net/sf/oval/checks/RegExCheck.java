@@ -12,9 +12,11 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.RegEx;
 import net.sf.oval.contexts.OValContext;
 
@@ -35,9 +37,11 @@ public class RegExCheck extends AbstractAnnotationCheck<RegEx>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{pattern.pattern()};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("pattern", pattern.pattern());
+		return messageVariables;
 	}
 
 	/**

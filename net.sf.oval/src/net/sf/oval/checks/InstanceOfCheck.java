@@ -12,7 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
+
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.InstanceOf;
 import net.sf.oval.contexts.OValContext;
 
@@ -22,7 +25,7 @@ import net.sf.oval.contexts.OValContext;
 public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Class type;
 
 	@Override
@@ -32,21 +35,24 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 		setType(constraintAnnotation.value());
 	}
 
+	@Override
+	public Map<String, String> getMessageVariables()
+	{
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("type", type.getName());
+		return messageVariables;
+	}
+
 	/**
-	 * @return the clazz
+	 * @return the type
 	 */
 	public Class getType()
 	{
 		return type;
 	}
 
-	@Override
-	public String[] getMessageValues()
-	{
-		return new String[]{type.getName()};
-	}
-
-	public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context)
+	public boolean isSatisfied(final Object validatedObject, final Object value,
+			final OValContext context)
 	{
 		if (value == null) return true;
 
@@ -54,11 +60,10 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	}
 
 	/**
-	 * @param type the clazz to set
+	 * @param type the type to set
 	 */
 	public void setType(final Class type)
 	{
 		this.type = type;
 	}
-
 }

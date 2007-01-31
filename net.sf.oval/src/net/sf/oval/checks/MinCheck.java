@@ -12,7 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
+
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.Min;
 import net.sf.oval.contexts.OValContext;
 
@@ -33,9 +36,11 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{Long.toString(min)};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("min", Long.toString(min));
+		return messageVariables;
 	}
 
 	/**

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import net.sf.oval.checks.AssertCheck;
@@ -51,9 +52,14 @@ import net.sf.oval.exceptions.OValException;
 import net.sf.oval.exceptions.ReflectionException;
 import net.sf.oval.exceptions.UndefinedConstraintSetException;
 import net.sf.oval.exceptions.ValidationFailedException;
+import net.sf.oval.expression.ExpressionLanguage;
+import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
+import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
+import net.sf.oval.localization.MessageResolver;
+import net.sf.oval.localization.MessageResolverImpl;
 import net.sf.oval.utils.ArrayUtils;
 import net.sf.oval.utils.ListOrderedSet;
 import net.sf.oval.utils.ReflectionUtils;
@@ -439,7 +445,7 @@ public class Validator
 		if (!check.isSatisfied(validatedObject, valueToValidate, context))
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
-					check.getMessageValues());
+					check.getMessageVariables());
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context));
 		}
@@ -456,7 +462,7 @@ public class Validator
 		if (!eng.evaluate(check.getExpression(), values))
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
-					check.getMessageValues());
+					check.getMessageVariables());
 
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context));
@@ -630,7 +636,7 @@ public class Validator
 		if (childViolations.size() != 0)
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
-					check.getMessageValues());
+					check.getMessageVariables());
 
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
 					context, childViolations
@@ -647,7 +653,7 @@ public class Validator
 				if (itemViolations.size() != 0)
 				{
 					final String errorMessage = renderMessage(context, item, check.getMessage(),
-							check.getMessageValues());
+							check.getMessageVariables());
 
 					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
 							context, itemViolations.toArray(new ConstraintViolation[itemViolations
@@ -666,7 +672,7 @@ public class Validator
 				if (itemViolations.size() != 0)
 				{
 					final String errorMessage = renderMessage(context, item, check.getMessage(),
-							check.getMessageValues());
+							check.getMessageVariables());
 
 					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
 							context, itemViolations.toArray(new ConstraintViolation[itemViolations
@@ -681,7 +687,7 @@ public class Validator
 				if (itemViolations.size() != 0)
 				{
 					final String errorMessage = renderMessage(context, item, check.getMessage(),
-							check.getMessageValues());
+							check.getMessageVariables());
 
 					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
 							context, itemViolations.toArray(new ConstraintViolation[itemViolations
@@ -923,7 +929,7 @@ public class Validator
 	}
 
 	private String renderMessage(final OValContext context, final Object value,
-			final String messageKey, final String... messageValues)
+			final String messageKey, final Map<String, String> messageValues)
 	{
 		String message = messageResolver.getMessage(messageKey);
 		if (message == null) message = messageKey;
@@ -931,16 +937,19 @@ public class Validator
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
 
-		final int messageValuesCount = messageValues == null ? 0 : messageValues.length;
+		message = StringUtils.replaceAll(message, "{context}", context.toString());
+		message = StringUtils.replaceAll(message, "{invalidValue}", value == null ? "null" : value
+				.toString());
 
-		message = StringUtils.replaceAll(message, "{0}", context.toString());
-		message = StringUtils.replaceAll(message, "{1}", value == null ? "null" : value.toString());
-
-		for (int i = 0; i < messageValuesCount; i++)
+		if (messageValues != null && messageValues.size() > 0)
 		{
-			message = StringUtils.replaceAll(message, "{" + Integer.toString(i + 2) + "}",
-					messageValues[i]);
+			for (final Entry<String, String> entry : messageValues.entrySet())
+			{
+				message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", entry
+						.getValue());
+			}
 		}
+
 		return message;
 	}
 
@@ -1207,8 +1216,11 @@ public class Validator
 
 					if (!eng.evaluate(check.getExpression(), values))
 					{
+						final Map<String, String> messageVariables = CollectionFactory.INSTANCE
+								.createMap(2);
+						messageVariables.put("expression", check.getExpression());
 						final String errorMessage = renderMessage(context, null,
-								check.getMessage(), check.getExpression());
+								check.getMessage(), messageVariables);
 
 						violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
 								context));
@@ -1303,8 +1315,11 @@ public class Validator
 
 					if (!eng.evaluate(check.getExpression(), values))
 					{
+						final Map<String, String> messageVariables = CollectionFactory.INSTANCE
+								.createMap(2);
+						messageVariables.put("expression", check.getExpression());
 						final String errorMessage = renderMessage(context, null,
-								check.getMessage(), check.getExpression());
+								check.getMessage(), messageVariables);
 
 						violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
 								context));

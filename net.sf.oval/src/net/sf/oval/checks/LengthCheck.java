@@ -12,7 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
+
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.Length;
 import net.sf.oval.contexts.OValContext;
 
@@ -22,7 +25,7 @@ import net.sf.oval.contexts.OValContext;
 public class LengthCheck extends AbstractAnnotationCheck<Length>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int min;
 	private int max;
 
@@ -43,9 +46,12 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{Integer.toString(min), Integer.toString(max)};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		messageVariables.put("min", Integer.toString(min));
+		return messageVariables;
 	}
 
 	/**
@@ -80,5 +86,4 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	{
 		this.min = min;
 	}
-
 }

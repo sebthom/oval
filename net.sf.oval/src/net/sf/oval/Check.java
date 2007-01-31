@@ -13,6 +13,7 @@
 package net.sf.oval;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import net.sf.oval.contexts.OValContext;
 import net.sf.oval.exceptions.OValException;
@@ -38,7 +39,7 @@ public interface Check extends Serializable
 	 * values that are used as place holders when rendering the error message.
 	 * the first value is used as placeholder {2}, the second value as placeholder {3} etc.
 	 */
-	String[] getMessageValues();
+	Map<String,String> getMessageVariables();
 
 	/**
 	 * @return the profiles, may return null

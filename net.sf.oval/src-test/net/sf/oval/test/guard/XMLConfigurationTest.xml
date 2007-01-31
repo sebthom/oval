@@ -5,8 +5,8 @@
 <oval>
 	<!-- define a constraint set -->
 	<constraintSet id="user.userid">
-		<notNull message="{0} is null" />
-		<regEx message="{0} does not match the pattern {2}">
+		<notNull message="{context} is null" />
+		<regEx message="{context} does not match the pattern {pattern}">
 			<pattern pattern="^[a-z0-9]{8}$" flags="0" />
 		</regEx>
 	</constraintSet>
@@ -17,12 +17,12 @@
 		applyFieldConstraintsToSetter="true">
 		<field name="firstName">
 			<length min="0" max="3"
-				message="{0} is not between {2} and {3} characters long" />
+				message="{context} is not between {min} and {max} characters long" />
 		</field>
 
 		<field name="lastName">
 			<length min="0" max="5"
-				message="{0} is not between {2} and {3} characters long" />
+				message="{context} is not between {min} and {max} characters long" />
 		</field>
 
 		<!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.Size;
 import net.sf.oval.contexts.OValContext;
 
@@ -47,9 +48,12 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{Integer.toString(min), Integer.toString(max)};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		messageVariables.put("min", Integer.toString(min));
+		return messageVariables;
 	}
 
 	/**

@@ -12,7 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
+
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.Assert;
 import net.sf.oval.contexts.OValContext;
 
@@ -34,6 +37,15 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		setLanguage(constraintAnnotation.language());
 	}
 
+	@Override
+	public Map<String, String> getMessageVariables()
+	{
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("expression", expression);
+		messageVariables.put("language", language);
+		return messageVariables;
+	}
+
 	/**
 	 * @return the expression
 	 */
@@ -48,12 +60,6 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public String getLanguage()
 	{
 		return language;
-	}
-
-	@Override
-	public String[] getMessageValues()
-	{
-		return new String[]{expression};
 	}
 
 	/**

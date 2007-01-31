@@ -14,8 +14,11 @@ package net.sf.oval;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.sf.oval.collections.CollectionFactory;
 
 /**
  *
@@ -28,6 +31,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 	private final static Logger LOG = Logger.getLogger(AbstractAnnotationCheck.class.getName());
 
 	protected String message;
+
 	protected String[] profiles;
 
 	public void configure(final ConstraintAnnotation constraintAnnotation)
@@ -66,9 +70,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		catch (Exception e)
 		{
 			if (LOG.isLoggable(Level.FINE))
-				LOG.log(Level.FINE,
-						"Cannot determine constraint profiles based on annotation "
-								+ constraintClazz.getName(), e);
+				LOG.log(Level.FINE, "Cannot determine constraint profiles based on annotation "
+						+ constraintClazz.getName(), e);
 		}
 	}
 
@@ -89,7 +92,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		return message;
 	}
 
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
 		return null;
 	}

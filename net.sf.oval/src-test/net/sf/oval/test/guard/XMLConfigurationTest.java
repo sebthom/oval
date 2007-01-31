@@ -112,11 +112,11 @@ public class XMLConfigurationTest extends TestCase
 			csf.id = "user.userid";
 			csf.checks = new ArrayList<Check>();
 			NotNullCheck nnc = new NotNullCheck();
-			nnc.setMessage("{0} is null");
+			nnc.setMessage("{context} is null");
 			csf.checks.add(nnc);
 			RegExCheck rec = new RegExCheck();
 			rec.setPattern(Pattern.compile("^[a-z0-9]{8}$", 0));
-			rec.setMessage("{0} does not match the pattern {2}");
+			rec.setMessage("{context} does not match the pattern {pattern}");
 			csf.checks.add(rec);
 		}
 
@@ -134,7 +134,7 @@ public class XMLConfigurationTest extends TestCase
 				fc.name = "firstName";
 				fc.checks = new ArrayList<Check>();
 				LengthCheck lc = new LengthCheck();
-				lc.setMessage("{0} is not between {2} and {3} characters long");
+				lc.setMessage("{context} is not between {min} and {max} characters long");
 				lc.setMax(3);
 				fc.checks.add(lc);
 			}
@@ -145,7 +145,7 @@ public class XMLConfigurationTest extends TestCase
 				fc.name = "lastName";
 				fc.checks = new ArrayList<Check>();
 				LengthCheck lc = new LengthCheck();
-				lc.setMessage("{0} is not between {2} and {3} characters long");
+				lc.setMessage("{context} is not between {min} and {max} characters long");
 				lc.setMax(5);
 				fc.checks.add(lc);
 			}

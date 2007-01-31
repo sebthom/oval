@@ -1,4 +1,4 @@
-package net.sf.oval;
+package net.sf.oval.expression;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;

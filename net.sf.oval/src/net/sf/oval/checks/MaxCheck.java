@@ -12,7 +12,10 @@
  *******************************************************************************/
 package net.sf.oval.checks;
 
+import java.util.Map;
+
 import net.sf.oval.AbstractAnnotationCheck;
+import net.sf.oval.collections.CollectionFactory;
 import net.sf.oval.constraints.Max;
 import net.sf.oval.contexts.OValContext;
 
@@ -41,9 +44,11 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	}
 
 	@Override
-	public String[] getMessageValues()
+	public Map<String, String> getMessageVariables()
 	{
-		return new String[]{Long.toString(max)};
+		final Map<String, String> messageVariables = CollectionFactory.INSTANCE.createMap(2);
+		messageVariables.put("max", Long.toString(max));
+		return messageVariables;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
