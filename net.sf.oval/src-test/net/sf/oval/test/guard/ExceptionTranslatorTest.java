@@ -13,9 +13,10 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
-import net.sf.oval.guard.ExceptionTranslatorJREExceptionsImpl;
+import net.sf.oval.guard.ExceptionTranslatorJDKExceptionsImpl;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -36,7 +37,10 @@ public class ExceptionTranslatorTest extends TestCase
 
 	public void testExceptionTranslator()
 	{
-		assertNull(TestGuardAspect.aspectOf().getGuard().getExceptionTranslator());
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		assertNull(guard.getExceptionTranslator());
 
 		try
 		{
@@ -50,8 +54,7 @@ public class ExceptionTranslatorTest extends TestCase
 
 		try
 		{
-			TestGuardAspect.aspectOf().getGuard().setExceptionTranslator(
-					new ExceptionTranslatorJREExceptionsImpl());
+			guard.setExceptionTranslator(new ExceptionTranslatorJDKExceptionsImpl());
 			try
 			{
 				final TestEntity t = new TestEntity();
@@ -66,7 +69,7 @@ public class ExceptionTranslatorTest extends TestCase
 		}
 		finally
 		{
-			TestGuardAspect.aspectOf().getGuard().setExceptionTranslator(null);
+			guard.setExceptionTranslator(null);
 		}
 	}
 }

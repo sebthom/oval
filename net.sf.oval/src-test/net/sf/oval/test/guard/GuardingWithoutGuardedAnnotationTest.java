@@ -14,10 +14,11 @@ package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.contexts.ConstructorParameterContext;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 
 /**
  * @author Sebastian Thomschke
@@ -28,7 +29,7 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 	{
 		@SuppressWarnings("unused")
 		@NotNull(message = "NOT_NULL")
-		private String name;
+		private String name = "";
 
 		/**
 		 * Constructor 1
@@ -62,6 +63,10 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 
 	public void testConstructorParameterConstraints()
 	{
+		final Guard guard = new Guard();
+		guard.setInvariantCheckingActivated(TestEntity.class, true);
+		GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
+
 		/*
 		 * Testing Constructor 1
 		 */
@@ -83,13 +88,23 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		/*
 		 * Testing Constructor 2
 		 */
-		// the constructor should not result in an any auto validation,
-		// therefore the construction with a null value for the name parameter should succeed
-		new TestEntity(null, 100);
+		try
+		{
+			new TestEntity(null, 100);
+			fail(); // invariant check on name fails
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			// expected
+		}
 	}
 
 	public void testMethodParameterConstraints()
 	{
+		final Guard guard = new Guard();
+		guard.setInvariantCheckingActivated(TestEntity.class, true);
+		GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
+
 		try
 		{
 			TestEntity t1 = new TestEntity("");

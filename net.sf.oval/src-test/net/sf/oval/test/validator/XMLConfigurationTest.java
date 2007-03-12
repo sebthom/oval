@@ -26,18 +26,18 @@ import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.checks.AssertConstraintSetCheck;
-import net.sf.oval.checks.LengthCheck;
-import net.sf.oval.checks.NotNullCheck;
-import net.sf.oval.checks.RegExCheck;
-import net.sf.oval.configuration.POJOConfigurer;
-import net.sf.oval.configuration.XMLConfigurer;
-import net.sf.oval.configuration.elements.ClassConfiguration;
-import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
-import net.sf.oval.configuration.elements.FieldConfiguration;
-import net.sf.oval.configuration.elements.MethodConfiguration;
-import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
-import net.sf.oval.constraints.Length;
+import net.sf.oval.configuration.pojo.POJOConfigurer;
+import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
+import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
+import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
+import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
+import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
+import net.sf.oval.configuration.xml.XMLConfigurer;
+import net.sf.oval.constraint.AssertConstraintSetCheck;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.LengthCheck;
+import net.sf.oval.constraint.MatchPatternCheck;
+import net.sf.oval.constraint.NotNullCheck;
 
 /**
  * @author Sebastian Thomschke
@@ -89,7 +89,7 @@ public class XMLConfigurationTest extends TestCase
 			NotNullCheck nnc = new NotNullCheck();
 			nnc.setMessage("{context} is null");
 			csf.checks.add(nnc);
-			RegExCheck rec = new RegExCheck();
+			MatchPatternCheck rec = new MatchPatternCheck();
 			rec.setPattern(Pattern.compile("^[a-z0-9]{8}$", 0));
 			rec.setMessage("{context} does not match the pattern {pattern}");
 			csf.checks.add(rec);
@@ -141,6 +141,7 @@ public class XMLConfigurationTest extends TestCase
 				MethodConfiguration mc = new MethodConfiguration();
 				cf.methodConfigurations.add(mc);
 				mc.name = "getManagerId";
+				mc.isInvariant = true;
 				mc.returnValueConfiguration = new MethodReturnValueConfiguration();
 				mc.returnValueConfiguration.checks = new ArrayList<Check>();
 				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();

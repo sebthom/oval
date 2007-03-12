@@ -15,15 +15,15 @@ package net.sf.oval.test.guard;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-import net.sf.oval.ClassChecks;
-import net.sf.oval.checks.AssertFieldConstraintsCheck;
-import net.sf.oval.constraints.AssertFieldConstraints;
-import net.sf.oval.constraints.AssertTrue;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.RegEx;
+import net.sf.oval.constraint.AssertFieldConstraints;
+import net.sf.oval.constraint.AssertFieldConstraintsCheck;
+import net.sf.oval.constraint.AssertTrue;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.MatchPattern;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -35,19 +35,19 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 	private class Person
 	{
 		@NotNull(message="NOT_NULL")
-		private String firstName;
+		private String firstName="";
 
 		@AssertTrue(message="ASSERT_TRUE")
 		private boolean isValid = true;
 
 		@NotNull(message="NOT_NULL")
-		private String lastName;
+		private String lastName="";
 
 		@NotNull(message="NOT_NULL")
 		@Length(max = 6,message="LENGTH")
 		@NotEmpty(message="NOT_EMPTY")
-		@RegEx(pattern = "^[0-9]*$",message="REG_EX")
-		private String zipCode;
+		@MatchPattern(pattern = "^[0-9]*$",message="REG_EX")
+		private String zipCode="1";
 
 		public String getFirstName()
 		{
@@ -69,7 +69,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			return isValid;
 		}
 
-		public void setDummyFirstName(@AssertFieldConstraints("firstName")
+		public void setDummyFirstName(@AssertFieldConstraints(value="firstName")
 		String dummyFirstName)
 		{
 		// doing interesting stuff here
@@ -113,10 +113,13 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 	{
 		final Person p = new Person();
 
-		TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
+		guard.setInProbeMode(p, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.aspectOf().getGuard().addListener(va, p);
+		guard.addListener(va, p);
 
 		// test @Length(max=)
 		p.setFirstName("Mike");
@@ -155,7 +158,6 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
 		va.clear();
 
-		final ClassChecks cc = TestGuardAspect.aspectOf().getValidator().getClassChecks(Person.class);
 		// test dynamic introduction of FieldConstraintsCheck
 		{
 			p.setZipCode2("dffd34");
@@ -165,20 +167,20 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			final Method setter = p.getClass().getMethod("setZipCode2",
 					new Class<?>[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
-			cc.addChecks(setter, 0, check);
+			guard.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
 			assertTrue(va.getConstraintViolations().size() == 1);
 			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
 			va.clear();
-			cc.removeCheck(setter, 0, check);
+			guard.removeChecks(setter, 0, check);
 		}
 		{
 			final Method setter = p.getClass().getMethod("setZipCode2",
 					new Class<?>[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			check.setFieldName("firstName");
-			cc.addChecks(setter, 0, check);
+			guard.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 			p.setZipCode2(null);
@@ -186,7 +188,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			assertTrue(va.getConstraintViolations().size() == 1);
 			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
 			va.clear();
-			cc.removeCheck(setter, 0, check);
+			guard.removeChecks(setter, 0, check);
 		}
 		{
 			p.setZipCode2("dffd34");

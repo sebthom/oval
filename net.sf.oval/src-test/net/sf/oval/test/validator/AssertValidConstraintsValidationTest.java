@@ -19,11 +19,11 @@ import java.util.Set;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.AssertValid;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.RegEx;
+import net.sf.oval.constraint.AssertValid;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.MatchPattern;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 
 /**
  * @author Sebastian Thomschke
@@ -63,7 +63,7 @@ public class AssertValidConstraintsValidationTest extends TestCase
 		@NotNull
 		@Length(max = 6)
 		@NotEmpty
-		@RegEx(pattern = "^[0-9]*$")
+		@MatchPattern(pattern = "^[0-9]*$")
 		public String zipCode;
 
 		@AssertValid(message = "ASSERT_VALID")

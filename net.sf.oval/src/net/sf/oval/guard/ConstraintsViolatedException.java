@@ -15,7 +15,7 @@ package net.sf.oval.guard;
 import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.exceptions.OValException;
+import net.sf.oval.exception.OValException;
 
 /**
  * This exception is thrown if one or more constraints are not satisfied during validation.

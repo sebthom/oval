@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
-import net.sf.oval.contexts.OValContext;
+import net.sf.oval.context.OValContext;
 
 /**
  * An instance of this class provides detailed information about a single constraint violation 
- * that was detected during validation.
+ * that occured during validation.
  * 
  * @author Sebastian Thomschke
  */
@@ -33,25 +33,26 @@ public class ConstraintViolation implements Serializable
 	private final ConstraintViolation[] causes;
 	private final OValContext context;
 	private final String message;
+
 	private transient Object validatedObject;
-	private transient Object value;
+	private transient Object invalidValue;
 
 	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object value, final OValContext context)
+			final Object invalidValue, final OValContext context)
 	{
 		this.message = message;
 		this.validatedObject = validatedObject;
-		this.value = value;
+		this.invalidValue = invalidValue;
 		this.context = context;
 		this.causes = null;
 	}
 
 	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object value, final OValContext context, final ConstraintViolation[] causes)
+			final Object invalidValue, final OValContext context, final ConstraintViolation[] causes)
 	{
 		this.message = message;
 		this.validatedObject = validatedObject;
-		this.value = value;
+		this.invalidValue = invalidValue;
 		this.context = context;
 		this.causes = causes;
 	}
@@ -91,16 +92,16 @@ public class ConstraintViolation implements Serializable
 	/**
 	 * @return Returns the value that was validated.
 	 */
-	public Object getValue()
+	public Object getInvalidValue()
 	{
-		return value;
+		return invalidValue;
 	}
 
 	/**
+	 * see http://java.sun.com/developer/technicalArticles/ALT/serialization/
 	 * 
 	 * @param in
 	 * @throws IOException
-	 * @see http://java.sun.com/developer/technicalArticles/ALT/serialization/
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(final java.io.ObjectInputStream in) throws IOException,
@@ -113,7 +114,7 @@ public class ConstraintViolation implements Serializable
 		}
 		if (in.readBoolean())
 		{
-			value = in.readObject();
+			invalidValue = in.readObject();
 		}
 	}
 
@@ -124,9 +125,9 @@ public class ConstraintViolation implements Serializable
 	}
 
 	/**
+	 * see http://java.sun.com/developer/technicalArticles/ALT/serialization/
 	 * 
 	 * @param out
-	 * @see http://java.sun.com/developer/technicalArticles/ALT/serialization/
 	 * @throws IOException
 	 */
 	private synchronized void writeObject(final java.io.ObjectOutputStream out) throws IOException
@@ -140,24 +141,24 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			LOG.warning("Field 'validatedObject' not serialized because the referenced object "
-					+ validatedObject + " of type " + value.getClass()
-					+ " does not implement Serializable.");
+			LOG.warning("Field 'validatedObject' not serialized because the field value object "
+					+ validatedObject + " of type " + invalidValue.getClass()
+					+ " does not implement java.io.Serializable.");
 
 			// indicate validatedObject does not implement Serializable
 			out.writeBoolean(false);
 		}
 
-		if (value instanceof Serializable)
+		if (invalidValue instanceof Serializable)
 		{
 			// indicate value implements Serializable
 			out.writeBoolean(true);
-			out.writeObject(value);
+			out.writeObject(invalidValue);
 		}
 		else
 		{
-			LOG.warning("Field 'value' not serialized because the referenced object " + value
-					+ " does not implement Serializable.");
+			LOG.warning("Field 'invalidValue' could not be serialized because the field value object "
+					+ invalidValue + " does not implement java.io.Serializable.");
 			// indicate value does not implement Serializable
 			out.writeBoolean(false);
 		}

@@ -4,9 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.Assert;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.Assert;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
 import net.sf.oval.guard.Pre;
@@ -43,6 +44,9 @@ public class PrePostJavascriptTest extends TestCase
 
 	public void testPreJavascript()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		TestTransaction t = new TestTransaction();
 		
 		try
@@ -77,6 +81,9 @@ public class PrePostJavascriptTest extends TestCase
 
 	public void testPostJavascript()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		TestTransaction t = new TestTransaction();
 
 		try

@@ -14,9 +14,10 @@ package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.Range;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.Range;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -28,10 +29,10 @@ public class CustomConstraintMessageTest extends TestCase
 	private class TestEntity
 	{
 		@Range(min = 2, max = 4, message = "An amount of {invalidValue} in not in the allowed range ({min}-{max})")
-		private int amount;
+		private int amount = 2;
 
 		@NotNull(message = CUSTOM_ERROR_MESSAGE)
-		private String name;
+		private String name = "";
 
 		/**
 		 * @return the amount
@@ -75,6 +76,9 @@ public class CustomConstraintMessageTest extends TestCase
 	 */
 	public void testCustomConstraintMessage()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		final TestEntity e = new TestEntity();
 
 		try

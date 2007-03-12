@@ -16,11 +16,13 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.contexts.ConstructorParameterContext;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.context.ConstructorParameterContext;
+import net.sf.oval.context.FieldContext;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -33,7 +35,7 @@ public class ParameterConstraintsTest extends TestCase
 	{
 		@SuppressWarnings("unused")
 		@NotNull(message = "NOT_NULL")
-		private String name;
+		private String name = "";
 
 		/**
 		 * Constructor 1
@@ -67,8 +69,12 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testConstructorParameterConstraints()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		/*
 		 * Testing Constructor 1
+		 * parameter constraint
 		 */
 		try
 		{
@@ -87,14 +93,27 @@ public class ParameterConstraintsTest extends TestCase
 
 		/*
 		 * Testing Constructor 2
+		 * invariant constraint
 		 */
-		// the constructor should not result in an any auto validation,
-		// therefore the construction with a null value for the name parameter should succeed
-		new TestEntity(null, 100);
+		try
+		{
+			new TestEntity(null, 100);
+			fail();
+		}
+		catch (ConstraintsViolatedException e)
+		{
+			ConstraintViolation[] violations = e.getConstraintViolations();
+			assertTrue(violations != null && violations.length == 1);
+			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+			assertTrue(violations[0].getContext() instanceof FieldContext);
+		}
 	}
 
 	public void testMethodParameters()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		try
 		{
 			TestEntity t1 = new TestEntity("");
@@ -124,12 +143,15 @@ public class ParameterConstraintsTest extends TestCase
 
 	public void testMethodParametersInProbeMode()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		TestEntity entity = new TestEntity("");
 
-		TestGuardAspect.aspectOf().getGuard().setInProbeMode(entity, true);
-		
+		guard.setInProbeMode(entity, true);
+
 		ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.aspectOf().getGuard().addListener(va, entity);
+		guard.addListener(va, entity);
 
 		entity.setName(null);
 		entity.setName("12345678");
@@ -138,6 +160,6 @@ public class ParameterConstraintsTest extends TestCase
 		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 		assertTrue(violations.get(1).getMessage().equals("LENGTH"));
 
-		TestGuardAspect.aspectOf().getGuard().removeListener(va, entity);
+		guard.removeListener(va, entity);
 	}
 }

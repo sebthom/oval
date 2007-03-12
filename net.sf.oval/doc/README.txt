@@ -1,13 +1,13 @@
-OVal - object validation framework
+OVal - the object validation framework for Java 5 or later
 Version $VERSION$
 http://oval.sf.net
 
-OVal is a generic Java 5 based object validation framework for any kind 
-of Java objects (not only JavaBeans). Constraints can be expressed with
-annotations or in XML. OVal supports validation of class fields, method
-return values, as well as constructor/method parameters. Automatic 
-validation (programming by contract) can be achieved by using pre-built
-AspectJ aspects.
+OVal is a pragmatic and extensible validation framework for any kind of Java
+objects (not only JavaBeans). Constraints can be configured with annotations,
+POJOs or XML. Custom constraints can be expressed in pure Java or by using
+scripting languages such as JavaScript, Groovy or BeanShell. Besides simple
+object validation OVal provides certain Programming by Contract features.
+They can easily be enable by using the provided AspectJ aspects.
 
 =======================================
 

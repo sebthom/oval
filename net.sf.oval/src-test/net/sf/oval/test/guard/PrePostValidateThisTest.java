@@ -14,9 +14,9 @@ package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.contexts.FieldContext;
-import net.sf.oval.contexts.MethodParameterContext;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.context.FieldContext;
+import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
@@ -28,7 +28,7 @@ import net.sf.oval.guard.PreValidateThis;
  */
 public class PrePostValidateThisTest extends TestCase
 {
-	@Guarded(applyFieldConstraintsToSetter = true)
+	@Guarded(applyFieldConstraintsToSetter = true, checkInvariants = false)
 	public static class TestEntity
 	{
 		@NotNull(message = "NOT_NULL")
@@ -55,7 +55,7 @@ public class PrePostValidateThisTest extends TestCase
 		{
 			this.name = name;
 		}
-		
+
 		@PostValidateThis
 		public void setNamePost(String name)
 		{
@@ -103,7 +103,7 @@ public class PrePostValidateThisTest extends TestCase
 		assertTrue(va.getConstraintViolations().size() == 1);
 		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
 		va.clear();
-		
+
 		// test post-condition ignored even if pre-conditions satisfied
 		t.setNamePost(null);
 		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);

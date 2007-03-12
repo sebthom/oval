@@ -6,9 +6,9 @@
 	<!-- define a constraint set -->
 	<constraintSet id="user.userid">
 		<notNull message="{context} is null" />
-		<regEx message="{context} does not match the pattern {pattern}">
+		<matchPattern message="{context} does not match the pattern {pattern}">
 			<pattern pattern="^[a-z0-9]{8}$" flags="0" />
-		</regEx>
+		</matchPattern>
 	</constraintSet>
 
 	<!-- define checks for the net.sf.oval.test.enforcer.XMLConfigurationTest$User class -->

@@ -13,12 +13,11 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.AssertFieldConstraints;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.AssertFieldConstraints;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
-import net.sf.oval.guard.PostValidateThis;
-import net.sf.oval.guard.PreValidateThis;
 
 /**
  * @author Sebastian Thomschke
@@ -37,13 +36,11 @@ public class StaticMethodsTest extends TestCase
 			TestEntity.value = value;
 		}
 
-		@PreValidateThis
 		public static void doSomethingPre()
 		{
 		//
 		}
-		
-		@PostValidateThis
+
 		public static void doSomethingPost()
 		{
 		//
@@ -52,6 +49,9 @@ public class StaticMethodsTest extends TestCase
 
 	public void testPreValidateThis() throws Exception
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		TestEntity.value = null;
 
 		try
@@ -64,13 +64,16 @@ public class StaticMethodsTest extends TestCase
 			assertTrue(ex.getConstraintViolations().length == 1);
 			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
 		}
-		
+
 		TestEntity.value = "";
 		TestEntity.doSomethingPre();
 	}
-	
+
 	public void testPostValidateThis() throws Exception
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		TestEntity.value = null;
 
 		try
@@ -83,13 +86,16 @@ public class StaticMethodsTest extends TestCase
 			assertTrue(ex.getConstraintViolations().length == 1);
 			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
 		}
-		
+
 		TestEntity.value = "";
 		TestEntity.doSomethingPost();
 	}
 
 	public void testSetterValidation() throws Exception
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		try
 		{
 			TestEntity.setValue(null);

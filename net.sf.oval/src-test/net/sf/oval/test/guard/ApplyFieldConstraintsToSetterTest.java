@@ -13,12 +13,13 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.AssertTrue;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.RegEx;
+import net.sf.oval.constraint.AssertTrue;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.MatchPattern;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -33,16 +34,16 @@ public class ApplyFieldConstraintsToSetterTest extends TestCase
 		private boolean isValid = true;
 
 		@NotNull(message = "NOT_NULL")
-		private String firstName;
+		private String firstName = "";
 
 		@NotNull(message = "NOT_NULL")
-		private String lastName;
+		private String lastName = "";
 
 		@NotNull(message = "NOT_NULL")
 		@Length(max = 6, message = "LENGTH")
 		@NotEmpty(message = "NOT_EMPTY")
-		@RegEx(pattern = "^[0-9]*$", message = "REG_EX")
-		private String zipCode;
+		@MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
+		private String zipCode = "1";
 
 		public String getFirstName()
 		{
@@ -93,10 +94,13 @@ public class ApplyFieldConstraintsToSetterTest extends TestCase
 	{
 		final Person p = new Person();
 
-		TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		guard.setInProbeMode(p, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.aspectOf().getGuard().addListener(va, p);
+		guard.addListener(va, p);
 
 		// test @Length(max=)
 		p.setFirstName("Mike");

@@ -13,10 +13,10 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
-import net.sf.oval.guard.PostValidateThis;
 
 /**
  * @author Sebastian Thomschke
@@ -35,7 +35,6 @@ public class InnerClassTest extends TestCase
 			/**
 			 * the @PostValidateObject annotation should lead to a warning by the ApiUsageAuditor
 			 */
-			@PostValidateThis
 			private InnerClassNotGuarded(String name)
 			{
 				this.name = name;
@@ -56,7 +55,6 @@ public class InnerClassTest extends TestCase
 			@NotNull
 			protected String name;
 
-			@PostValidateThis
 			private InnerClassGuarded(String name)
 			{
 				this.name = name;
@@ -78,12 +76,19 @@ public class InnerClassTest extends TestCase
 	 */
 	public void testInnerClassNotGuarded()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		TestEntity.InnerClassNotGuarded instance = new TestEntity.InnerClassNotGuarded(null);
 		instance.setName(null);
 	}
 
 	public void testInnerClassGuarded()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		guard.setInvariantCheckingActivated(true);
+		
 		try
 		{
 			new TestEntity.InnerClassGuarded(null);

@@ -1,4 +1,5 @@
+later release:
 - support constraints specified for method parameters in interfaces
 - support constraints in conjunction with inheritance
-- multi-lingual support for all exceptions
-- complete the programming by contract implementation
+- Spring 2.0 configuration support
+- replace the DTD with an XSD

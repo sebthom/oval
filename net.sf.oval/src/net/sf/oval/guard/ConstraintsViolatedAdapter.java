@@ -16,16 +16,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.collections.CollectionFactory;
+import net.sf.oval.collection.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
  */
 public class ConstraintsViolatedAdapter implements ConstraintsViolatedListener
 {
-	private final List<ConstraintsViolatedException> violationExceptions = CollectionFactory.INSTANCE
+	private final List<ConstraintsViolatedException> violationExceptions = CollectionFactoryHolder
+			.getFactory()
 			.createList(8);
-	private final List<ConstraintViolation> violations = CollectionFactory.INSTANCE.createList(8);
+	private final List<ConstraintViolation> violations = CollectionFactoryHolder.getFactory()
+			.createList(8);
 
 	public void clear()
 	{

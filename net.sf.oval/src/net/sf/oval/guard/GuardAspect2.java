@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.oval.ParameterNameResolverAspectJImpl;
-import net.sf.oval.Validator;
+import net.sf.oval.exception.ValidationFailedException;
+import net.sf.oval.internal.util.Invocable;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -30,6 +30,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 /**
  * This is an annotations based version of the GuardAspect aspect
+ *
+ * To workaround an AspectJ bug use the -XnoInline weave option, in case you are getting errors like:
+ * java.lang.VerifyError: (class: net/sf/oval/guard/GuardAspect2, method: ajc$inlineAccessMethod$net_sf_oval_guard_GuardAspect2$net_sf_oval_guard_Guard$guardMethodPost signature: (Lnet/sf/oval/guard/Guard;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;Ljava/lang/Object;)V) Illegal use of nonvirtual function call
  *
  * @author Sebastian Thomschke
  * 
@@ -45,12 +48,11 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	private IsGuarded implementedInterface;
 
 	private Guard guard;
-	private Validator validator;
 
 	public GuardAspect2()
 	{
-		this(new Guard(new Validator()));
-		getValidator().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		this(new Guard());
+		getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 	}
 
 	public GuardAspect2(final Guard guard)
@@ -89,7 +91,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	@SuppressAjWarnings("adviceDidNotMatch")
 	@Around("execution(* (@net.sf.oval.guard.Guarded *).*(..))")
 	public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable
-	{
+	{	
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
 		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
@@ -98,20 +100,20 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 		final Object[] args = thisJoinPoint.getArgs();
 		final Object TARGET = thisJoinPoint.getTarget();
 
-		// pre conditions
-		{
-			final boolean valid = guard.guardMethodPre(TARGET, METHOD, args);
-			if (!valid) return null; // this happens if swallow exceptions mode is enabled for this guarded object or class
-		}
-
-		final Object result = thisJoinPoint.proceed();
-
-		// post conditions
-		{
-			guard.guardMethodPost(TARGET, METHOD, args, result);
-		}
-
-		return result;
+		return guard.guardMethod(TARGET, METHOD, args, new Invocable()
+			{
+				public Object invoke()
+				{
+					try
+					{
+						return thisJoinPoint.proceed();
+					}
+					catch (Throwable ex)
+					{
+						throw new ValidationFailedException("Unexpected exception while invoking method.", ex);
+					}
+				}
+			});
 	}
 
 	/**
@@ -122,17 +124,8 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 		return guard;
 	}
 
-	/**
-	 * @return the validator
-	 */
-	public Validator getValidator()
-	{
-		return validator;
-	}
-
 	public final void setGuard(final Guard guard)
 	{
 		this.guard = guard;
-		this.validator = guard.getValidator();
 	}
 }

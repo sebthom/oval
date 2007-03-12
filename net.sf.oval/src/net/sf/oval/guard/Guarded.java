@@ -34,8 +34,16 @@ import java.lang.annotation.Target;
 public @interface Guarded
 {
 	/**
-	 * apply constraints specified for fields to the parameter of the corresponding setter methods
+	 * Automatically apply constraints specified for fields to 
+	 * the parameter of the corresponding setter methods 
+	 * declared within the same class.
 	 * <br><br>
 	 */
 	boolean applyFieldConstraintsToSetter() default false;
+
+	/**
+	 * Specifies if invariants are checked after constructor
+	 * execution and prior and after calls to non-private methods.
+	 */
+	boolean checkInvariants() default true;
 }

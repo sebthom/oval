@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.Assert;
+import net.sf.oval.constraint.Assert;
 
 /**
  * @author Sebastian Thomschke
@@ -29,7 +29,7 @@ public class AssertJavascriptTest extends TestCase
 		@Assert(expression = "value!=null", language = "javascript", message = "C1")
 		public String firstName;
 
-		@Assert(expression = "value!=null", language = "javascript", message = "C2")
+		@Assert(expression = "value!=null", language = "js", message = "C2")
 		public String lastName;
 
 		@Assert(expression = "value!=null && value.length>0 && value.length<7", language = "javascript", message = "C3")

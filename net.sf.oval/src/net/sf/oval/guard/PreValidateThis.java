@@ -24,9 +24,7 @@ import java.lang.annotation.Target;
  * 
  * If constraint violations occur, the annotated method will not be executed 
  * instead it will throw a ConstraintsViolatedException exception.<br> 
- * <br>
- * <b>Note:</b> This features requires the use of the GuardAspect (AspectJ)
- * 
+ *
  * @author Sebastian Thomschke
  * @see net.sf.oval.guard.GuardAspect
  */

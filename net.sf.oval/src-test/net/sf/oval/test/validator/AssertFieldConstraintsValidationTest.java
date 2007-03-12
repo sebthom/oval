@@ -17,17 +17,17 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.RegEx;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.MatchPattern;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AssertFieldConstraintsValidationTest extends TestCase
 {
-	private final static String REGEX_ZIP_CODE = "^[0-9]*$";
+	private final static String PATTERN_ZIP_CODE = "^[0-9]*$";
 
 	private static class Person
 	{
@@ -40,7 +40,7 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		@NotNull
 		@Length(max = 6, message = "LENGTH")
 		@NotEmpty(message="NOT_EMPTY")
-		@RegEx(pattern = REGEX_ZIP_CODE, message = "REG_EX")
+		@MatchPattern(pattern = PATTERN_ZIP_CODE, message = "MATCH_PATTERN")
 		public String zipCode;
 	}
 
@@ -59,6 +59,7 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		p.zipCode = "1234567";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
+		System.out.println(violations.get(0).getMessage());
 		assertTrue(violations.get(0).getMessage().equals("LENGTH"));
 
 		// test @NotEmpty
@@ -71,6 +72,6 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		p.zipCode = "dffd34";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("REG_EX"));
+		assertTrue(violations.get(0).getMessage().equals("MATCH_PATTERN"));
 	}
 }

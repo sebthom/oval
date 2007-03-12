@@ -12,14 +12,19 @@
  *******************************************************************************/
 package net.sf.oval.test.guard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
-import net.sf.oval.constraints.AssertConstraintSet;
-import net.sf.oval.constraints.ConstraintSet;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotEmpty;
-import net.sf.oval.constraints.NotNull;
-import net.sf.oval.constraints.RegEx;
+import net.sf.oval.Check;
+import net.sf.oval.ConstraintSet;
+import net.sf.oval.constraint.AssertConstraintSet;
+import net.sf.oval.constraint.LengthCheck;
+import net.sf.oval.constraint.MatchPatternCheck;
+import net.sf.oval.constraint.NotEmptyCheck;
+import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -30,11 +35,6 @@ public class ConstraintSetTest extends TestCase
 	@Guarded
 	private class Person
 	{
-		@ConstraintSet("zipCode")
-		@NotNull(message = "NOT_NULL")
-		@Length(max = 6, message = "LENGTH")
-		@NotEmpty(message = "NOT_EMPTY")
-		@RegEx(pattern = "^[0-9]*$", message = "REG_EX")
 		private String zipCode;
 
 		public String getZipCode()
@@ -49,25 +49,35 @@ public class ConstraintSetTest extends TestCase
 		}
 	}
 
-	@Guarded
-	private class Person2
-	{
-		private String zipCode;
-
-		public String getZipCode()
-		{
-			return zipCode;
-		}
-
-		public void setZipCode(@AssertConstraintSet(source = Person.class, id = "zipCode")
-		String zipCode)
-		{
-			this.zipCode = zipCode;
-		}
-	}
-
 	public void testConstraintSetValidation()
 	{
+		ConstraintSet constraintSet = new ConstraintSet("zipCode");
+		List<Check> checks = new ArrayList<Check>();
+		constraintSet.setChecks(checks);
+
+		NotNullCheck notNull = new NotNullCheck();
+		notNull.setMessage("NOT_NULL");
+		checks.add(notNull);
+
+		LengthCheck length = new LengthCheck();
+		length.setMessage("LENGTH");
+		length.setMax(6);
+		checks.add(length);
+
+		NotEmptyCheck notEmpty = new NotEmptyCheck();
+		notEmpty.setMessage("NOT_EMPTY");
+		checks.add(notEmpty);
+
+		MatchPatternCheck matchPattern = new MatchPatternCheck();
+		matchPattern.setMessage("MATCH_PATTERN");
+		matchPattern.setPattern("^[0-9]*$", 0);
+		checks.add(matchPattern);
+
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
+		guard.addConstraintSet(constraintSet, false);
+
 		{
 			final Person p = new Person();
 
@@ -78,54 +88,25 @@ public class ConstraintSetTest extends TestCase
 
 			// test @Length(max=)
 			p.setZipCode("1234567");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("LENGTH"));
+			assertEquals(va.getConstraintsViolatedExceptions().size(), 1);
+			assertEquals(va.getConstraintViolations().size(), 1);
+			assertEquals(va.getConstraintViolations().get(0).getMessage(), "LENGTH");
 			va.clear();
 
 			// test @NotEmpty
 			p.setZipCode("");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_EMPTY"));
+			assertEquals(va.getConstraintsViolatedExceptions().size(), 1);
+			assertEquals(va.getConstraintViolations().size(), 1);
+			assertEquals(va.getConstraintViolations().get(0).getMessage(), "NOT_EMPTY");
 			va.clear();
 
-			// test @RegEx
+			// test @MatchPattern
 			p.setZipCode("dffd34");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
+			assertEquals(va.getConstraintsViolatedExceptions().size(), 1);
+			assertEquals(va.getConstraintViolations().size(), 1);
+			assertEquals(va.getConstraintViolations().get(0).getMessage(), "MATCH_PATTERN");
 			va.clear();
 		}
 
-		{
-			final Person2 p = new Person2();
-
-			TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
-
-			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-			TestGuardAspect.aspectOf().getGuard().addListener(va, p);
-
-			// test @Length(max=)
-			p.setZipCode("1234567");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("LENGTH"));
-			va.clear();
-
-			// test @NotEmpty
-			p.setZipCode("");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_EMPTY"));
-			va.clear();
-
-			// test @RegEx
-			p.setZipCode("dffd34");
-			assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-			assertTrue(va.getConstraintViolations().size() == 1);
-			assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
-			va.clear();
-		}
 	}
 }

@@ -18,7 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
  * After the annotated method has been executed the condition is evaluated.<br>
  * <br>
@@ -38,19 +37,25 @@ public @interface Post
 	 * <b>_this</b> -&gt; the validated bean<br>
 	 * <b>_args[]</b> -&gt; the current parameter values<br>
 	 * <b>_result</b> -&gt; the method's return value
+	 * <b>_old</b> -&gt; the old values<br>
 	 * additionally variables named accordingly to the parameters are available<br>
 	 */
 	String expression();
 
 	/**
+	 * formula in the given expression language. the returned value can be accessed in the constraint expression via the variable <b>_old</b>
+	 */
+	String old() default "";
+
+	/**
 	 * the expression language that is used
 	 */
 	String language();
-	
+
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see ConstraintViolatedException
 	 */
 	String message() default "net.sf.oval.guard.Post.violated";
 }

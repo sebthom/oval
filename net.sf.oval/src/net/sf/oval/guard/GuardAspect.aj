@@ -17,8 +17,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.oval.ParameterNameResolverAspectJImpl;
-import net.sf.oval.Validator;
+import net.sf.oval.internal.util.Invocable;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.aspectj.lang.reflect.ConstructorSignature;
@@ -35,12 +34,11 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 	private final static Logger LOG = Logger.getLogger(GuardAspect.class.getName());
 
 	private Guard guard;
-	private Validator validator;
 
 	public GuardAspect()
 	{
-		this(new Guard(new Validator()));
-		getValidator().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		this(new Guard());
+		getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 	}
 
 	public GuardAspect(final Guard guard)
@@ -58,18 +56,10 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		return guard;
 	}
 
-	/**
-	 * @return the validator
-	 */
-	public Validator getValidator()
-	{
-		return validator;
-	}
-
 	public void setGuard(final Guard guard)
 	{
 		this.guard = guard;
-		this.validator = guard.getValidator();
+		getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 	}
 
 	/*
@@ -97,20 +87,14 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		final Object[] args = thisJoinPoint.getArgs();
 		final Object TARGET = thisJoinPoint.getTarget();
 
-		// pre conditions
-		{
-			final boolean valid = guard.guardMethodPre(TARGET, METHOD, args);
-			if (!valid) return null; // returns null if probe mode is enabled for the guarded object
-		}
-
-		final Object result = proceed();
-
-		// post conditions
-		{
-			guard.guardMethodPost(TARGET, METHOD, args, result);
-		}
-
-		return result; 
+		return guard.guardMethod(TARGET, METHOD, args, new Invocable()
+			{
+				public Object invoke()
+				{
+					// invoke the adviced method and return the result
+					return proceed();
+				}
+			});
 	}
 
 	@SuppressAjWarnings("adviceDidNotMatch")

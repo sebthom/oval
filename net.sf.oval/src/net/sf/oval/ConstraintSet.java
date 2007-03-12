@@ -12,55 +12,43 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Set;
-
-import net.sf.oval.contexts.FieldContext;
-import net.sf.oval.contexts.OValContext;
-import net.sf.oval.exceptions.InvalidConfigurationException;
-import net.sf.oval.exceptions.OValException;
 
 /**
  * @author Sebastian Thomschke
  */
-class ConstraintSet
+public class ConstraintSet
 {
-	Set<Check> checks;
+	private Collection<Check> checks;
 
-	/**
-	 * the context where to get the checks from
-	 */
-	OValContext context;
+	private final String id;
 
-	String localId;
-
-	/**
-	 * the id of the constraint set
-	 */
-	String id;
-
-	/**
-	 * @return Returns a set of constraint checks associated with this constraint set
-	 */
-	Collection<Check> getChecks(final Validator validator) throws OValException
+	public ConstraintSet(final String id)
 	{
-		if (context != null)
-		{
-			if (context instanceof FieldContext)
-			{
-				final FieldContext fc = (FieldContext) context;
-				final Field f = fc.getField();
+		this.id = id;
+	}
 
-				// for performance reasons we are returning the internal set
-				final ClassChecks cc = validator.getClassChecks(f.getDeclaringClass());
-				return cc.checksForFields.get(f);
-			}
-
-			throw new InvalidConfigurationException("Unsupported context type "
-					+ context);
-		}
-
+	/**
+	 * @return the checks
+	 */
+	public Collection<Check> getChecks()
+	{
 		return checks;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId()
+	{
+		return id;
+	}
+
+	/**
+	 * @param checks the checks to set
+	 */
+	public void setChecks(final Collection<Check> checks)
+	{
+		this.checks = checks;
 	}
 }

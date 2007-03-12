@@ -18,17 +18,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import net.sf.oval.collections.CollectionFactory;
+import net.sf.oval.collection.CollectionFactoryHolder;
 
 /**
+ * Default implementation that resolves messages based
+ * on the registered resource bundles.
+ * 
  * @author Sebastian Thomschke
  */
 public class MessageResolverImpl implements MessageResolver
 {
-	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactory.INSTANCE
-			.createMap(8);
+	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactoryHolder
+			.getFactory().createMap(8);
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
+
+	public static final MessageResolverImpl INSTANCE = new MessageResolverImpl();
 
 	public MessageResolverImpl()
 	{
@@ -42,12 +47,12 @@ public class MessageResolverImpl implements MessageResolver
 	 * @param messageBundle
 	 * @return true if the bundle was registered and false if it was already registered
 	 */
-	public boolean addMessageBundle(final ResourceBundle messageBundle)
+	public final boolean addMessageBundle(final ResourceBundle messageBundle)
 	{
 		if (messageBundles.contains(messageBundle)) return false;
 
 		messageBundles.addFirst(messageBundle);
-		final List<String> keys = CollectionFactory.INSTANCE.createList();
+		final List<String> keys = CollectionFactoryHolder.getFactory().createList();
 
 		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum
 				.hasMoreElements();)
@@ -86,5 +91,4 @@ public class MessageResolverImpl implements MessageResolver
 		messageBundles.remove(messageBundle);
 		return true;
 	}
-
 }

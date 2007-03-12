@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.oval.expression;
 
 import groovy.lang.Binding;
@@ -6,14 +18,18 @@ import groovy.lang.GroovyShell;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.oval.exceptions.ExpressionLanguageException;
+import net.sf.oval.exception.ExpressionEvaluationException;
 
 import org.codehaus.groovy.control.CompilationFailedException;
 
+/**
+ * @author Sebastian Thomschke
+ *
+ */
 public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 {
-	public boolean evaluate(final String constraint, final Map<String, ? > values)
-			throws ExpressionLanguageException
+	public Object evaluate(final String expression, final Map<String, ? > values)
+			throws ExpressionEvaluationException
 	{
 		try
 		{
@@ -23,16 +39,23 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 				binding.setVariable(entry.getKey(), entry.getValue());
 			}
 			final GroovyShell shell = new GroovyShell(binding);
-			final Object result = shell.evaluate(constraint);
-			if (!(result instanceof Boolean))
-			{
-				throw new ExpressionLanguageException("The script must return a boolean.");
-			}
-			return (Boolean) result;
+			return shell.evaluate(expression);
 		}
-		catch (CompilationFailedException ex)
+		catch (final CompilationFailedException ex)
 		{
-			throw new ExpressionLanguageException("Evaluating script with Groovy failed.", ex);
+			throw new ExpressionEvaluationException("Evaluating script with Groovy failed.", ex);
 		}
+	}
+
+	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values)
+			throws ExpressionEvaluationException
+	{
+		final Object result = evaluate(expression, values);
+		
+		if (!(result instanceof Boolean))
+		{
+			throw new ExpressionEvaluationException("The script must return a boolean value.");
+		}
+		return (Boolean) result;
 	}
 }

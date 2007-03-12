@@ -14,42 +14,40 @@ package net.sf.oval.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import net.sf.oval.collection.CollectionFactoryHolder;
+import net.sf.oval.collection.CollectionFactoryJDKImpl;
+import net.sf.oval.collection.CollectionFactoryJavalutionImpl;
+import net.sf.oval.collection.CollectionFactoryTroveImpl;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AllTests
 {
-
-	public static Test suite() throws Exception
+	private static void validatorTests(final TestSuite suite) throws Exception
 	{
-		final TestSuite suite = new TestSuite("Test for net.sf.oval");
-
-		//$JUnit-BEGIN$
-
-		/*
-		 * Validator tests
-		 */
-		suite.addTestSuite(net.sf.oval.test.validator.AddingConstraintsTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AddingChecksTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertBeanShellTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
 		suite
-		.addTestSuite(net.sf.oval.test.validator.GetterReturnValueConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
+				.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
+	}
 
-		/*
-		 * Guard tests
-		 */
-		suite.addTestSuite(net.sf.oval.test.guard.AddingConstraintsTest.class);
+	private static void guardTests(final TestSuite suite) throws Exception
+	{
+		suite.addTestSuite(net.sf.oval.test.guard.AddingChecksTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToParametersTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToSetterTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ConstraintSetTest.class);
@@ -60,11 +58,30 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ParameterConstraintsTest.class);
-		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
-		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostBeanShellTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostGroovyTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.StaticMethodsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
+	}
+
+	public static Test suite() throws Exception
+	{
+		final TestSuite suite = new TestSuite("Test for net.sf.oval");
+
+		//$JUnit-BEGIN$
+		CollectionFactoryHolder.setFactory(new CollectionFactoryJDKImpl());
+		validatorTests(suite);
+		guardTests(suite);
+		
+		CollectionFactoryHolder.setFactory(new CollectionFactoryJavalutionImpl());
+		validatorTests(suite);
+		guardTests(suite);
+		
+		CollectionFactoryHolder.setFactory(new CollectionFactoryTroveImpl());
+		validatorTests(suite);
+		guardTests(suite);
 		//$JUnit-END$
 		return suite;
 	}

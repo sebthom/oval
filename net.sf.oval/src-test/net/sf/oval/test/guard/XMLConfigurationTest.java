@@ -20,23 +20,23 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ParameterNameResolverAspectJImpl;
-import net.sf.oval.Validator;
-import net.sf.oval.checks.AssertConstraintSetCheck;
-import net.sf.oval.checks.LengthCheck;
-import net.sf.oval.checks.NotNullCheck;
-import net.sf.oval.checks.RegExCheck;
-import net.sf.oval.configuration.XMLConfigurer;
-import net.sf.oval.configuration.elements.ClassConfiguration;
-import net.sf.oval.configuration.elements.ConstraintSetConfiguration;
-import net.sf.oval.configuration.elements.ConstructorConfiguration;
-import net.sf.oval.configuration.elements.FieldConfiguration;
-import net.sf.oval.configuration.elements.MethodConfiguration;
-import net.sf.oval.configuration.elements.MethodReturnValueConfiguration;
-import net.sf.oval.configuration.elements.ParameterConfiguration;
-import net.sf.oval.constraints.Length;
+import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
+import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
+import net.sf.oval.configuration.pojo.elements.ConstructorConfiguration;
+import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
+import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
+import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
+import net.sf.oval.configuration.pojo.elements.ParameterConfiguration;
+import net.sf.oval.configuration.xml.XMLConfigurer;
+import net.sf.oval.constraint.AssertConstraintSetCheck;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.LengthCheck;
+import net.sf.oval.constraint.MatchPatternCheck;
+import net.sf.oval.constraint.NotNullCheck;
+import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -59,7 +59,7 @@ public class XMLConfigurationTest extends TestCase
 
 		public User()
 		{
-			// do nothing
+		// do nothing
 		}
 
 		public User(String userId, String managerId, int somethingElse)
@@ -87,14 +87,22 @@ public class XMLConfigurationTest extends TestCase
 
 	public void testImportedFile()
 	{
-		XMLConfigurer x = new XMLConfigurer();
-		x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
+		try
+		{
+			XMLConfigurer x = new XMLConfigurer();
+			x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
 
-		Validator v = new Validator(x);
-		v.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-		TestGuardAspect.aspectOf().getGuard().setValidator(v);
+			Guard guard = new Guard(x);
+			guard.setInvariantCheckingActivated(false);
+			TestGuardAspect.aspectOf().setGuard(guard);
 
-		validateUser();
+			validateUser();
+		}
+		catch (ValidationFailedException ex)
+		{
+			ex.getCause().printStackTrace();
+			throw ex;
+		}
 	}
 
 	public void testSerializedObjectConfiguration()
@@ -114,7 +122,7 @@ public class XMLConfigurationTest extends TestCase
 			NotNullCheck nnc = new NotNullCheck();
 			nnc.setMessage("{context} is null");
 			csf.checks.add(nnc);
-			RegExCheck rec = new RegExCheck();
+			MatchPatternCheck rec = new MatchPatternCheck();
 			rec.setPattern(Pattern.compile("^[a-z0-9]{8}$", 0));
 			rec.setMessage("{context} does not match the pattern {pattern}");
 			csf.checks.add(rec);
@@ -222,9 +230,9 @@ public class XMLConfigurationTest extends TestCase
 		 */
 		x.fromXML(xmlConfig);
 
-		Validator v = new Validator(x);
-		v.setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-		TestGuardAspect.aspectOf().getGuard().setValidator(v);
+		Guard guard = new Guard(x);
+		guard.setInvariantCheckingActivated(false);
+		TestGuardAspect.aspectOf().setGuard(guard);
 
 		validateUser();
 	}

@@ -13,9 +13,10 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.Length;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -26,8 +27,7 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 	@Guarded
 	public static class TestEntity
 	{
-
-		public String name;
+		public String name = "";
 
 		@NotNull(message = "NOT_NULL")
 		@Length(max = 4, message = "LENGTH")
@@ -39,10 +39,15 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 
 	public void testMethodReturnValueConstraintValidation()
 	{
+		final Guard guard = new Guard();
+
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		final TestEntity t = new TestEntity();
 
 		try
 		{
+			t.name = null;
 			t.getName();
 			fail();
 		}

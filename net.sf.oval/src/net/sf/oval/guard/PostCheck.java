@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
-
 /**
  * @author Sebastian Thomschke
  */
@@ -23,12 +22,14 @@ public class PostCheck
 	private String language = "javascript";
 	private String expression;
 	private String message;
+	private String old;
 
 	public void configure(final Post constraintAnnotation)
 	{
 		setMessage(constraintAnnotation.message());
 		setExpression(constraintAnnotation.expression());
 		setLanguage(constraintAnnotation.language());
+		setOld(constraintAnnotation.old());
 	}
 
 	/**
@@ -56,6 +57,14 @@ public class PostCheck
 	}
 
 	/**
+	 * @return the old
+	 */
+	public String getOld()
+	{
+		return old;
+	}
+
+	/**
 	 * @param condition the condition to set
 	 */
 	public void setExpression(final String condition)
@@ -77,5 +86,13 @@ public class PostCheck
 	public void setMessage(final String message)
 	{
 		this.message = message;
+	}
+
+	/**
+	 * @param old the old to set
+	 */
+	public void setOld(final String old)
+	{
+		this.old = old;
 	}
 }

@@ -13,9 +13,10 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.AssertFieldConstraints;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.AssertFieldConstraints;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -27,7 +28,7 @@ public class InheritanceTest extends TestCase
 	public static class SuperEntity
 	{
 		@NotNull
-		protected String name;
+		protected String name = "";
 
 		/**
 		 * @return the name
@@ -61,6 +62,9 @@ public class InheritanceTest extends TestCase
 
 	public void testInheritance()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		Entity e = new Entity();
 
 		try

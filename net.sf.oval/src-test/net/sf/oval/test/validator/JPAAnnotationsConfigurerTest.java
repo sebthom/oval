@@ -23,7 +23,7 @@ import javax.persistence.OneToOne;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.configuration.JPAAnnotationsConfigurer;
+import net.sf.oval.configuration.annotation.JPAAnnotationsConfigurer;
 
 /**
  * @author Sebastian Thomschke

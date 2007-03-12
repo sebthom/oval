@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.configuration.XMLConfigurer;
+import net.sf.oval.configuration.xml.XMLConfigurer;
 
 /**
  * @author Sebastian Thomschke

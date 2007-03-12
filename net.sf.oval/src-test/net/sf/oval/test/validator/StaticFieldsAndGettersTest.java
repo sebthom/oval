@@ -17,7 +17,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.configuration.annotation.IsInvariant;
+import net.sf.oval.constraint.NotNull;
 
 /**
  * @author Sebastian Thomschke
@@ -39,6 +40,7 @@ public class StaticFieldsAndGettersTest extends TestCase
 		/**
 		 * @return the staticB
 		 */
+		@IsInvariant
 		@NotNull
 		public static String getStaticB()
 		{
@@ -48,6 +50,7 @@ public class StaticFieldsAndGettersTest extends TestCase
 		/**
 		 * @return the nonstaticB
 		 */
+		@IsInvariant
 		@NotNull
 		public String getNonstaticB()
 		{

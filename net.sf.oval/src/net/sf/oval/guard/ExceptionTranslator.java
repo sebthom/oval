@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
-import net.sf.oval.exceptions.OValException;
+import net.sf.oval.exception.OValException;
 
 /**
  * An exception translater for all exception thrown by the guard

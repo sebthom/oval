@@ -23,11 +23,8 @@ import java.lang.annotation.Target;
  * (invariants) of this object are validated.<br>
  * <br>
  * In case of constraint violations the annotated method will throw an ConstraintsViolatedException.<br>
- * <br>
- * <b>Note:</b> This features requires the use of the GuardAspect (AspectJ)
- * 
+ *
  * @author Sebastian Thomschke
- * @see net.sf.oval.guard.GuardAspect
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

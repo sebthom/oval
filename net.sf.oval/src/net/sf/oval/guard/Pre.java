@@ -19,6 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
+
 /**
  * Before the annotated method is executed the expression is evaluated.<br>
  * This evaluation happens <u>after</u> the single parameter constraints were validated
@@ -52,7 +53,7 @@ public @interface Pre
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see ConstraintViolatedException
 	 */
 	String message() default "net.sf.oval.guard.Pre.violated";
 }

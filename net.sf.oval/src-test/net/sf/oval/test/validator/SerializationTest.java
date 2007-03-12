@@ -23,7 +23,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.Length;
+import net.sf.oval.constraint.Length;
 
 /**
  * @author Sebastian Thomschke

@@ -12,41 +12,53 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
-import net.sf.oval.Constraint;
+import net.sf.oval.configuration.annotation.Constraint;
+import net.sf.oval.configuration.annotation.IsInvariant;
 
 /**
  * @author Sebastian Thomschke
  */
 abstract aspect ApiUsageAuditor
 {
-	pointcut getterMethods(): execution(!void *.is*()) || execution(!void *.get*());
+	// pointcut getterMethods(): execution(!void *.is*()) || execution(!void *.get*());
 
 	/*
-	 * Warn about constraints for void methods 
+	 * instead of (!@Guarded *) we could use (!IsGuarded+) 
 	 */
-	declare warning: execution(@(@Constraint *) void (@Guarded *).*(..)): 
-		"Method return value constraints are not allowed for methods without return values";
 
 	/*
-	 * Warn about return value constraints for non-getter methods in classes not annotated with @Constrained 
+	 * Rule 1: Warn about return value constraints for void methods 
 	 */
-	declare warning: execution(@(@Constraint *) * (!@Guarded *).*(..)) && !getterMethods(): 
-		"Method return value constraints for non-getter methods are only allowed in classes annotated with @Constrainted";
+	declare warning: execution(@(@Constraint *) void *.*(..)): 
+		"OVal API usage violation 1: Method return value constraints are not allowed for methods without return values";
 
 	/*
-	 * Warn about the @PreValidateThis annotation used on methods in classes not annotated with @Constrained
+	 * Rule 2: Warn about return value constraints for non-void, parameterized methods in classes that are not guarded 
+	 */
+	declare warning: execution(@(@Constraint *) !void (!@Guarded *).*(*,..)): 
+		"OVal API usage violation 2: Method return value constraints for parameterized methods are only allowed in guarded classes";
+
+	/*
+	 * Rule 3: Warn about return value constraints for non-void, non-parameterized methods missing the @Invariant annotation in classes 
+	 * that are not guarded
+	 */
+	declare warning: execution(!@IsInvariant @(@Constraint *) !void (!@Guarded *).*()): 
+		"OVal API usage violation 3: Method return value constraints are only allowed if the method is annotated with @IsInvariant or the declaring class is guarded";
+
+	/*
+	 * Rule 4: Warn about the @PreValidateThis annotation used on methods in classes that are not guarded
 	 */
 	declare warning: execution (@PreValidateThis * (!@Guarded *).*(..)): 
-		"@PreValidateThis is only allowed in class annotated with @Constrainted";
+		"OVal API usage violation 4: @PreValidateThis is only allowed in guarded class";
 
 	/*
-	 * Warn about the @PostValidateThis annotation used on methods and constructors in classes not annotated with @Constrained
+	 * Rule 5: Warn about the @PostValidateThis annotation used on methods and constructors in classes that are not guarded
 	 */
 	declare warning: execution (@PostValidateThis * (!@Guarded *).*(..)) || execution (@PostValidateThis (!@Guarded *).new(..)): 
-		"@PostValidateThis is only allowed in classes annotated with @Guarded";
+		"OVal API usage violation 5: @PostValidateThis is only allowed in guarded classes";
 
 	/*
-	 * Warn about method parameter constraints in classes not annotated with @Constrained
+	 * Rule 6: Warn about method parameter constraints in classes that are not guarded
 	 */
 	declare warning:
 		execution(* (!@Guarded *).*(@(@Constraint *) *, ..)) ||
@@ -55,10 +67,10 @@ abstract aspect ApiUsageAuditor
 		execution(* (!@Guarded *).*(*, *, *, @(@Constraint *) *, ..)) ||
 		execution(* (!@Guarded *).*(*, *, *, *, @(@Constraint *) *, ..)) ||
 		execution(* (!@Guarded *).*(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"Method parameter constraints are only allowed in class annotated with @Guarded";
+		"OVal API usage violation 6: Method parameter constraints are only allowed in guarded class";
 
 	/*
-	 * Warn about constructor parameter constraints in classes not annotated with @Constrained
+	 * Rule 7: Warn about constructor parameter constraints in classes that are not guarded
 	 */
 	declare warning:
 		execution((!@Guarded *).new(@(@Constraint *) *, ..)) ||
@@ -67,5 +79,5 @@ abstract aspect ApiUsageAuditor
 		execution((!@Guarded *).new(*, *, *, @(@Constraint *) *, ..)) ||
 		execution((!@Guarded *).new(*, *, *, *, @(@Constraint *) *, ..)) ||
 		execution((!@Guarded *).new(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"Method parameter constraints are only allowed in class annotated with @Guarded";
+		"OVal API usage violation 7: Method parameter constraints are only allowed in guarded class";
 }

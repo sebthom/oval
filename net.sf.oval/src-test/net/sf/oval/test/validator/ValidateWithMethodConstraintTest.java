@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraints.ValidateWithMethod;
+import net.sf.oval.constraint.ValidateWithMethod;
 
 /**
  * @author Sebastian Thomschke

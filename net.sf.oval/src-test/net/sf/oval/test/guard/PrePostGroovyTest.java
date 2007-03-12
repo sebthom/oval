@@ -4,9 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import junit.framework.TestCase;
-import net.sf.oval.constraints.Assert;
-import net.sf.oval.constraints.NotNull;
+import net.sf.oval.constraint.Assert;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
 import net.sf.oval.guard.Pre;
@@ -22,7 +23,6 @@ public class PrePostGroovyTest extends TestCase
 		@SuppressWarnings("unused")
 		private String description;
 
-		
 		private BigDecimal value;
 
 		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "groovy", message = "PRE")
@@ -33,16 +33,26 @@ public class PrePostGroovyTest extends TestCase
 			value = value.add(value2add);
 		}
 
-		@Post(expression = "_this.value>0", language = "groovy", message = "POST")
+		@Post(expression = "_this.value>_old.value", old = "[value:_this.value]", language = "groovy", message = "POST")
 		public void increase2(@NotNull
 		BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
+		
+		@Post(expression = "_this.value>_old.value", old = "[value:_this.value]", language = "groovy", message = "POST")
+		public void increase2buggy(@NotNull
+		BigDecimal value2add)
+		{
+			value = value.subtract(value2add);
+		}
 	}
 
 	public void testPreGroovy()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		TestTransaction t = new TestTransaction();
 
 		try
@@ -77,12 +87,15 @@ public class PrePostGroovyTest extends TestCase
 
 	public void testPostGroovy()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
 		TestTransaction t = new TestTransaction();
 
 		try
 		{
 			t.value = new BigDecimal(-2);
-			t.increase2(new BigDecimal(1));
+			t.increase2buggy(new BigDecimal(1));
 			fail();
 		}
 		catch (ConstraintsViolatedException ex)
@@ -90,7 +103,6 @@ public class PrePostGroovyTest extends TestCase
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
 		}
 
-		t.value = new BigDecimal(0);
 		t.increase2(new BigDecimal(1));
 	}
 }
