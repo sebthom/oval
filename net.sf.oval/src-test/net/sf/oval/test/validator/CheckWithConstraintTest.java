@@ -31,6 +31,8 @@ public class CheckWithConstraintTest extends TestCase
 	{
 		private static class NameCheck1 implements SimpleCheck
 		{
+			private static final long serialVersionUID = 1L;
+
 			public boolean isSatisfied(Object validatedObject, Object value)
 			{
 				String name = (String) value;
@@ -50,6 +52,8 @@ public class CheckWithConstraintTest extends TestCase
 	{
 		private static class NameCheck2 implements SimpleCheck
 		{
+			private static final long serialVersionUID = 1L;
+
 			public boolean isSatisfied(Object validatedObject, Object value)
 			{
 				return ((TestEntity2) validatedObject).isValidName((String) value);
