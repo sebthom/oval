@@ -53,14 +53,19 @@
     <itemizedlist>
       <listitem>
         <para>specifying constraints for <emphasis>constructor
-        parameters</emphasis> that are automatically checked when the
+        parameters</emphasis> that are automatically checked when a
         constructor is called (preconditions),</para>
       </listitem>
 
       <listitem>
         <para>specifying constraints for <emphasis>method
-        parameters</emphasis> that are automatically checked when the method
-        is called (preconditions),</para>
+        parameters</emphasis> that are automatically checked when a method is
+        called (preconditions),</para>
+      </listitem>
+
+      <listitem>
+        <para>requiring a certain object state before a method is called
+        (preconditions)</para>
       </listitem>
 
       <listitem>
@@ -75,8 +80,13 @@
 
       <listitem>
         <para>specifying constrains for a method's return value that are
-        automatically checked after the method has been executed
-        (postconditions).</para>
+        automatically checked after a method has been executed
+        (postconditions),</para>
+      </listitem>
+
+      <listitem>
+        <para>requiring a certain object state after a method is called
+        (poistconditions).</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -117,13 +127,13 @@
       </listitem>
 
       <listitem>
-        <para>Rhino is required if you want to define constraints via
+        <para>Mozilla Rhino is required if you want to define constraints via
         JavaScript expressions.</para>
       </listitem>
 
       <listitem>
-        <para>XStream is required if you want to configure OVal via
-        XML.</para>
+        <para>XStream is required if you want to configure OVal via XML
+        configuration files.</para>
       </listitem>
 
       <listitem>
@@ -221,6 +231,68 @@ if(exs.size()&gt;0)
     LOG.severe("Object " + bo + " is invalid.");
     throw new BussinessException(violations);
 }</programlisting>
+    </section>
+
+    <section>
+      <title>Specifying conditional constraints</title>
+
+      <para>When you annotate a field or getter with multiple constraint
+      annotations they are ANDed. If you require other logical constructs you
+      can use a scripting language to express them. To do so annotate the
+      field or getter with the
+      <command>@net.sf.oval.constraint.Assert</command> annotation. </para>
+
+      <programlisting>public class BusinessObject
+{
+   @NotNull
+   public String deliveryAddress;
+
+   @NotNull
+   public String invoiceAddress;
+
+   // mailingAddress must either be the delivery address or the invoice address
+   @Assert(expression = "_value == _this.deliveryAddress || _value == _this.invoiceAddress", language = "groovy")
+   public String mailingAddress;
+}</programlisting>
+
+      <para>The <command>expression</command> parameter contains the script.
+      OVal provides to special variables: <command></command></para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>_value</command> - contains the value to validate
+          (field value or getter return value)</para>
+        </listitem>
+
+        <listitem>
+          <para><command>_this</command> - is a reference to the validated
+          object</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The <command>language</command> parameter specifies the scripting
+      language you want to use. In case the required libraries are loaded,
+      OVal is aware of these languages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>bsh</command> or <command>beanshell</command> for
+          BeanShell,</para>
+        </listitem>
+
+        <listitem>
+          <para><command>groovy</command> for Groovy, or</para>
+        </listitem>
+
+        <listitem>
+          <para><command>js</command> or <command>javascript</command> for
+          JavaScript (via Mozilla Rhino)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Additional scripting languages can be registered via
+      <command>Validator.addExpressionLanguage(String,
+      ExpressionLanguage)</command>. </para>
     </section>
 
     <section>
@@ -459,7 +531,7 @@ bo.setAlternativeName(null); // throws a ConstraintsViolatedException because pa
 
     <section>
       <title>Enforcing full object validation before method execution
-      (precondition/invariant)</title>
+      (precondition/invariants)</title>
 
       <para>To enforce that all field and getter constraints are checked
       before a method is executed, annotate the respective method with
@@ -549,7 +621,7 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
 
     <section>
       <title>Enforcing full object validation after constructor invocation
-      (postcondition/invariant)</title>
+      (postcondition/invariants)</title>
 
       <para>To enforce that all field and getter constraints are checked after
       an object has been instantiated, annotate the constructors of the
@@ -583,11 +655,12 @@ BusinessObject bo = new BusinessObject();</programlisting>
 
     <section>
       <title>Enforcing full object validation after method execution
-      (postcondition)</title>
+      (postcondition/invariants)</title>
 
-      <para>To enforce that all field and getter constraints are checked after
-      a method of an object has been executed, annotate the method with
-      <command> @net.sf.oval.guard.PostValidateThis</command>.</para>
+      <para>To enforce that all field and getter constraints (invariants) are
+      checked after a method of an object has been executed, annotate the
+      method with
+      <command>@net.sf.oval.guard.PostValidateThis</command>.</para>
 
       <para>In case of constraint violations the method will throw an
       ConstraintsViolatedException.</para>
@@ -720,7 +793,7 @@ public void createPerson(PersonInputForm inputForm) throws ConstraintsViolatedEx
       ExceptionTranslator. The ExceptionTranslator defines a
       translateException() method that is executed for all occuring exceptions
       during runtime validation. This allows you to translate any
-      OValException thrown during validation into another RuntimeTimeException
+      OValException thrown during validation into another RuntimeException
       which will be thrown instead. As an example have a look at the
       <command>net.sf.oval.guard.ExceptionTranslatorJDKExceptionsImpl</command>
       class how an implementation could look like.</para>
@@ -850,14 +923,14 @@ public @interface UpperCase
 
       <para>You can write an inner static class extending
       <command>net.sf.oval.constraint.CheckWithCheck.SimpleCheck</command>
-      which then is referenced with the
+      which then is referenced via a
       <command>@net.sf.oval.constraint.CheckWith</command> constraint
       annotation.</para>
 
       <para>Example:</para>
 
       <programlisting>private static class DayEntity
-{ 
+{
   @Min(1960)
   private int year;
 
@@ -904,8 +977,7 @@ public @interface UpperCase
     constraint definitions from an XML file:</para>
 
     <programlisting>XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml");
-Validator validator = new Validator(xmlConfigurer);
-Guard guard = new Guard(validator);</programlisting>
+Guard guard = new Guard(xmlConfigurer);</programlisting>
 
     <para>Here is an example XML configuration:</para>
 
