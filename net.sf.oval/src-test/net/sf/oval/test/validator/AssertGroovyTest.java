@@ -26,13 +26,13 @@ public class AssertGroovyTest extends TestCase
 {
 	private static class Person
 	{
-		@Assert(expression = "value!=null", language = "groovy", message = "C1")
+		@Assert(expression = "_value!=null", language = "groovy", message = "C1")
 		public String firstName;
 
-		@Assert(expression = "value!=null", language = "groovy", message = "C2")
+		@Assert(expression = "_value!=null", language = "groovy", message = "C2")
 		public String lastName;
 
-		@Assert(expression = "value!=null && value.length()>0 && value.length()<7", language = "groovy", message = "C3")
+		@Assert(expression = "_value!=null && _value.length()>0 && _value.length()<7", language = "groovy", message = "C3")
 		public String zipCode;
 	}
 

@@ -69,7 +69,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 			final OValContext context, final Validator validator) throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
 	{
 		Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
-		values.put("value", validatedValue);
+		values.put("_value", validatedValue);
 		values.put("_this", validatedObject);
 		
 		final ExpressionLanguage el = validator.getExpressionLanguage(language);

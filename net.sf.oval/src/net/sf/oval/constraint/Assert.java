@@ -37,12 +37,12 @@ public @interface Assert
 	 * <br>
 	 * available variables are:<br>
 	 * <b>_this</b> -&gt; the validated bean<br>
-	 * <b>value</b> -&gt; the value to validate (e.g. the field value, parameter value, or method return value)
+	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, or method return value)
 	 */
 	String expression();
 
 	/**
-	 * the expression language that is used, e.g. "groovy" or "javascript".
+	 * the expression language that is used, e.g. "bsh" / "beanshell", "groovy", or "js" / "javascript".
 	 */
 	String language();
 
