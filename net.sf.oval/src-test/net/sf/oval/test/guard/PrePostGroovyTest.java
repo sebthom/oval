@@ -27,7 +27,7 @@ public class PrePostGroovyTest extends TestCase
 
 		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "groovy", message = "PRE")
 		public void increase1(
-				@Assert(expression = "value!=null", language = "groovy", message = "ASSERT")
+				@Assert(expression = "_value!=null", language = "groovy", message = "ASSERT")
 				BigDecimal value2add)
 		{
 			value = value.add(value2add);

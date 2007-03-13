@@ -28,7 +28,7 @@ public class PrePostJavascriptTest extends TestCase
 
 		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "javascript", message = "PRE")
 		public void increase1(
-				@Assert(expression = "value!=null", language = "javascript", message = "ASSERT")
+				@Assert(expression = "_value!=null", language = "javascript", message = "ASSERT")
 				BigDecimal value2add)
 		{
 			value = value.add(value2add);
