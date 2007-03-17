@@ -87,7 +87,7 @@ public class InnerClassTest extends TestCase
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		guard.setInvariantCheckingActivated(true);
+		guard.setInvariantsEnabled(true);
 		
 		try
 		{

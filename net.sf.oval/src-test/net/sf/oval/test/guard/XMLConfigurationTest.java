@@ -93,7 +93,7 @@ public class XMLConfigurationTest extends TestCase
 			x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
 
 			Guard guard = new Guard(x);
-			guard.setInvariantCheckingActivated(false);
+			guard.setInvariantsEnabled(false);
 			TestGuardAspect.aspectOf().setGuard(guard);
 
 			validateUser();
@@ -231,7 +231,7 @@ public class XMLConfigurationTest extends TestCase
 		x.fromXML(xmlConfig);
 
 		Guard guard = new Guard(x);
-		guard.setInvariantCheckingActivated(false);
+		guard.setInvariantsEnabled(false);
 		TestGuardAspect.aspectOf().setGuard(guard);
 
 		validateUser();

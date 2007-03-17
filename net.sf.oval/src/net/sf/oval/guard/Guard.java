@@ -58,9 +58,9 @@ public class Guard extends Validator
 	private final ThreadLocalWeakHashSet<Object> currentlyInvariantCheckingFor = new ThreadLocalWeakHashSet<Object>();
 
 	private boolean isActivated = true;
-	private boolean isInvariantCheckingActivated = true;
-	private boolean isPreCheckingActivated = true;
-	private boolean isPostCheckingActivated = true;
+	private boolean isInvariantsEnabled = true;
+	private boolean isPreConditionsEnabled = true;
+	private boolean isPostConditionsEnabled = true;
 
 	/**
 	 * Flag that indicates if any listeners were registered at any time.
@@ -147,7 +147,7 @@ public class Guard extends Validator
 	/**
 	 * Registers constraint checks for the given method's return value
 	 * 
-	 * @param getter a JavaBean Getter style method
+	 * @param method
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>getter == null</code> or <code>checks == null</code> or checks is empty
 	 * @throws InvalidConfigurationException if method does not declare a return type (void), or the declaring class is not guarded
@@ -433,7 +433,7 @@ public class Guard extends Validator
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 
 		// check invariants
-		if ((isInvariantCheckingActivated && cc.isCheckInvariants) || cc.methodsWithCheckInvariantsPost.contains(constructor))
+		if ((isInvariantsEnabled && cc.isCheckInvariants) || cc.methodsWithCheckInvariantsPost.contains(constructor))
 		{
 			try
 			{
@@ -469,7 +469,7 @@ public class Guard extends Validator
 		if (!isActivated) return;
 
 		// constructor parameter validation
-		if (isPreCheckingActivated && args.length > 0)
+		if (isPreConditionsEnabled && args.length > 0)
 		{
 			try
 			{
@@ -510,7 +510,7 @@ public class Guard extends Validator
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
-		final boolean checkInvariants = isInvariantCheckingActivated && cc.isCheckInvariants
+		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants
 				&& !ReflectionUtils.isPrivate(method) && !ReflectionUtils.isProtected(method);
 
 		final List<ConstraintViolation> violations = CollectionFactoryHolder.getFactory()
@@ -526,7 +526,7 @@ public class Guard extends Validator
 			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
 				validateInvariants(guardedObject, violations);
 
-			if (isPreCheckingActivated)
+			if (isPreConditionsEnabled)
 			{
 				// method parameter validation
 				if (violations.size() == 0 && args.length > 0)
@@ -570,7 +570,7 @@ public class Guard extends Validator
 				validateInvariants(guardedObject, violations);
 			}
 
-			if (isPostCheckingActivated)
+			if (isPostConditionsEnabled)
 			{
 
 				// method return value
@@ -687,9 +687,9 @@ public class Guard extends Validator
 	 * 
 	 * @return the isInvariantChecksActivated
 	 */
-	public boolean isInvariantCheckingActivated()
+	public boolean isInvariantsEnabled()
 	{
-		return isInvariantCheckingActivated;
+		return isInvariantsEnabled;
 	}
 
 	/**
@@ -699,7 +699,7 @@ public class Guard extends Validator
 	 * @param guardedClass the guarded class
 	 * @return the isInvariantChecksActivated
 	 */
-	public boolean isInvariantCheckingActivated(final Class guardedClass)
+	public boolean isInvariantsEnabled(final Class guardedClass)
 	{
 		final ClassChecks cc = getClassChecks(guardedClass);
 		return cc.isCheckInvariants;
@@ -708,17 +708,17 @@ public class Guard extends Validator
 	/**
 	 * @return the isPostChecksActivated
 	 */
-	public boolean isPostCheckingActivated()
+	public boolean isPostConditionsEnabled()
 	{
-		return isPostCheckingActivated;
+		return isPostConditionsEnabled;
 	}
 
 	/**
 	 * @return the isPreChecksActivated
 	 */
-	public boolean isPreCheckingActivated()
+	public boolean isPreConditionsEnabled()
 	{
-		return isPreCheckingActivated;
+		return isPreConditionsEnabled;
 	}
 
 	/**
@@ -914,7 +914,7 @@ public class Guard extends Validator
 	/**
 	 * If set to false OVal's programming by contract features are disabled
 	 * and constraints are not checked automatically during runtime.
-	 * @param isEnabled the isEnabled to set
+	 * @param isActivated the isActivated to set
 	 */
 	public void setActivated(final boolean isActivated)
 	{
@@ -936,10 +936,10 @@ public class Guard extends Validator
 	 * does not throw ConstraintViolationExceptions. Methods with return values will return null. 
 	 * 
 	 * @param guardedObject
-	 * @returns true if exceptions are suppressed
+	 * @param doSuppress
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 */
-	public void setInProbeMode(final Object guardedObject, final boolean doSuppress)
+	public void setInProbeMode(final Object guardedObject, final boolean isInProbeMode)
 			throws IllegalArgumentException
 	{
 		if (guardedObject == null)
@@ -952,7 +952,7 @@ public class Guard extends Validator
 		}
 		isProbeModeFeatureUsed = true;
 
-		if (doSuppress)
+		if (isInProbeMode)
 			objectsInProbeMode.get().add(guardedObject);
 		else
 			objectsInProbeMode.get().remove(guardedObject);
@@ -964,9 +964,9 @@ public class Guard extends Validator
 	 * 
 	 * @param isInvariantChecksActivated the isInvariantChecksActivated to set
 	 */
-	public void setInvariantCheckingActivated(final boolean isActivated)
+	public void setInvariantsEnabled(final boolean isActivated)
 	{
-		this.isInvariantCheckingActivated = isActivated;
+		this.isInvariantsEnabled = isActivated;
 	}
 
 	/**
@@ -974,13 +974,13 @@ public class Guard extends Validator
 	 * calls to non-private methods and constructors.
 	 * 
 	 * @param guardedClass the guarded class to turn on/off the invariant checking
-	 * @param isInvariantChecksActivated the isInvariantChecksActivated to set
+	 * @param isEnabled the isEnabled to set
 	 */
-	public void setInvariantCheckingActivated(final Class< ? > guardedClass,
-			final boolean isActivated)
+	public void setInvariantsEnabled(final Class< ? > guardedClass,
+			final boolean isEnabled)
 	{
 		final ClassChecks cc = getClassChecks(guardedClass);
-		cc.isCheckInvariants = isActivated;
+		cc.isCheckInvariants = isEnabled;
 	}
 
 	/**
@@ -997,19 +997,19 @@ public class Guard extends Validator
 	}
 
 	/**
-	 * @param isPostChecksActivated the isPostChecksActivated to set
+	 * @param isEnabled the isEnabled to set
 	 */
-	public void setPostCheckingActivated(final boolean isPostChecksActivated)
+	public void setPostConditionsEnabled(final boolean isEnabled)
 	{
-		this.isPostCheckingActivated = isPostChecksActivated;
+		this.isPostConditionsEnabled = isEnabled;
 	}
 
 	/**
-	 * @param isPreChecksActivated the isPreChecksActivated to set
+	 * @param isEnabled the isEnabled to set
 	 */
-	public void setPreCheckingActivated(final boolean isPreChecksActivated)
+	public void setPreConditionsEnabled(final boolean isEnabled)
 	{
-		this.isPreCheckingActivated = isPreChecksActivated;
+		this.isPreConditionsEnabled = isEnabled;
 	}
 
 	private RuntimeException translateException(final OValException ex)

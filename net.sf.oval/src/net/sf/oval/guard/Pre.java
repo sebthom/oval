@@ -53,7 +53,7 @@ public @interface Pre
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
-	 * @see ConstraintViolatedException
+	 * @see ConstraintsViolatedException
 	 */
 	String message() default "net.sf.oval.guard.Pre.violated";
 }

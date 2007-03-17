@@ -42,7 +42,7 @@ Validator:
 Guard (programming by contract):
   * replaced everything related to Guard.ReportingMode with Guard.isInProbeMode(...) and Guard.setInProbeMode(...)
   + added automatic invariant checking
-  + check of pre,post, and/or invariant checks can turned of programmatically
+  + check of pre,post, and/or invariant checks can turned on/off programmatically
   + constraint violation listeners can now also be registered for interfaces 
     (= notify about violations for all guarded classes implementing the given interface)
   + introduced @net.sf.oval.guard.Pre for declaring pre conditions with an expression language

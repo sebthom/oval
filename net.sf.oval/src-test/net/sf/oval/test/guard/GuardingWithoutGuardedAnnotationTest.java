@@ -64,7 +64,7 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 	public void testConstructorParameterConstraints()
 	{
 		final Guard guard = new Guard();
-		guard.setInvariantCheckingActivated(TestEntity.class, true);
+		guard.setInvariantsEnabled(TestEntity.class, true);
 		GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
 
 		/*
@@ -102,7 +102,7 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 	public void testMethodParameterConstraints()
 	{
 		final Guard guard = new Guard();
-		guard.setInvariantCheckingActivated(TestEntity.class, true);
+		guard.setInvariantsEnabled(TestEntity.class, true);
 		GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
 
 		try
