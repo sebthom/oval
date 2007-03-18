@@ -71,6 +71,7 @@ Other changes:
   * renamed package net.sf.oval.exceptions to net.sf.oval.exception
   - the ant build script now also creates the dist folder if it does not exist (thanks to tahura)
   + the ant build script now generates "with-depedencies" distribution archives
+  * improved the maven bundle
 
 2006-12-10 v0.8
 ===============

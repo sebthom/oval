@@ -26,15 +26,15 @@ public class PrePostBeanShellTest extends TestCase
 		
 		private BigDecimal value;
 
-		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "bsh", message = "PRE")
+		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "bsh", message = "PRE")
 		public void increase1(
-				@Assert(expression = "_value!=null", language = "bsh", message = "ASSERT")
+				@Assert(expr = "_value!=null", lang = "bsh", message = "ASSERT")
 				BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
-		@Post(expression = "_this.value.longValue()>0", language = "beanshell", message = "POST")
+		@Post(expr = "_this.value.longValue()>0", lang = "beanshell", message = "POST")
 		public void increase2(@NotNull
 		BigDecimal value2add)
 		{

@@ -25,22 +25,22 @@ public class PrePostGroovyTest extends TestCase
 
 		private BigDecimal value;
 
-		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "groovy", message = "PRE")
+		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "groovy", message = "PRE")
 		public void increase1(
-				@Assert(expression = "_value!=null", language = "groovy", message = "ASSERT")
+				@Assert(expr = "_value!=null", lang = "groovy", message = "ASSERT")
 				BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
-		@Post(expression = "_this.value>_old.value", old = "[value:_this.value]", language = "groovy", message = "POST")
+		@Post(expr = "_this.value>_old.value", old = "[value:_this.value]", lang = "groovy", message = "POST")
 		public void increase2(@NotNull
 		BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 		
-		@Post(expression = "_this.value>_old.value", old = "[value:_this.value]", language = "groovy", message = "POST")
+		@Post(expr = "_this.value>_old.value", old = "[value:_this.value]", lang = "groovy", message = "POST")
 		public void increase2buggy(@NotNull
 		BigDecimal value2add)
 		{

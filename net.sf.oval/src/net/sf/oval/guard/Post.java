@@ -31,26 +31,27 @@ import java.lang.annotation.Target;
 public @interface Post
 {
 	/**
-	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
+	 * Formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
 	 * available variables are:<br>
-	 * <b>_this</b> -&gt; the validated bean<br>
 	 * <b>_args[]</b> -&gt; the current parameter values<br>
-	 * <b>_result</b> -&gt; the method's return value
 	 * <b>_old</b> -&gt; the old values<br>
+	 * <b>_returns</b> -&gt; the method's return value
+	 * <b>_this</b> -&gt; the validated bean<br>
 	 * additionally variables named accordingly to the parameters are available<br>
 	 */
-	String expression();
+	String expr();
 
 	/**
-	 * formula in the given expression language. the returned value can be accessed in the constraint expression via the variable <b>_old</b>
+	 * Formula that is evaluated prior method execution.<br>
+	 * The returned value can later be accessed in the constraint expression via the variable <b>_old</b>
 	 */
 	String old() default "";
 
 	/**
 	 * the expression language that is used
 	 */
-	String language();
+	String lang();
 
 	/**
 	 * message to be used for the ContraintsViolatedException
@@ -58,4 +59,9 @@ public @interface Post
 	 * @see ConstraintsViolatedException
 	 */
 	String message() default "net.sf.oval.guard.Post.violated";
+
+	/**
+	 * The associated validation profiles.
+	 */
+	String[] profiles() default {};
 }

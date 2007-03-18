@@ -319,7 +319,8 @@ public class Guard extends Validator
 
 			for (final PostCheck check : postChecks)
 			{
-				if (check.getOld() != null && check.getOld().length() > 0)
+				if (isAnyProfileEnabled(check.getProfiles()) && check.getOld() != null
+						&& check.getOld().length() > 0)
 				{
 					final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
 					final Map<String, Object> values = CollectionFactoryHolder.getFactory()
@@ -433,7 +434,8 @@ public class Guard extends Validator
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 
 		// check invariants
-		if ((isInvariantsEnabled && cc.isCheckInvariants) || cc.methodsWithCheckInvariantsPost.contains(constructor))
+		if ((isInvariantsEnabled && cc.isCheckInvariants)
+				|| cc.methodsWithCheckInvariantsPost.contains(constructor))
 		{
 			try
 			{
@@ -976,8 +978,7 @@ public class Guard extends Validator
 	 * @param guardedClass the guarded class to turn on/off the invariant checking
 	 * @param isEnabled the isEnabled to set
 	 */
-	public void setInvariantsEnabled(final Class< ? > guardedClass,
-			final boolean isEnabled)
+	public void setInvariantsEnabled(final Class< ? > guardedClass, final boolean isEnabled)
 	{
 		final ClassChecks cc = getClassChecks(guardedClass);
 		cc.isCheckInvariants = isEnabled;
@@ -1179,10 +1180,12 @@ public class Guard extends Validator
 
 			for (final PostCheck check : postChecks)
 			{
+				if (!isAnyProfileEnabled(check.getProfiles())) continue;
+
 				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
 				final Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
 				values.put("_this", validatedObject);
-				values.put("_result", returnValue);
+				values.put("_returns", returnValue);
 				values.put("_old", oldValues.get(check));
 				if (hasParameters)
 				{
@@ -1239,6 +1242,8 @@ public class Guard extends Validator
 
 			for (final PreCheck check : preChecks)
 			{
+				if (!isAnyProfileEnabled(check.getProfiles())) continue;
+
 				final ExpressionLanguage eng = expressionLanguages.get(check.getLanguage());
 				final Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
 				values.put("_this", validatedObject);

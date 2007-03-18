@@ -15,6 +15,7 @@
 	<!-- ================================ -->
 	<property name="version" value="0.9" />
 	<property name="buildversion" value="${version}.${NOW}" />
+	<property name="maven.artifactId" value="oval" />
 	<property name="jar.basename" value="net.sf.oval" />
 	<property name="dist.basename" value="net.sf.oval" />
 
@@ -235,18 +236,18 @@
 		<!-- ************************* -->
 		<mkdir dir="${build}/maven"/>
 		
-		<copy tofile="${build}/maven/${jar.basename}-${version}.jar">
+		<copy tofile="${build}/maven/${maven.artifactId}-${version}.jar">
 			<fileset dir="${build}" includes="${jar.basename}_${version}.jar" />	
 		</copy>
 
 		<jar 
 			basedir="${src}"
-			destfile="${build}/maven/${jar.basename}-${version}-sources.jar"
+			destfile="${build}/maven/${maven.artifactId}-${version}-sources.jar"
 		/>
 		
 		<jar 
 			basedir="${build}/doc/api"
-			destfile="${build}/maven/${jar.basename}-${version}-javadoc.jar"
+			destfile="${build}/maven/${maven.artifactId}-${version}-javadoc.jar"
 		/>
 		
 		<copy todir="${build}/maven">
@@ -257,7 +258,7 @@
 		
 		<jar
 			basedir="${build}/maven"
-			destfile="${dist}/${jar.basename}-${version}-bundle.jar"
+			destfile="${dist}/${maven.artifactId}-${version}-bundle.jar"
 		/>
 		
 		<!-- ******** -->

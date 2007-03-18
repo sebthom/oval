@@ -36,8 +36,8 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public void configure(final Assert constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setExpression(constraintAnnotation.expression());
-		setLanguage(constraintAnnotation.language());
+		setExpression(constraintAnnotation.expr());
+		setLanguage(constraintAnnotation.lang());
 	}
 
 	@Override

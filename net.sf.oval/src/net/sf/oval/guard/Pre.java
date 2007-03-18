@@ -43,17 +43,22 @@ public @interface Pre
 	 * <b>_args[]</b> -&gt; the current parameter values<br>
 	 * additionally variables matching the parameter names are available<br>
 	 */
-	String expression();
+	String expr();
 
 	/**
 	 * the expression language that is used
 	 */
-	String language();
+	String lang();
 	
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintsViolatedException
 	 */
-	String message() default "net.sf.oval.guard.Pre.violated";
+	String message() default "net.sf.oval.guard.Pre.violated";	
+
+	/**
+	 * The associated validation profiles.
+	 */
+	String[] profiles() default {};
 }

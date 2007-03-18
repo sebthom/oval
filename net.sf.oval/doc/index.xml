@@ -252,11 +252,11 @@ if(exs.size()&gt;0)
    public String invoiceAddress;
 
    // mailingAddress must either be the delivery address or the invoice address
-   @Assert(expression = "_value == _this.deliveryAddress || _value == _this.invoiceAddress", language = "groovy")
+   @Assert(expr = "_value == _this.deliveryAddress || _value == _this.invoiceAddress", lang = "groovy")
    public String mailingAddress;
 }</programlisting>
 
-      <para>The <command>expression</command> parameter contains the script to
+      <para>The <command>expr</command> parameter contains the script to
       evaluate, if the script returns <command>true</command> the constraint
       is satisfied. OVal provides two special variables:</para>
 
@@ -272,7 +272,7 @@ if(exs.size()&gt;0)
         </listitem>
       </itemizedlist>
 
-      <para>The <command>language</command> parameter specifies the scripting
+      <para>The <command>lang</command> parameter specifies the scripting
       language you want to use. In case the required libraries are loaded,
       OVal is aware of these languages:</para>
 
@@ -549,16 +549,16 @@ public class Transaction
    private BigDecimal amount;
 
    // ensure that amount is not null, ensure that value2add is greater than amount
-   @Pre(expression = "_this.amount!=null &amp;&amp; amount2add&gt;_this.amount", language = "groovy")
+   @Pre(expr = "_this.amount!=null &amp;&amp; amount2add&gt;_this.amount", lang = "groovy")
    public void increase(BigDecimal amount2add)
    {
       amount = amount.add(amount2add);
    }</programlisting>
 
-        <para>The <command>expression</command> parameter contains the script
-        to evaluate, if the script returns <command>true</command> the
-        constraint is satisfied. OVal provides special variables for use
-        within the expression:</para>
+        <para>The <command>expr</command> parameter contains the script to
+        evaluate, if the script returns <command>true</command> the constraint
+        is satisfied. OVal provides special variables for use within the
+        expression:</para>
 
         <itemizedlist>
           <listitem>
@@ -577,9 +577,9 @@ public class Transaction
           </listitem>
         </itemizedlist>
 
-        <para>The <command>language</command> parameter specifies the
-        scripting language you want to use. In case the required libraries are
-        loaded, OVal is aware of these languages:</para>
+        <para>The <command>lang</command> parameter specifies the scripting
+        language you want to use. In case the required libraries are loaded,
+        OVal is aware of these languages:</para>
 
         <itemizedlist>
           <listitem>
@@ -596,10 +596,6 @@ public class Transaction
             JavaScript (via Mozilla Rhino).</para>
           </listitem>
         </itemizedlist>
-
-        <para>Additional scripting languages can be registered via
-        <command>Validator.addExpressionLanguage(String,
-        ExpressionLanguage)</command>.</para>
       </section>
 
       <section>
@@ -677,10 +673,9 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
       <section>
         <title>Using scripted expressions for postconditions</title>
 
-        <para>For declaring scripted postconditions the
-        <command>@net.sf.guard.Post</command> annotation is available working
-        similiar to <command>@net.sf.guard.Pre</command> for
-        precondtitions.</para>
+        <para>For declaring scripted postconditions you can use the
+        <command>@net.sf.guard.Post</command> annotation which works similiar
+        to <command>@net.sf.guard.Pre</command> for precondtitions.</para>
 
         <programlisting>@Guarded
 public class Transaction
@@ -688,16 +683,16 @@ public class Transaction
    private BigDecimal amount;
 
    // ensure that amount after calling the method is greater than it was before
-   @Post(expression = "_this.amount&gt;_old", old = "_this.amount", language = "groovy")
+   @Post(expr = "_this.amount&gt;_old", old = "_this.amount", lang = "groovy")
    public void increase(BigDecimal amount2add)
    {
       amount = amount.add(amount2add);
    }</programlisting>
 
-        <para>The <command>expression</command> parameter contains the script
-        to evaluate, if the script returns <command>true</command> the
-        constraint is satisfied. OVal provides special variables for use
-        within the expression:</para>
+        <para>The <command>expr</command> parameter contains the script to
+        evaluate, if the script returns <command>true</command> the constraint
+        is satisfied. OVal provides special variables for use within the
+        expression:</para>
 
         <itemizedlist>
           <listitem>
@@ -711,29 +706,24 @@ public class Transaction
           </listitem>
 
           <listitem>
+            <para><command>_returns</command> - the method's return
+            value</para>
+          </listitem>
+
+          <listitem>
+            <para><command>_old</command> - see the description of the
+            <command>old</command> parameter below</para>
+          </listitem>
+
+          <listitem>
             <para>additionally variables matching the parameter names are
             available</para>
           </listitem>
         </itemizedlist>
 
-        <para>The <command>old</command> parameter is optionally, it can hold
-        another expression that is evaluated before the method is executed.
-        The result is made available in the post constraint expression as a
-        special variable called <command>_old</command>. The old expression
-        can also return an array or a map allowing you to store multiple
-        values. This way you can "remember" the old state of multiple
-        properties of an object. An expression like <command>old =
-        "[amount:_this.amount, date:_this.date]"</command> in Groovy returns a
-        map with the keys <command>amount</command> and
-        <command>date</command> holding the values of the object's properties
-        <command>amount</command> and <command>date</command> These values
-        could be used in the constraint expression like this:
-        <command>expression = "_this.amount&gt;_old.amount &amp;&amp;
-        _this.date&gt;_old.date"</command>.</para>
-
-        <para>The <command>language</command> parameter specifies the
-        scripting language you want to use. In case the required libraries are
-        loaded, OVal is aware of these languages:</para>
+        <para>The <command>lang</command> parameter specifies the scripting
+        language you want to use. In case the required libraries are loaded,
+        OVal is aware of these languages:</para>
 
         <itemizedlist>
           <listitem>
@@ -751,9 +741,20 @@ public class Transaction
           </listitem>
         </itemizedlist>
 
-        <para>Additional scripting languages can be registered via
-        <command>Validator.addExpressionLanguage(String,
-        ExpressionLanguage)</command>.</para>
+        <para>The <command>old</command> parameter is optionally, it can hold
+        another expression that is evaluated before the method is executed.
+        The result is made available in the post constraint expression as a
+        special variable called <command>_old</command>. The old expression
+        can also return an array or a map allowing you to store multiple
+        values. This way you can "remember" the old state of multiple
+        properties of an object. An expression like <command>old =
+        "[amount:_this.amount, date:_this.date]"</command> in Groovy returns a
+        map with the keys <command>amount</command> and
+        <command>date</command> holding the values of the object's properties
+        <command>amount</command> and <command>date</command> These values
+        could be used in the constraint expression like this:
+        <command>expression = "_this.amount&gt;_old.amount &amp;&amp;
+        _this.date&gt;_old.date"</command>.</para>
       </section>
 
       <section>

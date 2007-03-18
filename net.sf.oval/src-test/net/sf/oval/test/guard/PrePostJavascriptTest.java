@@ -26,15 +26,15 @@ public class PrePostJavascriptTest extends TestCase
 		// Rhino's LiveConnect only supports access to public properties and methods
 		public BigDecimal value;
 
-		@Pre(expression = "_this.value!=null && value2add!=null && _args[0]!=null", language = "javascript", message = "PRE")
+		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "javascript", message = "PRE")
 		public void increase1(
-				@Assert(expression = "_value!=null", language = "javascript", message = "ASSERT")
+				@Assert(expr = "_value!=null", lang = "javascript", message = "ASSERT")
 				BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
-		@Post(expression = "_this.value>0", language = "groovy", message = "POST")
+		@Post(expr = "_this.value>0", lang = "groovy", message = "POST")
 		public void increase2(@NotNull
 		BigDecimal value2add)
 		{

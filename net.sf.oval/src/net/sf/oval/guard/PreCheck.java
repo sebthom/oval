@@ -20,15 +20,17 @@ public class PreCheck
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language = "javascript";
+	private String language;
 	private String expression;
 	private String message;
+	private String[] profiles;
 
 	public void configure(final Pre constraintAnnotation)
 	{
 		setMessage(constraintAnnotation.message());
-		setExpression(constraintAnnotation.expression());
-		setLanguage(constraintAnnotation.language());
+		setExpression(constraintAnnotation.expr());
+		setLanguage(constraintAnnotation.lang());
+		setProfiles(constraintAnnotation.profiles());
 	}
 
 	/**
@@ -56,6 +58,14 @@ public class PreCheck
 	}
 
 	/**
+	 * @return the profiles
+	 */
+	public String[] getProfiles()
+	{
+		return profiles;
+	}
+
+	/**
 	 * @param condition the condition to set
 	 */
 	public void setExpression(final String condition)
@@ -77,5 +87,13 @@ public class PreCheck
 	public void setMessage(final String message)
 	{
 		this.message = message;
+	}
+
+	/**
+	 * @param profiles the profiles to set
+	 */
+	public void setProfiles(final String[] profiles)
+	{
+		this.profiles = profiles;
 	}
 }

@@ -39,12 +39,12 @@ public @interface Assert
 	 * <b>_this</b> -&gt; the validated bean<br>
 	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, or method return value)
 	 */
-	String expression();
+	String expr();
 
 	/**
 	 * the expression language that is used, e.g. "bsh" / "beanshell", "groovy", or "js" / "javascript".
 	 */
-	String language();
+	String lang();
 
 	/**
 	 * message to be used for constructing the ConstraintViolation object

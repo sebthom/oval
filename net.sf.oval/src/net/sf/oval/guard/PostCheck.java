@@ -19,17 +19,19 @@ public class PostCheck
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language = "javascript";
+	private String language;
 	private String expression;
 	private String message;
 	private String old;
+	private String[] profiles;
 
 	public void configure(final Post constraintAnnotation)
 	{
 		setMessage(constraintAnnotation.message());
-		setExpression(constraintAnnotation.expression());
-		setLanguage(constraintAnnotation.language());
+		setExpression(constraintAnnotation.expr());
+		setLanguage(constraintAnnotation.lang());
 		setOld(constraintAnnotation.old());
+		setProfiles(constraintAnnotation.profiles());
 	}
 
 	/**
@@ -65,6 +67,14 @@ public class PostCheck
 	}
 
 	/**
+	 * @return the profiles
+	 */
+	public String[] getProfiles()
+	{
+		return profiles;
+	}
+
+	/**
 	 * @param condition the condition to set
 	 */
 	public void setExpression(final String condition)
@@ -94,5 +104,13 @@ public class PostCheck
 	public void setOld(final String old)
 	{
 		this.old = old;
+	}
+
+	/**
+	 * @param profiles the profiles to set
+	 */
+	public void setProfiles(final String[] profiles)
+	{
+		this.profiles = profiles;
 	}
 }

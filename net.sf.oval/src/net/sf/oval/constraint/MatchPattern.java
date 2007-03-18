@@ -49,7 +49,7 @@ public @interface MatchPattern
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.RegEx.violated";
+	String message() default "net.sf.oval.constraints.MatchPattern.violated";
 
 	/**
 	 * The regular expression to match against
