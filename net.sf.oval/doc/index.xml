@@ -23,7 +23,7 @@
 
       <listitem>
         <para>to validate objects based on certain EJB3 JPA annotations
-        (namely all field annotations that eventually a not-null
+        (namely all field annotations that require a not-null
         value),</para>
       </listitem>
 
@@ -69,12 +69,12 @@
       </listitem>
 
       <listitem>
-        <para>enforcing full object validation after an object has been
+        <para>enforcing object validation after an object has been
         created (invariants),</para>
       </listitem>
 
       <listitem>
-        <para>enforcing full object validation before/after a method of an
+        <para>enforcing object validation before/after a method of an
         object is/has been called (invariants),</para>
       </listitem>
 
@@ -86,7 +86,7 @@
 
       <listitem>
         <para>requiring a certain object state after a method is called
-        (poistconditions).</para>
+        (postconditions).</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -256,8 +256,8 @@ if(exs.size()&gt;0)
    public String mailingAddress;
 }</programlisting>
 
-      <para>The <command>expr</command> parameter contains the script to
-      evaluate, if the script returns <command>true</command> the constraint
+      <para>The <command>expr</command> parameter holds the script to be
+      evaluated. If the script returns <command>true</command> the constraint
       is satisfied. OVal provides two special variables:</para>
 
       <itemizedlist>
@@ -382,22 +382,22 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(entity);</progra
       <listitem>
         <para>enforce that a parameterized constructor/method is invoked only
         if the given arguments satisfy prior defined constraints
-        (pre-condition)</para>
+        (precondition)</para>
       </listitem>
 
       <listitem>
         <para>enforce that a method is invoked only if the object is in a
-        certain state (pre-condition/invariant)</para>
+        certain state (precondition/invariant)</para>
       </listitem>
 
       <listitem>
         <para>enforce that the return value of a method must satisfy prior
-        defined constraints (post-condition)</para>
+        defined constraints (postcondition)</para>
       </listitem>
 
       <listitem>
         <para>enforce that the object must be in a certain state after a
-        method has been executed (post-condition/invariant)</para>
+        method has been executed (postcondition/invariant)</para>
       </listitem>
     </itemizedlist>
 
@@ -555,8 +555,8 @@ public class Transaction
       amount = amount.add(amount2add);
    }</programlisting>
 
-        <para>The <command>expr</command> parameter contains the script to
-        evaluate, if the script returns <command>true</command> the constraint
+        <para>The <command>expr</command> parameter holds the script to
+        be evaluated. If the script returns <command>true</command> the constraint
         is satisfied. OVal provides special variables for use within the
         expression:</para>
 
@@ -689,8 +689,8 @@ public class Transaction
       amount = amount.add(amount2add);
    }</programlisting>
 
-        <para>The <command>expr</command> parameter contains the script to
-        evaluate, if the script returns <command>true</command> the constraint
+        <para>The <command>expr</command> parameter holds the script to
+        be evaluated. If the script returns <command>true</command> the constraint
         is satisfied. OVal provides special variables for use within the
         expression:</para>
 
@@ -1185,8 +1185,8 @@ public @interface UpperCase
     <title>XML based configuration</title>
 
     <para>By default the constraints configuration is done by adding
-    annotations representing the constraints to the respective locations to
-    the source code. Alternatively constraints can also be specified via XML -
+    annotations representing the constraints to the respective locations in
+    the source code. Alternatively constraints can also be declared via XML -
     either for a complete configuration or to overwrite the annotations based
     constraint configurations for specific classes, fields, etc.</para>
 
@@ -1194,7 +1194,7 @@ public @interface UpperCase
     <command>net.sf.oval.configuration.xml.XMLConfigurer</command> for loading
     constraint definitions from an XML file:</para>
 
-    <programlisting>XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml");
+    <programlisting>XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml"));
 Guard guard = new Guard(xmlConfigurer);</programlisting>
 
     <para>Here is an example XML configuration:</para>
@@ -1383,9 +1383,7 @@ Guard guard = new Guard(xmlConfigurer);</programlisting>
 
     <para>All other trademarks are the sole property of their respective
     owners.</para>
-  </section>
 
-  <section>
     <para>
       <ulink url="http://docbook.sourceforge.net/projects/xsl/">
         <inlinemediaobject>

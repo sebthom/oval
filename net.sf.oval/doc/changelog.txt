@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2007-03-?? v0.9
+2007-03-18 v0.9
 ===============
 Built-in constraints:
   * renamed package net.sf.oval.constraints to net.sf.oval.constraint
