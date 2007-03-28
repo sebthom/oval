@@ -38,11 +38,12 @@ import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.internal.ClassChecks;
 import net.sf.oval.internal.util.ArrayUtils;
+import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.Invocable;
 import net.sf.oval.internal.util.ListOrderedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
+import net.sf.oval.internal.util.ThreadLocalIdentitySet;
 import net.sf.oval.internal.util.ThreadLocalWeakHashSet;
-import net.sf.oval.internal.util.WeakHashSet;
 
 /**
  * Extended version of the validator to realize programming by contract.
@@ -55,7 +56,7 @@ public class Guard extends Validator
 
 	private ExceptionTranslator exceptionTranslator;
 
-	private final ThreadLocalWeakHashSet<Object> currentlyInvariantCheckingFor = new ThreadLocalWeakHashSet<Object>();
+	private final ThreadLocalIdentitySet<Object> currentlyInvariantCheckingFor = new ThreadLocalIdentitySet<Object>();
 
 	private boolean isActivated = true;
 	private boolean isInvariantsEnabled = true;
@@ -74,7 +75,7 @@ public class Guard extends Validator
 	 */
 	private boolean isProbeModeFeatureUsed = false;
 
-	private final Set<ConstraintsViolatedListener> listeners = new WeakHashSet<ConstraintsViolatedListener>();
+	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>();
 	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
 

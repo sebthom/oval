@@ -57,6 +57,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.OverridingHashCodeTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ParameterConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostBeanShellTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostGroovyTest.class);
@@ -74,11 +75,11 @@ public class AllTests
 		CollectionFactoryHolder.setFactory(new CollectionFactoryJDKImpl());
 		validatorTests(suite);
 		guardTests(suite);
-		
+
 		CollectionFactoryHolder.setFactory(new CollectionFactoryJavalutionImpl());
 		validatorTests(suite);
 		guardTests(suite);
-		
+
 		CollectionFactoryHolder.setFactory(new CollectionFactoryTroveImpl());
 		validatorTests(suite);
 		guardTests(suite);

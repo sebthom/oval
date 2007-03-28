@@ -17,39 +17,39 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
-/**
- * @author Sebastian Thomschke
- */
-public class WeakHashSet<E> implements Set<E>, Serializable
+import net.sf.oval.collection.CollectionFactoryHolder;
+
+public class IdentitySet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private transient WeakHashMap<E, Object> map;
+	private transient Map<Integer, E> map;
 
 	/**
-	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
+	 * Constructs a new, empty <tt>IdentitySet</tt>; the backing <tt>Map</tt> instance has
 	 * default initial capacity (16) and load factor (0.75).
 	 */
-	public WeakHashSet()
+	public IdentitySet()
 	{
-		map = new WeakHashMap<E, Object>();
+		map = CollectionFactoryHolder.getFactory().createMap();
 	}
 
 	/**
-	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
+	 * Constructs a new, empty <tt>IdentitySet</tt>; the backing <tt>Map</tt> instance has
 	 * the given initial capacity and the default load factor (0.75).
 	 */
-	public WeakHashSet(final int initialCapacity)
+	public IdentitySet(final int initialCapacity)
 	{
-		map = new WeakHashMap<E, Object>(initialCapacity);
+		map = CollectionFactoryHolder.getFactory().createMap(initialCapacity);
 	}
 
 	public boolean add(final E o)
 	{
-		return map.put(o, Boolean.TRUE) == null;
+		final int hash = System.identityHashCode(o);
+		return map.put(hash, o) == null;
 	}
 
 	public boolean addAll(final Collection< ? extends E> c)
@@ -69,35 +69,13 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 
 	public boolean contains(final Object o)
 	{
-		return map.containsKey(o);
+		final int hash = System.identityHashCode(o);
+		return map.containsKey(hash);
 	}
 
 	public boolean containsAll(final Collection< ? > c)
 	{
-		return map.keySet().containsAll(c);
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if (o == this) return true;
-
-		if (!(o instanceof Set)) return false;
-
-		if (((Set) o).size() != size()) return false;
-
-		return containsAll((Set) o);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 0;
-		for (final E e : map.keySet())
-		{
-			if (e != null) hash += e.hashCode();
-		}
-		return hash;
+		throw new UnsupportedOperationException();
 	}
 
 	public boolean isEmpty()
@@ -107,11 +85,11 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 
 	public Iterator<E> iterator()
 	{
-		return map.keySet().iterator();
+		return map.values().iterator();
 	}
 
 	/**
-	 * Reconstitute the <tt>WeakHashSet</tt> instance from a stream (that is,
+	 * Reconstitute the <tt>IdentitySet</tt> instance from a stream (that is,
 	 * deserialize it).
 	 */
 	@SuppressWarnings("unchecked")
@@ -125,26 +103,34 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		final int size = ois.readInt();
 
 		// materialize the elements
-		map = new WeakHashMap<E, Object>(size);
+		map = CollectionFactoryHolder.getFactory().createMap(size);
 		for (int i = 0; i < size; i++)
 		{
-			map.put((E) ois.readObject(), Boolean.TRUE);
+			final E o = (E) ois.readObject();
+			final int hash = System.identityHashCode(o);
+			map.put(hash, o);
 		}
 	}
 
 	public boolean remove(final Object o)
 	{
-		return map.remove(o) == Boolean.TRUE;
+		final int hash = System.identityHashCode(o);
+		return map.remove(hash) != null;
 	}
 
 	public boolean removeAll(final Collection< ? > c)
 	{
-		return map.keySet().removeAll(c);
+		boolean modified = false;
+		for (final Object e : c)
+		{
+			if (remove(e)) modified = true;
+		}
+		return modified;
 	}
 
 	public boolean retainAll(final Collection< ? > c)
 	{
-		return map.keySet().retainAll(c);
+		throw new UnsupportedOperationException();
 	}
 
 	public int size()
@@ -154,16 +140,16 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 
 	public Object[] toArray()
 	{
-		return map.keySet().toArray();
+		return map.values().toArray();
 	}
 
 	public <T> T[] toArray(final T[] a)
 	{
-		return map.keySet().toArray(a);
+		return map.values().toArray(a);
 	}
 
 	/**
-	 * Save the state of this <tt>WeakHashSet</tt> instance to a stream (that is,
+	 * Save the state of this <tt>IdentitySet</tt> instance to a stream (that is,
 	 * serialize this set).
 	 */
 	private void writeObject(final ObjectOutputStream oos) throws java.io.IOException
@@ -175,7 +161,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		oos.writeInt(map.size());
 
 		// serialize the set's elements
-		for (final E e : map.keySet())
+		for (final E e : map.values())
 		{
 			oos.writeObject(e);
 		}

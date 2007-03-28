@@ -16,19 +16,19 @@ or
 <!ELEMENT oval ( (constraintSet|class)* ) >
 
 <!-- Defines a constraint set -->
-<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|MinSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST constraintSet id NMTOKEN #REQUIRED >
 <!ATTLIST constraintSet overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a specific class -->
 <!ELEMENT class ( (field|constructor|method)* ) >
-<!ATTLIST class applyFieldConstraintsToSetter (true|false) NMTOKEN #IMPLIED >
-<!ATTLIST class checkInvariants (true|false) NMTOKEN #IMPLIED >
+<!ATTLIST class applyFieldConstraintsToSetter (true|false) #IMPLIED >
+<!ATTLIST class checkInvariants (true|false) #IMPLIED >
 <!ATTLIST class overwrite (true|false) #IMPLIED >
 <!ATTLIST class type CDATA #REQUIRED >
 
 <!-- Constraints configuration for a field -->
-<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|MinSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field overwrite (true|false) #IMPLIED >
 
@@ -45,12 +45,12 @@ To identify the correct method you are required to list all parameters, includin
 <!ATTLIST method overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a constructor/method parameter -->
-<!ELEMENT parameter ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|MinSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT parameter ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST parameter overwrite (true|false) #IMPLIED >
 <!ATTLIST parameter type NMTOKEN #REQUIRED >
 
 <!-- Constraints configuration for the return value of a method. -->
-<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|MinSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST returnValue overwrite (true|false) #IMPLIED >
 
 <!ELEMENT preExcecution (pre*)>
@@ -77,7 +77,7 @@ To identify the correct method you are required to list all parameters, includin
 
 <!-- An array of strings (new String[]{...})-->
 <!ELEMENT string-array (string*) >
-<!ELEMENT string (CDATA) >
+<!ELEMENT string (#PCDATA) >
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Assert -->
 <!ELEMENT assert EMPTY >
@@ -168,7 +168,7 @@ To identify the correct method you are required to list all parameters, includin
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MaxSize -->
 <!ELEMENT maxSize EMPTY >
-<!ATTLIST maxSize max NMTOKEN #REQUIED >
+<!ATTLIST maxSize max NMTOKEN #REQUIRED >
 <!ATTLIST maxSize message CDATA #IMPLIED >
 <!ATTLIST maxSize profiles (string-array) #IMPLIED >
 
