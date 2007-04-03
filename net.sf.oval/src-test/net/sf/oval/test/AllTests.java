@@ -57,6 +57,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.OverridingEqualsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.OverridingHashCodeTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ParameterConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostBeanShellTest.class);
