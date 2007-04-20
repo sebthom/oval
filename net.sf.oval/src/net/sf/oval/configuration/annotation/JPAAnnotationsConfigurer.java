@@ -100,7 +100,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return null;
 	}
 
-	private void initializeChecks(final Basic annotation, final Collection<Check> checks)
+	protected void initializeChecks(final Basic annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -111,7 +111,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	private void initializeChecks(final Column annotation, final Collection<Check> checks)
+	protected void initializeChecks(final Column annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -125,7 +125,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		checks.add(lengthCheck);
 	}
 
-	private void initializeChecks(final ManyToOne annotation, final Collection<Check> checks)
+	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -136,7 +136,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	private void initializeChecks(final OneToOne annotation, final Collection<Check> checks)
+	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
