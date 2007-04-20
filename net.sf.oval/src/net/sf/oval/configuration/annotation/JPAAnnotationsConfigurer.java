@@ -22,6 +22,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
 
 import net.sf.oval.Check;
 import net.sf.oval.collection.CollectionFactoryHolder;
@@ -120,11 +121,13 @@ public class JPAAnnotationsConfigurer implements Configurer
 		assert checks != null;
 
 		/* If the value is generated (annotated with @GeneratedValue) it is allowed to be null 
-		 * before the entity has been persisted.
+		 * before the entity has been persisted, same is true in case of optimistic locking
+		 * when a field is annotated with @Version.
 		 * Therefore and because of the fact that there is no generic way to determine if an entity 
 		 * has been persisted already, a not-null check will not be performed for such fields. 
 		 */
-		if (!annotation.nullable() && !field.isAnnotationPresent(GeneratedValue.class))
+		if (!annotation.nullable() && !field.isAnnotationPresent(GeneratedValue.class)
+				&& !field.isAnnotationPresent(Version.class))
 		{
 			checks.add(new NotNullCheck());
 		}
