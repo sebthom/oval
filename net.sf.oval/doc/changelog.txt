@@ -7,6 +7,8 @@
 - fixed a StackOverflowError that occured during invariant checking for 
   guarded classes that override the hashCode() method (thanks to io_exception)
 - fixed some issues with the XML configuration DTD
+- JPAAnnotationsConfigurer does not configure a NotNullCheck for fields with @Column(nullable=false)
+  that also have @GeneratedValue specified (thanks to Jim Greene)
 
 2007-03-18 v0.9
 ===============

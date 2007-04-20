@@ -5,6 +5,7 @@ package net.sf.oval.test.guard;
 
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.ConstraintsViolatedException;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import junit.framework.TestCase;
 
@@ -32,6 +33,8 @@ public class OverridingHashCodeTest extends TestCase
 
 	public void testGuarding()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
 		try
 		{
 			new Entity().setFoo(null);

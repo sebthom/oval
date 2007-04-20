@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -45,7 +46,7 @@ import net.sf.oval.exception.OValException;
  */
 public class JPAAnnotationsConfigurer implements Configurer
 {
-	private Boolean applyFieldConstraintsToSetter;
+	protected Boolean applyFieldConstraintsToSetter;
 
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
 	{
@@ -65,19 +66,19 @@ public class JPAAnnotationsConfigurer implements Configurer
 			{
 				if (annotation instanceof Basic)
 				{
-					initializeChecks((Basic) annotation, checks);
+					initializeChecks((Basic) annotation, checks, field);
 				}
 				else if (annotation instanceof Column)
 				{
-					initializeChecks((Column) annotation, checks);
+					initializeChecks((Column) annotation, checks, field);
 				}
 				else if (annotation instanceof OneToOne)
 				{
-					initializeChecks((OneToOne) annotation, checks);
+					initializeChecks((OneToOne) annotation, checks, field);
 				}
 				else if (annotation instanceof ManyToOne)
 				{
-					initializeChecks((ManyToOne) annotation, checks);
+					initializeChecks((ManyToOne) annotation, checks, field);
 				}
 			}
 			if (checks.size() > 0)
@@ -100,7 +101,8 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return null;
 	}
 
-	protected void initializeChecks(final Basic annotation, final Collection<Check> checks)
+	protected void initializeChecks(final Basic annotation, final Collection<Check> checks,
+			final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -111,21 +113,29 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	protected void initializeChecks(final Column annotation, final Collection<Check> checks)
+	protected void initializeChecks(final Column annotation, final Collection<Check> checks,
+			final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
 
-		if (!annotation.nullable())
+		/* If the value is generated (annotated with @GeneratedValue) it is allowed to be null 
+		 * before the entity has been persisted.
+		 * Therefore and because of the fact that there is no generic way to determine if an entity 
+		 * has been persisted already, a not-null check will not be performed for such fields. 
+		 */
+		if (!annotation.nullable() && !field.isAnnotationPresent(GeneratedValue.class))
 		{
 			checks.add(new NotNullCheck());
 		}
+
 		final LengthCheck lengthCheck = new LengthCheck();
 		lengthCheck.setMax(annotation.length());
 		checks.add(lengthCheck);
 	}
 
-	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks)
+	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks,
+			final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -136,7 +146,8 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks)
+	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks,
+			final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;

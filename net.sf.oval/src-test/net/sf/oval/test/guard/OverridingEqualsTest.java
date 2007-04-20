@@ -4,6 +4,7 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
+import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
@@ -39,6 +40,9 @@ public class OverridingEqualsTest extends TestCase
 
 	public void testGuarding()
 	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+		
 		Entity a1 = new Entity();
 		a1.foo = 2;
 		Entity a2 = new Entity();
