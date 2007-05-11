@@ -22,7 +22,8 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the string representation is not empty ("")
+ * Check if the string representation is not empty and 
+ * does not only contain white spaces.
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
@@ -32,15 +33,15 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = NotEmptyCheck.class)
-public @interface NotEmpty
+@Constraint(checkWith = NotBlankCheck.class)
+public @interface NotBlank
 {
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.NotEmpty.violated";
+	String message() default "net.sf.oval.constraints.NotBlank.violated";
 
 	/**
 	 * The associated validation profiles.

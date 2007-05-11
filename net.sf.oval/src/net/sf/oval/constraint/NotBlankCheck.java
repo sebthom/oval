@@ -19,15 +19,15 @@ import net.sf.oval.context.OValContext;
 /**
  * @author Sebastian Thomschke
  */
-public class NotEmptyCheck extends AbstractAnnotationCheck<NotBlank>
+public class NotBlankCheck extends AbstractAnnotationCheck<NotEmpty>
 {
 	private static final long serialVersionUID = 1L;
-
+	
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context, final Validator validator)
 	{
 		if (value == null) return true;
 
-		return value.toString().length() > 0;
+		return value.toString().trim().length() > 0;
 	}
 }

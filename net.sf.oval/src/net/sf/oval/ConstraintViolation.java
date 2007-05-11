@@ -143,7 +143,7 @@ public class ConstraintViolation implements Serializable
 		{
 			LOG.warning("Field 'validatedObject' not serialized because the field value object "
 					+ validatedObject + " of type " + invalidValue.getClass()
-					+ " does not implement java.io.Serializable.");
+					+ " does not implement " + Serializable.class.getName());
 
 			// indicate validatedObject does not implement Serializable
 			out.writeBoolean(false);

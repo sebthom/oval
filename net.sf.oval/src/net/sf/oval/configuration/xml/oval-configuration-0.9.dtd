@@ -60,7 +60,7 @@ To identify the correct method you are required to list all parameters, includin
 <!-- method pre condition - special programming by contract constraints -->
 <!ELEMENT pre EMPTY >
 <!ATTLIST pre expr CDATA #REQUIRED >
-<!ATTLIST pre lang (bsh|beanshell|js|javascript|groovy) #REQUIRED >
+<!ATTLIST pre lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
 <!ATTLIST pre message CDATA #IMPLIED >
 <!ATTLIST pre profiles (string-array) #IMPLIED >
 
@@ -71,7 +71,7 @@ To identify the correct method you are required to list all parameters, includin
 <!-- method post condition - special programming by contract constraints -->
 <!ELEMENT post EMPTY >
 <!ATTLIST post expr CDATA #REQUIRED >
-<!ATTLIST post lang (bsh|beanshell|js|javascript|groovy) #REQUIRED >
+<!ATTLIST post lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
 <!ATTLIST post message CDATA #IMPLIED >
 <!ATTLIST post profiles (string-array) #IMPLIED >
 
@@ -82,7 +82,7 @@ To identify the correct method you are required to list all parameters, includin
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Assert -->
 <!ELEMENT assert EMPTY >
 <!ATTLIST assert expr CDATA #REQUIRED >
-<!ATTLIST assert lang (bsh|beanshell|js|javascript|groovy) #REQUIRED >
+<!ATTLIST assert lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
 <!ATTLIST assert message CDATA #IMPLIED >
 <!ATTLIST assert profiles (string-array) #IMPLIED >
 

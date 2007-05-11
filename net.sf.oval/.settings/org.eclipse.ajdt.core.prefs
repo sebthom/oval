@@ -1,19 +1,22 @@
-#Sat Jun 24 13:36:07 CEST 2006
+#Mon May 07 21:11:29 CEST 2007
 eclipse.preferences.version=1
 org.aspectj.ajdt.core.compiler.BuildOptions.buildAsm=true
 org.aspectj.ajdt.core.compiler.BuildOptions.incrementalMode=true
 org.aspectj.ajdt.core.compiler.BuildOptions.showweavemessages=false
-org.aspectj.ajdt.core.compiler.lint.BrokeSerialVersionCompatibility=ignore
+org.aspectj.ajdt.core.compiler.lint.BrokeSerialVersionCompatibility=warning
 org.aspectj.ajdt.core.compiler.lint.CannotImplementLazyTJP=ignore
 org.aspectj.ajdt.core.compiler.lint.InvalidAbsoluteTypeName=warning
-org.aspectj.ajdt.core.compiler.lint.NeedSerialVersionUIDField=ignore
+org.aspectj.ajdt.core.compiler.lint.NeedSerialVersionUIDField=warning
 org.aspectj.ajdt.core.compiler.lint.NoInterfaceCtorJoinpoint=warning
 org.aspectj.ajdt.core.compiler.lint.ShadowNotInStructure=ignore
 org.aspectj.ajdt.core.compiler.lint.TypeNotExposedToWeaver=warning
 org.aspectj.ajdt.core.compiler.lint.UnresolvableMember=warning
 org.aspectj.ajdt.core.compiler.lint.WildcardTypeName=ignore
-org.aspectj.ajdt.core.compiler.lint.adviceDidNotMatch=warning
+org.aspectj.ajdt.core.compiler.lint.adviceDidNotMatch=ignore
 org.aspectj.ajdt.core.compiler.lint.annotationAsTargetForDecpIgnored=warning
+org.aspectj.ajdt.core.compiler.lint.calculatingSerialVersionUID=warning
+org.aspectj.ajdt.core.compiler.lint.cantFindType=error
+org.aspectj.ajdt.core.compiler.lint.cantFindTypeAffectingJPMatch=warning
 org.aspectj.ajdt.core.compiler.lint.cantMatchArrayTypeOnVarargs=ignore
 org.aspectj.ajdt.core.compiler.lint.elementAlreadyAnnotated=warning
 org.aspectj.ajdt.core.compiler.lint.enumAsTargetForDecpIgnored=warning

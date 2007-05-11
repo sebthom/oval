@@ -33,7 +33,7 @@ public final class ReflectionUtils
 	/**
 	 * @return the field or null if the field does not exist
 	 */
-	public static Field getField(final Class< ? > clazz, final String fieldName)
+	public static Field getField(final Class clazz, final String fieldName)
 	{
 		try
 		{
@@ -53,9 +53,9 @@ public final class ReflectionUtils
 	{
 		if (!isSetter(setter)) return null;
 
-		final Class< ? >[] methodParameterTypes = setter.getParameterTypes();
+		final Class[] methodParameterTypes = setter.getParameterTypes();
 		final String methodName = setter.getName();
-		final Class< ? > clazz = setter.getDeclaringClass();
+		final Class clazz = setter.getDeclaringClass();
 
 		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field name)
 		String fieldName = methodName.substring(3, 4).toLowerCase();
@@ -117,12 +117,12 @@ public final class ReflectionUtils
 		return field;
 	}
 
-	public static Field getFieldRecursive(final Class< ? > clazz, final String fieldName)
+	public static Field getFieldRecursive(final Class clazz, final String fieldName)
 	{
 		final Field f = getField(clazz, fieldName);
 		if (f != null) return f;
 
-		final Class< ? > superclazz = clazz.getSuperclass();
+		final Class superclazz = clazz.getSuperclass();
 		if (superclazz == null) return null;
 
 		return getFieldRecursive(superclazz, fieldName);
@@ -146,8 +146,8 @@ public final class ReflectionUtils
 	/**
 	 * @return the method or null if the method does not exist
 	 */
-	public static Method getMethod(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes) throws SecurityException
+	public static Method getMethod(final Class clazz, final String methodName,
+			final Class... parameterTypes) throws SecurityException
 	{
 		try
 		{
@@ -165,9 +165,9 @@ public final class ReflectionUtils
 		if (isStatic(method)) return null;
 
 		final String methodName = method.getName();
-		final Class< ? >[] parameterTypes = method.getParameterTypes();
+		final Class[] parameterTypes = method.getParameterTypes();
 
-		Class< ? > currentClass = method.getDeclaringClass();
+		Class currentClass = method.getDeclaringClass();
 
 		while (currentClass != null && currentClass != Object.class)
 		{
@@ -204,13 +204,13 @@ public final class ReflectionUtils
 		return fieldName;
 	}
 
-	public static boolean hasField(final Class< ? > clazz, final String fieldName)
+	public static boolean hasField(final Class clazz, final String fieldName)
 	{
 		return getField(clazz, fieldName) != null;
 	}
 
-	public static boolean hasMethod(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes)
+	public static boolean hasMethod(final Class clazz, final String methodName,
+			final Class... parameterTypes)
 	{
 		return getMethod(clazz, methodName, parameterTypes) != null;
 	}
@@ -296,7 +296,7 @@ public final class ReflectionUtils
 	 */
 	public static boolean isSetter(final Method method)
 	{
-		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+		final Class[] methodParameterTypes = method.getParameterTypes();
 
 		// check if method has exactly one parameter
 		if (methodParameterTypes.length != 1) return false;

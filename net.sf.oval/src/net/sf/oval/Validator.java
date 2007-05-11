@@ -52,6 +52,7 @@ import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.expression.ExpressionLanguageBeanShellImpl;
 import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
 import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
+import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.ClassChecks;
@@ -173,7 +174,7 @@ public class Validator
 				{
 					if (constructorConfig.parameterConfigurations != null)
 					{
-						final Class< ? >[] parameterTypes = new Class[constructorConfig.parameterConfigurations
+						final Class[] parameterTypes = new Class[constructorConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = constructorConfig.parameterConfigurations.size(); i < l; i++)
@@ -232,7 +233,7 @@ public class Validator
 					}
 					else
 					{
-						final Class< ? >[] parameterTypes = new Class[methodConfig.parameterConfigurations
+						final Class[] parameterTypes = new Class[methodConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
@@ -882,6 +883,12 @@ public class Validator
 		{
 			addExpressionLanguage("bsh", new ExpressionLanguageBeanShellImpl());
 			addExpressionLanguage("beanshell", getExpressionLanguage("bsh"));
+		}
+		
+		// OGNL support
+		if (ReflectionUtils.isClassPresent("ognl.Ognl"))
+		{
+			addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
 		}
 	}
 
