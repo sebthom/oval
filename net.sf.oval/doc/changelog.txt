@@ -4,9 +4,9 @@
 
 2007-??-?? v0.95
 ================
+- fixed some issues with the XML configuration DTD (e.g. [ Bug 1728672 ])
 - fixed a StackOverflowError that occured during invariant checking for 
   guarded classes that override the hashCode() method (thanks to io_exception)
-- fixed some issues with the XML configuration DTD
 - JPAAnnotationsConfigurer does not configure a NotNullCheck for fields with @Column(nullable=false)
   that also have @javax.persistence.GeneratedValue or @javax.persistence.Version specified (thanks to Jim Greene)
 + added support for OGNL as expression language

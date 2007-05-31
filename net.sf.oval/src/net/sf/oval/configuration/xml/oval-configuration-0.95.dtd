@@ -1,8 +1,8 @@
 <!-- OVal DTD
 
 <!DOCTYPE oval PUBLIC 
-   "-//OVal/OVal Configuration DTD 0.9//EN"
-   "http://oval.sourceforge.net/oval-configuration-0.9.dtd">
+   "-//OVal/OVal Configuration DTD 0.95//EN"
+   "http://oval.sourceforge.net/oval-configuration-0.95.dtd">
 
 or
 
@@ -42,6 +42,7 @@ To identify the correct constructor you are required to list all parameters, inc
 To identify the correct method you are required to list all parameters, including parameters you are not intending to specify constraints for. -->
 <!ELEMENT method (parameter*,preExcecution?,returnValue?,postExcecution?) >
 <!ATTLIST method name NMTOKEN #REQUIRED >
+<!ATTLIST method isInvariant (true|false) #IMPLIED >
 <!ATTLIST method overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a constructor/method parameter -->
@@ -114,11 +115,14 @@ To identify the correct method you are required to list all parameters, includin
 <!ATTLIST assertValid profiles (string-array) #IMPLIED >
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.CheckWith -->
-<!ELEMENT checkWith EMPTY >
+<!ELEMENT checkWith (simpleCheck) >
+<!ATTLIST checkWith ignoreIfNull (true|false) #IMPLIED >
 <!ATTLIST checkWith message CDATA #IMPLIED >
 <!ATTLIST checkWith profiles (string-array) #IMPLIED >
+
+<!ELEMENT simpleCheck EMPTY>
 <!-- name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck -->
-<!ATTLIST checkWith simpleCheck NMTOKEN #REQUIRED >
+<!ATTLIST simpleCheck class CDATA #REQUIRED >
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Future -->
 <!ELEMENT future EMPTY >
@@ -231,7 +235,7 @@ To identify the correct method you are required to list all parameters, includin
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraints.ValidateWithMethod -->
 <!ELEMENT validateWithMethod EMPTY >
-<!ATTLIST validateWithMethod ignoreIfNull NMTOKEN #IMPLIED >
+<!ATTLIST validateWithMethod ignoreIfNull (true|false) #IMPLIED >
 <!ATTLIST validateWithMethod message CDATA #IMPLIED >
 <!ATTLIST validateWithMethod methodName NMTOKEN #REQUIRED >
 <!ATTLIST validateWithMethod parameterType NMTOKEN #REQUIRED >

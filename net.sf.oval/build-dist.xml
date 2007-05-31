@@ -45,14 +45,14 @@
 			<!-- includes all aspectj jar files from the eclise plugin dir -->
 			<include name="*aspectj*/**/*.jar" />
 			<include name="*ajdt*/**/*.jar" />
-			
+
 			<!-- includes all junit jar files from the eclise plugin dir -->
 			<include name="*org.junit_*/**/*.jar" />
-			
+
 			<!-- required for AspectJ referenced class org/eclipse/core/runtime/OperationCanceledException -->
-			<include name="org.eclipse.equinox.common_*.jar"/>
-			
-			<include name="org.eclipse.osgi_*.jar"/>
+			<include name="org.eclipse.equinox.common_*.jar" />
+
+			<include name="org.eclipse.osgi_*.jar" />
 		</fileset>
 
 	</path>
@@ -88,7 +88,7 @@
 
 		<!--http://ant.apache.org/manual/CoreTasks/style.html-->
 		<xslt basedir="${doc}" destdir="${build}/doc" style="${res}/docbook/oval.xsl" classpathref="classpath" processor="trax">
-			
+
 			<mapper type="glob" from="*.xml" to="*.html" />
 
 			<outputproperty name="method" value="xml" />
@@ -117,17 +117,13 @@
 	<!-- ================================ -->
 	<target name="compile" depends="display_properties,clean">
 		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${bin}"  />
+		<mkdir dir="${bin}" />
 
 		<!-- run AspectJ compiler to compile the source files -->
 		<iajc srcdir="${src}" destdir="${bin}" debug="on" classpathref="classpath" source="1.5" />
-		
+
 		<copy todir="${bin}/">
-			<fileset
-				dir="${src}"
-				includes="**/*"
-				excludes="**/*.java, **/*.aj"
-			/>
+			<fileset dir="${src}" includes="**/*" excludes="**/*.java, **/*.aj" />
 		</copy>
 	</target>
 
@@ -139,128 +135,105 @@
 		<jar jarfile="${build}/${jar.basename}_${version}.jar" basedir="${bin}" manifest="${basedir}/META-INF/MANIFEST.MF">
 
 			<manifest>
-				<!-- see http://java.sun.com/docs/books/tutorial/jar/manifest/packageman.html -->
+				<!-- see http://java.sun.com/j2se/1.5.0/docs/guide/extensions/spec.html -->
 				<!-- see http://java.sun.com/j2se/1.5.0/docs/guide/extensions/versioning.html -->
+				<!-- see http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Manifest -->
+				<!-- see http://java.sun.com/docs/books/tutorial/deployment/jar/manifestindex.html -->
 				<section name="net/sf/oval">
 					<attribute name="Package" value="net.sf.oval" />
 					<attribute name="Specification-Title" value="OVal - Object Validation Framework" />
 					<attribute name="Specification-Version" value="${version}" />
 					<attribute name="Specification-Vendor-Id" value="net.sf.oval" />
 					<attribute name="Specification-URL" value="http://oval.sf.net" />
-
 					<attribute name="Implementation-Title" value="net.sf.oval" />
 					<attribute name="Implementation-Version" value="${buildversion}" />
 					<attribute name="Implementation-Vendor-Id" value="net.sf.oval" />
 					<attribute name="Implementation-URL" value="http://oval.sf.net" />
+					<attribute name="Sealed" value="true" />
+				</section>
+				<section name="net/sf/oval/internal">
+					<attribute name="Sealed" value="true" />
+				</section>
+				<section name="net/sf/oval/internal/util">
+					<attribute name="Sealed" value="true" />
+				</section>
+				<section name="net/sf/oval/guard">
+					<attribute name="Sealed" value="true" />
 				</section>
 			</manifest>
 
-			<fileset
-				dir="${doc}"
-				includes="*.txt,*.html,*.url"
-			/>
+			<fileset dir="${doc}" includes="*.txt,*.html,*.url" />
 		</jar>
-
 	</target>
 
 	<!-- ================================ -->
 	<!-- Target: dist                     -->
 	<!-- ================================ -->
 	<target name="dist" depends="jar,create_docs">
-		
+
 		<description>Creates all distribution files</description>
 
 		<!-- ************************************** -->
 		<!-- generate the dist without dependencies -->
 		<!-- ************************************** -->
-		<mkdir dir="${dist}"/>
+		<mkdir dir="${dist}" />
 
 		<copy todir="${build}/">
-			<fileset
-				dir="${doc}"
-				includes="*.txt,*.html,*.url"
-			/>
+			<fileset dir="${doc}" includes="*.txt,*.html,*.url" />
 		</copy>
-		
-		<replace file="${build}/README.txt" token="$VERSION$" value="${version}"/>
-		
-		<zip 
-			basedir="${src}"
-			destfile="${build}/${jar.basename}_${version}-src.zip"
-		/>
 
-		<zip 
-			basedir="${src-test}" update="true"
-			destfile="${build}/${jar.basename}_${version}-src.zip"
-		/>
-				
+		<replace file="${build}/README.txt" token="$VERSION$" value="${version}" />
+
+		<zip basedir="${src}" destfile="${build}/${jar.basename}_${version}-src.zip" />
+
+		<zip basedir="${src-test}" update="true" destfile="${build}/${jar.basename}_${version}-src.zip" />
+
 		<delete failonerror="false">
-			<fileset dir="${dist}" includes="${dist.basename}_${buildversion}*"/>
+			<fileset dir="${dist}" includes="${dist.basename}_${buildversion}*" />
 		</delete>
-		
-		
+
+
 		<tar destfile="${dist}/${dist.basename}_${buildversion}.tar.gz" compression="gzip" longfile="gnu">
-			<tarfileset dir="${build}" excludes="bin/**"/>
+			<tarfileset dir="${build}" excludes="bin/**" />
 		</tar>
-		
-		<zip 
-			basedir="${build}"
-			destfile="${dist}/${dist.basename}_${buildversion}.zip"
-			excludes="bin/**"
-		/>
-	
+
+		<zip basedir="${build}" destfile="${dist}/${dist.basename}_${buildversion}.zip" excludes="bin/**" />
+
 		<!-- *********************************** -->
 		<!-- generate the dist with dependencies -->
 		<!-- *********************************** -->
-		<mkdir dir="${build}/lib"/>		
+		<mkdir dir="${build}/lib" />
 		<copy todir="${build}/lib/">
-			<fileset
-				dir="${res}"
-				includes="**/*"
-				excludes="docbook/**, maven/**, links/**, *.xml"
-			/>
+			<fileset dir="${res}" includes="**/*" excludes="docbook/**, maven/**, links/**, *.xml" />
 		</copy>
 
 		<tar destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.tar.gz" compression="gzip" longfile="gnu">
-			<tarfileset dir="${build}" excludes="bin/**"/>
+			<tarfileset dir="${build}" excludes="bin/**" />
 		</tar>
-				
-		<zip 
-			basedir="${build}"
-			destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.zip"
-			excludes="bin/**"
-		/>
-		
+
+		<zip basedir="${build}" destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.zip" excludes="bin/**" />
+
 		<!-- ************************* -->
 		<!-- generate the maven bundle -->
 		<!-- ************************* -->
-		<mkdir dir="${build}/maven"/>
-		
+		<mkdir dir="${build}/maven" />
+
 		<copy tofile="${build}/maven/${maven.artifactId}-${version}.jar">
-			<fileset dir="${build}" includes="${jar.basename}_${version}.jar" />	
+			<fileset dir="${build}" includes="${jar.basename}_${version}.jar" />
 		</copy>
 
-		<jar 
-			basedir="${src}"
-			destfile="${build}/maven/${maven.artifactId}-${version}-sources.jar"
-		/>
-		
-		<jar 
-			basedir="${build}/doc/api"
-			destfile="${build}/maven/${maven.artifactId}-${version}-javadoc.jar"
-		/>
-		
+		<jar basedir="${src}" destfile="${build}/maven/${maven.artifactId}-${version}-sources.jar" />
+
+		<jar basedir="${build}/doc/api" destfile="${build}/maven/${maven.artifactId}-${version}-javadoc.jar" />
+
 		<copy todir="${build}/maven">
-			<fileset dir="${res}/maven" includes="pom.xml"/>	
+			<fileset dir="${res}/maven" includes="pom.xml" />
 		</copy>
-		
-		<replace file="${build}/maven/pom.xml" token="$VERSION$" value="${version}"/>
-		
-		<jar
-			basedir="${build}/maven"
-			destfile="${dist}/${maven.artifactId}-${version}-bundle.jar"
-		/>
-		
+
+		<replace file="${build}/maven/pom.xml" token="$VERSION$" value="${version}" />
+
+		<jar basedir="${build}/maven" destfile="${dist}/${maven.artifactId}-${version}-bundle.jar" />
+
 		<!-- ******** -->
 		<!-- clean up -->
 		<!-- ******** -->
