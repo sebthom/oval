@@ -7,7 +7,7 @@
 or
 
 <!DOCTYPE oval SYSTEM 
-   "file:///c:/mypath/oval-configuration-0.9.dtd">
+   "file:///c:/mypath/oval-configuration-0.95.dtd">
 
   http://en.wikipedia.org/wiki/Document_Type_Definition
 -->
