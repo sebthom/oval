@@ -72,6 +72,41 @@ public class Validator
 {
 	private final static Logger LOG = Logger.getLogger(Validator.class.getName());
 
+	/**
+	 * Returns a shared instance of the CollectionFactory
+	 */
+	public static CollectionFactory getCollectionFactory()
+	{
+		return CollectionFactoryHolder.getFactory();
+	}
+
+	/**
+	 * @return the messageResolver
+	 */
+	public static MessageResolver getMessageResolver()
+	{
+		return MessageResolverHolder.getMessageResolver();
+	}
+
+	/**
+	 * 
+	 * @param factory the new collection factory to be used by all validator instances
+	 */
+	public static void setCollectionFactory(final CollectionFactory factory) throws IllegalArgumentException
+	{
+		CollectionFactoryHolder.setFactory(factory);
+	}
+
+	/**
+	 * @param messageResolver the messageResolver to set
+	 * @throws IllegalArgumentException if <code>messageResolver == null</code>
+	 */
+	public static void setMessageResolver(final MessageResolver messageResolver)
+			throws IllegalArgumentException
+	{
+		MessageResolverHolder.setMessageResolver(messageResolver);
+	}
+
 	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
 	private final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>();
@@ -850,14 +885,6 @@ public class Validator
 		return el;
 	}
 
-	/**
-	 * @return the messageResolver
-	 */
-	public static MessageResolver getMessageResolver()
-	{
-		return MessageResolverHolder.getMessageResolver();
-	}
-
 	private void initializeDefaultELs()
 	{
 		// JavaScript support
@@ -1013,16 +1040,6 @@ public class Validator
 				.toString());
 
 		return message;
-	}
-
-	/**
-	 * @param messageResolver the messageResolver to set
-	 * @throws IllegalArgumentException if <code>messageResolver == null</code>
-	 */
-	public static void setMessageResolver(final MessageResolver messageResolver)
-			throws IllegalArgumentException
-	{
-		MessageResolverHolder.setMessageResolver(messageResolver);
 	}
 
 	/**
@@ -1227,22 +1244,5 @@ public class Validator
 			throw new ValidationFailedException("Object validation failed. Class: " + clazz
 					+ " Validated object: " + validatedObject, ex);
 		}
-	}
-
-	/**
-	 * Returns a shared instance of the CollectionFactory
-	 */
-	public static CollectionFactory getCollectionFactory()
-	{
-		return CollectionFactoryHolder.getFactory();
-	}
-
-	/**
-	 * 
-	 * @param factory the new collection factory to be used by all validator instances
-	 */
-	public static void setFactory(final CollectionFactory factory) throws IllegalArgumentException
-	{
-		CollectionFactoryHolder.setFactory(factory);
 	}
 }
