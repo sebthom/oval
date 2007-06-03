@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import net.sf.oval.collection.CollectionFactoryHolder;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  *  @author Sebastian Thomschke

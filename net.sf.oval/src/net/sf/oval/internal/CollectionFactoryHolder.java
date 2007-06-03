@@ -10,10 +10,14 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.collection;
+package net.sf.oval.internal;
 
 import java.util.logging.Logger;
 
+import net.sf.oval.collection.CollectionFactory;
+import net.sf.oval.collection.CollectionFactoryJDKImpl;
+import net.sf.oval.collection.CollectionFactoryJavalutionImpl;
+import net.sf.oval.collection.CollectionFactoryTroveImpl;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**

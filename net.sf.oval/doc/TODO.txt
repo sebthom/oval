@@ -4,6 +4,3 @@
 - Spring 2.0 XSD configuration support
 - replace the XML configuration DTD schema with a better XSD schema
 
-translation:
-- add net.sf.oval.guard.Parameter=parameter
-- add net.sf.oval.guard.MoreViolationsDetected={count} more constraint violations detected

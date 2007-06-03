@@ -14,10 +14,10 @@ package net.sf.oval.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sf.oval.collection.CollectionFactoryHolder;
 import net.sf.oval.collection.CollectionFactoryJDKImpl;
 import net.sf.oval.collection.CollectionFactoryJavalutionImpl;
 import net.sf.oval.collection.CollectionFactoryTroveImpl;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke

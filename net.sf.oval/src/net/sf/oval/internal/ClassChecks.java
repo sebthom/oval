@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.Check;
-import net.sf.oval.collection.CollectionFactoryHolder;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.IsGuarded;
 import net.sf.oval.guard.PostCheck;

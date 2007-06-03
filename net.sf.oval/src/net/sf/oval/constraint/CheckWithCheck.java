@@ -18,10 +18,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import net.sf.oval.Validator;
-import net.sf.oval.collection.CollectionFactoryHolder;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ReflectionException;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke

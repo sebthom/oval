@@ -25,7 +25,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
 import net.sf.oval.Check;
-import net.sf.oval.collection.CollectionFactoryHolder;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
@@ -33,6 +32,7 @@ import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.exception.OValException;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * Constraints configurer that interprets certain EJB3 JPA annotations:

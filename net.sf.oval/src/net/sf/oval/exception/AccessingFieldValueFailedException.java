@@ -13,6 +13,7 @@
 package net.sf.oval.exception;
 
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.MessageRenderer;
 
 /**
  * @author Sebastian Thomschke
@@ -24,10 +25,12 @@ public class AccessingFieldValueFailedException extends ReflectionException
 	private final OValContext context;
 	private final Object validatedObject;
 
-	public AccessingFieldValueFailedException(final String message, final Object validatedObject,
+	public AccessingFieldValueFailedException(final String fieldName, final Object validatedObject,
 			final OValContext context, final Throwable cause)
 	{
-		super(message, cause);
+		super(MessageRenderer.renderMessage(
+				"net.sf.oval.exception.AccessingFieldValueFailedException.message",
+				new String[][]{{"fieldName", fieldName}}), cause);
 		this.context = context;
 		this.validatedObject = validatedObject;
 	}

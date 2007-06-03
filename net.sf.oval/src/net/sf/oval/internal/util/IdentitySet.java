@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.oval.collection.CollectionFactoryHolder;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 public class IdentitySet<E> implements Set<E>, Serializable
 {

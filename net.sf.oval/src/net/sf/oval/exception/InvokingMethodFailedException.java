@@ -13,6 +13,7 @@
 package net.sf.oval.exception;
 
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.MessageRenderer;
 
 /**
  * @author Sebastian Thomschke
@@ -24,10 +25,12 @@ public class InvokingMethodFailedException extends ReflectionException
 	private final OValContext context;
 	private final Object validatedObject;
 
-	public InvokingMethodFailedException(final String message, final Object validatedObject,
+	public InvokingMethodFailedException(final String methodName, final Object validatedObject,
 			final OValContext context, final Throwable cause)
 	{
-		super(message, cause);
+		super(MessageRenderer.renderMessage(
+				"net.sf.oval.exception.InvokingMethodFailedException.message", new String[][]{{
+						"methodName", methodName}}), cause);
 		this.context = context;
 		this.validatedObject = validatedObject;
 	}

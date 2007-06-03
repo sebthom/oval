@@ -14,7 +14,7 @@ package net.sf.oval.internal.util;
 
 import java.util.List;
 
-import net.sf.oval.collection.CollectionFactoryHolder;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke

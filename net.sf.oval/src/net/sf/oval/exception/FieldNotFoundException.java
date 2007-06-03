@@ -28,4 +28,9 @@ public class FieldNotFoundException extends ReflectionException
 	{
 		super(message, cause);
 	}
+	
+	public FieldNotFoundException(final Throwable cause)
+	{
+		super(cause);
+	}
 }

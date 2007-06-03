@@ -12,20 +12,19 @@
  *******************************************************************************/
 package net.sf.oval.exception;
 
+import net.sf.oval.internal.MessageRenderer;
+
 /**
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageNotAvailableException extends OValException
+public class ExpressionLanguageNotAvailableException extends InvalidConfigurationException
 {
 	private static final long serialVersionUID = 1L;
 
-	public ExpressionLanguageNotAvailableException(final String message)
+	public ExpressionLanguageNotAvailableException(final String languageId)
 	{
-		super(message);
-	}
-
-	public ExpressionLanguageNotAvailableException(final String message, final Throwable cause)
-	{
-		super(message, cause);
+		super(MessageRenderer.renderMessage(
+				"net.sf.oval.exception.ExpressionLanguageNotAvailableException.message",
+				new String[][]{{"languageId", languageId}}));
 	}
 }

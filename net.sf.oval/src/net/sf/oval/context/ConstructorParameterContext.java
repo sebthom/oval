@@ -14,6 +14,7 @@ package net.sf.oval.context;
 
 import java.lang.reflect.Constructor;
 
+import net.sf.oval.internal.MessageResolverHolder;
 import net.sf.oval.internal.util.SerializableConstructor;
 import net.sf.oval.internal.util.StringUtils;
 
@@ -71,7 +72,10 @@ public class ConstructorParameterContext extends OValContext
 		return constructor.getDeclaringClass().getName()
 				+ "("
 				+ StringUtils.implode(constructor.getParameterTypes(), ",")
-				+ ") Parameter "
+				+ ") "
+				+ MessageResolverHolder.getMessageResolver().getMessage(
+						"net.sf.oval.context.ConstructorParameterContext.parameter")
+				+ " "
 				+ parameterIndex
 				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName
 						+ ")");

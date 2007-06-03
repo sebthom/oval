@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import net.sf.oval.collection.CollectionFactoryHolder;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * Default implementation that resolves messages based

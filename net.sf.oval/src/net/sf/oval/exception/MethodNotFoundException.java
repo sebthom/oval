@@ -28,4 +28,9 @@ public class MethodNotFoundException extends ReflectionException
 	{
 		super(message, cause);
 	}
+	
+	public MethodNotFoundException(final Throwable cause)
+	{
+		super(cause);
+	}
 }

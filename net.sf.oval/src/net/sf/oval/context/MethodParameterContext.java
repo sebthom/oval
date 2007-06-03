@@ -14,6 +14,7 @@ package net.sf.oval.context;
 
 import java.lang.reflect.Method;
 
+import net.sf.oval.internal.MessageResolverHolder;
 import net.sf.oval.internal.util.SerializableMethod;
 import net.sf.oval.internal.util.StringUtils;
 
@@ -68,7 +69,10 @@ public class MethodParameterContext extends OValContext
 				+ method.getName()
 				+ "("
 				+ StringUtils.implode(method.getParameterTypes(), ",")
-				+ ") Parameter "
+				+ ") "
+				+ MessageResolverHolder.getMessageResolver().getMessage(
+						"net.sf.oval.context.MethodParameterContext.parameter")
+				+ " "
 				+ parameterIndex
 				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName
 						+ ")");

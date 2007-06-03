@@ -28,4 +28,9 @@ public class ReflectionException extends OValException
 	{
 		super(message, cause);
 	}
+
+	public ReflectionException(final Throwable cause)
+	{
+		super(cause);
+	}
 }

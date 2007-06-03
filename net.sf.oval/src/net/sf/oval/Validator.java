@@ -20,10 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import net.sf.oval.collection.CollectionFactoryHolder;
+import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.annotation.AnnotationsConfigurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
@@ -56,12 +55,14 @@ import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.ClassChecks;
+import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.MessageRenderer;
+import net.sf.oval.internal.MessageResolverHolder;
 import net.sf.oval.internal.util.ListOrderedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalList;
 import net.sf.oval.localization.MessageResolver;
-import net.sf.oval.localization.MessageResolverImpl;
 
 /**
  * @author Sebastian Thomschke
@@ -78,8 +79,6 @@ public class Validator
 			.getFactory().createMap();
 
 	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
-
-	private MessageResolver messageResolver = MessageResolverImpl.INSTANCE;
 
 	protected Map<String, ExpressionLanguage> expressionLanguages = CollectionFactoryHolder
 			.getFactory().createMap(2);
@@ -369,11 +368,11 @@ public class Validator
 		}
 		catch (NoSuchMethodException ex)
 		{
-			throw new MethodNotFoundException("NoSuchMethodException occured.", ex);
+			throw new MethodNotFoundException(ex);
 		}
 		catch (NoSuchFieldException ex)
 		{
-			throw new FieldNotFoundException("FieldNotFoundException occured.", ex);
+			throw new FieldNotFoundException(ex);
 		}
 	}
 
@@ -436,9 +435,7 @@ public class Validator
 			throw new IllegalArgumentException("constraintSet.id cannot be empty");
 
 		if (!overwrite && constraintSetsById.containsKey(constraintSet.getId()))
-			throw new ConstraintSetAlreadyDefinedException(
-					"Another constraint set with the same fully qualified id "
-							+ constraintSet.getId() + " has already been defined.");
+			throw new ConstraintSetAlreadyDefinedException(constraintSet.getId());
 
 		constraintSetsById.put(constraintSet.getId(), constraintSet);
 	}
@@ -516,8 +513,7 @@ public class Validator
 
 		if (cs == null)
 		{
-			throw new UndefinedConstraintSetException("No constraint set with id " + check.getId()
-					+ " defined.");
+			throw new UndefinedConstraintSetException(check.getId());
 		}
 
 		final Collection<Check> referencedChecks = cs.getChecks();
@@ -844,13 +840,11 @@ public class Validator
 	public ExpressionLanguage getExpressionLanguage(final String languageId)
 			throws IllegalArgumentException, ExpressionLanguageNotAvailableException
 	{
-		if (languageId == null) throw new IllegalArgumentException("languageName cannot be null");
+		if (languageId == null) throw new IllegalArgumentException("languageId cannot be null");
 
 		final ExpressionLanguage el = expressionLanguages.get(languageId);
 
-		if (el == null)
-			throw new ExpressionLanguageNotAvailableException("Expression language " + languageId
-					+ " is not available.");
+		if (el == null) throw new ExpressionLanguageNotAvailableException(languageId);
 
 		return el;
 	}
@@ -858,9 +852,9 @@ public class Validator
 	/**
 	 * @return the messageResolver
 	 */
-	public MessageResolver getMessageResolver()
+	public static MessageResolver getMessageResolver()
 	{
-		return messageResolver;
+		return MessageResolverHolder.getMessageResolver();
 	}
 
 	private void initializeDefaultELs()
@@ -884,7 +878,7 @@ public class Validator
 			addExpressionLanguage("bsh", new ExpressionLanguageBeanShellImpl());
 			addExpressionLanguage("beanshell", getExpressionLanguage("bsh"));
 		}
-		
+
 		// OGNL support
 		if (ReflectionUtils.isClassPresent("ognl.Ognl"))
 		{
@@ -1002,8 +996,7 @@ public class Validator
 	protected String renderMessage(final OValContext context, final Object value,
 			final String messageKey, final Map<String, String> messageValues)
 	{
-		String message = messageResolver.getMessage(messageKey);
-		if (message == null) message = messageKey;
+		String message = MessageRenderer.renderMessage(messageKey, messageValues);
 
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
@@ -1012,15 +1005,6 @@ public class Validator
 		message = StringUtils.replaceAll(message, "{invalidValue}", value == null ? "null" : value
 				.toString());
 
-		if (messageValues != null && messageValues.size() > 0)
-		{
-			for (final Entry<String, String> entry : messageValues.entrySet())
-			{
-				message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", entry
-						.getValue());
-			}
-		}
-
 		return message;
 	}
 
@@ -1028,13 +1012,10 @@ public class Validator
 	 * @param messageResolver the messageResolver to set
 	 * @throws IllegalArgumentException if <code>messageResolver == null</code>
 	 */
-	public void setMessageResolver(final MessageResolver messageResolver)
+	public static void setMessageResolver(final MessageResolver messageResolver)
 			throws IllegalArgumentException
 	{
-		if (messageResolver == null)
-			throw new IllegalArgumentException("messageResolver cannot be null");
-
-		this.messageResolver = messageResolver;
+		MessageResolverHolder.setMessageResolver(messageResolver);
 	}
 
 	/**
@@ -1239,5 +1220,22 @@ public class Validator
 			throw new ValidationFailedException("Object validation failed. Class: " + clazz
 					+ " Validated object: " + validatedObject, ex);
 		}
+	}
+
+	/**
+	 * Returns a shared instance of the CollectionFactory
+	 */
+	public static CollectionFactory getCollectionFactory()
+	{
+		return CollectionFactoryHolder.getFactory();
+	}
+
+	/**
+	 * 
+	 * @param factory the new collection factory to be used by all validator instances
+	 */
+	public static void setFactory(final CollectionFactory factory) throws IllegalArgumentException
+	{
+		CollectionFactoryHolder.setFactory(factory);
 	}
 }

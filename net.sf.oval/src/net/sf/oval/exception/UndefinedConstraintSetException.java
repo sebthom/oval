@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.exception;
 
+import net.sf.oval.internal.MessageRenderer;
+
 /**
  * @author Sebastian Thomschke
  */
@@ -19,8 +21,10 @@ public class UndefinedConstraintSetException extends InvalidConfigurationExcepti
 {
 	private static final long serialVersionUID = 1L;
 
-	public UndefinedConstraintSetException(final String message)
+	public UndefinedConstraintSetException(final String contraintSetId)
 	{
-		super(message);
+		super(MessageRenderer.renderMessage(
+				"net.sf.oval.exception.UndefinedConstraintSetException.message",
+				new String[][]{{"contraintSetId", contraintSetId}}));
 	}
 }

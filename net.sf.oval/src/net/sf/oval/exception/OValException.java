@@ -30,4 +30,9 @@ public class OValException extends RuntimeException
 	{
 		super(message, cause);
 	}
+
+	public OValException(final Throwable cause)
+	{
+		super(cause);
+	}
 }
