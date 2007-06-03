@@ -13,6 +13,7 @@ Built-in constraints:
 
 Expression languages:
  + added support for OGNL as expression language
+ + added support for MVEL as expression language
 
 XML configuration:
  - fixed some issues with the XML configuration DTD (e.g. [ Bug 1728672 ])

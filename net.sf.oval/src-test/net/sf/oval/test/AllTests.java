@@ -31,6 +31,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertMVELTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
@@ -64,6 +65,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostBeanShellTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostMVELTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.StaticMethodsTest.class);

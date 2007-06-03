@@ -51,6 +51,7 @@ import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.expression.ExpressionLanguageBeanShellImpl;
 import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
 import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
+import net.sf.oval.expression.ExpressionLanguageMVELImpl;
 import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
@@ -883,6 +884,12 @@ public class Validator
 		if (ReflectionUtils.isClassPresent("ognl.Ognl"))
 		{
 			addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
+		}
+
+		// OGNL support
+		if (ReflectionUtils.isClassPresent("org.mvel.MVEL"))
+		{
+			addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
 		}
 	}
 
