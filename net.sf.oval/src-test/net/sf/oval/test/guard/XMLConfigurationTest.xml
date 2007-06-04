@@ -14,7 +14,7 @@
 	<!-- define checks for the net.sf.oval.test.enforcer.XMLConfigurationTest$User class -->
 	<!-- overwrite=false means already defined checks for this class will not be removed -->
 	<class type="net.sf.oval.test.guard.XMLConfigurationTest$User" overwrite="false"
-		applyFieldConstraintsToSetter="true">
+		applyFieldConstraintsToSetters="true">
 		<field name="firstName">
 			<length min="0" max="3"
 				message="{context} is not between {min} and {max} characters long" />

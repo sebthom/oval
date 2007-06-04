@@ -34,12 +34,21 @@ import java.lang.annotation.Target;
 public @interface Guarded
 {
 	/**
-	 * Automatically apply constraints specified for fields to 
-	 * the parameter of the corresponding setter methods 
-	 * declared within the same class.
-	 * <br><br>
+	 * Automatically apply field constraints to the
+	 * parameters of the corresponding setter methods 
+	 * declared within the same class. A corresponding setter
+	 * method is a method following the JavaBean convention and
+	 * its parameter has as the same type as the field.
 	 */
-	boolean applyFieldConstraintsToSetter() default false;
+	boolean applyFieldConstraintsToSetters() default false;
+
+	/**
+	 * Automatically apply field constraints to 
+	 * the corresponding parameters of constructors
+	 * declared within the same class. A corresponding paramater
+	 * is a parameter with the same name and type as the field.
+	 */
+	boolean applyFieldConstraintsToConstructors() default false;
 
 	/**
 	 * Specifies if invariants are checked after constructor

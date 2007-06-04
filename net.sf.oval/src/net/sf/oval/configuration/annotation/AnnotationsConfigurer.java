@@ -49,8 +49,11 @@ public class AnnotationsConfigurer implements Configurer
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
-		config.applyFieldConstraintsToSetter = config.type.isAnnotationPresent(Guarded.class)
-				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetter() : false;
+		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class)
+		? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors()
+		: false;
+		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class)
+				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
 
 		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type
 				.getAnnotation(Guarded.class).checkInvariants() : false;

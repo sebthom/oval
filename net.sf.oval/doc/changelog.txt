@@ -7,7 +7,9 @@
 Annotation configuration:
  - JPAAnnotationsConfigurer does not configure a NotNullCheck for fields with @Column(nullable=false)
    that also have @javax.persistence.GeneratedValue or @javax.persistence.Version specified (thanks to Jim Greene)
-
+ * renamed @Guarded.applyFieldConstraintsToSetter to @Guarded.applyFieldConstraintsToSetters
+ + added @Guarded.applyFieldConstraintsToConstructors to @Guarded.applyFieldConstraintsToConstructors
+ 
 Built-in constraints:
  + added @net.sf.oval.constraint.NotBlank (thanks to Dennis Kieselhorst)
 

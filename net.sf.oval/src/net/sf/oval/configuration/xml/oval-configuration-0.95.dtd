@@ -22,7 +22,8 @@ or
 
 <!-- Constraints configuration for a specific class -->
 <!ELEMENT class ( (field|constructor|method)* ) >
-<!ATTLIST class applyFieldConstraintsToSetter (true|false) #IMPLIED >
+<!ATTLIST class applyFieldConstraintsToConstructors (true|false) #IMPLIED >
+<!ATTLIST class applyFieldConstraintsToSetters (true|false) #IMPLIED >
 <!ATTLIST class checkInvariants (true|false) #IMPLIED >
 <!ATTLIST class overwrite (true|false) #IMPLIED >
 <!ATTLIST class type CDATA #REQUIRED >
@@ -198,6 +199,11 @@ To identify the correct method you are required to list all parameters, includin
 <!ELEMENT noSelfReference EMPTY >
 <!ATTLIST noSelfReference message CDATA #IMPLIED >
 <!ATTLIST noSelfReference profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.NotBlank -->
+<!ELEMENT notBlank EMPTY >
+<!ATTLIST notBlank message CDATA #IMPLIED >
+<!ATTLIST notBlank profiles (string-array) #IMPLIED >
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.NotEmpty -->
 <!ELEMENT notEmpty EMPTY >

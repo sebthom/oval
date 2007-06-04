@@ -85,8 +85,6 @@ public class Guard extends Validator
 	 */
 	private final ThreadLocalWeakHashSet<Object> objectsInProbeMode = new ThreadLocalWeakHashSet<Object>();
 
-	private ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
-
 	/**
 	 * Constructs a new guard object and uses a new isntance of
 	 * AnnotationsConfigurer

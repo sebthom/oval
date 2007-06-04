@@ -42,11 +42,22 @@ public class ClassConfiguration extends ConfigurationElement
 	public Set<MethodConfiguration> methodConfigurations;
 
 	/**
-	 * specifies if constraints defined for fields are applied to the
-	 * parameter of the corresponding setter method
+	 * Automatically apply field constraints to 
+	 * the corresponding parameters of constructors
+	 * declared within the same class. A corresponding paramater
+	 * is a parameter with the same name and type as the field.
 	 */
-	public Boolean applyFieldConstraintsToSetter;
-	
+	public Boolean applyFieldConstraintsToConstructors;
+
+	/**
+	 * Automatically apply field constraints to the
+	 * parameters of the corresponding setter methods 
+	 * declared within the same class. A corresponding setter
+	 * method is a method following the JavaBean convention and
+	 * its parameter has as the same type as the field.
+	 */
+	public Boolean applyFieldConstraintsToSetters;
+		
 	/**
 	 * Specifies if invariants are checked prior and after
 	 * calls to non-private methods and constructors.

@@ -53,6 +53,8 @@ import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
 import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
 import net.sf.oval.expression.ExpressionLanguageMVELImpl;
 import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
+import net.sf.oval.guard.ParameterNameResolver;
+import net.sf.oval.guard.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.ClassChecks;
@@ -92,7 +94,8 @@ public class Validator
 	 * 
 	 * @param factory the new collection factory to be used by all validator instances
 	 */
-	public static void setCollectionFactory(final CollectionFactory factory) throws IllegalArgumentException
+	public static void setCollectionFactory(final CollectionFactory factory)
+			throws IllegalArgumentException
 	{
 		CollectionFactoryHolder.setFactory(factory);
 	}
@@ -131,6 +134,8 @@ public class Validator
 
 	private final Set<String> disabledProfiles = CollectionFactoryHolder.getFactory().createSet();
 
+	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
+
 	/**
 	 * Constructs a new validator object and uses a new isntance of
 	 * AnnotationsConfigurer
@@ -163,6 +168,7 @@ public class Validator
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void addChecks(final ClassConfiguration classConfig) throws OValException
 	{
 		if (classConfig.type == null)
@@ -220,6 +226,9 @@ public class Validator
 						final Constructor constructor = classConfig.type
 								.getDeclaredConstructor(parameterTypes);
 
+						final String[] parameterNames = parameterNameResolver
+								.getParameterNames(constructor);
+
 						if (constructorConfig.overwrite != null && constructorConfig.overwrite)
 						{
 							cc.removeAllChecks(constructor);
@@ -245,6 +254,26 @@ public class Validator
 							{
 								cc.addChecks(constructor, i, checks
 										.toArray(new Check[checks.size()]));
+							}
+
+							/* *******************
+							 * applying field constraints to the single parameter of setter methods 
+							 * *******************/
+							if (classConfig.applyFieldConstraintsToConstructors != null
+									&& classConfig.applyFieldConstraintsToConstructors
+											.booleanValue())
+							{
+								final Field field = ReflectionUtils.getField(cc.clazz,
+										parameterNames[i]);
+
+								// check if a corresponding field has been found
+								if (field != null
+										&& parameterTypes[i].isAssignableFrom(field.getType()))
+								{
+									final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
+									check.setFieldName(field.getName());
+									cc.addChecks(constructor, i, check);
+								}
 							}
 						}
 					}
@@ -288,8 +317,8 @@ public class Validator
 					/* *******************
 					 * applying field constraints to the single parameter of setter methods 
 					 * *******************/
-					if (classConfig.applyFieldConstraintsToSetter != null
-							&& classConfig.applyFieldConstraintsToSetter.booleanValue())
+					if (classConfig.applyFieldConstraintsToSetters != null
+							&& classConfig.applyFieldConstraintsToSetters.booleanValue())
 					{
 						final Field field = ReflectionUtils.getFieldForSetter(method);
 

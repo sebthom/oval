@@ -50,8 +50,9 @@ public class AllTests
 	private static void guardTests(final TestSuite suite) throws Exception
 	{
 		suite.addTestSuite(net.sf.oval.test.guard.AddingChecksTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToConstructorsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToParametersTest.class);
-		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToSetterTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToSettersTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ConstraintSetTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.CustomConstraintMessageTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ExceptionTranslatorTest.class);

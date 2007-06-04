@@ -25,9 +25,9 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class ApplyFieldConstraintsToSetterTest extends TestCase
+public class ApplyFieldConstraintsToSettersTest extends TestCase
 {
-	@Guarded(applyFieldConstraintsToSetter = true)
+	@Guarded(applyFieldConstraintsToSetters = true)
 	private class Person
 	{
 		@AssertTrue(message = "ASSERT_TRUE")

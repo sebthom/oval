@@ -28,7 +28,7 @@ import net.sf.oval.guard.PreValidateThis;
  */
 public class PrePostValidateThisTest extends TestCase
 {
-	@Guarded(applyFieldConstraintsToSetter = true, checkInvariants = false)
+	@Guarded(applyFieldConstraintsToSetters = true, checkInvariants = false)
 	public static class TestEntity
 	{
 		@NotNull(message = "NOT_NULL")

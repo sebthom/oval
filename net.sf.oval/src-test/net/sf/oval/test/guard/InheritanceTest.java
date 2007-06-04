@@ -24,7 +24,7 @@ import net.sf.oval.guard.Guarded;
  */
 public class InheritanceTest extends TestCase
 {
-	@Guarded(applyFieldConstraintsToSetter = true)
+	@Guarded(applyFieldConstraintsToSetters = true)
 	public static class SuperEntity
 	{
 		@NotNull

@@ -8,8 +8,9 @@
   <section>
     <title>What is OVal?</title>
 
-    <para>OVal is a pragmatic and extensible validation framework for any kind
-    of Java objects (not only JavaBeans) and allows you:</para>
+    <para>OVal is a pragmatic and extensible general purpose validation
+    framework for any kind of Java objects (not only JavaBeans) and allows
+    you:</para>
 
     <itemizedlist>
       <listitem>
@@ -88,6 +89,10 @@
         (postconditions).</para>
       </listitem>
     </itemizedlist>
+
+    <para>Missing a useful feature? Let's discuss it: <ulink
+    url="http://sourceforge.net/forum/forum.php?forum_id=488109">OVal
+    forum</ulink></para>
   </section>
 
   <section>
@@ -924,7 +929,7 @@ bo.appendToName("123456"); // throws a ConstraintsViolatedException because fiel
 
       <para>Example business object:</para>
 
-      <programlisting>@net.sf.oval.guard.Guarded 
+      <programlisting>@net.sf.oval.guard.Guarded
 public class Person {
   @NotNegative
   private int age;

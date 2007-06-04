@@ -49,7 +49,7 @@ public class InnerClassTest extends TestCase
 			}
 		}
 
-		@Guarded(applyFieldConstraintsToSetter = true)
+		@Guarded(applyFieldConstraintsToSetters = true)
 		protected static class InnerClassGuarded
 		{
 			@NotNull

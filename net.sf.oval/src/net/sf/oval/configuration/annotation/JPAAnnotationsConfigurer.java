@@ -47,13 +47,23 @@ import net.sf.oval.internal.CollectionFactoryHolder;
  */
 public class JPAAnnotationsConfigurer implements Configurer
 {
-	protected Boolean applyFieldConstraintsToSetter;
+	protected Boolean applyFieldConstraintsToSetters;
+	protected Boolean applyFieldConstraintsToConstructors;
+
+	/**
+	 * @return the applyFieldConstraintsToConstructors
+	 */
+	public Boolean getApplyFieldConstraintsToConstructors()
+	{
+		return applyFieldConstraintsToConstructors;
+	}
 
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
-		config.applyFieldConstraintsToSetter = applyFieldConstraintsToSetter;
+		config.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
+		config.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
 
 		/*
 		 * determine field checks
@@ -166,15 +176,23 @@ public class JPAAnnotationsConfigurer implements Configurer
 	 */
 	public Boolean isApplyFieldConstraintsToSetter()
 	{
-		return applyFieldConstraintsToSetter;
+		return applyFieldConstraintsToSetters;
+	}
+
+	/**
+	 * @param applyFieldConstraintsToConstructors the applyFieldConstraintsToConstructors to set
+	 */
+	public void setApplyFieldConstraintsToConstructors(final Boolean applyFieldConstraintsToConstructors)
+	{
+		this.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
 	}
 
 	/**
 	 * @param applyFieldConstraintsToSetter the applyFieldConstraintsToSetter to set
 	 */
-	public void setApplyFieldConstraintsToSetter(final Boolean applyFieldConstraintsToSetter)
+	public void setApplyFieldConstraintsToSetters(final Boolean applyFieldConstraintsToSetters)
 	{
-		this.applyFieldConstraintsToSetter = applyFieldConstraintsToSetter;
+		this.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
 	}
 
 }

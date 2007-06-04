@@ -52,6 +52,7 @@ import net.sf.oval.constraint.MinCheck;
 import net.sf.oval.constraint.MinLengthCheck;
 import net.sf.oval.constraint.MinSizeCheck;
 import net.sf.oval.constraint.NoSelfReferenceCheck;
+import net.sf.oval.constraint.NotBlankCheck;
 import net.sf.oval.constraint.NotEmptyCheck;
 import net.sf.oval.constraint.NotNegativeCheck;
 import net.sf.oval.constraint.NotNullCheck;
@@ -141,6 +142,7 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("minLength", MinLengthCheck.class);
 		xStream.alias("minSize", MinSizeCheck.class);
 		xStream.alias("noSelfReference", NoSelfReferenceCheck.class);
+		xStream.alias("notBlank", NotBlankCheck.class);
 		xStream.alias("notEmpty", NotEmptyCheck.class);
 		xStream.alias("notNegative", NotNegativeCheck.class);
 		xStream.alias("notNull", NotNullCheck.class);
