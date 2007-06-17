@@ -42,7 +42,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getMessage = constraintClazz.getDeclaredMethod("message",
-					(Class[]) null);
+					(Class<?>[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
@@ -60,7 +60,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles",
-					(Class[]) null);
+					(Class<?>[]) null);
 			profiles = (String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)

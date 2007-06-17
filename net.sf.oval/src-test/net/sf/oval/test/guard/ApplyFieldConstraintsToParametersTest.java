@@ -165,7 +165,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		}
 		{
 			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class[]{String.class});
+					new Class<?>[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			guard.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
@@ -177,7 +177,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		}
 		{
 			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class[]{String.class});
+					new Class<?>[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			check.setFieldName("firstName");
 			guard.addChecks(setter, 0, check);

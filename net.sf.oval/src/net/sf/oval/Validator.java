@@ -215,7 +215,7 @@ public class Validator
 				{
 					if (constructorConfig.parameterConfigurations != null)
 					{
-						final Class[] parameterTypes = new Class[constructorConfig.parameterConfigurations
+						final Class<?>[] parameterTypes = new Class[constructorConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = constructorConfig.parameterConfigurations.size(); i < l; i++)
@@ -297,7 +297,7 @@ public class Validator
 					}
 					else
 					{
-						final Class[] parameterTypes = new Class[methodConfig.parameterConfigurations
+						final Class<?>[] parameterTypes = new Class[methodConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)

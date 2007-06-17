@@ -99,7 +99,7 @@ public class AddingChecksTest extends TestCase
 		try
 		{
 			Method setter = TestEntity1.class.getDeclaredMethod("setName",
-					new Class[]{String.class});
+					new Class<?>[]{String.class});
 			NotNullCheck notNullCheck = new NotNullCheck();
 			notNullCheck.setMessage("NOT_NULL");
 
@@ -166,7 +166,7 @@ public class AddingChecksTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 		
-		Constructor constructor = TestEntity2.class.getDeclaredConstructor(new Class[]{String.class});
+		Constructor constructor = TestEntity2.class.getDeclaredConstructor(new Class<?>[]{String.class});
 		NotNullCheck notNullCheck = new NotNullCheck();
 		notNullCheck.setMessage("NOT_NULL");
 

@@ -3,4 +3,3 @@
 - document usage with Spring
 - Spring 2.0 XSD configuration support
 - replace the XML configuration DTD schema with a better XSD schema
-
