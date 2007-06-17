@@ -48,9 +48,9 @@ public class SerializableConstructor implements Serializable
 
 	private transient Constructor constructor;
 
-	private final Class declaringClass;
+	private final Class<?> declaringClass;
 
-	private final Class[] parameterTypes;
+	private final Class<?>[] parameterTypes;
 
 	protected SerializableConstructor(final Constructor constructor)
 	{
@@ -70,7 +70,7 @@ public class SerializableConstructor implements Serializable
 	/**
 	 * @return the declaringClass
 	 */
-	public Class getDeclaringClass()
+	public Class<?> getDeclaringClass()
 	{
 		return declaringClass;
 	}
@@ -78,7 +78,7 @@ public class SerializableConstructor implements Serializable
 	/**
 	 * @return the parameterTypes
 	 */
-	public Class[] getParameterTypes()
+	public Class<?>[] getParameterTypes()
 	{
 		return parameterTypes;
 	}

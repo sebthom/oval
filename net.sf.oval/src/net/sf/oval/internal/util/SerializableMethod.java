@@ -46,11 +46,11 @@ public class SerializableMethod implements Serializable
 		return sm;
 	}
 
-	private final Class declaringClass;
+	private final Class<?> declaringClass;
 	private transient Method method;
 	private final String name;
 
-	private final Class[] parameterTypes;
+	private final Class<?>[] parameterTypes;
 
 	protected SerializableMethod(final Method method)
 	{
@@ -63,7 +63,7 @@ public class SerializableMethod implements Serializable
 	/**
 	 * @return the declaringClass
 	 */
-	public Class getDeclaringClass()
+	public Class<?> getDeclaringClass()
 	{
 		return declaringClass;
 	}
@@ -87,7 +87,7 @@ public class SerializableMethod implements Serializable
 	/**
 	 * @return the parameterTypes
 	 */
-	public Class[] getParameterTypes()
+	public Class<?>[] getParameterTypes()
 	{
 		return parameterTypes;
 	}

@@ -100,7 +100,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		try
 		{
 			Constructor< ? extends SimpleCheck> ctor = simpleCheckType
-					.getDeclaredConstructor((Class[]) null);
+					.getDeclaredConstructor((Class<?>[]) null);
 			ctor.setAccessible(true);
 			this.simpleCheck = ctor.newInstance();
 		}

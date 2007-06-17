@@ -146,8 +146,8 @@ public final class ReflectionUtils
 	/**
 	 * @return the method or null if the method does not exist
 	 */
-	public static Method getMethod(final Class clazz, final String methodName,
-			final Class... parameterTypes) throws SecurityException
+	public static Method getMethod(final Class<?> clazz, final String methodName,
+			final Class<?>... parameterTypes) throws SecurityException
 	{
 		try
 		{
@@ -165,9 +165,9 @@ public final class ReflectionUtils
 		if (isStatic(method)) return null;
 
 		final String methodName = method.getName();
-		final Class[] parameterTypes = method.getParameterTypes();
+		final Class<?>[] parameterTypes = method.getParameterTypes();
 
-		Class currentClass = method.getDeclaringClass();
+		Class<?> currentClass = method.getDeclaringClass();
 
 		while (currentClass != null && currentClass != Object.class)
 		{
@@ -209,8 +209,8 @@ public final class ReflectionUtils
 		return getField(clazz, fieldName) != null;
 	}
 
-	public static boolean hasMethod(final Class clazz, final String methodName,
-			final Class... parameterTypes)
+	public static boolean hasMethod(final Class<?> clazz, final String methodName,
+			final Class<?>... parameterTypes)
 	{
 		return getMethod(clazz, methodName, parameterTypes) != null;
 	}
