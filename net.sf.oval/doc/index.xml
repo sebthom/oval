@@ -342,8 +342,23 @@ if(exs.size()&gt;0) {
         </listitem>
 
         <listitem>
+          <para><command> @javax.persistence.OneToOne =&gt;
+          @net.sf.oval.constraints.AssertValid</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command> @javax.persistence.OneToMany =&gt;
+          @net.sf.oval.constraints.AssertValid</command></para>
+        </listitem>
+
+        <listitem>
           <para><command> @javax.persistence.ManyToOne(optional=false) =&gt;
           @net.sf.oval.constraints.NotNull </command></para>
+        </listitem>
+
+        <listitem>
+          <para><command> @javax.persistence.ManyToOne =&gt;
+          @net.sf.oval.constraints.AssertValid</command></para>
         </listitem>
 
         <listitem>

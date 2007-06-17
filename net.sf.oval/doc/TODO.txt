@@ -1,5 +1,8 @@
 - support constraints specified for method parameters in interfaces
 - support for inherited constraints
 - document usage with Spring
+- document constraint profiles
+- document applyFieldConstraintsToConstructors/applyFieldConstraintsToSetters
+- document collectionfactory
 - Spring 2.0 XSD configuration support
 - replace the XML configuration DTD schema with a better XSD schema
