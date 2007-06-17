@@ -21,6 +21,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
@@ -29,6 +30,7 @@ import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
+import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.exception.OValException;
@@ -47,6 +49,9 @@ import net.sf.oval.internal.CollectionFactoryHolder;
  */
 public class JPAAnnotationsConfigurer implements Configurer
 {
+	private final static NotNullCheck NOT_NULL = new NotNullCheck();
+	private final static AssertValidCheck ASSERT_VALID = new AssertValidCheck();
+
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;
 
@@ -91,6 +96,10 @@ public class JPAAnnotationsConfigurer implements Configurer
 				{
 					initializeChecks((ManyToOne) annotation, checks, field);
 				}
+				else if (annotation instanceof OneToMany)
+				{
+					initializeChecks((OneToMany) annotation, checks, field);
+				}
 			}
 			if (checks.size() > 0)
 			{
@@ -120,7 +129,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 		if (!annotation.optional())
 		{
-			checks.add(new NotNullCheck());
+			checks.add(NOT_NULL);
 		}
 	}
 
@@ -139,7 +148,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		if (!annotation.nullable() && !field.isAnnotationPresent(GeneratedValue.class)
 				&& !field.isAnnotationPresent(Version.class))
 		{
-			checks.add(new NotNullCheck());
+			checks.add(NOT_NULL);
 		}
 
 		final LengthCheck lengthCheck = new LengthCheck();
@@ -155,8 +164,18 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 		if (!annotation.optional())
 		{
-			checks.add(new NotNullCheck());
+			checks.add(NOT_NULL);
 		}
+		checks.add(ASSERT_VALID);
+	}
+
+	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks,
+			final Field field)
+	{
+		assert annotation != null;
+		assert checks != null;
+		
+		checks.add(ASSERT_VALID);
 	}
 
 	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks,
@@ -167,8 +186,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 		if (!annotation.optional())
 		{
-			checks.add(new NotNullCheck());
+			checks.add(NOT_NULL);
 		}
+		checks.add(ASSERT_VALID);
 	}
 
 	/**
@@ -182,7 +202,8 @@ public class JPAAnnotationsConfigurer implements Configurer
 	/**
 	 * @param applyFieldConstraintsToConstructors the applyFieldConstraintsToConstructors to set
 	 */
-	public void setApplyFieldConstraintsToConstructors(final Boolean applyFieldConstraintsToConstructors)
+	public void setApplyFieldConstraintsToConstructors(
+			final Boolean applyFieldConstraintsToConstructors)
 	{
 		this.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
 	}

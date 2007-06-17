@@ -12,12 +12,15 @@
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import junit.framework.TestCase;
@@ -34,39 +37,111 @@ public class JPAAnnotationsConfigurerTest extends TestCase
 	@Entity
 	protected static class TestEntity
 	{
+		// -> @NotNull
 		@Basic(optional = false)
+		// -> @MaxLength(4)
 		@Column(length = 4)
-		public String property1;
+		public String code;
 
+		// -> @NotNull
 		@Column(nullable = false)
-		public String property2;
+		public String description;
 
+		// -> @NotNull & @AssertValid
 		@ManyToOne(optional = false)
-		public TestEntity property3;
+		public TestEntity ref1;
 
-		@OneToOne(optional = false)
-		public TestEntity property4;
+		// -> @AssertValid
+		@OneToOne(optional = true)
+		public TestEntity ref2;
+
+		// -> @AssertValid
+		@OneToMany
+		public Collection<TestEntity> refs;
 	}
 
 	public void testJPAAnnotationsConfigurer()
 	{
 		Validator v = new Validator(new JPAAnnotationsConfigurer());
+		List<ConstraintViolation> violations;
 
-		TestEntity entity = new TestEntity();
+		TestEntity entity;
 
-		List<ConstraintViolation> violations = v.validate(entity);
-		assertEquals(4, violations.size());
+		{
+			entity = new TestEntity();
 
-		entity.property1 = "";
-		entity.property2 = "";
-		entity.property3 = new TestEntity();
-		entity.property4 = new TestEntity();
+			violations = v.validate(entity);
+			// code is null
+			// description is null
+			// ref1 is null
+			assertEquals(3, violations.size());
+			assertNull(violations.get(0).getInvalidValue());
+			assertNull(violations.get(1).getInvalidValue());
+			assertNull(violations.get(2).getInvalidValue());
+		}
 
-		violations = v.validate(entity);
-		assertEquals(0, violations.size());
+		{
+			entity.code = "";
+			entity.description = "";
+			entity.ref1 = new TestEntity();
 
-		entity.property1 = "12345";
-		violations = v.validate(entity);
-		assertEquals(1, violations.size());
+			violations = v.validate(entity);
+			// ref1 is invalid
+			assertEquals(1, violations.size());
+		}
+
+		{
+			entity.ref1.code = "";
+			entity.ref1.description = "";
+			entity.ref1.ref1 = entity;
+
+			violations = v.validate(entity);
+			assertEquals(0, violations.size());
+		}
+
+		{
+			entity.ref2 = new TestEntity();
+
+			violations = v.validate(entity);
+			// ref2 is invalid
+			assertEquals(1, violations.size());
+		}
+
+		{
+			entity.ref2.code = "";
+			entity.ref2.description = "";
+			entity.ref2.ref1 = entity;
+
+			violations = v.validate(entity);
+			assertEquals(0, violations.size());
+		}
+		
+		// Column length test
+		{
+			entity.code = "12345";
+			violations = v.validate(entity);
+			// code is too long
+			assertEquals(1, violations.size());
+			
+			entity.code = "";
+		}
+
+
+		// OneToMany test
+		{
+			entity.refs = new ArrayList<TestEntity>();
+			TestEntity d = new TestEntity();
+			entity.refs.add(d);
+
+			violations = v.validate(entity);
+			assertEquals(1, violations.size());
+
+			d.code = "";
+			d.description = "";
+			d.ref1 = entity;
+
+			violations = v.validate(entity);
+			assertEquals(0, violations.size());
+		}
 	}
 }
