@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE oval PUBLIC 
-   "-//OVal/OVal Configuration DTD 0.95//EN"
-   "http://oval.sourceforge.net/oval-configuration-0.95.dtd">
+   "-//OVal/OVal Configuration DTD 1.0//EN"
+   "http://oval.sourceforge.net/oval-configuration-1.0.dtd">
 <oval>
 	<!-- define a constraint set -->
 	<constraintSet id="user.userid">
@@ -14,7 +14,7 @@
 	<!-- define checks for the net.sf.oval.test.validator.XMLConfigurationTest$User class -->
 	<!-- overwrite=false means already defined checks for this class will not be removed -->
 	<class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false"
-		applyFieldConstraintsToSetter="true">
+		applyFieldConstraintsToSetters="true">
 		<field name="firstName">
 			<length min="0" max="3"	message="{context} is not between {min} and {max} characters long" />
 		</field>

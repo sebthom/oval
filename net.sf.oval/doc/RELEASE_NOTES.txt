@@ -1,3 +1,24 @@
+OVal 1.0
+========
+
+New features:
+-------------
++ New constraints (@NotBlank)
++ Support for OGNL and MVEL as constraint expression language
+
+0.9 to 1.0 Migration Notes:
+---------------------------
+a) Validator.setMessageResolver and Validator.getMessageResolver are now static, 
+   this means the same message resolver instance is used with all Validator/Guard instances 
+b) Class net.sf.oval.collection.CollectionFactoryHolder has been moved to package net.sf.oval.internal.
+   This class should not be used directly, the collection factory in use can be retrieved via
+   the static method Validator.getCollectionFactory and set with the static method Validator.setCollectionFactory
+c) @Guarded.applyFieldConstraintsToSetter has been renamed to @Guarded.applyFieldConstraintsToSetters
+d) JPAAnnotationsConfigurer constraint mappings extended:
+   @javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid
+   @javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid
+   @javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid
+	
 OVal 0.9
 ========
 
@@ -15,8 +36,8 @@ New features:
 + added Guard.setExceptionTranslator() allowing you to change the type of 
   exception that is thrown on constraint violations
 
-Migration Notes:
-----------------
+0.8 to 0.9 Migration Notes:
+---------------------------
 In the effort to add all the new features and to make OVal 1.0 release ready, 
 a large part of OVal's code base has been refactored. 
 

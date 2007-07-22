@@ -90,7 +90,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>Missing a useful feature? Let's discuss it: <ulink
+    <para>Missing a useful feature? Let's discuss it in the <ulink
     url="http://sourceforge.net/forum/forum.php?forum_id=488109">OVal
     forum</ulink></para>
   </section>
@@ -191,9 +191,10 @@ BusinessObject bo = new BusinessObject(); // name is null
 // collect the constraint violations List&lt;ConstraintViolation&gt; violations =
 validator.validate(bo);
 
-if(violations.size()&gt;0) {
-   LOG.severe("Object " + bo + " is invalid.");
-   throw new BussinessException(violations);
+if(violations.size()&gt;0)
+{
+  LOG.severe("Object " + bo + " is invalid.");
+  throw new BussinessException(violations);
 }</programlisting>
     </section>
 
@@ -222,9 +223,10 @@ if(violations.size()&gt;0) {
   @IsInvariant
   @NotNull
   @Length(max = 4)
-  public String getName() {
-      return name;
-   }
+  public String getName()
+  {
+    return name;
+  }
 
    ...
 }</programlisting>
@@ -238,14 +240,16 @@ BusinessObject bo = new BusinessObject("blabla");
 // collect the constraint violations List&lt;ConstraintViolation&gt; violations =
 validator.validate(bo);
 
-if(exs.size()&gt;0) {
-   LOG.severe("Object " + bo + " is invalid.");
-   throw new BussinessException(violations);
+if(exs.size()&gt;0)
+{
+  LOG.severe("Object " + bo + " is invalid.");
+  throw new BussinessException(violations);
 }</programlisting>
     </section>
 
     <section>
-      <title>Declaring conditional constraints</title>
+      <title>Declaring conditional constraints using expression
+      languages</title>
 
       <para>When you annotate a field or getter with multiple constraint
       annotations they are ANDed. If you require other logical constructs you
@@ -377,15 +381,15 @@ if(exs.size()&gt;0) {
       <programlisting>@Entity
 public class MyEntity
 {
-   @Basic(optional = false)
-   @Column(length = 4)
-   public String id;
+  @Basic(optional = false)
+  @Column(length = 4)
+  public String id;
 
-   @Column(nullable = false)
-   public String descr;
+  @Column(nullable = false)
+  public String descr;
 
-   @ManyToOne(optional = false)
-   public MyEntity parent;
+  @ManyToOne(optional = false)
+  public MyEntity parent;
 }</programlisting>
 
       <para>Example usage:</para>
@@ -450,8 +454,8 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(entity);</progra
       Java project by right-clicking the project in the Package Explorer and
       selecting <command>Convert To AspectJ Project</command></para>
 
-      <para>Add the <command>net.sf.oval_x.x.jar</command> file to your libary
-      path.</para>
+      <para>Add the <command>net.sf.oval_x.x.jar</command> file to your
+      library path.</para>
 
       <para>Create a new aspect via <command>File -&gt; New -&gt;
       Aspect</command> that extends the abstract aspect
@@ -476,16 +480,17 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(entity);</progra
         automatically checked when the constructor is invoked. Invocations of
         the constructor will be prohibited if any of the constraints is not
         satisfied. In such a case a
-        <command>net.sf.oval.guard.ConstraintsViolatedException</command> wil
+        <command>net.sf.oval.guard.ConstraintsViolatedException</command> will
         be thrown.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
-   public BusinessObject(@NotNull String name) {
-     this.name = name;
-   }
-   ... 
+  public BusinessObject(@NotNull String name)
+  {
+    this.name = name;
+  }
+  ... 
 }</programlisting>
 
         <para>Example usage:</para>
@@ -501,16 +506,17 @@ BusinessObject bo = new BusinessObject(null);</programlisting>
         checked when the method is invoked. Invocations of to the method will
         be prohibited if any of the constraints is not satisfied. In such a
         case a
-        <command>net.sf.oval.guard.ConstraintsViolatedException</command> wil
+        <command>net.sf.oval.guard.ConstraintsViolatedException</command> will
         be thrown.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
 {
-   public void setName(@NotNull String name) {
-     this.name = name;
-   }
-   ...
+  public void setName(@NotNull String name)
+  {
+    this.name = name;
+  }
+  ...
 }</programlisting>
 
         <para>Example usage:</para>
@@ -539,18 +545,21 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
         applied to the annotated parameter.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
-public class BusinessObject {
+public class BusinessObject
+{
   @NotNull
   @NotEmpty
   @Length(max=10)
   private String name;
 
-  public void setName(@FieldConstraints String name) {
-     this.name = name;
+  public void setName(@FieldConstraints String name)
+  {
+    this.name = name;
   }
 
-  public void setAlternativeName(@FieldConstraints("name") String altName) {
-     this.alternativeName = altName;
+  public void setAlternativeName(@FieldConstraints("name") String altName)
+  {
+    this.alternativeName = altName;
   }
 
   ...
@@ -563,12 +572,43 @@ public class BusinessObject {
 bo.setName(""); // throws a ConstraintsViolatedException because parameter is empty
 
 bo.setAlternativeName(null); // throws a ConstraintsViolatedException because parameter is null</programlisting>
+
+        <para>If you like to apply the constraints of all fields to their
+        corresponding setter methods you can alternatively set the
+        <command>applyFieldConstraintsToSetters</command> property of the
+        <command>Guarded</command> annotation to <command>true</command>. This
+        is especially useful if you have a lot of setter methods and you are
+        following the JavaBean convention. Important: The setter method must
+        be declared within the same class as the property.</para>
+
+        <programlisting>@net.sf.oval.guard.Guarded(applyFieldConstraintsToSetters=true)
+public class BusinessObject
+{
+  @NotNull
+  @NotEmpty
+  @Length(max=10)
+  private String name;
+
+  public void setName(String name)
+  {
+    this.name = name;
+  }
+  ...
+}</programlisting>
+
+        <para>Another convenience option is the
+        <command>applyFieldConstraintsToConstructors</command> property of the
+        <command>Guarded</command> annotation. If set to true, OVal applies
+        the specified field constraints to the corresponding parameters of the
+        declared constructors within the same class. In this context, a
+        corresponding parameter is a constructor parameter with the same name
+        and type as the field.</para>
       </section>
 
       <section>
         <title>Using scripted expressions for preconditions</title>
 
-        <para>Similiar to the above described
+        <para>Similar to the above described
         <command>@net.sf.constraint.Assert</command> constraint annotation for
         fields you can annotate a method with
         <command>@net.sf.guard.Pre</command> allowing you to express
@@ -670,19 +710,22 @@ public class Transaction {
         on an object of this type.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded 
-public class BusinessObject {
-  private String name =null;
+public class BusinessObject
+{
+  private String name = null;
 
   @IsInvariant
   @NotNull
   @Length(max = 4)
-  public String getName() {
+  public String getName()
+  {
     return name;
   }
 
   @NotNull
   @Length(max = 4)
-  public String getNameOrDefault(String default) {
+  public String getNameOrDefault(String default)
+  {
     return name == null ? default : name;
   }
   ...
@@ -708,8 +751,8 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
         <title>Using scripted expressions for postconditions</title>
 
         <para>For declaring scripted postconditions you can use the
-        <command>@net.sf.guard.Post</command> annotation which works similiar
-        to <command>@net.sf.guard.Pre</command> for precondtitions.</para>
+        <command>@net.sf.guard.Post</command> annotation which works Similar
+        to <command>@net.sf.guard.Pre</command> for preconditions.</para>
 
         <programlisting>@Guarded public class Transaction
 {
@@ -717,7 +760,8 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
 
   // ensure that amount after calling the method is greater than it was before
   @Post(expr = "_this.amount&gt;_old", old = "_this.amount", lang = "groovy")
-  public void increase(BigDecimal amount2add) { 
+  public void increase(BigDecimal amount2add)
+  { 
     amount = amount.add(amount2add);
   }
 }</programlisting>
@@ -844,12 +888,14 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
         is thrown and the method will not be executed.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
-public class BusinessObject {
+public class BusinessObject
+{
   @NotNull
   private String name = null;
 
   @PreValidateThis
-  public void save() {
+  public void save()
+  {
     // do something fancy
   }
   ...
@@ -879,12 +925,16 @@ bo.save();</programlisting>
         collected.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded 
-public class BusinessObject {
+public class BusinessObject
+{
   @NotNull 
   private String name;
 
   @PostValidateThis
-  public BusinessObject() { } ... 
+  /** constructor */
+  public BusinessObject() { }
+
+  ... 
 }</programlisting>
 
         <para>Example usage:</para>
@@ -909,12 +959,14 @@ BusinessObject bo = new BusinessObject();</programlisting>
         changes performed by this method.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
-public class BusinessObject {
+public class BusinessObject
+{
   @Length(max=10)
   private String name = "12345";
 
   @PostValidateThis 
-  public appendToName(String appendix) {
+  public appendToName(String appendix)
+  {
     name += appendix;
   }
   ...
@@ -931,7 +983,7 @@ bo.appendToName("123456"); // throws a ConstraintsViolatedException because fiel
       <title>Using the probe mode to simplify UI user input validation</title>
 
       <para>OVal provides a so called probe mode in which you can execute all
-      methods of an object and the guard will only check the pre conditions
+      methods of an object and the guard will only check the preconditions
       (e.g. parameter constraints) and not execute the method.</para>
 
       <para>This is especially useful if you want to test input values
@@ -945,7 +997,8 @@ bo.appendToName("123456"); // throws a ConstraintsViolatedException because fiel
       <para>Example business object:</para>
 
       <programlisting>@net.sf.oval.guard.Guarded
-public class Person {
+public class Person
+{
   @NotNegative
   private int age;
 
@@ -955,15 +1008,18 @@ public class Person {
   @Length(min=5, max=5)
   private String zipCode = "";
 
-  public void setAge(@FieldConstraints int age) {
+  public void setAge(@FieldConstraints int age)
+  {
     this.age = age;
   }
 
-  public void setName(@FieldConstraints String name) {
+  public void setName(@FieldConstraints String name)
+  {
     this.name = name;
   }
 
-  public void setZipCode(@FieldConstraints String zipCode) {
+  public void setZipCode(@FieldConstraints String zipCode)
+  {
     this.zipCode = zipCode;
   }
   ...
@@ -983,7 +1039,8 @@ public class Person {
 /* *****************************************************
  * later in the model layer
  * *****************************************************/
-public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolatedException {
+public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolatedException
+{
   Person person = new Person();
 
   Guard guard = MyGuardAspect.aspectOf().getGuard();
@@ -1001,10 +1058,13 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
   guard.removeListener(listener, person);
 
   // check if any constraint violations occured
-  if(listener.getConstraintViolations().size() &gt; 0) {
+  if(listener.getConstraintViolations().size() &gt; 0)
+  {
     // throw a ConstraintsViolatedException that contains the collected constraint violations
     throw new ConstraintsViolatedException(listener.getConstraintViolations());
-  } else {
+  }
+  else
+  {
     // really apply the values to the person bean
     applyInputValues(person, inputForm);
     dao.save(person);
@@ -1023,19 +1083,19 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
     </section>
 
     <section>
-      <title>Converting ConstraintViolationExceptions</title>
+      <title>Converting ConstraintsViolatedExceptions</title>
 
       <para>When calling methods on guarded objects these methods will throw
-      ConstraintsViolatedExceptions in case any pre or post conditions are
+      ConstraintsViolatedExceptions in case any pre- or postconditions are
       violated. Their might be good reasons why you may want to have other
-      exceptions thrown instead of OVals proprietary exceptions, e.g. JRE
+      exceptions thrown instead of OVal's proprietary exceptions, e.g. JRE
       standard exceptions such as <command>IllegalArgumentException</command>
       or <command>IllegalStateException</command> .</para>
 
       <para>OVal's Guard class allows you to register an exception translator.
       The exception translator defines a
       <command>translateException()</command> method that is executed for all
-      occuring exceptions during runtime validation. This allows you to
+      occurring exceptions during runtime validation. This allows you to
       translate any <command>OValException</command> thrown during validation
       into another <command>RuntimeException</command> which will be thrown
       instead. As an example have a look at the
@@ -1046,7 +1106,8 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
 
       <programlisting>public aspect MyAspect extends GuardAspect
 {
-  public MyAspect() {
+  public MyAspect()
+  {
     super();
 
     // specify an exception translator getGuard().setExceptionTranslator(new
@@ -1070,7 +1131,8 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
 
         <programlisting>public class UpperCaseCheck extends AbstractAnnotationCheck&lt;UpperCase&gt;
 {
-  public boolean isValid(Object validatable, Object value) {
+  public boolean isValid(Object validatable, Object value)
+  {
     if (value == null) return true;
 
     String val = value.toString(); return val.equals(val.toUpperCase());
@@ -1086,7 +1148,8 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
         <programlisting>@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @net.sf.oval.Constraint(check = UpperCaseCheck.class)
-public @interface UpperCase {
+public @interface UpperCase
+{
   /**
    * message to be used for the ConstraintsViolatedException 
    *
@@ -1106,6 +1169,84 @@ public @interface UpperCase {
 
   ...
 }</programlisting>
+      </listitem>
+    </orderedlist>
+
+    <para>Localization of the constraint violation message can be achieved as
+    follows:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Specify a unique message key for the default message string of
+        the constraint annotation, e.g.</para>
+
+        <programlisting>@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@net.sf.oval.Constraint(check = UpperCaseCheck.class)
+public @interface UpperCase
+{
+  /**
+   * message to be used for the ConstraintsViolatedException 
+   *
+   * @see ConstraintsViolatedException
+   */
+  String message() default "UpperCase.violated";
+}</programlisting>
+      </listitem>
+
+      <listitem>
+        <para>Create custom message bundles (one per language) and specify the
+        translated sting in each bundle:</para>
+
+        <programlisting>UpperCase.violated={context} must be upper case</programlisting>
+
+        <para>There exist two default variables that can be used in the
+        message string:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><command>{context}</command> = the validation context (e.g.
+            a field, a method return value or a constructor/method
+            parameter</para>
+          </listitem>
+
+          <listitem>
+            <para><command>{invalidValue}</command> = the value that has been
+            checked</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>If required, you can introduce additional variables - e.g. which
+        reflect additional configuration properties of your constraint such as
+        {max}, {min}, {size} - by overriding the
+        <command>getMessageVariables</command> method of your custom check
+        class:</para>
+
+        <programlisting>@Override
+public Map&lt;String, String&gt; getMessageVariables()
+{
+  Map&lt;String, String&gt; messageVariables = new HashMap&lt;String, String&gt;(2)
+  messageVariables.put("max", Integer.toString(max));
+  messageVariables.put("min", Integer.toString(min));
+  return messageVariables;
+}</programlisting>
+
+        <para>The message variables can then be used in the corresponding
+        message strings.</para>
+      </listitem>
+
+      <listitem>
+        <para>Register your message bundle with OVal:</para>
+
+        <programlisting>net.sf.oval.MessageResolverImpl mr = (net.sf.oval.MessageResolverImpl) Validator.getMessageResolver();
+mr.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"))</programlisting>
+
+        <para>If you would like to store your message strings other than in
+        message bundles (e.g. in a database): Either implement the
+        <command>MessageResolver</command> interface or extend the
+        <command>MessageResolverImpl</command> and then configure OVal using
+        the static <command>Validator.setMessageResolver(...)</command> method
+        to use an instance of your custom message resolver instead.</para>
       </listitem>
     </orderedlist>
   </section>
@@ -1137,7 +1278,8 @@ public @interface UpperCase {
   @ValidateWithMethod(methodName = "isValidDay", parameterType = int.class)
   private int day = 31;
 
-  private boolean isValidDay(int day) {
+  private boolean isValidDay(int day)
+  {
     try {
       GregorianCalendar cal = new GregorianCalendar();
       cal.setLenient(false);
@@ -1163,7 +1305,8 @@ public @interface UpperCase {
 
       <para>Example:</para>
 
-      <programlisting>private static class DayEntity {
+      <programlisting>private static class DayEntity
+{
   @Min(1960)
   private int year;
 
@@ -1173,8 +1316,10 @@ public @interface UpperCase {
   @CheckWith(DayCheck.class)
   private int day;
 
-  private static class DayCheck implements SimpleCheck {
-    public boolean isSatisfied(Object validatedObject, Object value) {
+  private static class DayCheck implements SimpleCheck
+  {
+    public boolean isSatisfied(Object validatedObject, Object value)
+    {
       try {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setLenient(false);
@@ -1209,7 +1354,7 @@ Guard guard = new Guard(xmlConfigurer);</programlisting>
     <para>Here is an example XML configuration:</para>
 
     <programlisting>&lt;?xml version="1.0" ?&gt;
-&lt;!DOCTYPE oval PUBLIC "-//OVal/OVal Configuration DTD 0.95//EN" "http://oval.sourceforge.net/oval-configuration-0.95.dtd"&gt;
+&lt;!DOCTYPE oval PUBLIC "-//OVal/OVal Configuration DTD 1.0//EN" "http://oval.sourceforge.net/oval-configuration-1.0.dtd"&gt;
 &lt;oval&gt;
   &lt;!-- define a constraint set --&gt;
   &lt;constraintSet id="user.userid"&gt;
@@ -1263,6 +1408,86 @@ Guard guard = new Guard(xmlConfigurer);</programlisting>
      &lt;/method&gt;
   &lt;/class&gt;
 &lt;/oval&gt;</programlisting>
+  </section>
+
+  <section>
+    <title>Additional Configuration and Customization Options</title>
+
+    <section>
+      <title>Constraint Profiles</title>
+
+      <para>You may come across the requirement to turn on or off the checking
+      of certain constraints across your domain model, e.g. based on some
+      configuration settings of the application instance. OVal helps you to
+      implement this by introducing constraint profiles. For each declared
+      constraint you can specify an infinite number of profiles this
+      constraint belongs to. During runtime you then can enable or disable all
+      constraints associated with a given profile by using the
+      <command>disableProfile</command>, and <command>enableProfile</command>
+      methods of the <command>Validator</command> instance.</para>
+
+      <programlisting>public class Person
+{
+  @NotNull(profiles = {"profile1"})
+  public String firstName;
+
+  @NotNull(profiles = {"profile1"})
+  public String lastName;
+
+  @NotNull(profiles = {"profile2", "profile3"})
+  public String zipCode;
+}</programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting>Validator v = new Validator();
+v.disableProfile("profile1");
+
+Person p = new Person();
+v.validate(p); 
+</programlisting>
+
+      <para>In this case only the null value <command>zipCode</command>
+      property will result in a <command>ConstraintViolation</command>. The
+      <command>@NotNull</command> constraints of <command>firstName</command>
+      and <command>lastName</command> are ignored since they are associated
+      with <command>profile1</command> and <command>profile1</command> has
+      been disabled.</para>
+    </section>
+
+    <section>
+      <title>Collection Factory</title>
+
+      <para>OVal instantiates all internally used collections indirectly via a
+      <command>CollectionFactory</command>. OVal comes with three different
+      implementations of the collection factory (Javolution Collections, GNU
+      Trove Collections, and JDK Collections). If the Javolution or GNU Trove
+      collection classes are detected in the classpath, OVal automatically
+      uses the respective CollectionFactory. If they are not available a
+      collection factory for standard JDK collections is used. </para>
+
+      <para>The Collection Factory to be used can be specified via the static
+      <command>Validator.setCollectionFactory(factory)</command>
+      method.</para>
+
+      <para>You can implement the
+      <command>net.sf.oval.collection.CollectionFactory</command> interface to
+      support other collection implementations.</para>
+    </section>
+
+    <section>
+      <title>Additional Expression Languages</title>
+
+      <para>If you would like to express constraints in a scripting language
+      not supported by OVal out of the box, you need to implement the
+      <command>net.sf.oval.expression.ExpressionLanguage</command> interface
+      and register your implementation with OVal using the
+      <command>Validator.addExpressionLanguage(languageId,
+      expressionLanguage)</command> method. Then you can use the specified
+      languageId with expression language aware constraint annotations such as
+      @Assert, @Pre, or @Post and start expressing constraints with the new
+      expression language.</para>
+    </section>
   </section>
 
   <section>

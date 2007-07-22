@@ -34,11 +34,11 @@ public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 
 	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
-		final String parameterNames = paranamer.lookupParameterNamesForMethod(method);
+		final String[] parameterNames = paranamer.lookupParameterNames(method);
 
 		if (parameterNames == null) return fallback.getParameterNames(method);
 
-		return parameterNames.split(",");
+		return parameterNames;
 	}
 
 	public String[] getParameterNames(final Constructor constructor) throws ReflectionException

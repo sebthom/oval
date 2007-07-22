@@ -13,7 +13,7 @@
 	<!-- ================================ -->
 	<!-- Global properties                -->
 	<!-- ================================ -->
-	<property name="version" value="0.95" />
+	<property name="version" value="1.0" />
 	<property name="buildversion" value="${version}.${NOW}" />
 	<property name="maven.artifactId" value="oval" />
 	<property name="jar.basename" value="net.sf.oval" />
@@ -40,21 +40,6 @@
 		<fileset dir="${res}">
 			<include name="**/*.jar" />
 		</fileset>
-
-		<fileset dir="${eclipse.pdebuild.home}/..">
-			<!-- includes all aspectj jar files from the eclise plugin dir -->
-			<include name="*aspectj*/**/*.jar" />
-			<include name="*ajdt*/**/*.jar" />
-
-			<!-- includes all junit jar files from the eclise plugin dir -->
-			<include name="*org.junit_*/**/*.jar" />
-
-			<!-- required for AspectJ referenced class org/eclipse/core/runtime/OperationCanceledException -->
-			<include name="org.eclipse.equinox.common_*.jar" />
-
-			<include name="org.eclipse.osgi_*.jar" />
-		</fileset>
-
 	</path>
 
 	<!-- ================================ -->

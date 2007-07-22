@@ -2,8 +2,8 @@
 [+] Feature added.
 [*] Change.
 
-2007-??-?? v0.95
-================
+2007-07-22 v1.0
+===============
 Annotation configuration:
  - JPAAnnotationsConfigurer does not configure a NotNullCheck for fields with @Column(nullable=false)
    that also have @javax.persistence.GeneratedValue or @javax.persistence.Version specified 
@@ -33,6 +33,7 @@ Other changes:
  * moved net.sf.oval.collection.CollectionFactoryHolder to net.sf.oval.internal
  - fixed a StackOverflowError that occured during invariant checking for 
    guarded classes that override the hashCode() method (thanks to io_exception)
+ + documentation improved
 
 
 2007-03-18 v0.9

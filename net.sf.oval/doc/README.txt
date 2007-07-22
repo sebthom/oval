@@ -5,11 +5,11 @@ http://oval.sf.net
 OVal is a pragmatic and extensible validation framework for any kind of Java
 objects (not only JavaBeans). Constraints can be configured with annotations,
 POJOs or XML. Custom constraints can be expressed in pure Java or by using
-scripting languages such as JavaScript, Groovy or BeanShell. Besides simple
-object validation OVal provides certain Programming by Contract features.
-They can easily be enable by using the provided AspectJ aspects.
+scripting languages such as JavaScript, Groovy, BeanShell, OGNL or MVEL. 
+Besides simple object validation OVal implements Programming by Contract
+features by utilizing AspectJ based aspects.
 
-=======================================
+===========================================
 
 Portions created by Sebastian Thomschke are 
 copyright (c) 2005-2007 Sebastian Thomschke.
