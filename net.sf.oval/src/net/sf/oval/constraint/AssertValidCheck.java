@@ -26,7 +26,7 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	private boolean requireValidElements = true;
 
 	@Override
-	public void configure(AssertValid constraintAnnotation)
+	public void configure(final AssertValid constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setRequireValidElements(constraintAnnotation.requireValidElements());
