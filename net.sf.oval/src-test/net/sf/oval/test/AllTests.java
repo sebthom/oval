@@ -33,6 +33,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertMVELTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
 		suite
@@ -68,6 +69,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostMVELTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostOGNLTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.StaticMethodsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
@@ -77,7 +79,7 @@ public class AllTests
 	{
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
-		//$JUnit-BEGIN$
+		// $JUnit-BEGIN$
 		CollectionFactoryHolder.setFactory(new CollectionFactoryJDKImpl());
 		validatorTests(suite);
 		guardTests(suite);
@@ -89,7 +91,7 @@ public class AllTests
 		CollectionFactoryHolder.setFactory(new CollectionFactoryTroveImpl());
 		validatorTests(suite);
 		guardTests(suite);
-		//$JUnit-END$
+		// $JUnit-END$
 		return suite;
 	}
 }

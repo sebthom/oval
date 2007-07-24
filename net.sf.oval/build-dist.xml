@@ -13,7 +13,7 @@
 	<!-- ================================ -->
 	<!-- Global properties                -->
 	<!-- ================================ -->
-	<property name="version" value="1.0" />
+	<property name="version" value="1.10" />
 	<property name="buildversion" value="${version}.${NOW}" />
 	<property name="maven.artifactId" value="oval" />
 	<property name="jar.basename" value="net.sf.oval" />

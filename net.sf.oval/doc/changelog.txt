@@ -2,6 +2,15 @@
 [+] Feature added.
 [*] Change.
 
+2007-??-?? v1.10
+================
+Expression languages:
+ + added support for Ruby (JRuby) as expression language
+
+Localization:
+ + added spanish translation of the constraint violation messages (thanks to Luis García Sevillano)
+
+
 2007-07-22 v1.0
 ===============
 Annotation configuration:

@@ -50,6 +50,7 @@ import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.expression.ExpressionLanguageBeanShellImpl;
 import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
+import net.sf.oval.expression.ExpressionLanguageJRubyImpl;
 import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
 import net.sf.oval.expression.ExpressionLanguageMVELImpl;
 import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
@@ -215,7 +216,7 @@ public class Validator
 				{
 					if (constructorConfig.parameterConfigurations != null)
 					{
-						final Class<?>[] parameterTypes = new Class[constructorConfig.parameterConfigurations
+						final Class< ? >[] parameterTypes = new Class[constructorConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = constructorConfig.parameterConfigurations.size(); i < l; i++)
@@ -297,7 +298,7 @@ public class Validator
 					}
 					else
 					{
-						final Class<?>[] parameterTypes = new Class[methodConfig.parameterConfigurations
+						final Class< ? >[] parameterTypes = new Class[methodConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
@@ -607,7 +608,8 @@ public class Validator
 		 */
 		if (context instanceof ConstructorParameterContext)
 		{
-			// the class declaring the field must either be the class declaring the constructor or one of its super classes
+			// the class declaring the field must either be the class declaring the constructor or one of its super
+			// classes
 			targetClass = ((ConstructorParameterContext) context).getConstructor()
 					.getDeclaringClass();
 		}
@@ -942,10 +944,17 @@ public class Validator
 			addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
 		}
 
-		// OGNL support
+		// MVEL support
 		if (ReflectionUtils.isClassPresent("org.mvel.MVEL"))
 		{
 			addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
+		}
+
+		// JRuby support
+		if (ReflectionUtils.isClassPresent("org.jruby.Ruby"))
+		{
+			addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl());
+			addExpressionLanguage("jruby", getExpressionLanguage("ruby"));
 		}
 	}
 
