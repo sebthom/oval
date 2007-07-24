@@ -8,8 +8,8 @@ Expression languages:
  + added support for Ruby (JRuby) as expression language
 
 Localization:
- + added spanish translation of the constraint violation messages (thanks to Luis García Sevillano)
-
+ + added Spanish translation of the constraint violation messages (thanks to Luis García Sevillano)
+ + Polish translation updated (thanks to Christopher Faryna)
 
 2007-07-22 v1.0
 ===============
