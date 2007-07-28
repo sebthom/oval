@@ -9,7 +9,9 @@ Expression languages:
 
 Localization:
  + added Spanish translation of the constraint violation messages (thanks to Luis García Sevillano)
- + Polish translation updated (thanks to Christopher Faryna)
+ * update Polish translation of the constraint violation messages (thanks to Christopher Faryna)
+ + added Dutch translation of the constraint violation (thanks to miep)
+ + added Russian translation of the constraint violation (thanks to Andrey Qwerty)
 
 2007-07-22 v1.0
 ===============
