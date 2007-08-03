@@ -14,16 +14,15 @@ package net.sf.oval.test.guard;
 
 import net.sf.oval.guard.GuardAspect;
 import net.sf.oval.guard.IsGuarded;
-import net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.TestEntity;
 
 /**
  * @author Sebastian Thomschke
  */
 public aspect GuardingWithoutGuardedAnnotationAspect extends GuardAspect
 {
-	protected pointcut scope(): within(TestEntity);
+	protected pointcut scope(): within(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.*);
 
-	declare parents: TestEntity implements IsGuarded;
+	declare parents: net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.* implements IsGuarded;
 	
 	public GuardingWithoutGuardedAnnotationAspect()
 	{
