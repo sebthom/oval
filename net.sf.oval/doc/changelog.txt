@@ -10,11 +10,13 @@ Expression languages:
 Localization:
  * update Polish translation of the constraint violation messages (thanks to Christopher Faryna) 
  + added new translations of the contraint violation messages:
+   + Chinese (thanks to kindloaf)
    + Dutch (thanks to miep)
-   + Italian (thanks to Mastermind X)
-   + Spanish (thanks to Luis García Sevillano)
-   + Russian (thanks to Andrey Qwerty)
    + Hungarian (thanks to Gabor Nagy)
+   + Italian (thanks to Mastermind X)
+   + Romanian (thanks to A. Mate)
+   + Russian (thanks to Andrey Qwerty)
+   + Spanish (thanks to Luis Garcia Sevillano)
 
 2007-07-22 v1.0
 ===============
