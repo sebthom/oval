@@ -17,6 +17,7 @@ Localization:
    + Romanian (thanks to A. Mate)
    + Russian (thanks to Andrey Qwerty)
    + Spanish (thanks to Luis Garcia Sevillano)
+   + Swedish (thanks to Johan Hedberg)
 
 2007-07-22 v1.0
 ===============
