@@ -18,6 +18,7 @@ Localization:
    + Russian (thanks to Andrey Qwerty)
    + Spanish (thanks to Luis Garcia Sevillano)
    + Swedish (thanks to Johan Hedberg)
+   + Turkish (thanks to Merdan Nouryev)
 
 Validator:
   + added method Validator.assertValid(...)
