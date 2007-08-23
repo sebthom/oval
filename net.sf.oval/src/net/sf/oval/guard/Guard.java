@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.context.ConstructorParameterContext;
@@ -544,7 +545,7 @@ public class Guard extends Validator
 						violations.toArray(new ConstraintViolation[violations.size()]));
 				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
-				// don't throw an exception if the method is a setter and suppressing for precondition is enabled 
+				// don't throw an exception if the method is a setter and suppressing for precondition is enabled
 				if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return null;
 
 				throw translateException(violationException);

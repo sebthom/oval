@@ -12,13 +12,12 @@
  *******************************************************************************/
 package net.sf.oval.test.guard;
 
-import net.sf.oval.guard.GuardAspect;
 import net.sf.oval.guard.IsGuarded;
 
 /**
  * @author Sebastian Thomschke
  */
-public aspect GuardingWithoutGuardedAnnotationAspect extends GuardAspect
+public aspect GuardingWithoutGuardedAnnotationAspect extends net.sf.oval.guard.GuardAspect
 {
 	protected pointcut scope(): within(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.*);
 

@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.constraint.Assert;
 import net.sf.oval.constraint.NotNull;
-import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
@@ -23,13 +23,11 @@ public class PrePostBeanShellTest extends TestCase
 		@SuppressWarnings("unused")
 		private String description;
 
-		
 		private BigDecimal value;
 
 		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "bsh", message = "PRE")
-		public void increase1(
-				@Assert(expr = "_value!=null", lang = "bsh", message = "ASSERT")
-				BigDecimal value2add)
+		public void increase1(@Assert(expr = "_value!=null", lang = "bsh", message = "ASSERT")
+		BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
@@ -46,7 +44,7 @@ public class PrePostBeanShellTest extends TestCase
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
+
 		TestTransaction t = new TestTransaction();
 
 		try
@@ -83,7 +81,7 @@ public class PrePostBeanShellTest extends TestCase
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
+
 		TestTransaction t = new TestTransaction();
 
 		try

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
+import net.sf.oval.ConstraintsViolatedException;
 
 /**
  * @author Sebastian Thomschke

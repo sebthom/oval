@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.constraint.Assert;
 import net.sf.oval.constraint.NotNull;
-import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
@@ -46,9 +46,9 @@ public class PrePostJavascriptTest extends TestCase
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
+
 		TestTransaction t = new TestTransaction();
-		
+
 		try
 		{
 			t.increase1(new BigDecimal(1));
@@ -83,7 +83,7 @@ public class PrePostJavascriptTest extends TestCase
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
+
 		TestTransaction t = new TestTransaction();
 
 		try

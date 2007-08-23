@@ -523,6 +523,50 @@ public class Validator
 		expressionLanguages.put(languageId, expressionLanguage);
 	}
 
+	/**
+	 * validates the field and getter constrains of the given object
+	 * and throws an ConstraintsViolatedException if any constraint
+	 * violations are detected
+	 * 
+	 * @param validatedObject the object to validate, cannot be null
+	 * @throws ConstraintsViolatedException
+	 * @throws ValidationFailedException
+	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
+	 */
+	public void assertValid(final Object validatedObject) throws IllegalArgumentException,
+			ValidationFailedException, ConstraintsViolatedException
+	{
+		final List<ConstraintViolation> violations = validate(validatedObject);
+
+		if (violations.size() > 0)
+		{
+			throw new ConstraintsViolatedException(violations);
+		}
+	}
+
+	/**
+	 * Validates the give value against the defined field constraints and throws 
+	 * an ConstraintsViolatedException if any constraint violations are detected.<br>
+	 * 
+	 * @param validatedObject the object to validate, cannot be null
+	 * @param validatedField the field to validate, cannot be null
+	 * @throws IllegalArgumentException if <code>validatedObject == null</code> or <code>field == null</code>
+	 * @throws ConstraintsViolatedException
+	 * @throws ValidationFailedException 
+	 */
+	public void assertValidFieldValue(final Object validatedObject, final Field validatedField,
+			final Object fieldValueToValidate) throws IllegalArgumentException,
+			ValidationFailedException, ConstraintsViolatedException
+	{
+		final List<ConstraintViolation> violations = validateFieldValue(validatedObject,
+				validatedField, fieldValueToValidate);
+
+		if (violations.size() > 0)
+		{
+			throw new ConstraintsViolatedException(violations);
+		}
+	}
+
 	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
 			throws OValException
@@ -1151,40 +1195,40 @@ public class Validator
 	/**
 	 * Validates the give value against the defined field constraints.<br>
 	 * 
-	 * @return null if no violation, otherwise a list
+	 * @return a list with the detected constraint violations. if no violations are detected an empty list is returned
 	 * @throws IllegalArgumentException if <code>validatedObject == null</code> or <code>field == null</code>
 	 * @throws ValidationFailedException 
 	 */
-	public List<ConstraintViolation> validateField(final Object validatedObject, final Field field,
-			final Object fieldValueToValidate) throws IllegalArgumentException,
-			ValidationFailedException
+	public List<ConstraintViolation> validateFieldValue(final Object validatedObject,
+			final Field validatedField, final Object fieldValueToValidate)
+			throws IllegalArgumentException, ValidationFailedException
 	{
 		if (validatedObject == null)
 			throw new IllegalArgumentException("validatedObject cannot be null");
 
-		if (field == null) throw new IllegalArgumentException("field cannot be null");
+		if (validatedField == null) throw new IllegalArgumentException("field cannot be null");
 
 		try
 		{
-			final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-			final Collection<Check> checks = cc.checksForFields.get(field);
+			final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());
+			final Collection<Check> checks = cc.checksForFields.get(validatedField);
 
 			if (checks == null || checks.size() == 0) return null;
 
 			final List<ConstraintViolation> violations = CollectionFactoryHolder.getFactory()
 					.createList();
 
-			final FieldContext context = new FieldContext(field);
+			final FieldContext context = new FieldContext(validatedField);
 
 			for (final Check check : checks)
 			{
 				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
 			}
-			return violations.size() == 0 ? null : violations;
+			return violations;
 		}
 		catch (OValException ex)
 		{
-			throw new ValidationFailedException("Field validation failed. Field: " + field
+			throw new ValidationFailedException("Field validation failed. Field: " + validatedField
 					+ " Validated object: " + validatedObject, ex);
 		}
 	}

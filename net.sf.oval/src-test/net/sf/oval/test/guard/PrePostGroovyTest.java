@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.constraint.Assert;
 import net.sf.oval.constraint.NotNull;
-import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
@@ -26,9 +26,8 @@ public class PrePostGroovyTest extends TestCase
 		private BigDecimal value;
 
 		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "groovy", message = "PRE")
-		public void increase1(
-				@Assert(expr = "_value!=null", lang = "groovy", message = "ASSERT")
-				BigDecimal value2add)
+		public void increase1(@Assert(expr = "_value!=null", lang = "groovy", message = "ASSERT")
+		BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
@@ -39,7 +38,7 @@ public class PrePostGroovyTest extends TestCase
 		{
 			value = value.add(value2add);
 		}
-		
+
 		@Post(expr = "_this.value>_old.value", old = "[value:_this.value]", lang = "groovy", message = "POST")
 		public void increase2buggy(@NotNull
 		BigDecimal value2add)

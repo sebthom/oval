@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
@@ -24,8 +25,7 @@ import net.sf.oval.internal.CollectionFactoryHolder;
 public class ConstraintsViolatedAdapter implements ConstraintsViolatedListener
 {
 	private final List<ConstraintsViolatedException> violationExceptions = CollectionFactoryHolder
-			.getFactory()
-			.createList(8);
+			.getFactory().createList(8);
 	private final List<ConstraintViolation> violations = CollectionFactoryHolder.getFactory()
 			.createList(8);
 

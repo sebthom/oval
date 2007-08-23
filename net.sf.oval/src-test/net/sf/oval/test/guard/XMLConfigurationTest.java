@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstructorConfiguration;
@@ -35,7 +36,6 @@ import net.sf.oval.constraint.MatchPatternCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
-import net.sf.oval.guard.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 

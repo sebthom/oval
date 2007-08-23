@@ -19,6 +19,14 @@ Localization:
    + Spanish (thanks to Luis Garcia Sevillano)
    + Swedish (thanks to Johan Hedberg)
 
+Validator:
+  + added method Validator.assertValid(...)
+  + added method Validator.assertValidFieldValue(...)
+  + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
+  
+Other changes:
+ * net.sf.oval.ContraintsViolatedException moved from package net.sf.oval.guard
+ 
 2007-07-22 v1.0
 ===============
 Annotation configuration:

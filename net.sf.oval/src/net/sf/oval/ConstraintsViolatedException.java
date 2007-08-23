@@ -10,11 +10,10 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.guard;
+package net.sf.oval;
 
 import java.util.List;
 
-import net.sf.oval.ConstraintViolation;
 import net.sf.oval.exception.OValException;
 
 /**

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodEntryContext;

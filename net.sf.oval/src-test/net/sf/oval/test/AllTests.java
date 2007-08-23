@@ -45,6 +45,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 	}
 
