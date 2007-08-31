@@ -170,14 +170,9 @@ public class Validator
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void addChecks(final ClassConfiguration classConfig) throws OValException
+	protected void addChecks(final ClassChecks cc, final ClassConfiguration classConfig)
+			throws OValException
 	{
-		if (classConfig.type == null)
-			throw new InvalidConfigurationException("The property 'type' for " + classConfig
-					+ " must be specified.");
-
-		final ClassChecks cc = getClassChecks(classConfig.type);
-
 		if (classConfig.overwrite != null && classConfig.overwrite)
 		{
 			cc.reset();
@@ -903,13 +898,14 @@ public class Validator
 			if (cc == null)
 			{
 				cc = new ClassChecks(clazz);
-				checksByClass.put(clazz, cc);
 
 				for (final Configurer configurer : configurers)
 				{
 					final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
-					if (classConfig != null) addChecks(classConfig);
+					if (classConfig != null) addChecks(cc, classConfig);
 				}
+
+				checksByClass.put(clazz, cc);
 			}
 
 			return cc;
