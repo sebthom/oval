@@ -12,18 +12,20 @@
  *******************************************************************************/
 package net.sf.oval.test;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import net.sf.oval.Validator;
 import net.sf.oval.collection.CollectionFactoryJDKImpl;
 import net.sf.oval.collection.CollectionFactoryJavalutionImpl;
 import net.sf.oval.collection.CollectionFactoryTroveImpl;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AllTests
 {
+
 	private static void validatorTests(final TestSuite suite) throws Exception
 	{
 		suite.addTestSuite(net.sf.oval.test.validator.AddingChecksTest.class);
@@ -81,17 +83,54 @@ public class AllTests
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
 		// $JUnit-BEGIN$
-		CollectionFactoryHolder.setFactory(new CollectionFactoryJDKImpl());
-		validatorTests(suite);
-		guardTests(suite);
-
-		CollectionFactoryHolder.setFactory(new CollectionFactoryJavalutionImpl());
-		validatorTests(suite);
-		guardTests(suite);
-
-		CollectionFactoryHolder.setFactory(new CollectionFactoryTroveImpl());
-		validatorTests(suite);
-		guardTests(suite);
+		{
+			// Tests with JDK collections
+			final TestSuite suite1 = new TestSuite();
+			validatorTests(suite1);
+			guardTests(suite1);
+			final TestSetup setup1 = new TestSetup(suite1)
+				{
+					@Override
+					protected void setUp() throws Exception
+					{
+						super.setUp();
+						Validator.setCollectionFactory(new CollectionFactoryJDKImpl());
+					}
+				};
+			suite.addTest(setup1);
+		}
+		{
+			// Tests with Javolution collections
+			final TestSuite suite1 = new TestSuite();
+			validatorTests(suite1);
+			guardTests(suite1);
+			final TestSetup setup1 = new TestSetup(suite1)
+				{
+					@Override
+					protected void setUp() throws Exception
+					{
+						super.setUp();
+						Validator.setCollectionFactory(new CollectionFactoryJavalutionImpl());
+					}
+				};
+			suite.addTest(setup1);
+		}
+		{
+			// Tests with Trove collections
+			final TestSuite suite1 = new TestSuite();
+			validatorTests(suite1);
+			guardTests(suite1);
+			final TestSetup setup1 = new TestSetup(suite1)
+				{
+					@Override
+					protected void setUp() throws Exception
+					{
+						super.setUp();
+						Validator.setCollectionFactory(new CollectionFactoryTroveImpl());
+					}
+				};
+			suite.addTest(setup1);
+		}
 		// $JUnit-END$
 		return suite;
 	}
