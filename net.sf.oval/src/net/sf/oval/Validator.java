@@ -641,14 +641,10 @@ public class Validator
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
 			throws OValException
 	{
-		// the lowest class that is expected to declare the field (or one of its super classes)
-		Class targetClass = validatedObject.getClass();
-
-		if (check.getDeclaringClass() != null && check.getDeclaringClass() != Object.class)
-			targetClass = check.getDeclaringClass();
+		Class targetClass;
 
 		/*
-		 * adjust the targetClass based on the validation context
+		 * set the targetClass based on the validation context
 		 */
 		if (context instanceof ConstructorParameterContext)
 		{
@@ -666,6 +662,16 @@ public class Validator
 		{
 			// the class declaring the field must either be the class declaring the getter or one of its super classes
 			targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
+		}
+		else if (check.getDeclaringClass() != null && check.getDeclaringClass() != Void.class)
+		{
+			targetClass = check.getDeclaringClass();
+		}
+		else
+		{
+			// the lowest class that is expected to declare the field (or one of its super classes)
+			targetClass = validatedObject.getClass();
+
 		}
 
 		// the name of the field whose constraints shall be used

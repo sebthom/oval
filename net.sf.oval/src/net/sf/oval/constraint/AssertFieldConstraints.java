@@ -33,9 +33,9 @@ public @interface AssertFieldConstraints
 {
 	/**
 	 * The class in which the field is declared. If omitted the current class and it's super classes are searched for a field with the given name.
-	 * The default value Object.class means the current class.
+	 * The default value Void.class means the current class.
 	 */
-	Class declaringClass() default Object.class;
+	Class declaringClass() default Void.class;
 
 	/**
 	 * Name of the field. If not specified, the constraints of the field with the same name as the annotated constructor/method parameter are applied.

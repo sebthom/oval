@@ -72,7 +72,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	 */
 	public void setDeclaringClass(Class declaringClass)
 	{
-		this.declaringClass = declaringClass == Object.class ? null : declaringClass;
+		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
 	}
 
 	/**
