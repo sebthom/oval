@@ -25,12 +25,13 @@ Localization:
 Testing:
  + added multi threading test for net.sf.oval.Validator
  + added tests for net.sf.oval.constraitns.*Check classes
-   
+
 Validator:
  + added method Validator.assertValid(...)
  + added method Validator.assertValidFieldValue(...)
  + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
-  
+ * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
+ 
 Other changes:
  * net.sf.oval.ContraintsViolatedException moved from package net.sf.oval.guard
  * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean

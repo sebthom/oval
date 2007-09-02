@@ -14,6 +14,7 @@ package net.sf.oval;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.sf.oval.context.OValContext;
@@ -48,13 +49,25 @@ public class ConstraintViolation implements Serializable
 	}
 
 	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object invalidValue, final OValContext context, final ConstraintViolation[] causes)
+			final Object invalidValue, final OValContext context,
+			final ConstraintViolation... causes)
 	{
 		this.message = message;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
 		this.causes = causes;
+	}
+
+	public ConstraintViolation(final String message, final Object validatedObject,
+			final Object invalidValue, final OValContext context,
+			final List<ConstraintViolation> causes)
+	{
+		this.message = message;
+		this.validatedObject = validatedObject;
+		this.invalidValue = invalidValue;
+		this.context = context;
+		this.causes = causes.toArray(new ConstraintViolation[causes.size()]);
 	}
 
 	/**
@@ -74,6 +87,14 @@ public class ConstraintViolation implements Serializable
 	}
 
 	/**
+	 * @return Returns the value that was validated.
+	 */
+	public Object getInvalidValue()
+	{
+		return invalidValue;
+	}
+
+	/**
 	 * @return the message
 	 */
 	public String getMessage()
@@ -87,14 +108,6 @@ public class ConstraintViolation implements Serializable
 	public Object getValidatedObject()
 	{
 		return validatedObject;
-	}
-
-	/**
-	 * @return Returns the value that was validated.
-	 */
-	public Object getInvalidValue()
-	{
-		return invalidValue;
 	}
 
 	/**
@@ -157,8 +170,9 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			LOG.warning("Field 'invalidValue' could not be serialized because the field value object "
-					+ invalidValue + " does not implement java.io.Serializable.");
+			LOG
+					.warning("Field 'invalidValue' could not be serialized because the field value object "
+							+ invalidValue + " does not implement java.io.Serializable.");
 			// indicate value does not implement Serializable
 			out.writeBoolean(false);
 		}

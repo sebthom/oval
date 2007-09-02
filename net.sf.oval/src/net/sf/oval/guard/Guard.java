@@ -446,7 +446,7 @@ public class Guard extends Validator
 				if (violations.size() > 0)
 				{
 					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-							violations.toArray(new ConstraintViolation[violations.size()]));
+							violations);
 					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 					throw translateException(violationException);
@@ -481,7 +481,7 @@ public class Guard extends Validator
 				if (violations != null)
 				{
 					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-							violations.toArray(new ConstraintViolation[violations.size()]));
+							violations);
 					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 					throw translateException(violationException);
@@ -542,7 +542,7 @@ public class Guard extends Validator
 			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-						violations.toArray(new ConstraintViolation[violations.size()]));
+						violations);
 				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 				// don't throw an exception if the method is a setter and suppressing for precondition is enabled
@@ -588,7 +588,7 @@ public class Guard extends Validator
 			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-						violations.toArray(new ConstraintViolation[violations.size()]));
+						violations);
 				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 				throw translateException(violationException);

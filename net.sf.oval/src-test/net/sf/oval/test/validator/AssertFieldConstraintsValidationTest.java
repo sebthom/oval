@@ -59,7 +59,6 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		p.zipCode = "1234567";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		System.out.println(violations.get(0).getMessage());
 		assertTrue(violations.get(0).getMessage().equals("LENGTH"));
 
 		// test @NotEmpty

@@ -728,16 +728,15 @@ public class Validator
 		// ignore circular dependencies
 		if (isCurrentlyValidated(valueToValidate)) return;
 
-		final List<ConstraintViolation> childViolations = validate(valueToValidate);
+		final List<ConstraintViolation> additionalViolations = validate(valueToValidate);
 
-		if (childViolations.size() != 0)
+		if (additionalViolations.size() != 0)
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
 					check.getMessageVariables());
 
 			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
-					context, childViolations
-							.toArray(new ConstraintViolation[childViolations.size()])));
+					context, additionalViolations));
 		}
 
 		// if the value to validate is a collection also validate the collection items
@@ -745,17 +744,7 @@ public class Validator
 		{
 			for (final Object item : (Collection) valueToValidate)
 			{
-				final List<ConstraintViolation> itemViolations = validate(item);
-
-				if (itemViolations.size() != 0)
-				{
-					final String errorMessage = renderMessage(context, item, check.getMessage(),
-							check.getMessageVariables());
-
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
-							context, itemViolations.toArray(new ConstraintViolation[itemViolations
-									.size()])));
-				}
+				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 			}
 		}
 
@@ -764,32 +753,21 @@ public class Validator
 		{
 			for (final Object item : ((Map) valueToValidate).keySet())
 			{
-				final List<ConstraintViolation> itemViolations = validate(item);
-
-				if (itemViolations.size() != 0)
-				{
-					final String errorMessage = renderMessage(context, item, check.getMessage(),
-							check.getMessageVariables());
-
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
-							context, itemViolations.toArray(new ConstraintViolation[itemViolations
-									.size()])));
-				}
+				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 			}
 
 			for (final Object item : ((Map) valueToValidate).values())
 			{
-				final List<ConstraintViolation> itemViolations = validate(item);
+				checkConstraintAssertValid(violations, check, validatedObject, item, context);
+			}
+		}
 
-				if (itemViolations.size() != 0)
-				{
-					final String errorMessage = renderMessage(context, item, check.getMessage(),
-							check.getMessageVariables());
-
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, item,
-							context, itemViolations.toArray(new ConstraintViolation[itemViolations
-									.size()])));
-				}
+		// if the value to validate is an array also validate the array elements
+		else if (valueToValidate.getClass().isArray())
+		{
+			for (final Object item : (Object[]) valueToValidate)
+			{
+				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 			}
 		}
 	}

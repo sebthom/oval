@@ -40,7 +40,7 @@ public @interface AssertValid
 	String message() default "net.sf.oval.constraints.AssertValid.violated";
 
 	/**
-	 * Specifies if all the elements of a collection must be valid too.
+	 * Specifies if the keys and values of a collection/map must be valid too.
 	 */
 	boolean requireValidElements() default true;
 
