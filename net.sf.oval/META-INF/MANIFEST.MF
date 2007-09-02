@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OVal - Object Validation Framework
+Bundle-Name: OVal - the Object Validation Framework for Java 5 or later
 Bundle-SymbolicName: net.sf.oval;singleton:=true
 Bundle-Version: 1.10
 Bundle-Vendor: oval.sf.net
