@@ -29,8 +29,24 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 {
-	private final Paranamer paranamer = new CachingParanamer();
 	private static final ParameterNameResolver fallback = new ParameterNameResolverEnumerationImpl();
+
+	private final Paranamer paranamer;
+
+	public ParameterNameResolverParanamerImpl()
+	{
+		paranamer = new CachingParanamer();
+	}
+
+	public ParameterNameResolverParanamerImpl(final Paranamer paranamer)
+	{
+		this.paranamer = paranamer;
+	}
+
+	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
+	{
+		return fallback.getParameterNames(constructor);
+	}
 
 	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
@@ -39,10 +55,5 @@ public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 		if (parameterNames == null) return fallback.getParameterNames(method);
 
 		return parameterNames;
-	}
-
-	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
-	{
-		return fallback.getParameterNames(constructor);
 	}
 }
