@@ -62,6 +62,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
 		suite
 				.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);

@@ -22,10 +22,14 @@ Localization:
    + Swedish (thanks to Johan Hedberg)
    + Turkish (thanks to Merdan Nouryev)
 
+Testing:
+ + added multi threading test for net.sf.oval.Validator
+ + added tests for net.sf.oval.constraitns.*Check classes
+   
 Validator:
-  + added method Validator.assertValid(...)
-  + added method Validator.assertValidFieldValue(...)
-  + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
+ + added method Validator.assertValid(...)
+ + added method Validator.assertValidFieldValue(...)
+ + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
   
 Other changes:
  * net.sf.oval.ContraintsViolatedException moved from package net.sf.oval.guard
