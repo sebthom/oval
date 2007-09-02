@@ -1120,9 +1120,8 @@ public class Guard extends Validator
 		}
 		catch (OValException ex)
 		{
-			throw new ValidationFailedException(
-					"Method post conditions validation failed. Method: " + method
-							+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method pre conditions validation failed. Method: "
+					+ method + " Validated object: " + validatedObject, ex);
 		}
 	}
 

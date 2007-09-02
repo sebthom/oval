@@ -22,7 +22,7 @@ import net.sf.oval.context.OValContext;
 public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context, final Validator validator)
 	{
@@ -32,6 +32,6 @@ public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
 		{
 			return !((Boolean) value).booleanValue();
 		}
-		return false;
+		return !Boolean.valueOf(value.toString());
 	}
 }

@@ -10,28 +10,30 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraint;
+package net.sf.oval.test.constraints;
 
+import junit.framework.TestCase;
+import net.sf.oval.Check;
 import net.sf.oval.Validator;
-import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
+public abstract class AbstractContraintsTest extends TestCase
 {
-	private static final long serialVersionUID = 1L;
+	protected Validator validator = new Validator();
 
-	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context, final Validator validator)
+	protected void testCheck(final Check check)
 	{
-		if (value == null) return true;
+		check.setMessage("XYZ");
+		assertEquals("XYZ", check.getMessage());
 
-		if (value instanceof Boolean)
-		{
-			return ((Boolean) value).booleanValue();
-		}
-		return Boolean.valueOf(value.toString());
+		check.setProfiles("p1");
+		assertNotNull(check.getProfiles());
+		assertEquals(1, check.getProfiles().length);
+		assertEquals("p1", check.getProfiles()[0]);
+
+		check.setProfiles((String[]) null);
+		assertTrue(check.getProfiles() == null || check.getProfiles().length == 0);
 	}
 }

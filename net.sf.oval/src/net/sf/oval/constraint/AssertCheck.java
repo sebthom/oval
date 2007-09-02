@@ -43,7 +43,8 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory().createMap(2);
+		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
+				.createMap(2);
 		messageVariables.put("expression", expression);
 		messageVariables.put("language", language);
 		return messageVariables;
@@ -58,7 +59,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	}
 
 	/**
-	 * @return the language
+	 * @return the expression language
 	 */
 	public String getLanguage()
 	{
@@ -66,12 +67,13 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object validatedValue,
-			final OValContext context, final Validator validator) throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
+			final OValContext context, final Validator validator)
+			throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
 	{
 		Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
 		values.put("_value", validatedValue);
 		values.put("_this", validatedObject);
-		
+
 		final ExpressionLanguage el = validator.getExpressionLanguage(language);
 		return el.evaluateAsBoolean(expression, values);
 	}
@@ -85,7 +87,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	}
 
 	/**
-	 * @param language the language to set
+	 * @param language the expression language to set
 	 */
 	public void setLanguage(final String language)
 	{

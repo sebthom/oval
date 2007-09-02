@@ -40,7 +40,7 @@ public interface Check extends Serializable
 	 * A key "min" with a value "4" will replace the place holder {min} in an error message
 	 * like "Value cannot be smaller than {min}" with the string "4".
 	 */
-	Map<String,String> getMessageVariables();
+	Map<String, String> getMessageVariables();
 
 	/**
 	 * @return the profiles, may return null
@@ -50,7 +50,7 @@ public interface Check extends Serializable
 	/**
 	 * @param profiles the profiles to set
 	 */
-	void setProfiles(String[] profiles);
+	void setProfiles(String... profiles);
 
 	/**
 	 * This method implements the validation logic
@@ -61,7 +61,8 @@ public interface Check extends Serializable
 	 * @param validator the calling validator
 	 * @return true if the value satisfies the checked constraint
 	 */
-	boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator) throws OValException;
+	boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context,
+			Validator validator) throws OValException;
 
 	/**
 	 * sets the default message is displayed if a corresponding message key

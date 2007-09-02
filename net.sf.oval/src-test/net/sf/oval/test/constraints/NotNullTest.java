@@ -10,28 +10,25 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraint;
+package net.sf.oval.test.constraints;
 
-import net.sf.oval.Validator;
-import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
+import net.sf.oval.constraint.NotNullCheck;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
+public class NotNullTest extends AbstractContraintsTest
 {
-	private static final long serialVersionUID = 1L;
-
-	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context, final Validator validator)
+	public void testNotNull()
 	{
-		if (value == null) return true;
-
-		if (value instanceof Boolean)
-		{
-			return ((Boolean) value).booleanValue();
-		}
-		return Boolean.valueOf(value.toString());
+		final NotNullCheck check = new NotNullCheck();
+		super.testCheck(check);
+		assertFalse(check.isSatisfied(null, null, null, null));
+		assertTrue(check.isSatisfied(null, "bla", null, null));
+		assertTrue(check.isSatisfied(null, true, null, null));
+		assertTrue(check.isSatisfied(null, 1, null, null));
+		assertTrue(check.isSatisfied(null, "", null, null));
+		assertTrue(check.isSatisfied(null, ' ', null, null));
+		assertTrue(check.isSatisfied(null, " ", null, null));
 	}
 }

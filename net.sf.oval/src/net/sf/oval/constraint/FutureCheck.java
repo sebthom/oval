@@ -42,14 +42,14 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 		// check if the value is a Calendar
 		if (value instanceof Calendar)
 		{
-			return ((Calendar) value).after(Calendar.getInstance());
+			return ((Calendar) value).getTime().after(new Date());
 		}
 
 		// see if we can extract a date based on the object's String representation
 		final String stringValue = value.toString();
 		try
 		{
-			Date date = DateFormat.getDateTimeInstance().parse(stringValue);
+			final Date date = DateFormat.getDateTimeInstance().parse(stringValue);
 			return date.after(new Date());
 		}
 		catch (ParseException ex)

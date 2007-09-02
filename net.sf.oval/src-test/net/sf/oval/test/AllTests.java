@@ -26,7 +26,31 @@ import net.sf.oval.collection.CollectionFactoryTroveImpl;
 public class AllTests
 {
 
-	private static void validatorTests(final TestSuite suite) throws Exception
+	private static void constraintsTests(final TestSuite suite) throws Exception
+	{
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertFalseTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.HasSubStringTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.InstanceOfTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.LengthTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MaxTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MaxLengthTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MaxSizeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MinTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MinLengthTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MinSizeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NoSelfReferenceTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotBlankTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotEmptyTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotNegativeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotNullTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.PastTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.SizeTest.class);
+	}
+
+	private static void validatorTests(final TestSuite suite)
 	{
 		suite.addTestSuite(net.sf.oval.test.validator.AddingChecksTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertBeanShellTest.class);
@@ -51,7 +75,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 	}
 
-	private static void guardTests(final TestSuite suite) throws Exception
+	private static void guardTests(final TestSuite suite)
 	{
 		suite.addTestSuite(net.sf.oval.test.guard.AddingChecksTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToConstructorsTest.class);
@@ -80,12 +104,14 @@ public class AllTests
 
 	public static Test suite() throws Exception
 	{
+		// $JUnit-BEGIN$
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
-		// $JUnit-BEGIN$
+		constraintsTests(suite);
+
+		// Tests with JDK collections
 		{
-			// Tests with JDK collections
-			final TestSuite suite1 = new TestSuite();
+			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with JDK collections");
 			validatorTests(suite1);
 			guardTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
@@ -99,9 +125,11 @@ public class AllTests
 				};
 			suite.addTest(setup1);
 		}
+
+		// Tests with Javolution collections
 		{
-			// Tests with Javolution collections
-			final TestSuite suite1 = new TestSuite();
+			final TestSuite suite1 = new TestSuite(
+					"Tests for net.sf.oval with Javolution collections");
 			validatorTests(suite1);
 			guardTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
@@ -115,9 +143,10 @@ public class AllTests
 				};
 			suite.addTest(setup1);
 		}
+
+		// Tests with Trove collections
 		{
-			// Tests with Trove collections
-			final TestSuite suite1 = new TestSuite();
+			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with Trove collections");
 			validatorTests(suite1);
 			guardTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)

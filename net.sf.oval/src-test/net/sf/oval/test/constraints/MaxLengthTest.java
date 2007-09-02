@@ -10,28 +10,27 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraint;
+package net.sf.oval.test.constraints;
 
-import net.sf.oval.Validator;
-import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
+import net.sf.oval.constraint.MaxLengthCheck;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
+public class MaxLengthTest extends AbstractContraintsTest
 {
-	private static final long serialVersionUID = 1L;
-
-	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context, final Validator validator)
+	public void testMaxLength()
 	{
-		if (value == null) return true;
+		final MaxLengthCheck check = new MaxLengthCheck();
+		super.testCheck(check);
+		assertTrue(check.isSatisfied(null, null, null, null));
 
-		if (value instanceof Boolean)
-		{
-			return ((Boolean) value).booleanValue();
-		}
-		return Boolean.valueOf(value.toString());
+		check.setMax(5);
+		assertEquals(5, check.getMax());
+
+		assertTrue(check.isSatisfied(null, "1234", null, null));
+		assertTrue(check.isSatisfied(null, "12", null, null));
+		assertTrue(check.isSatisfied(null, "", null, null));
+		assertFalse(check.isSatisfied(null, "123456", null, null));
 	}
 }

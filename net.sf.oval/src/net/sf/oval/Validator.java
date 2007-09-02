@@ -198,7 +198,7 @@ public class Validator
 
 					if (fieldConfig.checks != null && fieldConfig.checks.size() > 0)
 					{
-						addChecks(field, fieldConfig.checks.toArray(new Check[fieldConfig.checks
+						cc.addChecks(field, fieldConfig.checks.toArray(new Check[fieldConfig.checks
 								.size()]));
 					}
 				}
@@ -479,6 +479,7 @@ public class Validator
 	 * Registers a new constraint set.
 	 * 
 	 * @param constraintSet cannot be null
+	 * @param overwrite
 	 * @throws ConstraintSetAlreadyDefinedException if <code>overwrite == false</code> and a constraint set with the given id exists already 
 	 * @throws IllegalArgumentException if <code>constraintSet == null</code> or <code>constraintSet.id == null</code> or <code>constraintSet.id.length == 0</code>
 	 * @throws IllegalArgumentException if <code>constraintSet.id == null</code>

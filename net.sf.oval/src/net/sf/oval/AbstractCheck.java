@@ -57,7 +57,7 @@ public abstract class AbstractCheck implements Check
 		this.message = message;
 	}
 
-	public void setProfiles(final String[] profiles)
+	public void setProfiles(final String... profiles)
 	{
 		this.profiles = profiles;
 	}

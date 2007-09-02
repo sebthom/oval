@@ -10,28 +10,25 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraint;
+package net.sf.oval.test.constraints;
 
-import net.sf.oval.Validator;
-import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
+import net.sf.oval.constraint.InstanceOfCheck;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
+public class InstanceOfTest extends AbstractContraintsTest
 {
-	private static final long serialVersionUID = 1L;
-
-	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context, final Validator validator)
+	public void testInstanceOf()
 	{
-		if (value == null) return true;
+		final InstanceOfCheck check = new InstanceOfCheck();
+		super.testCheck(check);
+		assertTrue(check.isSatisfied(null, null, null, null));
 
-		if (value instanceof Boolean)
-		{
-			return ((Boolean) value).booleanValue();
-		}
-		return Boolean.valueOf(value.toString());
+		check.setType(InstanceOfTest.class);
+		assertEquals(InstanceOfTest.class, check.getType());
+
+		assertTrue(check.isSatisfied(null, this, null, null));
+		assertFalse(check.isSatisfied(null, "bla", null, null));
 	}
 }

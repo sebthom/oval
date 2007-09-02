@@ -28,6 +28,7 @@ Validator:
   
 Other changes:
  * net.sf.oval.ContraintsViolatedException moved from package net.sf.oval.guard
+ * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
  
 2007-07-22 v1.0
 ===============

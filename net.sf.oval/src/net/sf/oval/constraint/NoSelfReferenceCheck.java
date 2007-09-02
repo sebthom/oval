@@ -22,10 +22,12 @@ import net.sf.oval.context.OValContext;
 public class NoSelfReferenceCheck extends AbstractAnnotationCheck<NoSelfReference>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context, final Validator validator)
 	{
+		if (value == null) return true;
+
 		return value != validatedObject;
 	}
 }
