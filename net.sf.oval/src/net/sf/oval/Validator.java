@@ -1127,53 +1127,6 @@ public class Validator
 	}
 
 	/**
-	 * Validates the static field and getter constrains of the given class.
-	 * Constraints specified for super classes are not taken in account.
-	 */
-	private void validateClassInvariants(final Class validatedClass,
-			final List<ConstraintViolation> violations) throws ValidationFailedException
-	{
-		assert validatedClass != null;
-		assert violations != null;
-
-		final ClassChecks cc = getClassChecks(validatedClass);
-
-		// validate static field constraints
-		for (final Field field : cc.constrainedStaticFields)
-		{
-			final Collection<Check> checks = cc.checksForFields.get(field);
-
-			if (checks != null && checks.size() > 0)
-			{
-				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
-				final FieldContext context = new FieldContext(field);
-
-				for (final Check check : checks)
-				{
-					checkConstraint(violations, check, validatedClass, valueToValidate, context);
-				}
-			}
-		}
-
-		// validate constraints on getter methods
-		for (final Method getter : cc.constrainedStaticMethods)
-		{
-			final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
-
-			if (checks != null && checks.size() > 0)
-			{
-				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
-				final MethodReturnValueContext context = new MethodReturnValueContext(getter);
-
-				for (final Check check : checks)
-				{
-					checkConstraint(violations, check, validatedClass, valueToValidate, context);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Validates the give value against the defined field constraints.<br>
 	 * 
 	 * @return a list with the detected constraint violations. if no violations are detected an empty list is returned
@@ -1234,7 +1187,7 @@ public class Validator
 		try
 		{
 			if (validatedObject instanceof Class)
-				validateClassInvariants((Class) validatedObject, violations);
+				validateStaticInvariants((Class) validatedObject, violations);
 			else
 				validateObjectInvariants(validatedObject, validatedObject.getClass(), violations);
 		}
@@ -1306,6 +1259,53 @@ public class Validator
 		{
 			throw new ValidationFailedException("Object validation failed. Class: " + clazz
 					+ " Validated object: " + validatedObject, ex);
+		}
+	}
+
+	/**
+	 * Validates the static field and getter constrains of the given class.
+	 * Constraints specified for super classes are not taken in account.
+	 */
+	private void validateStaticInvariants(final Class validatedClass,
+			final List<ConstraintViolation> violations) throws ValidationFailedException
+	{
+		assert validatedClass != null;
+		assert violations != null;
+
+		final ClassChecks cc = getClassChecks(validatedClass);
+
+		// validate static field constraints
+		for (final Field field : cc.constrainedStaticFields)
+		{
+			final Collection<Check> checks = cc.checksForFields.get(field);
+
+			if (checks != null && checks.size() > 0)
+			{
+				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
+				final FieldContext context = new FieldContext(field);
+
+				for (final Check check : checks)
+				{
+					checkConstraint(violations, check, validatedClass, valueToValidate, context);
+				}
+			}
+		}
+
+		// validate constraints on getter methods
+		for (final Method getter : cc.constrainedStaticMethods)
+		{
+			final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
+
+			if (checks != null && checks.size() > 0)
+			{
+				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
+				final MethodReturnValueContext context = new MethodReturnValueContext(getter);
+
+				for (final Check check : checks)
+				{
+					checkConstraint(violations, check, validatedClass, valueToValidate, context);
+				}
+			}
 		}
 	}
 }

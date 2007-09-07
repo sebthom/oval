@@ -1131,7 +1131,7 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
 
         <programlisting>public class UpperCaseCheck extends AbstractAnnotationCheck&lt;UpperCase&gt;
 {
-  public boolean isValid(Object validatable, Object value)
+  public boolean isSatisfied(Object validatable, Object value)
   {
     if (value == null) return true;
 
@@ -1464,7 +1464,7 @@ v.validate(p);
       Trove Collections, and JDK Collections). If the Javolution or GNU Trove
       collection classes are detected in the classpath, OVal automatically
       uses the respective CollectionFactory. If they are not available a
-      collection factory for standard JDK collections is used. </para>
+      collection factory for standard JDK collections is used.</para>
 
       <para>The Collection Factory to be used can be specified via the static
       <command>Validator.setCollectionFactory(factory)</command>
