@@ -10,20 +10,18 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.guard;
+package net.sf.oval.exception;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodEntryContext;
 import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.exception.OValException;
 
 /**
  * Translates OVal specific exceptions to standard exceptions part of the JRE:

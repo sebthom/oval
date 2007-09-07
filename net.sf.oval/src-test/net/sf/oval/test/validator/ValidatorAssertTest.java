@@ -16,9 +16,9 @@ import java.lang.reflect.Field;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.exception.ConstraintsViolatedException;
 
 /**
  * @author Sebastian Thomschke

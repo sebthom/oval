@@ -32,8 +32,12 @@ Validator:
  + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
  * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
  
-Other changes:
- * net.sf.oval.ContraintsViolatedException moved from package net.sf.oval.guard
+Refactoring:
+ * net.sf.oval.exception.ContraintsViolatedException moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ExceptionTranslator moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl moved from package net.sf.oval.guard
+ 
+Other Changes:
  * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
  
 2007-07-22 v1.0

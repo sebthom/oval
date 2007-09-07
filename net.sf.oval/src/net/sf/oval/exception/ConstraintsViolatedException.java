@@ -10,11 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval;
+package net.sf.oval.exception;
 
 import java.util.List;
 
-import net.sf.oval.exception.OValException;
+import net.sf.oval.ConstraintViolation;
 
 /**
  * This exception is thrown if one or more constraints are not satisfied during validation.

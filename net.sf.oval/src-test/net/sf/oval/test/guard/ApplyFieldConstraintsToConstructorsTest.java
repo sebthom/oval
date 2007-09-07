@@ -13,12 +13,12 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
-import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.constraint.AssertTrue;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
 import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guarded;
 
 /**

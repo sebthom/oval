@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.context.ConstructorParameterContext;
@@ -32,6 +31,7 @@ import net.sf.oval.context.MethodEntryContext;
 import net.sf.oval.context.MethodExitContext;
 import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.context.MethodReturnValueContext;
+import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.exception.OValException;
 import net.sf.oval.exception.ValidationFailedException;
@@ -54,8 +54,6 @@ import net.sf.oval.internal.util.ThreadLocalWeakHashSet;
 public class Guard extends Validator
 {
 	private final static Logger LOG = Logger.getLogger(Guard.class.getName());
-
-	private ExceptionTranslator exceptionTranslator;
 
 	private final ThreadLocalIdentitySet<Object> currentlyInvariantCheckingFor = new ThreadLocalIdentitySet<Object>();
 
@@ -402,14 +400,6 @@ public class Guard extends Validator
 
 		final Set<PreCheck> checks = cc.checksForMethodsPreExecution.get(method);
 		return checks == null ? null : checks.toArray(new PreCheck[checks.size()]);
-	}
-
-	/**
-	 * @return the exceptionProcessor
-	 */
-	public ExceptionTranslator getExceptionTranslator()
-	{
-		return exceptionTranslator;
 	}
 
 	/**
@@ -924,14 +914,6 @@ public class Guard extends Validator
 	}
 
 	/**
-	 * @param exceptionTranslator the exceptionTranslator to set
-	 */
-	public void setExceptionTranslator(final ExceptionTranslator exceptionTranslator)
-	{
-		this.exceptionTranslator = exceptionTranslator;
-	}
-
-	/**
 	 * Enable or disable the probe mode for the given object in the current thread.
 	 * In probe mode calls to methods of an object are not actually executed. OVal only 
 	 * validates method pre-conditions and notifies ConstraintViolationListeners but
@@ -1011,16 +993,6 @@ public class Guard extends Validator
 	public void setPreConditionsEnabled(final boolean isEnabled)
 	{
 		this.isPreConditionsEnabled = isEnabled;
-	}
-
-	private RuntimeException translateException(final OValException ex)
-	{
-		if (exceptionTranslator != null)
-		{
-			final RuntimeException rex = exceptionTranslator.translateException(ex);
-			if (rex != null) return rex;
-		}
-		return ex;
 	}
 
 	/**

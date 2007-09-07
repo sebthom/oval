@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsViolatedException;
+import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**

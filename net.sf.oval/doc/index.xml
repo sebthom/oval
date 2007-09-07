@@ -1099,7 +1099,7 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
       translate any <command>OValException</command> thrown during validation
       into another <command>RuntimeException</command> which will be thrown
       instead. As an example have a look at the
-      <command>net.sf.oval.guard.ExceptionTranslatorJDKExceptionsImpl</command>
+      <command>net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl</command>
       class how an implementation could look like.</para>
 
       <para>Example usage:</para>
@@ -1110,8 +1110,8 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
   {
     super();
 
-    // specify an exception translator getGuard().setExceptionTranslator(new
-    net.sf.oval.guard.ExceptionTranslatorJDKExceptionsImpl());
+    // specify an exception translator
+    getGuard().setExceptionTranslator(new net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl());
   }
 }</programlisting>
     </section>

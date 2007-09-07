@@ -40,6 +40,8 @@ import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ConstraintSetAlreadyDefinedException;
+import net.sf.oval.exception.ConstraintsViolatedException;
+import net.sf.oval.exception.ExceptionTranslator;
 import net.sf.oval.exception.ExpressionLanguageNotAvailableException;
 import net.sf.oval.exception.FieldNotFoundException;
 import net.sf.oval.exception.InvalidConfigurationException;
@@ -131,9 +133,11 @@ public class Validator
 
 	private boolean isAllProfilesEnabledByDefault = true;
 
+	private final Set<String> disabledProfiles = CollectionFactoryHolder.getFactory().createSet();
+
 	private final Set<String> enabledProfiles = CollectionFactoryHolder.getFactory().createSet();
 
-	private final Set<String> disabledProfiles = CollectionFactoryHolder.getFactory().createSet();
+	private ExceptionTranslator exceptionTranslator;
 
 	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
 
@@ -536,7 +540,7 @@ public class Validator
 
 		if (violations.size() > 0)
 		{
-			throw new ConstraintsViolatedException(violations);
+			throw translateException(new ConstraintsViolatedException(violations));
 		}
 	}
 
@@ -559,7 +563,7 @@ public class Validator
 
 		if (violations.size() > 0)
 		{
-			throw new ConstraintsViolatedException(violations);
+			throw translateException(new ConstraintsViolatedException(violations));
 		}
 	}
 
@@ -923,6 +927,14 @@ public class Validator
 	}
 
 	/**
+	 * @return the exceptionProcessor
+	 */
+	public ExceptionTranslator getExceptionTranslator()
+	{
+		return exceptionTranslator;
+	}
+
+	/**
 	 * 
 	 * @param languageId the id of the language, cannot be null
 	 * 
@@ -1103,6 +1115,24 @@ public class Validator
 				.toString());
 
 		return message;
+	}
+
+	/**
+	 * @param exceptionTranslator the exceptionTranslator to set
+	 */
+	public void setExceptionTranslator(final ExceptionTranslator exceptionTranslator)
+	{
+		this.exceptionTranslator = exceptionTranslator;
+	}
+
+	protected RuntimeException translateException(final OValException ex)
+	{
+		if (exceptionTranslator != null)
+		{
+			final RuntimeException rex = exceptionTranslator.translateException(ex);
+			if (rex != null) return rex;
+		}
+		return ex;
 	}
 
 	/**

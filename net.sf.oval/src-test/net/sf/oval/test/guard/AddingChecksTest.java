@@ -19,10 +19,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.ConstraintsViolatedException;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.MethodParameterContext;
+import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;

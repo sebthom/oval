@@ -10,9 +10,8 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.guard;
+package net.sf.oval.exception;
 
-import net.sf.oval.exception.OValException;
 
 /**
  * An exception translater for all exception thrown by the guard
