@@ -115,15 +115,15 @@ public class Validator
 
 	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
 
-	private final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>();
+	private final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>(4);
 
 	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactoryHolder
-			.getFactory().createMap();
+			.getFactory().createMap(4);
 
 	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
 	protected Map<String, ExpressionLanguage> expressionLanguages = CollectionFactoryHolder
-			.getFactory().createMap(2);
+			.getFactory().createMap(4);
 
 	/**
 	 * Flag that indicates any configuration method related to profiles was called.

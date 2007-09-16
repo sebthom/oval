@@ -74,9 +74,12 @@ public class Guard extends Validator
 	 */
 	private boolean isProbeModeFeatureUsed = false;
 
-	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>();
-	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>();
-	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>();
+	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(
+			4);
+	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>(
+			4);
+	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>(
+			4);
 
 	/**
 	 * Objects for OVal suppresses occuring ConstraintViolationExceptions 
