@@ -33,6 +33,7 @@ import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.xml.XMLConfigurer;
+import net.sf.oval.constraint.AssertCheck;
 import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.LengthCheck;
@@ -92,6 +93,7 @@ public class XMLConfigurationTest extends TestCase
 			MatchPatternCheck rec = new MatchPatternCheck();
 			rec.setPattern(Pattern.compile("^[a-z0-9]{8}$", 0));
 			rec.setMessage("{context} does not match the pattern {pattern}");
+			rec.setProfiles("a", "b");
 			csf.checks.add(rec);
 		}
 
@@ -108,10 +110,11 @@ public class XMLConfigurationTest extends TestCase
 
 				fc.name = "firstName";
 				fc.checks = new ArrayList<Check>();
-				LengthCheck lc = new LengthCheck();
-				lc.setMessage("{context} is not between {min} and {max} characters long");
-				lc.setMax(3);
-				fc.checks.add(lc);
+				AssertCheck ac = new AssertCheck();
+				ac.setExpression("_value != null && _value.length() < 3");
+				ac.setMessage("{context} cannot be longer than 3 characters");
+				ac.setLang("groovy");
+				fc.checks.add(ac);
 			}
 			{
 				FieldConfiguration fc = new FieldConfiguration();
@@ -121,6 +124,7 @@ public class XMLConfigurationTest extends TestCase
 				fc.checks = new ArrayList<Check>();
 				LengthCheck lc = new LengthCheck();
 				lc.setMessage("{context} is not between {min} and {max} characters long");
+				lc.setMin(1);
 				lc.setMax(5);
 				fc.checks.add(lc);
 			}
@@ -171,6 +175,7 @@ public class XMLConfigurationTest extends TestCase
 		 * test XML de/serialization
 		 */
 		String xmlConfig = x.toXML();
+		System.out.println(xmlConfig);
 		x.fromXML(xmlConfig);
 		validateUser(new Validator(x));
 	}
@@ -179,7 +184,7 @@ public class XMLConfigurationTest extends TestCase
 	{
 		final User usr = new User();
 
-		usr.lastName = "";
+		usr.lastName = "1";
 		usr.userId = "12345678";
 		usr.managerId = "12345678";
 
@@ -189,7 +194,7 @@ public class XMLConfigurationTest extends TestCase
 		usr.firstName = "123456";
 		List<ConstraintViolation> violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".firstName is not between 0 and 3 characters long",
+		assertEquals(User.class.getName() + ".firstName cannot be longer than 3 characters",
 				violations.get(0).getMessage());
 
 		usr.firstName = "";
@@ -200,10 +205,10 @@ public class XMLConfigurationTest extends TestCase
 		usr.lastName = "123456";
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".lastName is not between 0 and 5 characters long",
+		assertEquals(User.class.getName() + ".lastName is not between 1 and 5 characters long",
 				violations.get(0).getMessage());
 
-		usr.lastName = "";
+		usr.lastName = "1";
 
 		/*
 		 * check constraints for userId

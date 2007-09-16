@@ -19,6 +19,8 @@ public final class StringUtils
 {
 	public static String implode(final Object[] values, final String delimiter)
 	{
+		if (values == null) return "";
+
 		final StringBuilder out = new StringBuilder();
 
 		for (int i = 0; i < values.length; i++)
@@ -29,7 +31,8 @@ public final class StringUtils
 		return out.toString();
 	}
 
-	public static String replaceAll(final String searchIn, final String searchFor, final String replaceWith)
+	public static String replaceAll(final String searchIn, final String searchFor,
+			final String replaceWith)
 	{
 		final StringBuilder out = new StringBuilder();
 
@@ -49,6 +52,6 @@ public final class StringUtils
 	 */
 	private StringUtils()
 	{
-		// do nothing
+	// do nothing
 	}
 }

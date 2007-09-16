@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.Configurer;
@@ -66,6 +68,11 @@ import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.XppDriver;
@@ -79,6 +86,62 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 public class XMLConfigurer implements Configurer
 {
 	private static final long serialVersionUID = 1L;
+
+	private final static class AssertCheckConverter implements Converter
+	{
+		public boolean canConvert(final Class clazz)
+		{
+			return clazz.equals(AssertCheck.class);
+		}
+
+		public void marshal(final Object value, final HierarchicalStreamWriter writer,
+				final MarshallingContext context)
+		{
+			final AssertCheck assertCheck = (AssertCheck) value;
+			writer.addAttribute("lang", assertCheck.getLang());
+			writer.addAttribute("message", assertCheck.getMessage());
+			writer.startNode("expr");
+			writer.setValue(assertCheck.getExpression());
+			writer.endNode();
+			final String[] profiles = assertCheck.getProfiles();
+			if (profiles != null && profiles.length > 0)
+			{
+				writer.startNode("profiles");
+				for (final String profile : profiles)
+				{
+					writer.startNode("string");
+					writer.setValue(profile);
+					writer.endNode();
+				}
+				writer.endNode();
+			}
+		}
+
+		public Object unmarshal(final HierarchicalStreamReader reader,
+				final UnmarshallingContext context)
+		{
+			final AssertCheck assertCheck = new AssertCheck();
+			assertCheck.setLang(reader.getAttribute("lang"));
+			assertCheck.setMessage(reader.getAttribute("message"));
+			reader.moveDown();
+			assertCheck.setExpression(reader.getValue());
+			reader.moveUp();
+			if (reader.hasMoreChildren())
+			{
+				reader.moveDown();
+				final List<String> profiles = new ArrayList<String>(4);
+				while (reader.hasMoreChildren())
+				{
+					reader.moveDown();
+					if ("string".equals(reader.getNodeName())) profiles.add(reader.getValue());
+					reader.moveUp();
+				}
+				reader.moveUp();
+				assertCheck.setProfiles(profiles.toArray(new String[profiles.size()]));
+			}
+			return assertCheck;
+		}
+	}
 
 	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
 
@@ -105,6 +168,8 @@ public class XMLConfigurer implements Configurer
 
 	protected final void configureXStream()
 	{
+		xStream.registerConverter(new AssertCheckConverter());
+
 		xStream.useAttributeFor(Class.class);
 		xStream.useAttributeFor(boolean.class);
 		xStream.useAttributeFor(byte.class);
@@ -176,7 +241,7 @@ public class XMLConfigurer implements Configurer
 				xStream.alias("parameter", ParameterConfiguration.class);
 				xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
 
-				// <constructor> -> net.sf.oval.configuration.elements.ConstructorConfiguration 
+				// <constructor> -> net.sf.oval.configuration.elements.ConstructorConfiguration
 				xStream.addImplicitCollection(ClassConfiguration.class,
 						"constructorConfigurations", ConstructorConfiguration.class);
 				xStream.alias("constructor", ConstructorConfiguration.class);
@@ -195,20 +260,23 @@ public class XMLConfigurer implements Configurer
 					xStream.addImplicitCollection(MethodConfiguration.class,
 							"parameterConfigurations", ParameterConfiguration.class);
 
-					// <returnValue> -> net.sf.oval.configuration.elements.MethodConfiguration.returnValueConfiguration -> MethodReturnValueConfiguration					
+					// <returnValue> -> net.sf.oval.configuration.elements.MethodConfiguration.returnValueConfiguration
+					// -> MethodReturnValueConfiguration
 					xStream.aliasField("returnValue", MethodConfiguration.class,
 							"returnValueConfiguration");
 					xStream.addImplicitCollection(MethodReturnValueConfiguration.class, "checks",
 							Check.class);
 
-					// <pre> -> net.sf.oval.configuration.elements.MethodConfiguration.preExecutionConfiguration -> MethodPreExecutionConfiguration					
+					// <pre> -> net.sf.oval.configuration.elements.MethodConfiguration.preExecutionConfiguration ->
+					// MethodPreExecutionConfiguration
 					xStream.aliasField("pre", MethodConfiguration.class,
 							"preExecutionConfiguration");
 					xStream.addImplicitCollection(MethodPostExecutionConfiguration.class, "checks",
 							PreCheck.class);
 					xStream.alias("preCheck", PreCheck.class);
 
-					// <post> -> net.sf.oval.configuration.elements.MethodConfiguration.postExecutionConfiguration -> MethodPpstExecutionConfiguration					
+					// <post> -> net.sf.oval.configuration.elements.MethodConfiguration.postExecutionConfiguration ->
+					// MethodPpstExecutionConfiguration
 					xStream.aliasField("post", MethodConfiguration.class,
 							"postExecutionConfiguration");
 					xStream.addImplicitCollection(MethodPreExecutionConfiguration.class, "checks",

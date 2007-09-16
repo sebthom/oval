@@ -29,15 +29,15 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language;
-	private String expression;
+	private String lang;
+	private String expr;
 
 	@Override
 	public void configure(final Assert constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setExpression(constraintAnnotation.expr());
-		setLanguage(constraintAnnotation.lang());
+		setLang(constraintAnnotation.lang());
 	}
 
 	@Override
@@ -45,8 +45,8 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	{
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
-		messageVariables.put("expression", expression);
-		messageVariables.put("language", language);
+		messageVariables.put("expression", expr);
+		messageVariables.put("language", lang);
 		return messageVariables;
 	}
 
@@ -55,15 +55,15 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	 */
 	public String getExpression()
 	{
-		return expression;
+		return expr;
 	}
 
 	/**
 	 * @return the expression language
 	 */
-	public String getLanguage()
+	public String getLang()
 	{
-		return language;
+		return lang;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object validatedValue,
@@ -74,8 +74,8 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		values.put("_value", validatedValue);
 		values.put("_this", validatedObject);
 
-		final ExpressionLanguage el = validator.getExpressionLanguage(language);
-		return el.evaluateAsBoolean(expression, values);
+		final ExpressionLanguage el = validator.getExpressionLanguage(lang);
+		return el.evaluateAsBoolean(expr, values);
 	}
 
 	/**
@@ -83,15 +83,15 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	 */
 	public void setExpression(final String expression)
 	{
-		this.expression = expression;
+		this.expr = expression;
 	}
 
 	/**
 	 * @param language the expression language to set
 	 */
-	public void setLanguage(final String language)
+	public void setLang(final String language)
 	{
-		this.language = language;
+		this.lang = language;
 	}
 
 }

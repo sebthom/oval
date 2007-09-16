@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE oval PUBLIC 
-   "-//OVal/OVal Configuration DTD 1.0//EN"
-   "http://oval.sourceforge.net/oval-configuration-1.0.dtd">
+   "-//OVal/OVal Configuration DTD 1.1//EN"
+   "http://oval.sourceforge.net/oval-configuration-1.1.dtd">
 <oval>
 	<!-- define a constraint set -->
 	<constraintSet id="user.userid">

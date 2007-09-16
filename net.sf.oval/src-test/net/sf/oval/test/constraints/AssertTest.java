@@ -24,8 +24,8 @@ public class AssertTest extends AbstractContraintsTest
 		final AssertCheck check = new AssertCheck();
 		super.testCheck(check);
 
-		check.setLanguage(language);
-		assertEquals(check.getLanguage(), language);
+		check.setLang(language);
+		assertEquals(check.getLang(), language);
 
 		check.setExpression(expr1);
 		assertEquals(check.getExpression(), expr1);
