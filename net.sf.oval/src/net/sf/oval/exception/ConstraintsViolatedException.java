@@ -59,6 +59,6 @@ public class ConstraintsViolatedException extends OValException
 	 */
 	public ConstraintViolation[] getConstraintViolations()
 	{
-		return constraintViolations;
+		return constraintViolations.clone();
 	}
 }

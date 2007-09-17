@@ -45,7 +45,7 @@ public class ConstraintViolation implements Serializable
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
-		this.causes = null;
+		causes = null;
 	}
 
 	public ConstraintViolation(final String message, final Object validatedObject,
@@ -75,7 +75,7 @@ public class ConstraintViolation implements Serializable
 	 */
 	public ConstraintViolation[] getCauses()
 	{
-		return causes;
+		return causes.clone();
 	}
 
 	/**
@@ -154,9 +154,12 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			LOG.warning("Field 'validatedObject' not serialized because the field value object "
-					+ validatedObject + " of type " + invalidValue.getClass()
-					+ " does not implement " + Serializable.class.getName());
+			ConstraintViolation.LOG
+					.warning("Field 'validatedObject' not serialized because the field value object "
+							+ validatedObject
+							+ " of type "
+							+ invalidValue.getClass()
+							+ " does not implement " + Serializable.class.getName());
 
 			// indicate validatedObject does not implement Serializable
 			out.writeBoolean(false);
@@ -170,7 +173,7 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			LOG
+			ConstraintViolation.LOG
 					.warning("Field 'invalidValue' could not be serialized because the field value object "
 							+ invalidValue + " does not implement java.io.Serializable.");
 			// indicate value does not implement Serializable

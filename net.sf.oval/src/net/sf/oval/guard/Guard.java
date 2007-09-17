@@ -106,25 +106,6 @@ public class Guard extends Validator
 		super(configurers);
 	}
 
-	@Override
-	protected void validateInvariants(final Object guardedObject,
-			final List<ConstraintViolation> violations) throws IllegalArgumentException,
-			ValidationFailedException
-	{
-		if (!currentlyInvariantCheckingFor.get().contains(guardedObject))
-		{
-			currentlyInvariantCheckingFor.get().add(guardedObject);
-			try
-			{
-				super.validateInvariants(guardedObject, violations);
-			}
-			finally
-			{
-				currentlyInvariantCheckingFor.get().remove(guardedObject);
-			}
-		}
-	}
-
 	/**
 	 * Registers constraint checks for the given constructor parameter 
 	 *  
@@ -344,7 +325,7 @@ public class Guard extends Validator
 
 			return oldValues;
 		}
-		catch (OValException ex)
+		catch (final OValException ex)
 		{
 			throw new ValidationFailedException(
 					"Method post conditions validation failed. Method: " + method
@@ -427,7 +408,7 @@ public class Guard extends Validator
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 
 		// check invariants
-		if ((isInvariantsEnabled && cc.isCheckInvariants)
+		if (isInvariantsEnabled && cc.isCheckInvariants
 				|| cc.methodsWithCheckInvariantsPost.contains(constructor))
 		{
 			try
@@ -445,7 +426,7 @@ public class Guard extends Validator
 					throw translateException(violationException);
 				}
 			}
-			catch (ValidationFailedException ex)
+			catch (final ValidationFailedException ex)
 			{
 				throw translateException(ex);
 			}
@@ -480,7 +461,7 @@ public class Guard extends Validator
 					throw translateException(violationException);
 				}
 			}
-			catch (ValidationFailedException ex)
+			catch (final ValidationFailedException ex)
 			{
 				throw translateException(ex);
 			}
@@ -668,10 +649,7 @@ public class Guard extends Validator
 	public boolean isInProbeMode(final Object guardedObject)
 	{
 		// guardedObject may be null if isInProbeMode is called when validating pre conditions of a static method
-		if (guardedObject == null)
-		{
-			return false;
-		}
+		if (guardedObject == null) return false;
 
 		return objectsInProbeMode.get().contains(guardedObject);
 	}
@@ -769,9 +747,9 @@ public class Guard extends Validator
 			{
 				listener.onConstraintsViolatedException(ex);
 			}
-			catch (RuntimeException rex)
+			catch (final RuntimeException rex)
 			{
-				LOG.log(Level.WARNING, "Notifying listener '" + listener + "'failed.", rex);
+				Guard.LOG.log(Level.WARNING, "Notifying listener '" + listener + "'failed.", rex);
 			}
 		}
 
@@ -923,7 +901,7 @@ public class Guard extends Validator
 	 * does not throw ConstraintViolationExceptions. Methods with return values will return null. 
 	 * 
 	 * @param guardedObject
-	 * @param doSuppress
+	 * @param isInProbeMode
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 */
 	public void setInProbeMode(final Object guardedObject, final boolean isInProbeMode)
@@ -934,8 +912,9 @@ public class Guard extends Validator
 
 		if (guardedObject instanceof Class)
 		{
-			LOG.warning("Enabling probe mode for a class looks like a programming error. Class: "
-					+ guardedObject);
+			Guard.LOG
+					.warning("Enabling probe mode for a class looks like a programming error. Class: "
+							+ guardedObject);
 		}
 		isProbeModeFeatureUsed = true;
 
@@ -949,11 +928,11 @@ public class Guard extends Validator
 	 * Specifies if invariants are checked prior and after
 	 * calls to non-private methods and constructors.
 	 * 
-	 * @param isInvariantChecksActivated the isInvariantChecksActivated to set
+	 * @param isEnabled the isInvariantsEnabled to set
 	 */
-	public void setInvariantsEnabled(final boolean isActivated)
+	public void setInvariantsEnabled(final boolean isEnabled)
 	{
-		this.isInvariantsEnabled = isActivated;
+		isInvariantsEnabled = isEnabled;
 	}
 
 	/**
@@ -987,7 +966,7 @@ public class Guard extends Validator
 	 */
 	public void setPostConditionsEnabled(final boolean isEnabled)
 	{
-		this.isPostConditionsEnabled = isEnabled;
+		isPostConditionsEnabled = isEnabled;
 	}
 
 	/**
@@ -995,7 +974,7 @@ public class Guard extends Validator
 	 */
 	public void setPreConditionsEnabled(final boolean isEnabled)
 	{
-		this.isPreConditionsEnabled = isEnabled;
+		isPreConditionsEnabled = isEnabled;
 	}
 
 	/**
@@ -1041,11 +1020,30 @@ public class Guard extends Validator
 			}
 			return violations.size() == 0 ? null : violations;
 		}
-		catch (OValException ex)
+		catch (final OValException ex)
 		{
 			throw new ValidationFailedException(
 					"Validation of constructor parameters failed. Constructor: " + constructor
 							+ " Validated object:" + validatedObject, ex);
+		}
+	}
+
+	@Override
+	protected void validateInvariants(final Object guardedObject,
+			final List<ConstraintViolation> violations) throws IllegalArgumentException,
+			ValidationFailedException
+	{
+		if (!currentlyInvariantCheckingFor.get().contains(guardedObject))
+		{
+			currentlyInvariantCheckingFor.get().add(guardedObject);
+			try
+			{
+				super.validateInvariants(guardedObject, violations);
+			}
+			finally
+			{
+				currentlyInvariantCheckingFor.get().remove(guardedObject);
+			}
 		}
 	}
 
@@ -1093,41 +1091,10 @@ public class Guard extends Validator
 				}
 			}
 		}
-		catch (OValException ex)
+		catch (final OValException ex)
 		{
 			throw new ValidationFailedException("Method pre conditions validation failed. Method: "
 					+ method + " Validated object: " + validatedObject, ex);
-		}
-	}
-
-	/**
-	 * Validates the return value checks for a method call.<br>
-	 * 
-	 * @throws ValidationFailedException  
-	 */
-	protected void validateMethodReturnValue(final Object validatedObject, final Method method,
-			final Object returnValue, final List<ConstraintViolation> violations)
-			throws ValidationFailedException
-	{
-		try
-		{
-			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-			final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
-
-			if (returnValueChecks == null || returnValueChecks.size() == 0) return;
-
-			final MethodReturnValueContext context = new MethodReturnValueContext(method);
-
-			for (final Check check : returnValueChecks)
-			{
-				checkConstraint(violations, check, validatedObject, returnValue, context);
-			}
-		}
-		catch (OValException ex)
-		{
-			throw new ValidationFailedException(
-					"Method post conditions validation failed. Method: " + method
-							+ " Validated object: " + validatedObject, ex);
 		}
 	}
 
@@ -1185,7 +1152,7 @@ public class Guard extends Validator
 				}
 			}
 		}
-		catch (OValException ex)
+		catch (final OValException ex)
 		{
 			throw new ValidationFailedException(
 					"Method post conditions validation failed. Method: " + method
@@ -1245,7 +1212,38 @@ public class Guard extends Validator
 				}
 			}
 		}
-		catch (OValException ex)
+		catch (final OValException ex)
+		{
+			throw new ValidationFailedException(
+					"Method post conditions validation failed. Method: " + method
+							+ " Validated object: " + validatedObject, ex);
+		}
+	}
+
+	/**
+	 * Validates the return value checks for a method call.<br>
+	 * 
+	 * @throws ValidationFailedException  
+	 */
+	protected void validateMethodReturnValue(final Object validatedObject, final Method method,
+			final Object returnValue, final List<ConstraintViolation> violations)
+			throws ValidationFailedException
+	{
+		try
+		{
+			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+			final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
+
+			if (returnValueChecks == null || returnValueChecks.size() == 0) return;
+
+			final MethodReturnValueContext context = new MethodReturnValueContext(method);
+
+			for (final Check check : returnValueChecks)
+			{
+				checkConstraint(violations, check, validatedObject, returnValue, context);
+			}
+		}
+		catch (final OValException ex)
 		{
 			throw new ValidationFailedException(
 					"Method post conditions validation failed. Method: " + method

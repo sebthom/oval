@@ -43,12 +43,6 @@ public @interface Post
 	String expr();
 
 	/**
-	 * Formula that is evaluated prior method execution.<br>
-	 * The returned value can later be accessed in the constraint expression via the variable <b>_old</b>
-	 */
-	String old() default "";
-
-	/**
 	 * the expression language that is used
 	 */
 	String lang();
@@ -56,9 +50,15 @@ public @interface Post
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
-	 * @see ConstraintsViolatedException
+	 * @see net.sf.oval.exception.ConstraintsViolatedException
 	 */
 	String message() default "net.sf.oval.guard.Post.violated";
+
+	/**
+	 * Formula that is evaluated prior method execution.<br>
+	 * The returned value can later be accessed in the constraint expression via the variable <b>_old</b>
+	 */
+	String old() default "";
 
 	/**
 	 * The associated validation profiles.

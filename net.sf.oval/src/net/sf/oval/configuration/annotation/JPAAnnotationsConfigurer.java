@@ -129,7 +129,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 		if (!annotation.optional())
 		{
-			checks.add(NOT_NULL);
+			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		if (!annotation.nullable() && !field.isAnnotationPresent(GeneratedValue.class)
 				&& !field.isAnnotationPresent(Version.class))
 		{
-			checks.add(NOT_NULL);
+			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
 		}
 
 		final LengthCheck lengthCheck = new LengthCheck();
@@ -164,9 +164,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 		if (!annotation.optional())
 		{
-			checks.add(NOT_NULL);
+			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
 		}
-		checks.add(ASSERT_VALID);
+		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
 	}
 
 	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks,
@@ -174,8 +174,8 @@ public class JPAAnnotationsConfigurer implements Configurer
 	{
 		assert annotation != null;
 		assert checks != null;
-		
-		checks.add(ASSERT_VALID);
+
+		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
 	}
 
 	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks,
@@ -186,9 +186,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 		if (!annotation.optional())
 		{
-			checks.add(NOT_NULL);
+			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
 		}
-		checks.add(ASSERT_VALID);
+		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 	}
 
 	/**
-	 * @param applyFieldConstraintsToSetter the applyFieldConstraintsToSetter to set
+	 * @param applyFieldConstraintsToSetters the applyFieldConstraintsToSetter to set
 	 */
 	public void setApplyFieldConstraintsToSetters(final Boolean applyFieldConstraintsToSetters)
 	{
