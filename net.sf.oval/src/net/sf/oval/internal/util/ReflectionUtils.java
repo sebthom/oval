@@ -13,8 +13,10 @@
 package net.sf.oval.internal.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +24,7 @@ import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.exception.AccessingFieldValueFailedException;
 import net.sf.oval.exception.InvokingMethodFailedException;
+import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
@@ -39,7 +42,7 @@ public final class ReflectionUtils
 		{
 			return clazz.getDeclaredField(fieldName);
 		}
-		catch (NoSuchFieldException e)
+		catch (final NoSuchFieldException e)
 		{
 			return null;
 		}
@@ -51,13 +54,14 @@ public final class ReflectionUtils
 	 */
 	public static Field getFieldForSetter(final Method setter)
 	{
-		if (!isSetter(setter)) return null;
+		if (!ReflectionUtils.isSetter(setter)) return null;
 
 		final Class[] methodParameterTypes = setter.getParameterTypes();
 		final String methodName = setter.getName();
 		final Class clazz = setter.getDeclaringClass();
 
-		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field name)
+		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field
+		// name)
 		String fieldName = methodName.substring(3, 4).toLowerCase();
 		if (methodName.length() > 4)
 		{
@@ -72,21 +76,22 @@ public final class ReflectionUtils
 			// check if field and method parameter are of the same type
 			if (!field.getType().equals(methodParameterTypes[0]))
 			{
-				LOG.warning("Found field <" + fieldName + "> in class <" + clazz.getName()
-						+ ">that matches setter <" + methodName
+				ReflectionUtils.LOG.warning("Found field <" + fieldName + "> in class <"
+						+ clazz.getName() + ">that matches setter <" + methodName
 						+ "> name, but mismatches parameter type.");
 				field = null;
 			}
 		}
 		catch (final NoSuchFieldException e)
 		{
-			if (LOG.isLoggable(Level.FINER))
+			if (ReflectionUtils.LOG.isLoggable(Level.FINER))
 			{
-				LOG.log(Level.FINER, "Field not found", e);
+				ReflectionUtils.LOG.log(Level.FINER, "Field not found", e);
 			}
 		}
 
-		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() => field isEnabled)
+		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() =>
+		// field isEnabled)
 		if (field == null
 				&& (methodParameterTypes[0].equals(boolean.class) || methodParameterTypes[0]
 						.equals(Boolean.class)))
@@ -100,16 +105,17 @@ public final class ReflectionUtils
 				// check if found field is of boolean or Boolean
 				if (!field.getType().equals(boolean.class) && field.getType().equals(Boolean.class))
 				{
-					LOG.warning("Found field <" + fieldName + "> that matches setter <"
-							+ methodName + "> name, but mismatches parameter type.");
+					ReflectionUtils.LOG.warning("Found field <" + fieldName
+							+ "> that matches setter <" + methodName
+							+ "> name, but mismatches parameter type.");
 					field = null;
 				}
 			}
-			catch (NoSuchFieldException ex)
+			catch (final NoSuchFieldException ex)
 			{
-				if (LOG.isLoggable(Level.FINER))
+				if (ReflectionUtils.LOG.isLoggable(Level.FINER))
 				{
-					LOG.log(Level.FINER, "Field not found", ex);
+					ReflectionUtils.LOG.log(Level.FINER, "Field not found", ex);
 				}
 			}
 		}
@@ -119,13 +125,13 @@ public final class ReflectionUtils
 
 	public static Field getFieldRecursive(final Class clazz, final String fieldName)
 	{
-		final Field f = getField(clazz, fieldName);
+		final Field f = ReflectionUtils.getField(clazz, fieldName);
 		if (f != null) return f;
 
 		final Class superclazz = clazz.getSuperclass();
 		if (superclazz == null) return null;
 
-		return getFieldRecursive(superclazz, fieldName);
+		return ReflectionUtils.getFieldRecursive(superclazz, fieldName);
 	}
 
 	public static Object getFieldValue(final Field field, final Object obj)
@@ -136,24 +142,45 @@ public final class ReflectionUtils
 			if (!field.isAccessible()) field.setAccessible(true);
 			return field.get(obj);
 		}
-		catch (Exception ex)
+		catch (final Exception ex)
 		{
 			throw new AccessingFieldValueFailedException(field.getName(), obj, new FieldContext(
 					field), ex);
 		}
 	}
 
+	public static List<Method> getInterfaceMethods(final Method method)
+	{
+		// static methods cannot be overridden
+		if (ReflectionUtils.isStatic(method)) return null;
+
+		final Class< ? >[] interfaces = method.getDeclaringClass().getInterfaces();
+		if (interfaces.length == 0) return null;
+
+		final String methodName = method.getName();
+		final Class< ? >[] parameterTypes = method.getParameterTypes();
+
+		final List<Method> methods = CollectionFactoryHolder.getFactory().createList(
+				interfaces.length);
+		for (final Class iface : interfaces)
+		{
+			final Method m = ReflectionUtils.getMethod(iface, methodName, parameterTypes);
+			if (m != null) methods.add(m);
+		}
+		return methods;
+	}
+
 	/**
 	 * @return the method or null if the method does not exist
 	 */
-	public static Method getMethod(final Class<?> clazz, final String methodName,
-			final Class<?>... parameterTypes) throws SecurityException
+	public static Method getMethod(final Class< ? > clazz, final String methodName,
+			final Class< ? >... parameterTypes) throws SecurityException
 	{
 		try
 		{
 			return clazz.getDeclaredMethod(methodName, parameterTypes);
 		}
-		catch (NoSuchMethodException e)
+		catch (final NoSuchMethodException e)
 		{
 			return null;
 		}
@@ -162,20 +189,19 @@ public final class ReflectionUtils
 	public static Method getSuperMethod(final Method method)
 	{
 		// static methods cannot be overridden
-		if (isStatic(method)) return null;
+		if (ReflectionUtils.isStatic(method)) return null;
 
 		final String methodName = method.getName();
-		final Class<?>[] parameterTypes = method.getParameterTypes();
+		final Class< ? >[] parameterTypes = method.getParameterTypes();
 
-		Class<?> currentClass = method.getDeclaringClass();
+		Class< ? > currentClass = method.getDeclaringClass();
 
 		while (currentClass != null && currentClass != Object.class)
 		{
 			currentClass = currentClass.getSuperclass();
 
-			final Method m = getMethod(currentClass, methodName, parameterTypes);
-
-			if (m != null) return m;
+			final Method m = ReflectionUtils.getMethod(currentClass, methodName, parameterTypes);
+			if (m != null && !ReflectionUtils.isPrivate(m)) return m;
 		}
 		return null;
 	}
@@ -206,13 +232,13 @@ public final class ReflectionUtils
 
 	public static boolean hasField(final Class clazz, final String fieldName)
 	{
-		return getField(clazz, fieldName) != null;
+		return ReflectionUtils.getField(clazz, fieldName) != null;
 	}
 
-	public static boolean hasMethod(final Class<?> clazz, final String methodName,
-			final Class<?>... parameterTypes)
+	public static boolean hasMethod(final Class< ? > clazz, final String methodName,
+			final Class< ? >... parameterTypes)
 	{
-		return getMethod(clazz, methodName, parameterTypes) != null;
+		return ReflectionUtils.getMethod(clazz, methodName, parameterTypes) != null;
 	}
 
 	/**
@@ -245,20 +271,15 @@ public final class ReflectionUtils
 			Class.forName(className);
 			return true;
 		}
-		catch (ClassNotFoundException e)
+		catch (final ClassNotFoundException e)
 		{
 			return false;
 		}
 	}
 
-	public static boolean isFinal(final Field field)
+	public static boolean isFinal(final Member member)
 	{
-		return (field.getModifiers() & Modifier.FINAL) != 0;
-	}
-
-	public static boolean isFinal(final Method method)
-	{
-		return (method.getModifiers() & Modifier.FINAL) != 0;
+		return (member.getModifiers() & Modifier.FINAL) != 0;
 	}
 
 	/**
@@ -266,28 +287,23 @@ public final class ReflectionUtils
 	 */
 	public static boolean isGetter(final Method method)
 	{
-		return (method.getParameterTypes().length == 0)
+		return method.getParameterTypes().length == 0
 				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
 	}
 
-	public static boolean isPrivate(final Field field)
+	public static boolean isPackage(final Member member)
 	{
-		return (field.getModifiers() & Modifier.PRIVATE) != 0;
+		return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;
 	}
 
-	public static boolean isPrivate(final Method method)
+	public static boolean isPrivate(final Member member)
 	{
-		return (method.getModifiers() & Modifier.PRIVATE) != 0;
+		return (member.getModifiers() & Modifier.PRIVATE) != 0;
 	}
 
-	public static boolean isProtected(final Field field)
+	public static boolean isProtected(final Member member)
 	{
-		return (field.getModifiers() & Modifier.PROTECTED) != 0;
-	}
-
-	public static boolean isProtected(final Method method)
-	{
-		return (method.getModifiers() & Modifier.PROTECTED) != 0;
+		return (member.getModifiers() & Modifier.PROTECTED) != 0;
 	}
 
 	/**
@@ -309,19 +325,14 @@ public final class ReflectionUtils
 		return true;
 	}
 
-	public static boolean isStatic(final Field field)
+	public static boolean isStatic(final Member member)
 	{
-		return (field.getModifiers() & Modifier.STATIC) != 0;
+		return (member.getModifiers() & Modifier.STATIC) != 0;
 	}
 
-	public static boolean isStatic(final Method method)
+	public static boolean isTransient(final Member member)
 	{
-		return (method.getModifiers() & Modifier.STATIC) != 0;
-	}
-
-	public static boolean isTransient(final Field field)
-	{
-		return (field.getModifiers() & Modifier.TRANSIENT) != 0;
+		return (member.getModifiers() & Modifier.TRANSIENT) != 0;
 	}
 
 	/**
