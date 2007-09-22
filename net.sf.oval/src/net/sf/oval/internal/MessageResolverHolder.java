@@ -29,17 +29,18 @@ public final class MessageResolverHolder
 	 */
 	public static MessageResolver getMessageResolver()
 	{
-		return messageResolver;
+		return MessageResolverHolder.messageResolver;
 	}
 
 	/**
 	 * 
-	 * @param factory the new messageResolver to use
+	 * @param messageResolver the new messageResolver to use
 	 */
 	public static void setMessageResolver(final MessageResolver messageResolver)
 			throws IllegalArgumentException
 	{
-		if (messageResolver == null) throw new IllegalArgumentException("messageResolver cannot be null");
+		if (messageResolver == null)
+			throw new IllegalArgumentException("messageResolver cannot be null");
 
 		MessageResolverHolder.messageResolver = messageResolver;
 	}
