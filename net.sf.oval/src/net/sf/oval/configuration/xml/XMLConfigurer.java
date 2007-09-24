@@ -61,7 +61,7 @@ import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.RangeCheck;
 import net.sf.oval.constraint.SizeCheck;
-import net.sf.oval.constraint.ValidateWithMethod;
+import net.sf.oval.constraint.ValidateWithMethodCheck;
 import net.sf.oval.exception.OValException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
@@ -85,8 +85,6 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  */
 public class XMLConfigurer implements Configurer
 {
-	private static final long serialVersionUID = 1L;
-
 	private final static class AssertCheckConverter implements Converter
 	{
 		public boolean canConvert(final Class clazz)
@@ -142,6 +140,8 @@ public class XMLConfigurer implements Configurer
 			return assertCheck;
 		}
 	}
+
+	private static final long serialVersionUID = 1L;
 
 	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
 
@@ -214,7 +214,7 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("past", PastCheck.class);
 		xStream.alias("range", RangeCheck.class);
 		xStream.alias("size", SizeCheck.class);
-		xStream.alias("validateWithMethod", ValidateWithMethod.class);
+		xStream.alias("validateWithMethod", ValidateWithMethodCheck.class);
 
 		// <oval> -> net.sf.oval.configuration.POJOConfigurer
 		xStream.alias("oval", POJOConfigurer.class);
