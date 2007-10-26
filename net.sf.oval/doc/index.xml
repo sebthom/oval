@@ -1576,6 +1576,20 @@ v.validate(p);
 
     <itemizedlist>
       <listitem>
+        <para>Validación Java: Oval, una joya escondida</para>
+
+        <para><ulink
+        url="http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html">http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Nice library for constraint checking (2007)</para>
+
+        <para><ulink
+        url="http://rmeindl.wordpress.com/2007/09/06/nice-library-for-constraint-checking/">http://rmeindl.wordpress.com/2007/09/06/nice-library-for-constraint-checking/</ulink></para>
+      </listitem>
+
+      <listitem>
         <para>Validation with Aspects &amp; design by contract (2007)</para>
 
         <para><ulink

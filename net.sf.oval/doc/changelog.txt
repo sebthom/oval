@@ -39,7 +39,7 @@ Refactoring:
  
 Other Changes:
  * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
- - Configuring validateWithMethod constraints via XML was broken
+ - Configuring validateWithMethod constraints via XML was broken (thanks to Ramon Buckland)
  
 2007-07-22 v1.0
 ===============
