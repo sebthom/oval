@@ -14,6 +14,8 @@ package net.sf.oval.expression;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import bsh.EvalError;
@@ -24,6 +26,9 @@ import bsh.Interpreter;
  */
 public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 {
+	private final static Logger LOG = Logger.getLogger(ExpressionLanguageBeanShellImpl.class
+			.getName());
+
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
 	{
@@ -34,6 +39,10 @@ public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 			for (final Entry<String, ? > entry : values.entrySet())
 			{
 				interpreter.set(entry.getKey(), entry.getValue());
+			}
+			if (LOG.isLoggable(Level.FINE))
+			{
+				LOG.fine("Evaluating BeanShell expression:" + expression);
 			}
 			return interpreter.eval(expression);
 		}
@@ -49,9 +58,7 @@ public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }

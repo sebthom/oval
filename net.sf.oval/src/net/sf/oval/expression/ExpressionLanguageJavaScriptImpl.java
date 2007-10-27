@@ -14,6 +14,8 @@ package net.sf.oval.expression;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 
@@ -27,11 +29,14 @@ import org.mozilla.javascript.Scriptable;
  */
 public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 {
+	private final static Logger LOG = Logger.getLogger(ExpressionLanguageJavaScriptImpl.class
+			.getName());
+
 	private final Scriptable parentScope;
 
 	public ExpressionLanguageJavaScriptImpl()
 	{
-		Context ctx = Context.enter();
+		final Context ctx = Context.enter();
 		try
 		{
 			parentScope = ctx.initStandardObjects();
@@ -56,6 +61,10 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 			{
 				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
 			}
+			if (LOG.isLoggable(Level.FINE))
+			{
+				LOG.fine("Evaluating JavaScript expression:" + expression);
+			}
 			return ctx.evaluateString(scope, expression, "<cmd>", 1, null);
 		}
 		catch (final EvaluatorException ex)
@@ -73,9 +82,7 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 	{
 		final Object result = evaluate(expression, values);
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }

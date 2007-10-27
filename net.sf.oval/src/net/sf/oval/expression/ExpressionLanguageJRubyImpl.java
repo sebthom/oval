@@ -15,6 +15,8 @@ package net.sf.oval.expression;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 
@@ -28,6 +30,8 @@ import org.jruby.runtime.builtin.IRubyObject;
  */
 public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 {
+	private final static Logger LOG = Logger.getLogger(ExpressionLanguageJRubyImpl.class.getName());
+
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
 	{
@@ -35,7 +39,7 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 		{
 			final Ruby runtime = JavaEmbedUtils.initialize(new ArrayList<String>());
 
-			StringBuilder localVars = new StringBuilder();
+			final StringBuilder localVars = new StringBuilder();
 			for (final Entry<String, ? > entry : values.entrySet())
 			{
 				runtime.getGlobalVariables().set("$" + entry.getKey(),
@@ -45,6 +49,10 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 				localVars.append(entry.getKey());
 				localVars.append("\n");
 
+			}
+			if (LOG.isLoggable(Level.FINE))
+			{
+				LOG.fine("Evaluating Ruby expression:" + expression);
 			}
 			final IRubyObject result = runtime.evalScript(localVars + expression);
 			return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
@@ -62,9 +70,7 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }
