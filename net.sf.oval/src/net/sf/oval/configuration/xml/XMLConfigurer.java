@@ -34,6 +34,7 @@ import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodPostExecutionConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
+import net.sf.oval.configuration.pojo.elements.ObjectConfiguration;
 import net.sf.oval.configuration.pojo.elements.ParameterConfiguration;
 import net.sf.oval.constraint.AssertCheck;
 import net.sf.oval.constraint.AssertConstraintSetCheck;
@@ -71,6 +72,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -156,13 +158,13 @@ public class XMLConfigurer implements Configurer
 	public XMLConfigurer()
 	{
 		// new com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider()
-		if (ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader"))
-			xStream = new XStream(new StaxDriver());
-		else if (ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser"))
-			xStream = new XStream(new XppDriver());
-		else
-			xStream = new XStream(new DomDriver());
 
+		final HierarchicalStreamDriver xmlDriver = //
+		ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader") ? new StaxDriver() : //
+				ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
+						new DomDriver();
+
+		xStream = new XStream(xmlDriver);
 		configureXStream();
 	}
 
@@ -230,6 +232,8 @@ public class XMLConfigurer implements Configurer
 					ClassConfiguration.class);
 			xStream.alias("class", ClassConfiguration.class);
 			{
+				xStream.alias("object", ObjectConfiguration.class);
+
 				// <field> -> net.sf.oval.configuration.elements.FieldConfiguration
 				xStream.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",
 						FieldConfiguration.class);

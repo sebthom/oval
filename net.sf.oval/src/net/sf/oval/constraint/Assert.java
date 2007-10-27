@@ -28,7 +28,7 @@ import net.sf.oval.configuration.annotation.Constraint;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Constraint(checkWith = AssertCheck.class)
 public @interface Assert
 {
@@ -37,7 +37,7 @@ public @interface Assert
 	 * <br>
 	 * available variables are:<br>
 	 * <b>_this</b> -&gt; the validated bean<br>
-	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, or method return value)
+	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value, or the validated bean for object level constraints)
 	 */
 	String expr();
 

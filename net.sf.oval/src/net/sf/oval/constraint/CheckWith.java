@@ -30,7 +30,7 @@ import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Constraint(checkWith = CheckWithCheck.class)
 public @interface CheckWith
 {
@@ -47,6 +47,11 @@ public @interface CheckWith
 	String message() default "net.sf.oval.constraints.CheckWith.violated";
 
 	/**
+	 * The associated validation profiles.
+	 */
+	String[] profiles() default {};
+
+	/**
 	 * Check class to use for validation. If this class is an inner class
 	 * it needs be declared as a <b>static</b> class. Otherwise
 	 * check instantiation will fail.
@@ -54,9 +59,4 @@ public @interface CheckWith
 	 * @see net.sf.oval.constraint.CheckWithCheck.SimpleCheck
 	 */
 	Class< ? extends SimpleCheck> value();
-
-	/**
-	 * The associated validation profiles.
-	 */
-	String[] profiles() default {};
 }

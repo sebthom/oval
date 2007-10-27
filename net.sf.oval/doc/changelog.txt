@@ -31,6 +31,7 @@ Validator:
  + added method Validator.assertValidFieldValue(...)
  + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
  * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
+ + added support for object-level constraints (@Assert, @CheckWith and @ValidateWithMethod can now be declared on class-level)
  
 Refactoring:
  * net.sf.oval.exception.ContraintsViolatedException moved from package net.sf.oval.guard

@@ -17,22 +17,22 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraint.Assert;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AssertGroovyTest extends TestCase
 {
+	@net.sf.oval.constraint.Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "groovy", message = "C0")
 	private static class Person
 	{
-		@Assert(expr = "_value!=null", lang = "groovy", message = "C1")
+		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", message = "C1")
 		public String firstName;
 
-		@Assert(expr = "_value!=null", lang = "groovy", message = "C2")
+		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", message = "C2")
 		public String lastName;
 
-		@Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "groovy", message = "C3")
+		@net.sf.oval.constraint.Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "groovy", message = "C3")
 		public String zipCode;
 	}
 
@@ -43,7 +43,7 @@ public class AssertGroovyTest extends TestCase
 		// test not null
 		final Person p = new Person();
 		List<ConstraintViolation> violations = validator.validate(p);
-		assertTrue(violations.size() == 3);
+		assertTrue(violations.size() == 4);
 
 		// test max length
 		p.firstName = "Mike";
@@ -63,5 +63,12 @@ public class AssertGroovyTest extends TestCase
 		p.zipCode = "wqeew";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 0);
+
+		// test object-level constraint
+		p.firstName = "12345";
+		p.lastName = "1234";
+		violations = validator.validate(p);
+		assertTrue(violations.size() == 1);
+		assertTrue(violations.get(0).getMessage().equals("C0"));
 	}
 }

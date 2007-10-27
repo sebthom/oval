@@ -21,7 +21,7 @@ or
 <!ATTLIST constraintSet overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a specific class -->
-<!ELEMENT class ( (field|constructor|method)* ) >
+<!ELEMENT class ( object?,(field|constructor|method)* ) >
 <!ATTLIST class applyFieldConstraintsToConstructors (true|false) #IMPLIED >
 <!ATTLIST class applyFieldConstraintsToSetters (true|false) #IMPLIED >
 <!ATTLIST class checkInvariants (true|false) #IMPLIED >
@@ -30,6 +30,10 @@ or
 
 <!ELEMENT profiles (string*) >
 <!ELEMENT string (#PCDATA) >
+
+<!-- Constraints configuration for constraints on object level --> 
+<!ELEMENT object ((assert|checkWith|validateWithMethod)*) >
+<!ATTLIST object overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a field -->
 <!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>

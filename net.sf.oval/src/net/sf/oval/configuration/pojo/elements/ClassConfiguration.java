@@ -27,6 +27,11 @@ public class ClassConfiguration extends ConfigurationElement
 	public Class< ? > type;
 
 	/**
+	 * object level constraints configuration
+	 */
+	public ObjectConfiguration objectConfiguration;
+
+	/**
 	 * field constraints configuration
 	 */
 	public Set<FieldConfiguration> fieldConfigurations;
@@ -57,10 +62,10 @@ public class ClassConfiguration extends ConfigurationElement
 	 * its parameter has as the same type as the field.
 	 */
 	public Boolean applyFieldConstraintsToSetters;
-		
+
 	/**
 	 * Specifies if invariants are checked prior and after
 	 * calls to non-private methods and constructors.
 	 */
-	public Boolean checkInvariants; 
+	public Boolean checkInvariants;
 }

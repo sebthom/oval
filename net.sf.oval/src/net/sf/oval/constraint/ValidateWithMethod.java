@@ -18,8 +18,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.configuration.annotation.Constraint;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.configuration.annotation.Constraint;
 
 /**
  * Check the value by a method of the same class that takes the value as argument and returns true if valid
@@ -29,7 +29,7 @@ import net.sf.oval.ConstraintViolation;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Constraint(checkWith = ValidateWithMethodCheck.class)
 public @interface ValidateWithMethod
 {
@@ -49,7 +49,7 @@ public @interface ValidateWithMethod
 	 * name a the single parameter method to use for validation
 	 */
 	String methodName();
-	
+
 	/**
 	 * type of the method parameter
 	 */

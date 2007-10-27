@@ -28,6 +28,7 @@ import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodPostExecutionConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
+import net.sf.oval.configuration.pojo.elements.ObjectConfiguration;
 import net.sf.oval.configuration.pojo.elements.ParameterConfiguration;
 import net.sf.oval.exception.OValException;
 import net.sf.oval.exception.ReflectionException;
@@ -49,20 +50,43 @@ public class AnnotationsConfigurer implements Configurer
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
+
 		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class)
-		? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors()
-		: false;
+				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors()
+				: false;
+
 		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class)
 				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
 
 		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type
 				.getAnnotation(Guarded.class).checkInvariants() : false;
+
+		/*
+		 * determine object-level checks
+		 */
+		{
+			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
+			for (final Annotation annotation : clazz.getAnnotations())
+			{
+				// check if the current annotation is a constraint annotation
+				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
+					checks.add(initializeCheck(annotation));
+				}
+			}
+			if (checks.size() > 0)
+			{
+				config.objectConfiguration = new ObjectConfiguration();
+				config.objectConfiguration.checks = checks;
+			}
+		}
+
 		/*
 		 * determine field checks
 		 */
 		for (final Field field : config.type.getDeclaredFields())
 		{
-			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(4);
+			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
@@ -76,7 +100,7 @@ public class AnnotationsConfigurer implements Configurer
 			if (checks.size() > 0)
 			{
 				if (config.fieldConfigurations == null)
-					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(8);
+					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
@@ -116,7 +140,8 @@ public class AnnotationsConfigurer implements Configurer
 				pc.type = constructor.getParameterTypes()[i];
 				pc.checks = parameterChecks;
 			}
-			boolean postValidateThis = constructor.isAnnotationPresent(PostValidateThis.class);
+			final boolean postValidateThis = constructor
+					.isAnnotationPresent(PostValidateThis.class);
 
 			if (parametersConfig.size() > 0 | postValidateThis)
 			{
@@ -211,7 +236,7 @@ public class AnnotationsConfigurer implements Configurer
 					|| postChecks.size() > 0 || preValidateThis || postValidateThis)
 			{
 				if (config.methodConfigurations == null)
-					config.methodConfigurations = CollectionFactoryHolder.getFactory().createSet(8);
+					config.methodConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
@@ -240,6 +265,12 @@ public class AnnotationsConfigurer implements Configurer
 		return config;
 	}
 
+	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
+			throws OValException
+	{
+		return null;
+	}
+
 	private <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(
 			final ConstraintAnnotation constraintAnnotation) throws ReflectionException
 	{
@@ -263,11 +294,5 @@ public class AnnotationsConfigurer implements Configurer
 			throw new ReflectionException("Cannot initialize constraint check "
 					+ checkClass.getName(), e);
 		}
-	}
-
-	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
-			throws OValException
-	{
-		return null;
 	}
 }

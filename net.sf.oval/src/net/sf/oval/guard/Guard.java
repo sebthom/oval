@@ -123,7 +123,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-		cc.addChecks(constructor, parameterIndex, checks);
+		cc.addConstructorParameterChecks(constructor, parameterIndex, checks);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.addChecks(method, null, checks);
+		cc.addMethodReturnValueChecks(method, null, checks);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.addChecks(method, parameterIndex, checks);
+		cc.addMethodParameterChecks(method, parameterIndex, checks);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.addChecks(method, checks);
+		cc.addMethodPostChecks(method, checks);
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.addChecks(method, checks);
+		cc.addMethodPreChecks(method, checks);
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class Guard extends Validator
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
-		final Map<Integer, Collection<Check>> checks = cc.checksForMethodParameters.get(method);
+		final Map<Integer, Set<Check>> checks = cc.checksForMethodParameters.get(method);
 		if (checks == null) return null;
 
 		final Collection<Check> paramChecks = checks.get(parameterIndex);
@@ -771,7 +771,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-		cc.removeChecks(constructor, parameterIndex, checks);
+		cc.removeConstructorParameterChecks(constructor, parameterIndex, checks);
 	}
 
 	/**
@@ -791,7 +791,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.removeChecks(method, parameterIndex, checks);
+		cc.removeMethodParameterChecks(method, parameterIndex, checks);
 	}
 
 	/**
@@ -809,7 +809,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.removeChecks(method, checks);
+		cc.removeMethodPostChecks(method, checks);
 	}
 
 	/**
@@ -827,7 +827,7 @@ public class Guard extends Validator
 		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-		cc.removeChecks(method, checks);
+		cc.removeMethodPreChecks(method, checks);
 	}
 
 	/**
@@ -990,7 +990,7 @@ public class Guard extends Validator
 		try
 		{
 			final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
-			final Map<Integer, Collection<Check>> parameterChecks = cc.checksForConstructorParameters
+			final Map<Integer, Set<Check>> parameterChecks = cc.checksForConstructorParameters
 					.get(constructor);
 
 			// if no parameter checks exist just return null
@@ -1059,7 +1059,7 @@ public class Guard extends Validator
 		try
 		{
 			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-			final Map<Integer, Collection<Check>> parameterChecks = cc.checksForMethodParameters
+			final Map<Integer, Set<Check>> parameterChecks = cc.checksForMethodParameters
 					.get(method);
 
 			if (parameterChecks == null) return;
