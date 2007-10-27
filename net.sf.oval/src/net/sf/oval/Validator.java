@@ -173,6 +173,24 @@ public class Validator
 		}
 	}
 
+	/**
+	 * Registers object-level constraint checks
+	 *  
+	 * @param clazz
+	 * @param checks
+	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
+	 */
+	public void addChecks(final Class clazz, final Check... checks) throws IllegalArgumentException
+	{
+		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
+		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
+		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+
+		final ClassChecks cc = getClassChecks(clazz);
+
+		cc.addObjectChecks(checks);
+	}
+
 	@SuppressWarnings("unchecked")
 	protected void addChecks(final ClassChecks cc, final ClassConfiguration classConfig)
 			throws OValException
@@ -826,6 +844,22 @@ public class Validator
 	}
 
 	/**
+	 * Gets the object-level constraint checks for the given class 
+	 *  
+	 * @param clazz
+	 * @throws IllegalArgumentException if <code>clazz == null</code> 
+	 */
+	public Check[] getChecks(final Class clazz) throws IllegalArgumentException
+	{
+		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
+
+		final ClassChecks cc = getClassChecks(clazz);
+
+		final Set<Check> checks = cc.checksForObject;
+		return checks == null ? null : checks.toArray(new Check[checks.size()]);
+	}
+
+	/**
 	 * Gets the constraint checks for the given field 
 	 *  
 	 * @param field
@@ -1053,6 +1087,24 @@ public class Validator
 		{
 			constraintSetsById.clear();
 		}
+	}
+
+	/**
+	 * Removes object-level constraint checks 
+	 *  
+	 * @param clazz
+	 * @param checks
+	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
+	 */
+	public void removeChecks(final Class clazz, final Check... checks)
+			throws IllegalArgumentException
+	{
+		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
+		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
+		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+
+		final ClassChecks cc = getClassChecks(clazz);
+		cc.removeObjectChecks(checks);
 	}
 
 	/**

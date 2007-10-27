@@ -43,7 +43,7 @@ public class ClassChecks
 	private static final Logger LOG = Logger.getLogger(ClassChecks.class.getName());
 
 	/**
-	 * object invariants
+	 * compound constraints / object level invariants
 	 */
 	public final Set<Check> checksForObject = CollectionFactoryHolder.getFactory().createSet(2);
 
