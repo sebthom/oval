@@ -45,6 +45,7 @@ import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.CheckWithCheck;
 import net.sf.oval.constraint.FutureCheck;
 import net.sf.oval.constraint.HasSubstringCheck;
+import net.sf.oval.constraint.InstanceOfAnyCheck;
 import net.sf.oval.constraint.InstanceOfCheck;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.MatchPatternCheck;
@@ -189,6 +190,8 @@ public class XMLConfigurer implements Configurer
 		xStream.useAttributeFor(Long.class);
 		xStream.useAttributeFor(String.class);
 
+		xStream.alias("java-type", Class.class);
+
 		// constraint check short forms
 		xStream.alias("assert", AssertCheck.class);
 		xStream.alias("assertConstraintSet", AssertConstraintSetCheck.class);
@@ -200,6 +203,7 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("future", FutureCheck.class);
 		xStream.alias("hasSubstring", HasSubstringCheck.class);
 		xStream.alias("instanceOf", InstanceOfCheck.class);
+		xStream.alias("instanceOfAny", InstanceOfAnyCheck.class);
 		xStream.alias("length", LengthCheck.class);
 		xStream.alias("matchPattern", MatchPatternCheck.class);
 		xStream.alias("max", MaxCheck.class);

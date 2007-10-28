@@ -59,11 +59,6 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 	{
 		if (value == null) return true;
 
-		if (value.getClass().isArray())
-		{
-			final int size = Array.getLength(value);
-			return size <= max;
-		}
 		if (value instanceof Collection)
 		{
 			final int size = ((Collection) value).size();
@@ -72,6 +67,11 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 		if (value instanceof Map)
 		{
 			final int size = ((Map) value).size();
+			return size <= max;
+		}
+		if (value.getClass().isArray())
+		{
+			final int size = Array.getLength(value);
 			return size <= max;
 		}
 		return false;

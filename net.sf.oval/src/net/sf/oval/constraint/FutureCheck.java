@@ -36,23 +36,26 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 		// check if the value is a Date
 		if (value instanceof Date)
 		{
-			return ((Date) value).after(new Date());
+			// return ((Date) value).after(new Date());
+			return ((Date) value).getTime() > System.currentTimeMillis();
 		}
 
 		// check if the value is a Calendar
 		if (value instanceof Calendar)
 		{
-			return ((Calendar) value).getTime().after(new Date());
+			// return ((Calendar) value).getTime().after(new Date());
+			return ((Calendar) value).getTime().getTime() > System.currentTimeMillis();
 		}
 
 		// see if we can extract a date based on the object's String representation
 		final String stringValue = value.toString();
 		try
 		{
-			final Date date = DateFormat.getDateTimeInstance().parse(stringValue);
-			return date.after(new Date());
+			// return DateFormat.getDateTimeInstance().parse(stringValue).after(new Date());
+			return DateFormat.getDateTimeInstance().parse(stringValue).getTime() > System
+					.currentTimeMillis();
 		}
-		catch (ParseException ex)
+		catch (final ParseException ex)
 		{
 			return false;
 		}

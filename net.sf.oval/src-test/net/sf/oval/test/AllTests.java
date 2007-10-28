@@ -33,6 +33,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.HasSubStringTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.InstanceOfAnyTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.InstanceOfTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.LengthTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MaxTest.class);
@@ -48,32 +49,6 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNullTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.PastTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.SizeTest.class);
-	}
-
-	private static void validatorTests(final TestSuite suite)
-	{
-		suite.addTestSuite(net.sf.oval.test.validator.AddingChecksTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertBeanShellTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertMVELTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
-		suite
-				.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 	}
 
 	private static void guardTests(final TestSuite suite)
@@ -163,5 +138,31 @@ public class AllTests
 		}
 		// $JUnit-END$
 		return suite;
+	}
+
+	private static void validatorTests(final TestSuite suite)
+	{
+		suite.addTestSuite(net.sf.oval.test.validator.AddingChecksTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertBeanShellTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertMVELTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
+		suite
+				.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 	}
 }

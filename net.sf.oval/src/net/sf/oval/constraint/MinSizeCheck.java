@@ -45,7 +45,7 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 		messageVariables.put("min", Integer.toString(min));
 		return messageVariables;
 	}
-	
+
 	/**
 	 * @return the min
 	 */
@@ -59,11 +59,6 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 	{
 		if (value == null) return true;
 
-		if (value.getClass().isArray())
-		{
-			final int size = Array.getLength(value);
-			return size >= min;
-		}
 		if (value instanceof Collection)
 		{
 			final int size = ((Collection) value).size();
@@ -72,6 +67,11 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 		if (value instanceof Map)
 		{
 			final int size = ((Map) value).size();
+			return size >= min;
+		}
+		if (value.getClass().isArray())
+		{
+			final int size = Array.getLength(value);
 			return size >= min;
 		}
 		return false;

@@ -12,12 +12,12 @@
  *******************************************************************************/
 package net.sf.oval.test.constraints;
 
-import net.sf.oval.constraint.InstanceOfCheck;
+import net.sf.oval.constraint.InstanceOfAnyCheck;
 
 /**
  * @author Sebastian Thomschke
  */
-public class InstanceOfTest extends AbstractContraintsTest
+public class InstanceOfAnyTest extends AbstractContraintsTest
 {
 	public static class ClassA implements InterfaceA
 	{
@@ -41,7 +41,7 @@ public class InstanceOfTest extends AbstractContraintsTest
 
 	public void testInstanceOf()
 	{
-		final InstanceOfCheck check = new InstanceOfCheck();
+		final InstanceOfAnyCheck check = new InstanceOfAnyCheck();
 		super.testCheck(check);
 		assertTrue(check.isSatisfied(null, null, null, null));
 
@@ -56,7 +56,7 @@ public class InstanceOfTest extends AbstractContraintsTest
 		assertEquals(InterfaceA.class, check.getTypes()[0]);
 		assertEquals(InterfaceB.class, check.getTypes()[1]);
 
-		assertFalse(check.isSatisfied(null, new ClassA(), null, null));
+		assertTrue(check.isSatisfied(null, new ClassA(), null, null));
 		assertTrue(check.isSatisfied(null, new ClassB(), null, null));
 		assertFalse(check.isSatisfied(null, "bla", null, null));
 	}

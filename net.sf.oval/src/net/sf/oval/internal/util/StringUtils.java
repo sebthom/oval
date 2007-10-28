@@ -12,18 +12,25 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
+import java.util.Collection;
+
 /**
  * @author Sebastian Thomschke
  */
 public final class StringUtils
 {
+	public static String implode(final Collection< ? > values, final String delimiter)
+	{
+		return implode(values.toArray(), delimiter);
+	}
+
 	public static String implode(final Object[] values, final String delimiter)
 	{
 		if (values == null) return "";
 
 		final StringBuilder out = new StringBuilder();
 
-		for (int i = 0; i < values.length; i++)
+		for (int i = 0, l = values.length; i < l; i++)
 		{
 			if (i > 0) out.append(delimiter);
 			out.append(values[i]);
@@ -31,20 +38,24 @@ public final class StringUtils
 		return out.toString();
 	}
 
+	/**
+	 * high-performance case-sensitive string replacement
+	 */
 	public static String replaceAll(final String searchIn, final String searchFor,
 			final String replaceWith)
 	{
 		final StringBuilder out = new StringBuilder();
 
-		int startSearchAt = 0, foundAt = 0, searchForLength = searchFor.length();
+		int searchFrom = 0, foundAt = 0;
+		final int searchForLength = searchFor.length();
 
-		while ((foundAt = searchIn.indexOf(searchFor, startSearchAt)) >= 0)
+		while ((foundAt = searchIn.indexOf(searchFor, searchFrom)) >= 0)
 		{
-			out.append(searchIn.substring(startSearchAt, foundAt)).append(replaceWith);
-			startSearchAt = foundAt + searchForLength;
+			out.append(searchIn.substring(searchFrom, foundAt)).append(replaceWith);
+			searchFrom = foundAt + searchForLength;
 		}
 
-		return out.append(searchIn.substring(startSearchAt, searchIn.length())).toString();
+		return out.append(searchIn.substring(searchFrom, searchIn.length())).toString();
 	}
 
 	/**

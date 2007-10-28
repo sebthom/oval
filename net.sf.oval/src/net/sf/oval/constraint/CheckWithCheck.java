@@ -14,7 +14,6 @@ package net.sf.oval.constraint;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -57,6 +56,14 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	}
 
 	/**
+	 * @return the simpleCheck
+	 */
+	public SimpleCheck getSimpleCheck()
+	{
+		return simpleCheck;
+	}
+
+	/**
 	 * @return the ignoreIfNull
 	 */
 	public boolean isIgnoreIfNull()
@@ -81,14 +88,6 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	}
 
 	/**
-	 * @return the simpleCheck
-	 */
-	public SimpleCheck getSimpleCheck()
-	{
-		return simpleCheck;
-	}
-
-	/**
 	 * @param simpleCheckType the simpleCheckType to set
 	 */
 	public void setSimpleCheck(final Class< ? extends SimpleCheck> simpleCheckType)
@@ -99,27 +98,12 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 
 		try
 		{
-			Constructor< ? extends SimpleCheck> ctor = simpleCheckType
-					.getDeclaredConstructor((Class<?>[]) null);
+			final Constructor< ? extends SimpleCheck> ctor = simpleCheckType
+					.getDeclaredConstructor((Class< ? >[]) null);
 			ctor.setAccessible(true);
-			this.simpleCheck = ctor.newInstance();
+			simpleCheck = ctor.newInstance();
 		}
-		catch (final InstantiationException ex)
-		{
-			throw new ReflectionException("Cannot instantiate an object of type  "
-					+ simpleCheckType.getName(), ex);
-		}
-		catch (final InvocationTargetException ex)
-		{
-			throw new ReflectionException("Cannot instantiate an object of type  "
-					+ simpleCheckType.getName(), ex);
-		}
-		catch (final IllegalAccessException ex)
-		{
-			throw new ReflectionException("Cannot instantiate an object of type  "
-					+ simpleCheckType.getName(), ex);
-		}
-		catch (final NoSuchMethodException ex)
+		catch (final Exception ex)
 		{
 			throw new ReflectionException("Cannot instantiate an object of type  "
 					+ simpleCheckType.getName(), ex);

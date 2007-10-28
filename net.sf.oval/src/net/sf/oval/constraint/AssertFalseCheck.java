@@ -28,10 +28,8 @@ public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
 	{
 		if (value == null) return true;
 
-		if (value instanceof Boolean)
-		{
-			return !((Boolean) value).booleanValue();
-		}
-		return !Boolean.valueOf(value.toString());
+		if (value instanceof Boolean) return !((Boolean) value);
+
+		return !Boolean.parseBoolean(value.toString());
 	}
 }

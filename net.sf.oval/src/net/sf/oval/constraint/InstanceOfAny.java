@@ -23,22 +23,22 @@ import net.sf.oval.configuration.annotation.Constraint;
 
 /**
  * Check if the value is an instance of the specified class or 
- * implements <u>all</u> specified interfaces.
- * 
+ * implements <u>one</u> of the specified interfaces.
+ *  
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = InstanceOfCheck.class)
-public @interface InstanceOf
+@Constraint(checkWith = InstanceOfAnyCheck.class)
+public @interface InstanceOfAny
 {
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.InstanceOf.violated";
+	String message() default "net.sf.oval.constraints.InstanceOfAny.violated";
 
 	/**
 	 * The associated validation profiles.

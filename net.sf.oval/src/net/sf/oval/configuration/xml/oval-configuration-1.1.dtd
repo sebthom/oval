@@ -16,7 +16,7 @@ or
 <!ELEMENT oval ( (constraintSet|class)* ) >
 
 <!-- Defines a constraint set -->
-<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST constraintSet id NMTOKEN #REQUIRED >
 <!ATTLIST constraintSet overwrite (true|false) #IMPLIED >
 
@@ -36,7 +36,7 @@ or
 <!ATTLIST object overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a field -->
-<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field overwrite (true|false) #IMPLIED >
 
@@ -54,12 +54,12 @@ To identify the correct method you are required to list all parameters, includin
 <!ATTLIST method overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a constructor/method parameter -->
-<!ELEMENT parameter ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT parameter ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST parameter overwrite (true|false) #IMPLIED >
 <!ATTLIST parameter type NMTOKEN #REQUIRED >
 
 <!-- Constraints configuration for the return value of a method. -->
-<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST returnValue overwrite (true|false) #IMPLIED >
 
 <!ELEMENT preExcecution (pre*)>
@@ -132,9 +132,15 @@ The node body contains the script expression as CDATA
 <!ATTLIST hasSubstring substring NMTOKEN #REQUIRED >
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.InstanceOf -->
-<!ELEMENT instanceOf (profiles?) >
-<!ATTLIST instanceOf clazz NMTOKEN #REQUIRED >
+<!ELEMENT instanceOf (types,profiles?) >
 <!ATTLIST instanceOf message CDATA #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.InstanceOfAny -->
+<!ELEMENT instanceOfAny (types,profiles?) >
+<!ATTLIST instanceOfAny message CDATA #IMPLIED >
+
+<!ELEMENT types (java-type+)>
+<!ELEMENT java-type (#PCDATA)>
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Length -->
 <!ELEMENT length (profiles?) >

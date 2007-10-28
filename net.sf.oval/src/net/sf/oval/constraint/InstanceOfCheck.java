@@ -18,6 +18,7 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.util.StringUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -26,13 +27,13 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 {
 	private static final long serialVersionUID = 1L;
 
-	private Class type;
+	private Class[] types;
 
 	@Override
 	public void configure(final InstanceOf constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setType(constraintAnnotation.value());
+		setTypes(constraintAnnotation.value());
 	}
 
 	@Override
@@ -40,16 +41,28 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	{
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
-		messageVariables.put("type", type.getName());
+		if (types.length == 1)
+		{
+			messageVariables.put("types", types[0].getName());
+		}
+		else
+		{
+			final String[] classNames = new String[types.length];
+			for (int i = 0, l = classNames.length; i < l; i++)
+			{
+				classNames[i] = types[i].getName();
+			}
+			messageVariables.put("types", StringUtils.implode(classNames, ","));
+		}
 		return messageVariables;
 	}
 
 	/**
 	 * @return the type
 	 */
-	public Class getType()
+	public Class[] getTypes()
 	{
-		return type;
+		return types;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
@@ -57,14 +70,18 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	{
 		if (value == null) return true;
 
-		return type.isInstance(value);
+		for (final Class type : types)
+		{
+			if (!type.isInstance(value)) return false;
+		}
+		return true;
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param types the types to set
 	 */
-	public void setType(final Class type)
+	public void setTypes(final Class... types)
 	{
-		this.type = type;
+		this.types = types;
 	}
 }

@@ -12,39 +12,28 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import java.lang.reflect.Array;
-import java.util.Collection;
 import java.util.Map;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.util.StringUtils;
 
 /**
  * @author Sebastian Thomschke
  */
-public class SizeCheck extends AbstractAnnotationCheck<Size>
+public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 {
 	private static final long serialVersionUID = 1L;
 
-	private int min;
-	private int max;
+	private Class[] types;
 
 	@Override
-	public void configure(final Size constraintAnnotation)
+	public void configure(final InstanceOfAny constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setMax(constraintAnnotation.max());
-		setMin(constraintAnnotation.min());
-	}
-
-	/**
-	 * @return the max
-	 */
-	public int getMax()
-	{
-		return max;
+		setTypes(constraintAnnotation.value());
 	}
 
 	@Override
@@ -52,17 +41,28 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	{
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
-		messageVariables.put("max", Integer.toString(max));
-		messageVariables.put("min", Integer.toString(min));
+		if (types.length == 1)
+		{
+			messageVariables.put("types", types[0].getName());
+		}
+		else
+		{
+			final String[] classNames = new String[types.length];
+			for (int i = 0, l = classNames.length; i < l; i++)
+			{
+				classNames[i] = types[i].getName();
+			}
+			messageVariables.put("types", StringUtils.implode(classNames, ","));
+		}
 		return messageVariables;
 	}
 
 	/**
-	 * @return the min
+	 * @return the type
 	 */
-	public int getMin()
+	public Class[] getTypes()
 	{
-		return min;
+		return types;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object value,
@@ -70,37 +70,18 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	{
 		if (value == null) return true;
 
-		if (value instanceof Collection)
+		for (final Class type : types)
 		{
-			final int size = ((Collection) value).size();
-			return size >= min && size <= max;
-		}
-		if (value instanceof Map)
-		{
-			final int size = ((Map) value).size();
-			return size >= min && size <= max;
-		}
-		if (value.getClass().isArray())
-		{
-			final int size = Array.getLength(value);
-			return size >= min && size <= max;
+			if (type.isInstance(value)) return true;
 		}
 		return false;
 	}
 
 	/**
-	 * @param max the max to set
+	 * @param types the types to set
 	 */
-	public void setMax(final int max)
+	public void setTypes(final Class... types)
 	{
-		this.max = max;
-	}
-
-	/**
-	 * @param min the min to set
-	 */
-	public void setMin(final int min)
-	{
-		this.min = min;
+		this.types = types;
 	}
 }

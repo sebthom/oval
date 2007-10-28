@@ -4,6 +4,10 @@
 
 2007-??-?? v1.10
 ================
+
+Built-in constraints:
+ + added @net.sf.oval.constraint.InstanceOfAny
+ 
 Expression languages:
  + added support for Ruby (JRuby) as expression language
 
@@ -24,7 +28,7 @@ Localization:
 
 Testing:
  + added multi threading test for net.sf.oval.Validator
- + added tests for net.sf.oval.constraitns.*Check classes
+ + added tests for net.sf.oval.constraints.*Check classes
 
 Validator:
  + added method Validator.assertValid(...)
@@ -41,7 +45,8 @@ Refactoring:
 Other Changes:
  * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
  - Configuring validateWithMethod constraints via XML was broken (thanks to Ramon Buckland)
- 
+
+
 2007-07-22 v1.0
 ===============
 Annotation configuration:
