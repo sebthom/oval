@@ -50,19 +50,9 @@ public class ApplyFieldConstraintsToSettersTest extends TestCase
 			return firstName;
 		}
 
-		public void setFirstName(String firstName)
-		{
-			this.firstName = firstName;
-		}
-
 		public String getLastName()
 		{
 			return lastName;
-		}
-
-		public void setLastName(String lastName)
-		{
-			this.lastName = lastName;
 		}
 
 		public String getZipCode()
@@ -70,19 +60,29 @@ public class ApplyFieldConstraintsToSettersTest extends TestCase
 			return zipCode;
 		}
 
-		public void setZipCode(String zipCode)
-		{
-			this.zipCode = zipCode;
-		}
-
 		public boolean isValid()
 		{
 			return isValid;
 		}
 
-		public void setValid(boolean isValid)
+		public void setFirstName(final String firstName)
+		{
+			this.firstName = firstName;
+		}
+
+		public void setLastName(final String lastName)
+		{
+			this.lastName = lastName;
+		}
+
+		public void setValid(final boolean isValid)
 		{
 			this.isValid = isValid;
+		}
+
+		public void setZipCode(final String zipCode)
+		{
+			this.zipCode = zipCode;
 		}
 	}
 

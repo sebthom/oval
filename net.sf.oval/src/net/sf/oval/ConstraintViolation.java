@@ -33,37 +33,45 @@ public class ConstraintViolation implements Serializable
 
 	private final ConstraintViolation[] causes;
 	private final OValContext context;
+	private final String errorCode;
 	private final String message;
+	private final int priority;
 
 	private transient Object validatedObject;
 	private transient Object invalidValue;
 
-	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object invalidValue, final OValContext context)
+	public ConstraintViolation(final String errorCode, final String message, final int priority,
+			final Object validatedObject, final Object invalidValue, final OValContext context)
 	{
+		this.errorCode = errorCode;
 		this.message = message;
+		this.priority = priority;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
 		causes = null;
 	}
 
-	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object invalidValue, final OValContext context,
+	public ConstraintViolation(final String errorCode, final String message, final int priority,
+			final Object validatedObject, final Object invalidValue, final OValContext context,
 			final ConstraintViolation... causes)
 	{
+		this.errorCode = errorCode;
 		this.message = message;
+		this.priority = priority;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
 		this.causes = causes;
 	}
 
-	public ConstraintViolation(final String message, final Object validatedObject,
-			final Object invalidValue, final OValContext context,
+	public ConstraintViolation(final String errorCode, final String message, final int priority,
+			final Object validatedObject, final Object invalidValue, final OValContext context,
 			final List<ConstraintViolation> causes)
 	{
+		this.errorCode = errorCode;
 		this.message = message;
+		this.priority = priority;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
@@ -87,6 +95,14 @@ public class ConstraintViolation implements Serializable
 	}
 
 	/**
+	 * @return the error code
+	 */
+	public String getErrorCode()
+	{
+		return errorCode;
+	}
+
+	/**
 	 * @return Returns the value that was validated.
 	 */
 	public Object getInvalidValue()
@@ -100,6 +116,14 @@ public class ConstraintViolation implements Serializable
 	public String getMessage()
 	{
 		return message;
+	}
+
+	/**
+	 * @return the priority
+	 */
+	public int getPriority()
+	{
+		return priority;
 	}
 
 	/**

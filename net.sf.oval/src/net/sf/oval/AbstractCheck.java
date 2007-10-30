@@ -21,9 +21,27 @@ import java.util.Map;
  */
 public abstract class AbstractCheck implements Check
 {
+	protected String errorCode;
 	protected String message;
-
+	protected int priority;
 	protected String[] profiles;
+
+	public String getErrorCode()
+	{
+		/*
+		 * if the error code has not been initialized (which might be the case when using XML configuration),
+		 * construct the string based on this class' name minus the appendix "Check"
+		 */
+		if (errorCode == null)
+		{
+			final String className = getClass().getName();
+			if (className.endsWith("Check"))
+				errorCode = className.substring(0, getClass().getName().length() - 5);
+			else
+				errorCode = className;
+		}
+		return errorCode;
+	}
 
 	public String getMessage()
 	{
@@ -47,14 +65,29 @@ public abstract class AbstractCheck implements Check
 		return null;
 	}
 
+	public int getPriority()
+	{
+		return priority;
+	}
+
 	public String[] getProfiles()
 	{
 		return profiles;
 	}
 
+	public void setErrorCode(final String failureCode)
+	{
+		errorCode = failureCode;
+	}
+
 	public void setMessage(final String message)
 	{
 		this.message = message;
+	}
+
+	public void setPriority(final int priority)
+	{
+		this.priority = priority;
 	}
 
 	public void setProfiles(final String... profiles)

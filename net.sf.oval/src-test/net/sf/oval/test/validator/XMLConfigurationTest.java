@@ -68,29 +68,29 @@ public class XMLConfigurationTest extends TestCase
 
 	public void testImportedFile()
 	{
-		XMLConfigurer x = new XMLConfigurer();
+		final XMLConfigurer x = new XMLConfigurer();
 		x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
 		validateUser(new Validator(x));
 	}
 
 	public void testSerializedObjectConfiguration() throws Exception
 	{
-		XMLConfigurer x = new XMLConfigurer();
+		final XMLConfigurer x = new XMLConfigurer();
 
 		/*
 		 * define a configuration
 		 */
 		final Set<ConstraintSetConfiguration> constraintSetsConfig = new HashSet<ConstraintSetConfiguration>();
 		{
-			ConstraintSetConfiguration csf = new ConstraintSetConfiguration();
+			final ConstraintSetConfiguration csf = new ConstraintSetConfiguration();
 			constraintSetsConfig.add(csf);
 
 			csf.id = "user.userid";
 			csf.checks = new ArrayList<Check>();
-			NotNullCheck nnc = new NotNullCheck();
+			final NotNullCheck nnc = new NotNullCheck();
 			nnc.setMessage("{context} is null");
 			csf.checks.add(nnc);
-			MatchPatternCheck rec = new MatchPatternCheck();
+			final MatchPatternCheck rec = new MatchPatternCheck();
 			rec.setPattern(Pattern.compile("^[a-z0-9]{8}$", 0));
 			rec.setMessage("{context} does not match the pattern {pattern}");
 			rec.setProfiles("a", "b");
@@ -99,56 +99,56 @@ public class XMLConfigurationTest extends TestCase
 
 		final Set<ClassConfiguration> classConfigs = new HashSet<ClassConfiguration>();
 		{
-			ClassConfiguration cf = new ClassConfiguration();
+			final ClassConfiguration cf = new ClassConfiguration();
 			classConfigs.add(cf);
 			cf.type = User.class;
 
 			cf.fieldConfigurations = new HashSet<FieldConfiguration>();
 			{
-				FieldConfiguration fc = new FieldConfiguration();
+				final FieldConfiguration fc = new FieldConfiguration();
 				cf.fieldConfigurations.add(fc);
 
 				fc.name = "firstName";
 				fc.checks = new ArrayList<Check>();
-				AssertCheck ac = new AssertCheck();
+				final AssertCheck ac = new AssertCheck();
 				ac.setExpression("_value != null && _value.length() < 3");
 				ac.setMessage("{context} cannot be longer than 3 characters");
 				ac.setLang("groovy");
 				fc.checks.add(ac);
 			}
 			{
-				FieldConfiguration fc = new FieldConfiguration();
+				final FieldConfiguration fc = new FieldConfiguration();
 				cf.fieldConfigurations.add(fc);
 
 				fc.name = "lastName";
 				fc.checks = new ArrayList<Check>();
-				LengthCheck lc = new LengthCheck();
+				final LengthCheck lc = new LengthCheck();
 				lc.setMessage("{context} is not between {min} and {max} characters long");
 				lc.setMin(1);
 				lc.setMax(5);
 				fc.checks.add(lc);
 			}
 			{
-				FieldConfiguration fc = new FieldConfiguration();
+				final FieldConfiguration fc = new FieldConfiguration();
 				fc.overwrite = Boolean.TRUE;
 				cf.fieldConfigurations.add(fc);
 
 				fc.name = "userId";
 				fc.checks = new ArrayList<Check>();
-				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
 				fc.checks.add(acsc);
 			}
 
 			cf.methodConfigurations = new HashSet<MethodConfiguration>();
 			{
-				MethodConfiguration mc = new MethodConfiguration();
+				final MethodConfiguration mc = new MethodConfiguration();
 				cf.methodConfigurations.add(mc);
 				mc.name = "getManagerId";
 				mc.isInvariant = true;
 				mc.returnValueConfiguration = new MethodReturnValueConfiguration();
 				mc.returnValueConfiguration.checks = new ArrayList<Check>();
-				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
 				mc.returnValueConfiguration.checks.add(acsc);
 			}
@@ -160,22 +160,22 @@ public class XMLConfigurationTest extends TestCase
 		/*
 		 * test POJO Configurer object serialization
 		 */
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ObjectOutputStream oos = new ObjectOutputStream(bos);
 		oos.writeObject(x.getPojoConfigurer());
 		oos.flush();
 		oos.close();
 
-		ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
-		ObjectInputStream ois = new ObjectInputStream(bin);
+		final ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
+		final ObjectInputStream ois = new ObjectInputStream(bin);
 		x.setPojoConfigurer((POJOConfigurer) ois.readObject());
 		ois.close();
 
 		/*
 		 * test XML de/serialization
 		 */
-		String xmlConfig = x.toXML();
-		System.out.println(xmlConfig);
+		final String xmlConfig = x.toXML();
+		// System.out.println(xmlConfig);
 		x.fromXML(xmlConfig);
 		validateUser(new Validator(x));
 	}

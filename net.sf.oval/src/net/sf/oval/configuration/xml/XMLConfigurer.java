@@ -101,6 +101,8 @@ public class XMLConfigurer implements Configurer
 			final AssertCheck assertCheck = (AssertCheck) value;
 			writer.addAttribute("lang", assertCheck.getLang());
 			writer.addAttribute("message", assertCheck.getMessage());
+			writer.addAttribute("errorCode", assertCheck.getErrorCode());
+			writer.addAttribute("priority", Integer.toString(assertCheck.getPriority()));
 			writer.startNode("expr");
 			writer.setValue(assertCheck.getExpression());
 			writer.endNode();
@@ -124,6 +126,10 @@ public class XMLConfigurer implements Configurer
 			final AssertCheck assertCheck = new AssertCheck();
 			assertCheck.setLang(reader.getAttribute("lang"));
 			assertCheck.setMessage(reader.getAttribute("message"));
+			assertCheck.setErrorCode(reader.getAttribute("errorCode"));
+			if (reader.getAttribute("priority") != null)
+				assertCheck.setPriority(Integer.parseInt(reader.getAttribute("priority")));
+
 			reader.moveDown();
 			assertCheck.setExpression(reader.getValue());
 			reader.moveUp();

@@ -35,7 +35,10 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = MinSizeCheck.class)
 public @interface MinSize
 {
-	int value();
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.MinSize";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
@@ -45,7 +48,14 @@ public @interface MinSize
 	String message() default "net.sf.oval.constraints.MinSize.violated";
 
 	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
+
+	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	int value();
 }

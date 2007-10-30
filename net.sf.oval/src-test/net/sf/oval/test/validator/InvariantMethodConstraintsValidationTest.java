@@ -49,19 +49,9 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 		 * because class is not guarded
 		 */
 		public TestEntityInvalidConfig(@NotNull
-		String defaultValue)
+		final String defaultValue)
 		{
 		//
-		}
-
-		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 3" warning by the ApiUsageAuditor
-		 * because @IsInvariant is missing
-		 */
-		@NotNull
-		public String getSomething()
-		{
-			return null;
 		}
 
 		/**
@@ -69,7 +59,17 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 		 * because class is not guarded
 		 */
 		@NotNull
-		public String doSomething(String value)
+		public String doSomething(final String value)
+		{
+			return null;
+		}
+
+		/**
+		 * the @NotNull annotation should lead to a "OVal API usage violation 5" warning by the ApiUsageAuditor
+		 * because class is not guarded
+		 */
+		public String doSomething(final String value, @NotNull
+		final String defaultValue)
 		{
 			return null;
 		}
@@ -79,17 +79,17 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 		 */
 		@NotNull
 		@SuppressOValWarnings
-		public String doSomething2(String value)
+		public String doSomething2(final String value)
 		{
 			return null;
 		}
 
 		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 5" warning by the ApiUsageAuditor
-		 * because class is not guarded
+		 * the @NotNull annotation should lead to a "OVal API usage violation 3" warning by the ApiUsageAuditor
+		 * because @IsInvariant is missing
 		 */
-		public String doSomething(String value, @NotNull
-		String defaultValue)
+		@NotNull
+		public String getSomething()
 		{
 			return null;
 		}
@@ -120,9 +120,9 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 				validator.validate(t);
 				fail();
 			}
-			catch (ValidationFailedException e)
+			catch (final ValidationFailedException e)
 			{
-				assert (e.getCause() instanceof InvalidConfigurationException);
+				assert e.getCause() instanceof InvalidConfigurationException;
 			}
 		}
 	}

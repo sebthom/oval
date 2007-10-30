@@ -51,7 +51,7 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 			t.getName();
 			fail();
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
 			assertTrue(e.getConstraintViolations().length == 1);
 			assertTrue(e.getConstraintViolations()[0].getMessage().equals("NOT_NULL"));
@@ -64,7 +64,7 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 			t.getName();
 			fail();
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
 			assertTrue(e.getConstraintViolations().length == 1);
 			assertTrue(e.getConstraintViolations()[0].getMessage().equals("LENGTH"));

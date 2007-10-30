@@ -32,6 +32,12 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 		setId(constraintAnnotation.id());
 	}
 
+	@Override
+	public String getErrorCode()
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	public String getId()
 	{
 		return id;
@@ -39,6 +45,12 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 
 	@Override
 	public String getMessage()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getPriority()
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -53,6 +65,12 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void setErrorCode(final String errorCode)
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	public void setId(final String id)
 	{
 		this.id = id;
@@ -60,6 +78,12 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 
 	@Override
 	public void setMessage(final String message)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setPriority(final int priority)
 	{
 		throw new UnsupportedOperationException();
 	}

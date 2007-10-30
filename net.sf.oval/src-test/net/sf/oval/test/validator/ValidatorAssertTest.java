@@ -37,16 +37,16 @@ public class ValidatorAssertTest extends TestCase
 
 	public void testValidatorAssert() throws Exception
 	{
-		TestEntity e = new TestEntity();
-		Validator v = new Validator();
+		final TestEntity e = new TestEntity();
+		final Validator v = new Validator();
 		try
 		{
 			v.assertValid(e);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(2, violations.length);
 			assertEquals("NOT_NULL", violations[0].getMessage());
 			assertEquals("NOT_NULL", violations[1].getMessage());
@@ -59,18 +59,18 @@ public class ValidatorAssertTest extends TestCase
 
 	public void testValidatorAssertField() throws Exception
 	{
-		Field f = TestEntity.class.getField("name");
+		final Field f = TestEntity.class.getField("name");
 
-		TestEntity e = new TestEntity();
-		Validator v = new Validator();
+		final TestEntity e = new TestEntity();
+		final Validator v = new Validator();
 		try
 		{
 			v.assertValidFieldValue(e, f, null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(1, violations.length);
 			assertEquals("NOT_NULL", violations[0].getMessage());
 		}

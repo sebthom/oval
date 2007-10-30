@@ -27,17 +27,39 @@ public class PrePostBeanShellTest extends TestCase
 
 		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "bsh", message = "PRE")
 		public void increase1(@Assert(expr = "_value!=null", lang = "bsh", message = "ASSERT")
-		BigDecimal value2add)
+		final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
 		@Post(expr = "_this.value.longValue()>0", lang = "beanshell", message = "POST")
 		public void increase2(@NotNull
-		BigDecimal value2add)
+		final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
+	}
+
+	public void testPostBeanShell()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestTransaction t = new TestTransaction();
+
+		try
+		{
+			t.value = new BigDecimal(-2);
+			t.increase2(new BigDecimal(1));
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+		}
+
+		t.value = new BigDecimal(0);
+		t.increase2(new BigDecimal(1));
 	}
 
 	public void testPreBeanShell()
@@ -45,14 +67,14 @@ public class PrePostBeanShellTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 
-		TestTransaction t = new TestTransaction();
+		final TestTransaction t = new TestTransaction();
 
 		try
 		{
 			t.increase1(new BigDecimal(1));
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
 		}
@@ -63,7 +85,7 @@ public class PrePostBeanShellTest extends TestCase
 			t.increase1(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
 		}
@@ -71,31 +93,9 @@ public class PrePostBeanShellTest extends TestCase
 		{
 			t.increase1(new BigDecimal(1));
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			System.out.println(ex.getConstraintViolations()[0].getMessage());
 		}
-	}
-
-	public void testPostBeanShell()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		TestTransaction t = new TestTransaction();
-
-		try
-		{
-			t.value = new BigDecimal(-2);
-			t.increase2(new BigDecimal(1));
-			fail();
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-
-		t.value = new BigDecimal(0);
-		t.increase2(new BigDecimal(1));
 	}
 }

@@ -35,12 +35,23 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = AssertTrueCheck.class)
 public @interface AssertTrue
 {
+
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.AssertTrue";
+
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.AssertTrue.violated";
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

@@ -33,6 +33,11 @@ import net.sf.oval.configuration.annotation.Constraint;
 public @interface AssertValid
 {
 	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.AssertValid";
+
+	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
@@ -40,12 +45,17 @@ public @interface AssertValid
 	String message() default "net.sf.oval.constraints.AssertValid.violated";
 
 	/**
-	 * Specifies if the keys and values of a collection/map must be valid too.
+	 * priority passed to the ConstraintViolation object
 	 */
-	boolean requireValidElements() default true;
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * Specifies if the keys and values of a collection/map must be valid too.
+	 */
+	boolean requireValidElements() default true;
 }

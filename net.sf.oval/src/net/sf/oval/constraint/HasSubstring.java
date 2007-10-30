@@ -35,10 +35,13 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = HasSubstringCheck.class)
 public @interface HasSubstring
 {
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.HasSubstring";
+
 	boolean ignoreCase() default false;
 
-	String substring();
-	
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
@@ -47,7 +50,14 @@ public @interface HasSubstring
 	String message() default "net.sf.oval.constraints.Contains.violated";
 
 	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
+
+	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	String substring();
 }

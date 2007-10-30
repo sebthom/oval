@@ -32,6 +32,12 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = AssertCheck.class)
 public @interface Assert
 {
+
+	/**
+	 * failure code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.Assert";
+
 	/**
 	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
@@ -52,6 +58,11 @@ public @interface Assert
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.Assert.violated";
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

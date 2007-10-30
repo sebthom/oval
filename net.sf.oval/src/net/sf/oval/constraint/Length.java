@@ -35,7 +35,10 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = LengthCheck.class)
 public @interface Length
 {
-	int min() default 0;
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.Length";
 
 	int max() default Integer.MAX_VALUE;
 
@@ -45,6 +48,13 @@ public @interface Length
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.Length.violated";
+
+	int min() default 0;
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

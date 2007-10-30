@@ -53,7 +53,7 @@ public class CustomConstraintMessageTest extends TestCase
 		/**
 		 * @param amount the amount to set
 		 */
-		public void setAmount(int amount)
+		public void setAmount(final int amount)
 		{
 			this.amount = amount;
 		}
@@ -61,7 +61,7 @@ public class CustomConstraintMessageTest extends TestCase
 		/**
 		 * @param name the name to set
 		 */
-		public void setName(String name)
+		public void setName(final String name)
 		{
 			this.name = name;
 		}
@@ -86,9 +86,9 @@ public class CustomConstraintMessageTest extends TestCase
 			e.setName(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
 
 			if (!CUSTOM_ERROR_MESSAGE.equals(violations[0].getMessage()))
@@ -102,9 +102,9 @@ public class CustomConstraintMessageTest extends TestCase
 			e.setAmount(5);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
 
 			if (!EXPECTED_RANGE_MESSAGE.equals(violations[0].getMessage()))

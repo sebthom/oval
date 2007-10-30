@@ -48,7 +48,8 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 		@MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
 		private String zipCode = "1";
 
-		public Person(boolean isValid, String firstName, String lastName, String zipCode)
+		public Person(final boolean isValid, final String firstName, final String lastName,
+				final String zipCode)
 		{
 			super();
 			this.isValid = isValid;
@@ -57,12 +58,12 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 			this.zipCode = zipCode;
 		}
 
-		public Person(String theFirstName, String theLastName, String theZipCode)
+		public Person(final String theFirstName, final String theLastName, final String theZipCode)
 		{
 			super();
-			this.firstName = theFirstName;
-			this.lastName = theLastName;
-			this.zipCode = theZipCode;
+			firstName = theFirstName;
+			lastName = theLastName;
+			zipCode = theZipCode;
 		}
 	}
 
@@ -76,7 +77,7 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 		{
 			new Person(false, null, null, null);
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations().length, 4);
 		}
@@ -85,7 +86,7 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 		{
 			new Person(true, "", "", "12345");
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			fail();
 		}
@@ -94,7 +95,7 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 		{
 			new Person(null, null, null);
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			fail();
 		}

@@ -29,7 +29,7 @@ public class ExceptionTranslatorTest extends TestCase
 	public final static class TestEntity
 	{
 		public void setName(@NotNull(message = "NULL")
-		String name)
+		final String name)
 		{
 		// ...
 		}
@@ -47,7 +47,7 @@ public class ExceptionTranslatorTest extends TestCase
 			final TestEntity t = new TestEntity();
 			t.setName(null);
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getMessage(), "NULL");
 		}
@@ -61,7 +61,7 @@ public class ExceptionTranslatorTest extends TestCase
 				t.setName(null);
 				fail();
 			}
-			catch (IllegalArgumentException ex)
+			catch (final IllegalArgumentException ex)
 			{
 				assertEquals(ex.getMessage(), "NULL");
 			}

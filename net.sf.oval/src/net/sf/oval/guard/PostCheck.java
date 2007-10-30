@@ -19,19 +19,31 @@ public class PostCheck
 {
 	private static final long serialVersionUID = 1L;
 
-	private String language;
 	private String expression;
+	private String errorCode;
+	private int priority;
 	private String message;
+	private String language;
 	private String old;
 	private String[] profiles;
 
 	public void configure(final Post constraintAnnotation)
 	{
 		setMessage(constraintAnnotation.message());
+		setErrorCode(constraintAnnotation.errorCode());
+		setPriority(constraintAnnotation.priority());
 		setExpression(constraintAnnotation.expr());
 		setLanguage(constraintAnnotation.lang());
 		setOld(constraintAnnotation.old());
 		setProfiles(constraintAnnotation.profiles());
+	}
+
+	/**
+	 * @return the failureCode
+	 */
+	public String getErrorCode()
+	{
+		return errorCode;
 	}
 
 	/**
@@ -67,6 +79,14 @@ public class PostCheck
 	}
 
 	/**
+	 * @return the errorPriority
+	 */
+	public int getPriority()
+	{
+		return priority;
+	}
+
+	/**
 	 * @return the profiles
 	 */
 	public String[] getProfiles()
@@ -75,11 +95,19 @@ public class PostCheck
 	}
 
 	/**
+	 * @param failureCode the failureCode to set
+	 */
+	public void setErrorCode(final String failureCode)
+	{
+		errorCode = failureCode;
+	}
+
+	/**
 	 * @param condition the condition to set
 	 */
 	public void setExpression(final String condition)
 	{
-		this.expression = condition;
+		expression = condition;
 	}
 
 	/**
@@ -104,6 +132,14 @@ public class PostCheck
 	public void setOld(final String old)
 	{
 		this.old = old;
+	}
+
+	/**
+	 * @param priority the priority to set
+	 */
+	public void setPriority(final int priority)
+	{
+		this.priority = priority;
 	}
 
 	/**

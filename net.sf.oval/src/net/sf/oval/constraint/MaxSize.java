@@ -35,7 +35,10 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = MaxSizeCheck.class)
 public @interface MaxSize
 {
-	int value();
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.MaxSize";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
@@ -45,7 +48,14 @@ public @interface MaxSize
 	String message() default "net.sf.oval.constraints.MaxSize.violated";
 
 	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
+
+	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	int value();
 }

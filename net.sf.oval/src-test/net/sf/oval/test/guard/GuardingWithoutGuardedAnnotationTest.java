@@ -37,7 +37,7 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		 * @param name
 		 */
 		public TestEntity(@NotNull(message = "NOT_NULL")
-		String name)
+		final String name)
 		{
 			this.name = name;
 		}
@@ -48,14 +48,14 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		 * @param name
 		 * @param bla
 		 */
-		public TestEntity(String name, int bla)
+		public TestEntity(final String name, final int bla)
 		{
 			this.name = name;
 		}
 
 		public void setName(@NotNull(message = "NOT_NULL")
 		@Length(max = 4, message = "LENGTH")
-		String name)
+		final String name)
 		{
 			this.name = name;
 		}
@@ -75,9 +75,9 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 			new TestEntity(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
+			final ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length == 1);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
@@ -93,7 +93,7 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 			new TestEntity(null, 100);
 			fail(); // invariant check on name fails
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			// expected
 		}
@@ -107,26 +107,26 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 
 		try
 		{
-			TestEntity t1 = new TestEntity("");
+			final TestEntity t1 = new TestEntity("");
 			t1.setName(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
+			final ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 		}
 
 		try
 		{
-			TestEntity t1 = new TestEntity("");
+			final TestEntity t1 = new TestEntity("");
 			t1.setName("12345678");
 			fail();
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
+			final ConstraintViolation[] violations = e.getConstraintViolations();
 			assertTrue(violations != null && violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("LENGTH"));
 		}

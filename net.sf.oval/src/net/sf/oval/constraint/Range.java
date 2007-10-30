@@ -35,7 +35,10 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = RangeCheck.class)
 public @interface Range
 {
-	long min() default Long.MIN_VALUE;
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.Range";
 
 	long max() default Long.MAX_VALUE;
 
@@ -45,6 +48,13 @@ public @interface Range
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.Range.violated";
+
+	long min() default Long.MIN_VALUE;
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

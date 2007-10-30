@@ -26,13 +26,13 @@ public class AssertBeanShellTest extends TestCase
 {
 	private static class Person
 	{
-		@Assert(expr = "_value!=null", lang = "bsh", message = "C1")
+		@Assert(expr = "_value!=null", lang = "bsh", errorCode = "C1")
 		public String firstName;
 
-		@Assert(expr = "_value!=null", lang = "beanshell", message = "C2")
+		@Assert(expr = "_value!=null", lang = "beanshell", errorCode = "C2")
 		public String lastName;
 
-		@Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "bsh", message = "C3")
+		@Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "bsh", errorCode = "C3")
 		public String zipCode;
 	}
 
@@ -51,13 +51,13 @@ public class AssertBeanShellTest extends TestCase
 		p.zipCode = "1234567";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("C3"));
+		assertTrue(violations.get(0).getErrorCode().equals("C3"));
 
 		// test not empty
 		p.zipCode = "";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("C3"));
+		assertTrue(violations.get(0).getErrorCode().equals("C3"));
 
 		// test ok
 		p.zipCode = "wqeew";

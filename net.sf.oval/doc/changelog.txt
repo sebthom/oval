@@ -7,6 +7,8 @@
 
 Built-in constraints:
  + added @net.sf.oval.constraint.InstanceOfAny
+ + added errorCode property
+ + added priority property
  
 Expression languages:
  + added support for Ruby (JRuby) as expression language
@@ -45,7 +47,7 @@ Refactoring:
 Other Changes:
  * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
  - Configuring validateWithMethod constraints via XML was broken (thanks to Ramon Buckland)
-
+ 
 
 2007-07-22 v1.0
 ===============

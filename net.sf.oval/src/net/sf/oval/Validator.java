@@ -630,8 +630,8 @@ public class Validator
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
 					check.getMessageVariables());
-			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
-					context));
+			violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check
+					.getPriority(), validatedObject, valueToValidate, context));
 		}
 	}
 
@@ -754,8 +754,10 @@ public class Validator
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
 					check.getMessageVariables());
 
-			violations.add(new ConstraintViolation(errorMessage, validatedObject, valueToValidate,
-					context, additionalViolations));
+			violations
+					.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check
+							.getPriority(), validatedObject, valueToValidate, context,
+							additionalViolations));
 		}
 
 		// if the value to validate is a collection also validate the collection items

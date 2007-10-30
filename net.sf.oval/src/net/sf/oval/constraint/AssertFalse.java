@@ -35,13 +35,24 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = AssertFalseCheck.class)
 public @interface AssertFalse
 {
+
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.AssertFalse";
+
 	/**
 	 * message to be used for constructing the ConstraintViolation object
 	 * 
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraints.AssertFalse.violated";
-	
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
+
 	/**
 	 * The associated validation profiles.
 	 */

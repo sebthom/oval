@@ -27,24 +27,45 @@ public class PrePostGroovyTest extends TestCase
 
 		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "groovy", message = "PRE")
 		public void increase1(@Assert(expr = "_value!=null", lang = "groovy", message = "ASSERT")
-		BigDecimal value2add)
+		final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
 		@Post(expr = "_this.value>_old.value", old = "[value:_this.value]", lang = "groovy", message = "POST")
 		public void increase2(@NotNull
-		BigDecimal value2add)
+		final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
 		@Post(expr = "_this.value>_old.value", old = "[value:_this.value]", lang = "groovy", message = "POST")
 		public void increase2buggy(@NotNull
-		BigDecimal value2add)
+		final BigDecimal value2add)
 		{
 			value = value.subtract(value2add);
 		}
+	}
+
+	public void testPostGroovy()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestTransaction t = new TestTransaction();
+
+		try
+		{
+			t.value = new BigDecimal(-2);
+			t.increase2buggy(new BigDecimal(1));
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+		}
+
+		t.increase2(new BigDecimal(1));
 	}
 
 	public void testPreGroovy()
@@ -52,14 +73,14 @@ public class PrePostGroovyTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 
-		TestTransaction t = new TestTransaction();
+		final TestTransaction t = new TestTransaction();
 
 		try
 		{
 			t.increase1(new BigDecimal(1));
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
 		}
@@ -70,7 +91,7 @@ public class PrePostGroovyTest extends TestCase
 			t.increase1(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
 		}
@@ -78,30 +99,9 @@ public class PrePostGroovyTest extends TestCase
 		{
 			t.increase1(new BigDecimal(1));
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			System.out.println(ex.getConstraintViolations()[0].getMessage());
 		}
-	}
-
-	public void testPostGroovy()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		TestTransaction t = new TestTransaction();
-
-		try
-		{
-			t.value = new BigDecimal(-2);
-			t.increase2buggy(new BigDecimal(1));
-			fail();
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-
-		t.increase2(new BigDecimal(1));
 	}
 }

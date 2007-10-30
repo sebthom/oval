@@ -40,7 +40,7 @@ public class InheritanceTest extends TestCase
 		/**
 		 * @param name the name to set
 		 */
-		public void setName(String name)
+		public void setName(final String name)
 		{
 			this.name = name;
 		}
@@ -55,9 +55,9 @@ public class InheritanceTest extends TestCase
 	{
 		final Validator validator = new Validator();
 
-		AbstractEntity e = new EntityImpl();
+		final AbstractEntity e = new EntityImpl();
 
-		List<ConstraintViolation> violations = validator.validate(e);
+		final List<ConstraintViolation> violations = validator.validate(e);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 	}

@@ -23,16 +23,16 @@ import net.sf.oval.Validator;
  */
 public class AssertGroovyTest extends TestCase
 {
-	@net.sf.oval.constraint.Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "groovy", message = "C0")
+	@net.sf.oval.constraint.Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "groovy", errorCode = "C0")
 	private static class Person
 	{
-		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", message = "C1")
+		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", errorCode = "C1")
 		public String firstName;
 
-		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", message = "C2")
+		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", errorCode = "C2")
 		public String lastName;
 
-		@net.sf.oval.constraint.Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "groovy", message = "C3")
+		@net.sf.oval.constraint.Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "groovy", errorCode = "C3")
 		public String zipCode;
 	}
 
@@ -51,13 +51,13 @@ public class AssertGroovyTest extends TestCase
 		p.zipCode = "1234567";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("C3"));
+		assertTrue(violations.get(0).getErrorCode().equals("C3"));
 
 		// test not empty
 		p.zipCode = "";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("C3"));
+		assertTrue(violations.get(0).getErrorCode().equals("C3"));
 
 		// test ok
 		p.zipCode = "wqeew";
@@ -69,6 +69,6 @@ public class AssertGroovyTest extends TestCase
 		p.lastName = "1234";
 		violations = validator.validate(p);
 		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("C0"));
+		assertTrue(violations.get(0).getErrorCode().equals("C0"));
 	}
 }

@@ -33,6 +33,12 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Pre
 {
+
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.guard.Pre";
+
 	/**
 	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
@@ -54,6 +60,11 @@ public @interface Pre
 	 * @see net.sf.oval.exception.ConstraintsViolatedException
 	 */
 	String message() default "net.sf.oval.guard.Pre.violated";
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

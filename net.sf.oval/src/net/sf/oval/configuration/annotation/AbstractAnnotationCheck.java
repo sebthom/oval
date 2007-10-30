@@ -42,16 +42,51 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getMessage = constraintClazz.getDeclaredMethod("message",
-					(Class<?>[]) null);
+					(Class< ? >[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
 		{
 			if (LOG.isLoggable(Level.FINE))
 				LOG.log(Level.FINE,
-						"Cannot determine constraint violation message based on annotation "
+						"Cannot determine constraint error message based on annotation "
 								+ constraintClazz.getName(), e);
 			message = constraintClazz.getName() + ".violated";
+		}
+
+		/*
+		 * Retrieve the error code value from the constraint annotation via reflection.
+		 */
+		try
+		{
+			final Method getErrorCode = constraintClazz.getDeclaredMethod("errorCode",
+					(Class< ? >[]) null);
+			errorCode = (String) getErrorCode.invoke(constraintAnnotation, (Object[]) null);
+		}
+		catch (final Exception e)
+		{
+			if (LOG.isLoggable(Level.FINE))
+				LOG.log(Level.FINE, "Cannot determine constraint error code based on annotation "
+						+ constraintClazz.getName(), e);
+			errorCode = constraintClazz.getName();
+		}
+
+		/*
+		 * Retrieve the priority value from the constraint annotation via reflection.
+		 */
+		try
+		{
+			final Method getPriority = constraintClazz.getDeclaredMethod("priority",
+					(Class< ? >[]) null);
+			priority = ((Number) getPriority.invoke(constraintAnnotation, (Object[]) null))
+					.intValue();
+		}
+		catch (final Exception e)
+		{
+			if (LOG.isLoggable(Level.FINE))
+				LOG.log(Level.FINE,
+						"Cannot determine constraint error priority based on annotation "
+								+ constraintClazz.getName(), e);
 		}
 
 		/*
@@ -60,7 +95,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles",
-					(Class<?>[]) null);
+					(Class< ? >[]) null);
 			profiles = (String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)

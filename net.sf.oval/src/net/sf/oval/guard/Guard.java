@@ -1144,11 +1144,11 @@ public class Guard extends Validator
 					final Map<String, String> messageVariables = CollectionFactoryHolder
 							.getFactory().createMap(2);
 					messageVariables.put("expression", check.getExpression());
-					final String errorMessage = renderMessage(context, null, check.getMessage(),
-							messageVariables);
+					final String errorMessage = renderMessage(context, null, check
+							.getMessage(), messageVariables);
 
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
-							context));
+					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage,
+							check.getPriority(), validatedObject, null, context));
 				}
 			}
 		}
@@ -1204,11 +1204,11 @@ public class Guard extends Validator
 					final Map<String, String> messageVariables = CollectionFactoryHolder
 							.getFactory().createMap(2);
 					messageVariables.put("expression", check.getExpression());
-					final String errorMessage = renderMessage(context, null, check.getMessage(),
-							messageVariables);
+					final String errorMessage = renderMessage(context, null, check
+							.getMessage(), messageVariables);
 
-					violations.add(new ConstraintViolation(errorMessage, validatedObject, null,
-							context));
+					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage,
+							check.getPriority(), validatedObject, null, context));
 				}
 			}
 		}

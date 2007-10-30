@@ -36,6 +36,11 @@ import net.sf.oval.configuration.annotation.Constraint;
 public @interface MatchPattern
 {
 	/**
+	 * errpr code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.MatchPattern";
+
+	/**
 	 *  Match flags, a bit mask that may include
 	 *         Pattern.CASE_INSENSITIVE, Pattern.MULTILINE, Pattern.DOTALL,
 	 *         Pattern.UNICODE_CASE, Pattern.CANON_EQ
@@ -62,6 +67,11 @@ public @interface MatchPattern
 	 * @see java.util.regex.Pattern
 	 */
 	String pattern();
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

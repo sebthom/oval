@@ -25,27 +25,6 @@ public class PrePostMVELTest extends TestCase
 
 		private BigDecimal value;
 
-		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "mvel", message = "PRE")
-		public void increase1(@Assert(expr = "_value!=null", lang = "mvel", message = "ASSERT")
-		BigDecimal value2add)
-		{
-			value = value.add(value2add);
-		}
-
-		@Post(expr = "_this.value>_old.value", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
-		public void increase2(@NotNull
-		BigDecimal value2add)
-		{
-			value = value.add(value2add);
-		}
-
-		@Post(expr = "_this.value>_old.value", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
-		public void increase2buggy(@NotNull
-		BigDecimal value2add)
-		{
-			value = value.subtract(value2add);
-		}
-
 		/**
 		 * @return the value
 		 */
@@ -53,6 +32,48 @@ public class PrePostMVELTest extends TestCase
 		{
 			return value;
 		}
+
+		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "mvel", message = "PRE")
+		public void increase1(@Assert(expr = "_value!=null", lang = "mvel", message = "ASSERT")
+		final BigDecimal value2add)
+		{
+			value = value.add(value2add);
+		}
+
+		@Post(expr = "_this.value>_old.value", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
+		public void increase2(@NotNull
+		final BigDecimal value2add)
+		{
+			value = value.add(value2add);
+		}
+
+		@Post(expr = "_this.value>_old.value", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
+		public void increase2buggy(@NotNull
+		final BigDecimal value2add)
+		{
+			value = value.subtract(value2add);
+		}
+	}
+
+	public void testPostMVEL()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestTransaction t = new TestTransaction();
+
+		try
+		{
+			t.value = new BigDecimal(-2);
+			t.increase2buggy(new BigDecimal(1));
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+		}
+
+		t.increase2(new BigDecimal(1));
 	}
 
 	public void testPreMVEL()
@@ -60,14 +81,14 @@ public class PrePostMVELTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 
-		TestTransaction t = new TestTransaction();
+		final TestTransaction t = new TestTransaction();
 
 		try
 		{
 			t.increase1(new BigDecimal(1));
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
 		}
@@ -78,7 +99,7 @@ public class PrePostMVELTest extends TestCase
 			t.increase1(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
 		}
@@ -86,30 +107,9 @@ public class PrePostMVELTest extends TestCase
 		{
 			t.increase1(new BigDecimal(1));
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			System.out.println(ex.getConstraintViolations()[0].getMessage());
 		}
-	}
-
-	public void testPostMVEL()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		TestTransaction t = new TestTransaction();
-
-		try
-		{
-			t.value = new BigDecimal(-2);
-			t.increase2buggy(new BigDecimal(1));
-			fail();
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-
-		t.increase2(new BigDecimal(1));
 	}
 }

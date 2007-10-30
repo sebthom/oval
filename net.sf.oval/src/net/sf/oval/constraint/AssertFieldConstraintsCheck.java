@@ -43,6 +43,12 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 		return declaringClass;
 	}
 
+	@Override
+	public String getErrorCode()
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	/**
 	 * @return the fieldName
 	 */
@@ -53,6 +59,12 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 
 	@Override
 	public String getMessage()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getPriority()
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -70,9 +82,15 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	/**
 	 * @param declaringClass the declaringClass to set
 	 */
-	public void setDeclaringClass(Class declaringClass)
+	public void setDeclaringClass(final Class declaringClass)
 	{
 		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
+	}
+
+	@Override
+	public void setErrorCode(final String errorCode)
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -85,6 +103,12 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 
 	@Override
 	public void setMessage(final String message)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setPriority(final int priority)
 	{
 		throw new UnsupportedOperationException();
 	}

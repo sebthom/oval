@@ -34,20 +34,20 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 	@Guarded
 	private class Person
 	{
-		@NotNull(message="NOT_NULL")
-		private String firstName="";
+		@NotNull(message = "NOT_NULL")
+		private String firstName = "";
 
-		@AssertTrue(message="ASSERT_TRUE")
+		@AssertTrue(message = "ASSERT_TRUE")
 		private boolean isValid = true;
 
-		@NotNull(message="NOT_NULL")
-		private String lastName="";
+		@NotNull(message = "NOT_NULL")
+		private String lastName = "";
 
-		@NotNull(message="NOT_NULL")
-		@Length(max = 6,message="LENGTH")
-		@NotEmpty(message="NOT_EMPTY")
-		@MatchPattern(pattern = "^[0-9]*$",message="REG_EX")
-		private String zipCode="1";
+		@NotNull(message = "NOT_NULL")
+		@Length(max = 6, message = "LENGTH")
+		@NotEmpty(message = "NOT_EMPTY")
+		@MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
+		private String zipCode = "1";
 
 		public String getFirstName()
 		{
@@ -69,37 +69,37 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			return isValid;
 		}
 
-		public void setDummyFirstName(@AssertFieldConstraints(value="firstName")
-		String dummyFirstName)
+		public void setDummyFirstName(@AssertFieldConstraints(value = "firstName")
+		final String dummyFirstName)
 		{
 		// doing interesting stuff here
 		}
 
 		public void setFirstName(@AssertFieldConstraints
-		String firstName)
+		final String firstName)
 		{
 			this.firstName = firstName;
 		}
 
 		public void setLastName(@AssertFieldConstraints
-		String lastName)
+		final String lastName)
 		{
 			this.lastName = lastName;
 		}
 
 		public void setValid(@AssertFieldConstraints
-		boolean isValid)
+		final boolean isValid)
 		{
 			this.isValid = isValid;
 		}
 
 		public void setZipCode(@AssertFieldConstraints
-		String zipCode)
+		final String zipCode)
 		{
 			this.zipCode = zipCode;
 		}
 
-		public void setZipCode2(String zipCode)
+		public void setZipCode2(final String zipCode)
 		{
 			this.zipCode = zipCode;
 		}
@@ -115,7 +115,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
+
 		guard.setInProbeMode(p, true);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
@@ -165,7 +165,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		}
 		{
 			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class<?>[]{String.class});
+					new Class< ? >[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			guard.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
@@ -177,7 +177,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		}
 		{
 			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class<?>[]{String.class});
+					new Class< ? >[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			check.setFieldName("firstName");
 			guard.addChecks(setter, 0, check);

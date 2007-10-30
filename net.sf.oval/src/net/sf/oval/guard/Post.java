@@ -31,6 +31,11 @@ import java.lang.annotation.Target;
 public @interface Post
 {
 	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.guard.Post";
+
+	/**
 	 * Formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
 	 * <br>
 	 * available variables are:<br>
@@ -59,6 +64,11 @@ public @interface Post
 	 * The returned value can later be accessed in the constraint expression via the variable <b>_old</b>
 	 */
 	String old() default "";
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

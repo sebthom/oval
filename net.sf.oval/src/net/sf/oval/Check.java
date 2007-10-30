@@ -26,12 +26,19 @@ import net.sf.oval.exception.OValException;
 public interface Check extends Serializable
 {
 	/**
-	 * gets the default message is displayed if a corresponding message key
+	 * @return the error code that will be used in a corresponding ConstraintViolation object
+	 */
+	String getErrorCode();
+
+	/** 
+	 * gets the default message that is displayed if a corresponding message key
 	 * is not found in the messages properties file
-	 * 
-	 * default processed place holders are
-	 * {context} => specifies which getter, method parameter or field was validated
-	 * {invalidValue} => string representation of the validated value 
+	 * <br>
+	 * default processed place holders are:
+	 * <ul>
+	 * <li>{context} => specifies which getter, method parameter or field was validated
+	 * <li>{invalidValue} => string representation of the validated value
+	 * </ul>
 	 */
 	String getMessage();
 
@@ -43,14 +50,14 @@ public interface Check extends Serializable
 	Map<String, String> getMessageVariables();
 
 	/**
+	 * @return the error priority
+	 */
+	int getPriority();
+
+	/**
 	 * @return the profiles, may return null
 	 */
 	String[] getProfiles();
-
-	/**
-	 * @param profiles the profiles to set
-	 */
-	void setProfiles(String... profiles);
 
 	/**
 	 * This method implements the validation logic
@@ -65,12 +72,30 @@ public interface Check extends Serializable
 			Validator validator) throws OValException;
 
 	/**
-	 * sets the default message is displayed if a corresponding message key
+	 * @param errorCode the error code to set
+	 */
+	void setErrorCode(String errorCode);
+
+	/**
+	 * sets the default message that is displayed if a corresponding message key
 	 * is not found in the messages properties file
 	 * 
-	 * default processed place holders are
-	 * {0} => specifies which getter, method parameter or field was validated
-	 * {1} => string representation of the validated value 
+	 * <br>
+	 * default processed place holders are:
+	 * <ul>
+	 * <li>{context} => specifies which getter, method parameter or field was validated
+	 * <li>{invalidValue} => string representation of the validated value
+	 * </ul>
 	 */
 	void setMessage(String message);
+
+	/**
+	 * @param priority the priority to set
+	 */
+	void setPriority(int priority);
+
+	/**
+	 * @param profiles the profiles to set
+	 */
+	void setProfiles(String... profiles);
 }

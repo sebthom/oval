@@ -27,8 +27,6 @@ import net.sf.oval.constraint.NotNull;
  */
 public class AssertFieldConstraintsValidationTest extends TestCase
 {
-	private final static String PATTERN_ZIP_CODE = "^[0-9]*$";
-
 	private static class Person
 	{
 		@NotNull
@@ -39,10 +37,12 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 
 		@NotNull
 		@Length(max = 6, message = "LENGTH")
-		@NotEmpty(message="NOT_EMPTY")
+		@NotEmpty(message = "NOT_EMPTY")
 		@MatchPattern(pattern = PATTERN_ZIP_CODE, message = "MATCH_PATTERN")
 		public String zipCode;
 	}
+
+	private final static String PATTERN_ZIP_CODE = "^[0-9]*$";
 
 	public void testFieldValidation()
 	{

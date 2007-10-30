@@ -34,16 +34,22 @@ import net.sf.oval.constraint.NotNull;
  */
 public class AssertValidTest extends TestCase
 {
-	private static class Registry
+	private static class Address
 	{
-		@AssertValid
-		public List<Address[]> addressClusters;
+		@NotNull
+		public String street;
 
-		@AssertValid
-		public Map<String, List<Person>> personsByCity;
+		@NotNull
+		public String city;
 
-		@AssertValid
-		public Map<String, Map<String, Address[]>> addressesByCityAndStreet;
+		@NotNull
+		@Length(max = 6)
+		@NotEmpty
+		@MatchPattern(pattern = "^[0-9]*$")
+		public String zipCode;
+
+		@AssertValid(message = "ASSERT_VALID")
+		public Person contact;
 	}
 
 	private static class Person
@@ -68,54 +74,16 @@ public class AssertValidTest extends TestCase
 
 	}
 
-	private static class Address
+	private static class Registry
 	{
-		@NotNull
-		public String street;
+		@AssertValid
+		public List<Address[]> addressClusters;
 
-		@NotNull
-		public String city;
+		@AssertValid
+		public Map<String, List<Person>> personsByCity;
 
-		@NotNull
-		@Length(max = 6)
-		@NotEmpty
-		@MatchPattern(pattern = "^[0-9]*$")
-		public String zipCode;
-
-		@AssertValid(message = "ASSERT_VALID")
-		public Person contact;
-	}
-
-	public void testScalarValues()
-	{
-		final Validator validator = new Validator();
-
-		final Person p = new Person();
-		p.firstName = "John";
-		p.lastName = "Doe";
-		assertEquals(0, validator.validate(p).size());
-
-		final Address a = new Address();
-		a.street = "The Street";
-		a.city = "The City";
-		a.zipCode = "12345";
-		assertEquals(0, validator.validate(a).size());
-
-		// make the address invalid
-		a.zipCode = null;
-		assertEquals(1, validator.validate(a).size());
-
-		// associate the invalid address with the person check the person for validity
-		p.homeAddress = a;
-		List<ConstraintViolation> violations = validator.validate(p);
-		assertEquals(1, violations.size());
-		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
-
-		// test circular dependencies
-		a.contact = p;
-		violations = validator.validate(p);
-		assertEquals(1, violations.size());
-		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
+		@AssertValid
+		public Map<String, Map<String, Address[]>> addressesByCityAndStreet;
 	}
 
 	public void testCollectionValues()
@@ -150,7 +118,7 @@ public class AssertValidTest extends TestCase
 	{
 		final Validator validator = new Validator();
 
-		Registry registry = new Registry();
+		final Registry registry = new Registry();
 
 		// nulled collections and maps are valid
 		assertTrue(validator.validate(registry).size() == 0);
@@ -162,8 +130,8 @@ public class AssertValidTest extends TestCase
 		// empty collections and maps are valid
 		assertEquals(0, validator.validate(registry).size());
 
-		Person invalidPerson1 = new Person();
-		Person invalidPerson2 = new Person();
+		final Person invalidPerson1 = new Person();
+		final Person invalidPerson2 = new Person();
 
 		// map with an empty list is valid
 		registry.personsByCity.put("city1", new ArrayList<Person>());
@@ -186,8 +154,8 @@ public class AssertValidTest extends TestCase
 		registry.addressClusters.add(new Address[10]);
 		assertEquals(0, validator.validate(registry).size());
 
-		Address invalidAddress1 = new Address();
-		Address invalidAddress2 = new Address();
+		final Address invalidAddress1 = new Address();
+		final Address invalidAddress2 = new Address();
 
 		registry.addressClusters.add(new Address[10]);
 		assertEquals(0, validator.validate(registry).size());
@@ -209,5 +177,37 @@ public class AssertValidTest extends TestCase
 		registry.addressesByCityAndStreet.get("city1").put("street1",
 				new Address[]{invalidAddress1, invalidAddress1, invalidAddress2, invalidAddress2});
 		assertEquals(4, validator.validate(registry).size());
+	}
+
+	public void testScalarValues()
+	{
+		final Validator validator = new Validator();
+
+		final Person p = new Person();
+		p.firstName = "John";
+		p.lastName = "Doe";
+		assertEquals(0, validator.validate(p).size());
+
+		final Address a = new Address();
+		a.street = "The Street";
+		a.city = "The City";
+		a.zipCode = "12345";
+		assertEquals(0, validator.validate(a).size());
+
+		// make the address invalid
+		a.zipCode = null;
+		assertEquals(1, validator.validate(a).size());
+
+		// associate the invalid address with the person check the person for validity
+		p.homeAddress = a;
+		List<ConstraintViolation> violations = validator.validate(p);
+		assertEquals(1, violations.size());
+		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
+
+		// test circular dependencies
+		a.contact = p;
+		violations = validator.validate(p);
+		assertEquals(1, violations.size());
+		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
 	}
 }

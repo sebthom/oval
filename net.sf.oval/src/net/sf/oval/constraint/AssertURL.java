@@ -34,6 +34,16 @@ import net.sf.oval.constraint.AssertURLCheck.URIScheme;
 public @interface AssertURL
 {
 	/**
+	 * Specifies if a connection to the URL should be attempted to verify its validity. 
+	 */
+	boolean connect() default false;
+
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.AssertURL";
+
+	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
@@ -41,14 +51,14 @@ public @interface AssertURL
 	String message() default "net.sf.oval.constraints.AssertURL.violated";
 
 	/**
-	 * Specifies if a connection to the URL should be attempted to verify its validity. 
-	 */
-	boolean connect() default false;
-
-	/**
 	 * Specifies the allowed URL schemes.
 	 */
 	URIScheme[] permittedURISchemes() default {URIScheme.HTTP, URIScheme.HTTPS, URIScheme.FTP};
+
+	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
 
 	/**
 	 * The associated validation profiles.

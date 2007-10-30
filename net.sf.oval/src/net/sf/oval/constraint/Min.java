@@ -35,7 +35,10 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = MinCheck.class)
 public @interface Min
 {
-	long value();
+	/**
+	 * error code passed to the ConstraintViolation object
+	 */
+	String errorCode() default "net.sf.oval.constraints.Min";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
@@ -45,7 +48,14 @@ public @interface Min
 	String message() default "net.sf.oval.constraints.Min.violated";
 
 	/**
+	 * priority passed to the ConstraintViolation object
+	 */
+	int priority() default 0;
+
+	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	long value();
 }
