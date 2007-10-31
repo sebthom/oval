@@ -34,6 +34,16 @@ public class SpringValidator implements org.springframework.validation.Validator
 
 	private Validator validator;
 
+	public SpringValidator()
+	{
+	//
+	}
+
+	public SpringValidator(final Validator validator)
+	{
+		this.validator = validator;
+	}
+
 	public void afterPropertiesSet() throws Exception
 	{
 		Assert.notNull(validator, "Property [validator] must be set");
@@ -67,7 +77,7 @@ public class SpringValidator implements org.springframework.validation.Validator
 			for (final ConstraintViolation violation : validator.validate(objectToValidate))
 			{
 				final OValContext ctx = violation.getContext();
-				final String errorCode = violation.getClass().getName();
+				final String errorCode = violation.getErrorCode();
 				final String errorMessage = violation.getMessage();
 
 				if (ctx instanceof FieldContext)

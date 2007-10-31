@@ -25,7 +25,6 @@ import net.sf.oval.collection.CollectionFactoryTroveImpl;
  */
 public class AllTests
 {
-
 	private static void constraintsTests(final TestSuite suite) throws Exception
 	{
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
@@ -78,6 +77,11 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
 	}
 
+	private static void integrationTests(final TestSuite suite) throws Exception
+	{
+		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringValidatorTest.class);
+	}
+
 	public static Test suite() throws Exception
 	{
 		// $JUnit-BEGIN$
@@ -90,6 +94,7 @@ public class AllTests
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with JDK collections");
 			validatorTests(suite1);
 			guardTests(suite1);
+			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
 					@Override
@@ -108,6 +113,7 @@ public class AllTests
 					"Tests for net.sf.oval with Javolution collections");
 			validatorTests(suite1);
 			guardTests(suite1);
+			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
 					@Override
@@ -125,6 +131,7 @@ public class AllTests
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with Trove collections");
 			validatorTests(suite1);
 			guardTests(suite1);
+			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
 					@Override
