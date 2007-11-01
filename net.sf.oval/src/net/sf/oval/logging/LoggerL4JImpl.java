@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.logging;
 
-import net.sf.oval.internal.util.StringUtils;
-
 import org.apache.log4j.Level;
 
 /**
@@ -36,18 +34,6 @@ public class LoggerL4JImpl implements Logger
 		log.log(WRAPPER, Level.DEBUG, msg, null);
 	}
 
-	public void debug(final String msgFormat, final Object arg1)
-	{
-		log.log(WRAPPER, Level.DEBUG, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), null);
-	}
-
-	public void debug(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log.log(WRAPPER, Level.DEBUG, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), t);
-	}
-
 	public void debug(final String msg, final Throwable t)
 	{
 		log.log(WRAPPER, Level.DEBUG, msg, t);
@@ -58,18 +44,6 @@ public class LoggerL4JImpl implements Logger
 		log.log(WRAPPER, Level.ERROR, msg, null);
 	}
 
-	public void error(final String msgFormat, final Object arg1)
-	{
-		log.log(WRAPPER, Level.ERROR, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), null);
-	}
-
-	public void error(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log.log(WRAPPER, Level.ERROR, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), t);
-	}
-
 	public void error(final String msg, final Throwable t)
 	{
 		log.log(WRAPPER, Level.ERROR, msg, t);
@@ -78,18 +52,6 @@ public class LoggerL4JImpl implements Logger
 	public void info(final String msg)
 	{
 		log.log(WRAPPER, Level.INFO, msg, null);
-	}
-
-	public void info(final String msgFormat, final Object arg1)
-	{
-		log.log(WRAPPER, Level.INFO, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), null);
-	}
-
-	public void info(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log.log(WRAPPER, Level.INFO, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), t);
 	}
 
 	public void info(final String msg, final Throwable t)
@@ -127,18 +89,6 @@ public class LoggerL4JImpl implements Logger
 		log.log(WRAPPER, Level.TRACE, msg, null);
 	}
 
-	public void trace(final String msgFormat, final Object arg1)
-	{
-		log.log(WRAPPER, Level.TRACE, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), null);
-	}
-
-	public void trace(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log.log(WRAPPER, Level.TRACE, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), t);
-	}
-
 	public void trace(final String msg, final Throwable t)
 	{
 		log.log(WRAPPER, Level.TRACE, msg, t);
@@ -147,18 +97,6 @@ public class LoggerL4JImpl implements Logger
 	public void warn(final String msg)
 	{
 		log.log(WRAPPER, Level.WARN, msg, null);
-	}
-
-	public void warn(final String msgFormat, final Object arg1)
-	{
-		log.log(WRAPPER, Level.WARN, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), null);
-	}
-
-	public void warn(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log.log(WRAPPER, Level.WARN, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null"
-				: arg1.toString()), t);
 	}
 
 	public void warn(final String msg, final Throwable t)

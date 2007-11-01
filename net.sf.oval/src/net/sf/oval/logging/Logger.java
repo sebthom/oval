@@ -19,25 +19,13 @@ public interface Logger
 {
 	void debug(String msg);
 
-	void debug(String msgFormat, Object arg1);
-
-	void debug(String msgFormat, Object arg1, Throwable t);
-
 	void debug(String msg, Throwable t);
 
 	void error(String msg);
 
-	void error(String msgFormat, Object arg1);
-
-	void error(String msgFormat, Object arg1, Throwable t);
-
 	void error(String msg, Throwable t);
 
 	void info(String msg);
-
-	void info(String msgFormat, Object arg1);
-
-	void info(String msgFormat, Object arg1, Throwable t);
 
 	void info(String msg, Throwable t);
 
@@ -53,17 +41,9 @@ public interface Logger
 
 	void trace(String msg);
 
-	void trace(String msgFormat, Object arg1);
-
-	void trace(String msgFormat, Object arg1, Throwable t);
-
 	void trace(String msg, Throwable t);
 
 	void warn(String msg);
-
-	void warn(String msgFormat, Object arg1);
-
-	void warn(String msgFormat, Object arg1, Throwable t);
 
 	void warn(String msg, Throwable t);
 }

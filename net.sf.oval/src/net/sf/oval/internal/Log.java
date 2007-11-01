@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.logging.Logger;
 import net.sf.oval.logging.LoggerFactory;
 import net.sf.oval.logging.LoggerFactoryJDKImpl;
@@ -95,12 +96,16 @@ public final class Log
 
 	public void debug(final String msgFormat, final Object arg1)
 	{
-		if (logger.isDebug()) logger.debug(msgFormat, arg1);
+		if (logger.isDebug())
+			logger.debug(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()));
 	}
 
 	public void debug(final String msgFormat, final Object arg1, final Throwable t)
 	{
-		if (logger.isDebug()) logger.debug(msgFormat, arg1, t);
+		if (logger.isDebug())
+			logger.debug(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()), t);
 	}
 
 	public void debug(final String msg, final Throwable t)
@@ -115,12 +120,16 @@ public final class Log
 
 	public void error(final String msgFormat, final Object arg1)
 	{
-		if (logger.isError()) logger.error(msgFormat, arg1);
+		if (logger.isError())
+			logger.error(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()));
 	}
 
 	public void error(final String msgFormat, final Object arg1, final Throwable t)
 	{
-		if (logger.isError()) logger.error(msgFormat, arg1, t);
+		if (logger.isError())
+			logger.error(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()), t);
 	}
 
 	public void error(final String msg, final Throwable t)
@@ -135,12 +144,16 @@ public final class Log
 
 	public void info(final String msgFormat, final Object arg1)
 	{
-		if (logger.isInfo()) logger.info(msgFormat, arg1);
+		if (logger.isInfo())
+			logger.info(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()));
 	}
 
 	public void info(final String msgFormat, final Object arg1, final Throwable t)
 	{
-		if (logger.isInfo()) logger.info(msgFormat, arg1, t);
+		if (logger.isInfo())
+			logger.info(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()), t);
 	}
 
 	public void info(final String msg, final Throwable t)
@@ -187,12 +200,16 @@ public final class Log
 
 	public void trace(final String msgFormat, final Object arg1)
 	{
-		if (logger.isDebug()) logger.debug(msgFormat, arg1);
+		if (logger.isDebug())
+			logger.trace(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()));
 	}
 
 	public void trace(final String msgFormat, final Object arg1, final Throwable t)
 	{
-		if (logger.isDebug()) logger.debug(msgFormat, arg1, t);
+		if (logger.isDebug())
+			logger.trace(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()), t);
 	}
 
 	public void trace(final String msg, final Throwable t)
@@ -207,12 +224,16 @@ public final class Log
 
 	public void warn(final String msgFormat, final Object arg1)
 	{
-		if (logger.isWarn()) logger.warn(msgFormat, arg1);
+		if (logger.isWarn())
+			logger.warn(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()));
 	}
 
 	public void warn(final String msgFormat, final Object arg1, final Throwable t)
 	{
-		if (logger.isWarn()) logger.warn(msgFormat, arg1, t);
+		if (logger.isWarn())
+			logger.warn(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
+					.toString()), t);
 	}
 
 	public void warn(final String msg, final Throwable t)

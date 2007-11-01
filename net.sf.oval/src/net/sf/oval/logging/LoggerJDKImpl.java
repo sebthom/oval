@@ -15,8 +15,6 @@ package net.sf.oval.logging;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import net.sf.oval.internal.util.StringUtils;
-
 /**
  * JDK Logging Wrapper
  * @author Sebastian Thomschke
@@ -38,18 +36,6 @@ public class LoggerJDKImpl implements Logger
 		log(Level.FINE, msg, null);
 	}
 
-	public void debug(final String msgFormat, final Object arg1)
-	{
-		log(Level.FINE, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), null);
-	}
-
-	public void debug(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log(Level.FINE, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), t);
-	}
-
 	public void debug(final String msg, final Throwable t)
 	{
 		log(Level.FINE, msg, t);
@@ -60,18 +46,6 @@ public class LoggerJDKImpl implements Logger
 		log(Level.SEVERE, msg, null);
 	}
 
-	public void error(final String msgFormat, final Object arg1)
-	{
-		log(Level.SEVERE, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), null);
-	}
-
-	public void error(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log(Level.SEVERE, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), t);
-	}
-
 	public void error(final String msg, final Throwable t)
 	{
 		log(Level.SEVERE, msg, t);
@@ -80,18 +54,6 @@ public class LoggerJDKImpl implements Logger
 	public void info(final String msg)
 	{
 		log(Level.INFO, msg, null);
-	}
-
-	public void info(final String msgFormat, final Object arg1)
-	{
-		log(Level.INFO, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), null);
-	}
-
-	public void info(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log(Level.INFO, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), t);
 	}
 
 	public void info(final String msg, final Throwable t)
@@ -148,18 +110,6 @@ public class LoggerJDKImpl implements Logger
 		log(Level.FINEST, msg, null);
 	}
 
-	public void trace(final String msgFormat, final Object arg1)
-	{
-		log(Level.FINEST, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), null);
-	}
-
-	public void trace(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log(Level.FINEST, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), t);
-	}
-
 	public void trace(final String msg, final Throwable t)
 	{
 		log(Level.FINEST, msg, t);
@@ -168,18 +118,6 @@ public class LoggerJDKImpl implements Logger
 	public void warn(final String msg)
 	{
 		log(Level.WARNING, msg, null);
-	}
-
-	public void warn(final String msgFormat, final Object arg1)
-	{
-		log(Level.WARNING, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), null);
-	}
-
-	public void warn(final String msgFormat, final Object arg1, final Throwable t)
-	{
-		log(Level.WARNING, StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1
-				.toString()), t);
 	}
 
 	public void warn(final String msg, final Throwable t)
