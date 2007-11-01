@@ -72,6 +72,38 @@
 			<optional>true</optional>
 		</dependency>
 
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby</artifactId>
+            <version>[1.0.0,)</version>
+            <scope>compile</scope>
+			<optional>true</optional>
+        </dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>[1.2,)</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>mvel</groupId>
+			<artifactId>mvel</artifactId>
+			<version>[1.0.0,)</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+            <version>[2.6.0,)</version>
+            <scope>compile</scope>
+			<optional>true</optional>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
@@ -79,7 +111,7 @@
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
