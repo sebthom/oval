@@ -14,9 +14,8 @@ package net.sf.oval.guard;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.Invocable;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -31,7 +30,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  */
 public abstract aspect GuardAspect extends ApiUsageAuditor
 {
-	private final static Logger LOG = Logger.getLogger(GuardAspect.class.getName());
+	private final static Log LOG = Log.getLog(GuardAspect.class);
 
 	private Guard guard;
 
@@ -81,7 +80,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 	{
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
+		LOG.debug("aroundMethod() {}", SIGNATURE);
 
 		final Method METHOD = SIGNATURE.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();
@@ -102,7 +101,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 	{
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
+		LOG.debug("aroundCounstructor() {}", SIGNATURE);
 
 		final Constructor CONSTRUCTOR = SIGNATURE.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();

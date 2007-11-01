@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.internal;
 
-import java.util.logging.Logger;
-
 import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.collection.CollectionFactoryJDKImpl;
 import net.sf.oval.collection.CollectionFactoryJavalutionImpl;
@@ -27,10 +25,10 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public final class CollectionFactoryHolder
 {
-	private final static Logger LOG = Logger.getLogger(CollectionFactoryHolder.class.getName());
+	private final static Log LOG = Log.getLog(CollectionFactoryHolder.class);
 
 	private static CollectionFactory factory = createDefaultCollectionFactory();
-	
+
 	private static CollectionFactory createDefaultCollectionFactory()
 	{
 		// if javalution collection classes are found use them by default
@@ -54,7 +52,6 @@ public final class CollectionFactoryHolder
 		else
 			return new CollectionFactoryJDKImpl();
 	}
-
 
 	/**
 	 * Returns a shared instance of the CollectionFactory

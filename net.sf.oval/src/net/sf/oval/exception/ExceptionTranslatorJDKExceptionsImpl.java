@@ -12,9 +12,6 @@
  *******************************************************************************/
 package net.sf.oval.exception;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -22,6 +19,7 @@ import net.sf.oval.context.MethodEntryContext;
 import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.Log;
 
 /**
  * Translates OVal specific exceptions to standard exceptions part of the JRE:
@@ -35,8 +33,7 @@ import net.sf.oval.context.OValContext;
  */
 public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 {
-	private final static Logger LOG = Logger.getLogger(ExceptionTranslatorJDKExceptionsImpl.class
-			.getName());
+	private final static Log LOG = Log.getLog(ExceptionTranslatorJDKExceptionsImpl.class);
 
 	public RuntimeException translateException(final OValException ex)
 	{
@@ -53,8 +50,7 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 			{
 				final IllegalArgumentException iaex = new IllegalArgumentException(cv.getMessage());
 				iaex.setStackTrace(ex.getStackTrace());
-				if (LOG.isLoggable(Level.FINE))
-					LOG.log(Level.FINE, "Translated Exception" + ex + " to " + iaex, ex);
+				if (LOG.isDebug()) LOG.debug("Translated Exception" + ex + " to " + iaex, ex);
 				return iaex;
 			}
 
@@ -63,8 +59,7 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 			{
 				final IllegalStateException ise = new IllegalStateException(cv.getMessage());
 				ise.setStackTrace(ex.getStackTrace());
-				if (LOG.isLoggable(Level.FINE))
-					LOG.log(Level.FINE, "Translated Exception" + ex + " to " + ise, ex);
+				if (LOG.isDebug()) LOG.debug("Translated Exception" + ex + " to " + ise, ex);
 				return ise;
 			}
 		}
@@ -73,7 +68,7 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 		{
 			final RuntimeException rex = new RuntimeException(ex.getMessage());
 			rex.setStackTrace(ex.getStackTrace());
-			LOG.log(Level.FINE, "Translated Exception" + ex + " to " + rex, ex);
+			if (LOG.isDebug()) LOG.debug("Translated Exception" + ex + " to " + rex, ex);
 			return rex;
 		}
 	}

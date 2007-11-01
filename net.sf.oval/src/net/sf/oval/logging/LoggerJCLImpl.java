@@ -1,0 +1,164 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
+package net.sf.oval.logging;
+
+import net.sf.oval.internal.util.StringUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * Commons Logging Wrapper
+ * @author Sebastian Thomschke
+ */
+public class LoggerJCLImpl implements Logger
+{
+	private final Log log;
+
+	public LoggerJCLImpl(final String name)
+	{
+		if (name == null) throw new IllegalArgumentException("name cannot be null");
+
+		log = LogFactory.getLog(name);
+	}
+
+	public void debug(final String msg)
+	{
+		log.debug(msg);
+	}
+
+	public void debug(final String msgFormat, final Object arg1)
+	{
+		log.debug(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()));
+	}
+
+	public void debug(final String msgFormat, final Object arg1, final Throwable t)
+	{
+		log.debug(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()),
+				t);
+	}
+
+	public void debug(final String msg, final Throwable t)
+	{
+		log.debug(msg, t);
+	}
+
+	public void error(final String msg)
+	{
+		log.error(msg);
+	}
+
+	public void error(final String msgFormat, final Object arg1)
+	{
+		log.error(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()));
+	}
+
+	public void error(final String msgFormat, final Object arg1, final Throwable t)
+	{
+		log.error(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()),
+				t);
+	}
+
+	public void error(final String msg, final Throwable t)
+	{
+		log.error(msg, t);
+	}
+
+	public void info(final String msg)
+	{
+		log.info(msg);
+	}
+
+	public void info(final String msgFormat, final Object arg1)
+	{
+		log.info(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()));
+	}
+
+	public void info(final String msgFormat, final Object arg1, final Throwable t)
+	{
+		log.info(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()),
+				t);
+	}
+
+	public void info(final String msg, final Throwable t)
+	{
+		log.info(msg, t);
+	}
+
+	public boolean isDebug()
+	{
+		return log.isDebugEnabled();
+	}
+
+	public boolean isError()
+	{
+		return log.isErrorEnabled();
+	}
+
+	public boolean isInfo()
+	{
+		return log.isInfoEnabled();
+	}
+
+	public boolean isTrace()
+	{
+		return log.isTraceEnabled();
+	}
+
+	public boolean isWarn()
+	{
+		return log.isWarnEnabled();
+	}
+
+	public void trace(final String msg)
+	{
+		log.trace(msg);
+	}
+
+	public void trace(final String msgFormat, final Object arg1)
+	{
+		log.debug(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()));
+	}
+
+	public void trace(final String msgFormat, final Object arg1, final Throwable t)
+	{
+		log.trace(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()),
+				t);
+	}
+
+	public void trace(final String msg, final Throwable t)
+	{
+		log.trace(msg, t);
+	}
+
+	public void warn(final String msg)
+	{
+		log.warn(msg);
+	}
+
+	public void warn(final String msgFormat, final Object arg1)
+	{
+		log.warn(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()));
+	}
+
+	public void warn(final String msgFormat, final Object arg1, final Throwable t)
+	{
+		log.warn(StringUtils.replaceAll(msgFormat, "{}", arg1 == null ? "null" : arg1.toString()),
+				t);
+	}
+
+	public void warn(final String msg, final Throwable t)
+	{
+		log.warn(msg, t);
+	}
+}

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.configuration.Configurer;
@@ -62,6 +61,7 @@ import net.sf.oval.guard.ParameterNameResolver;
 import net.sf.oval.guard.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.internal.ClassChecks;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
 import net.sf.oval.internal.MessageResolverHolder;
 import net.sf.oval.internal.util.ListOrderedSet;
@@ -69,13 +69,14 @@ import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalList;
 import net.sf.oval.localization.MessageResolver;
+import net.sf.oval.logging.LoggerFactory;
 
 /**
  * @author Sebastian Thomschke
  */
 public class Validator
 {
-	private final static Logger LOG = Logger.getLogger(Validator.class.getName());
+	private final static Log LOG = Log.getLog(Validator.class);
 
 	/**
 	 * Returns a shared instance of the CollectionFactory
@@ -83,6 +84,14 @@ public class Validator
 	public static CollectionFactory getCollectionFactory()
 	{
 		return CollectionFactoryHolder.getFactory();
+	}
+
+	/**
+	 * @return the loggerFactory
+	 */
+	public static LoggerFactory getLoggerFactory()
+	{
+		return Log.getLoggerFactory();
 	}
 
 	/**
@@ -101,6 +110,14 @@ public class Validator
 			throws IllegalArgumentException
 	{
 		CollectionFactoryHolder.setFactory(factory);
+	}
+
+	/**
+	 * @param loggerFactory the loggerFactory to set
+	 */
+	public static void setLoggerFactory(final LoggerFactory loggerFactory)
+	{
+		Log.setLoggerFactory(loggerFactory);
 	}
 
 	/**
@@ -543,7 +560,9 @@ public class Validator
 		if (expressionLanguage == null)
 			throw new IllegalArgumentException("expressionLanguage cannot be null");
 
-		LOG.info("Expression language '" + languageId + "' registered: " + expressionLanguage);
+		if (LOG.isInfo())
+			LOG.info("Expression language '" + languageId + "' registered: " + expressionLanguage);
+
 		expressionLanguages.put(languageId, expressionLanguage);
 	}
 

@@ -19,8 +19,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.Check;
 import net.sf.oval.exception.InvalidConfigurationException;
@@ -40,7 +38,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class ClassChecks
 {
-	private static final Logger LOG = Logger.getLogger(ClassChecks.class.getName());
+	private static final Log LOG = Log.getLog(ClassChecks.class);
 
 	/**
 	 * compound constraints / object level invariants
@@ -123,8 +121,7 @@ public class ClassChecks
 	@SuppressWarnings("unchecked")
 	public ClassChecks(final Class clazz)
 	{
-		if (ClassChecks.LOG.isLoggable(Level.FINE))
-			ClassChecks.LOG.fine("Initializing constraints configuration for class " + clazz);
+		LOG.debug("Initializing constraints configuration for class {}", clazz);
 
 		this.clazz = clazz;
 		isGuarded = IsGuarded.class.isAssignableFrom(clazz);
@@ -551,8 +548,7 @@ public class ClassChecks
 
 	public synchronized void clear()
 	{
-		if (ClassChecks.LOG.isLoggable(Level.FINE))
-			ClassChecks.LOG.fine("Clearing all checks for class " + clazz.getName());
+		LOG.debug("Clearing all checks for class {}", clazz);
 
 		checksForObject.clear();
 		checksForMethodsPostExcecution.clear();

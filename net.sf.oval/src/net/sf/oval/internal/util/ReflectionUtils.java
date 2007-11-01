@@ -17,21 +17,20 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.exception.AccessingFieldValueFailedException;
 import net.sf.oval.exception.InvokingMethodFailedException;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.Log;
 
 /**
  * @author Sebastian Thomschke
  */
 public final class ReflectionUtils
 {
-	private static final Logger LOG = Logger.getLogger(ReflectionUtils.class.getName());
+	private static final Log LOG = Log.getLog(ReflectionUtils.class);
 
 	/**
 	 * @return the field or null if the field does not exist
@@ -76,18 +75,16 @@ public final class ReflectionUtils
 			// check if field and method parameter are of the same type
 			if (!field.getType().equals(methodParameterTypes[0]))
 			{
-				ReflectionUtils.LOG.warning("Found field <" + fieldName + "> in class <"
-						+ clazz.getName() + ">that matches setter <" + methodName
-						+ "> name, but mismatches parameter type.");
+				if (LOG.isWarn())
+					LOG.warn("Found field <" + fieldName + "> in class <" + clazz.getName()
+							+ ">that matches setter <" + methodName
+							+ "> name, but mismatches parameter type.");
 				field = null;
 			}
 		}
 		catch (final NoSuchFieldException e)
 		{
-			if (ReflectionUtils.LOG.isLoggable(Level.FINER))
-			{
-				ReflectionUtils.LOG.log(Level.FINER, "Field not found", e);
-			}
+			LOG.debug("Field not found", e);
 		}
 
 		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() =>
@@ -105,18 +102,15 @@ public final class ReflectionUtils
 				// check if found field is of boolean or Boolean
 				if (!field.getType().equals(boolean.class) && field.getType().equals(Boolean.class))
 				{
-					ReflectionUtils.LOG.warning("Found field <" + fieldName
-							+ "> that matches setter <" + methodName
-							+ "> name, but mismatches parameter type.");
+					if (LOG.isWarn())
+						LOG.warn("Found field <" + fieldName + "> that matches setter <"
+								+ methodName + "> name, but mismatches parameter type.");
 					field = null;
 				}
 			}
 			catch (final NoSuchFieldException ex)
 			{
-				if (ReflectionUtils.LOG.isLoggable(Level.FINER))
-				{
-					ReflectionUtils.LOG.log(Level.FINER, "Field not found", ex);
-				}
+				LOG.debug("Field not found", ex);
 			}
 		}
 

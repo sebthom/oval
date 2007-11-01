@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
@@ -38,6 +36,7 @@ import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.internal.ClassChecks;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.Invocable;
@@ -53,7 +52,7 @@ import net.sf.oval.internal.util.ThreadLocalWeakHashSet;
  */
 public class Guard extends Validator
 {
-	private final static Logger LOG = Logger.getLogger(Guard.class.getName());
+	private final static Log LOG = Log.getLog(Guard.class);
 
 	private final ThreadLocalIdentitySet<Object> currentlyInvariantCheckingFor = new ThreadLocalIdentitySet<Object>();
 
@@ -749,7 +748,7 @@ public class Guard extends Validator
 			}
 			catch (final RuntimeException rex)
 			{
-				Guard.LOG.log(Level.WARNING, "Notifying listener '" + listener + "'failed.", rex);
+				LOG.warn("Notifying listener '{}' failed.", listener, rex);
 			}
 		}
 
@@ -912,9 +911,8 @@ public class Guard extends Validator
 
 		if (guardedObject instanceof Class)
 		{
-			Guard.LOG
-					.warning("Enabling probe mode for a class looks like a programming error. Class: "
-							+ guardedObject);
+			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {}",
+					guardedObject);
 		}
 		isProbeModeFeatureUsed = true;
 
@@ -1144,8 +1142,8 @@ public class Guard extends Validator
 					final Map<String, String> messageVariables = CollectionFactoryHolder
 							.getFactory().createMap(2);
 					messageVariables.put("expression", check.getExpression());
-					final String errorMessage = renderMessage(context, null, check
-							.getMessage(), messageVariables);
+					final String errorMessage = renderMessage(context, null, check.getMessage(),
+							messageVariables);
 
 					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage,
 							check.getPriority(), validatedObject, null, context));
@@ -1204,8 +1202,8 @@ public class Guard extends Validator
 					final Map<String, String> messageVariables = CollectionFactoryHolder
 							.getFactory().createMap(2);
 					messageVariables.put("expression", check.getExpression());
-					final String errorMessage = renderMessage(context, null, check
-							.getMessage(), messageVariables);
+					final String errorMessage = renderMessage(context, null, check.getMessage(),
+							messageVariables);
 
 					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage,
 							check.getPriority(), validatedObject, null, context));

@@ -14,10 +14,9 @@ package net.sf.oval.expression;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
+import net.sf.oval.internal.Log;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EvaluatorException;
@@ -29,8 +28,7 @@ import org.mozilla.javascript.Scriptable;
  */
 public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 {
-	private final static Logger LOG = Logger.getLogger(ExpressionLanguageJavaScriptImpl.class
-			.getName());
+	private final static Log LOG = Log.getLog(ExpressionLanguageJavaScriptImpl.class);
 
 	private final Scriptable parentScope;
 
@@ -61,10 +59,7 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 			{
 				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
 			}
-			if (LOG.isLoggable(Level.FINE))
-			{
-				LOG.fine("Evaluating JavaScript expression:" + expression);
-			}
+			LOG.debug("Evaluating JavaScript expression: {}", expression);
 			return ctx.evaluateString(scope, expression, "<cmd>", 1, null);
 		}
 		catch (final EvaluatorException ex)

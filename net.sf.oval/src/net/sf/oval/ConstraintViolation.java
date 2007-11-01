@@ -15,9 +15,9 @@ package net.sf.oval;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Logger;
 
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.Log;
 
 /**
  * An instance of this class provides detailed information about a single constraint violation 
@@ -27,7 +27,7 @@ import net.sf.oval.context.OValContext;
  */
 public class ConstraintViolation implements Serializable
 {
-	private final static Logger LOG = Logger.getLogger(ConstraintViolation.class.getName());
+	private final static Log LOG = Log.getLog(ConstraintViolation.class);
 
 	private final static long serialVersionUID = 1L;
 
@@ -178,12 +178,9 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			ConstraintViolation.LOG
-					.warning("Field 'validatedObject' not serialized because the field value object "
-							+ validatedObject
-							+ " of type "
-							+ invalidValue.getClass()
-							+ " does not implement " + Serializable.class.getName());
+			LOG.warn("Field 'validatedObject' not serialized because the field value object "
+					+ validatedObject + " of type " + invalidValue.getClass()
+					+ " does not implement " + Serializable.class.getName());
 
 			// indicate validatedObject does not implement Serializable
 			out.writeBoolean(false);
@@ -197,9 +194,10 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			ConstraintViolation.LOG
-					.warning("Field 'invalidValue' could not be serialized because the field value object "
-							+ invalidValue + " does not implement java.io.Serializable.");
+			LOG
+					.warn(
+							"Field 'invalidValue' could not be serialized because the field value object {} does not implement java.io.Serializable.",
+							invalidValue);
 			// indicate value does not implement Serializable
 			out.writeBoolean(false);
 		}

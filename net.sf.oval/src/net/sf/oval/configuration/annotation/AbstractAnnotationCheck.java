@@ -14,10 +14,9 @@ package net.sf.oval.configuration.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.internal.Log;
 
 /**
  * Partial implementation of check classes configurable via annotations.
@@ -28,7 +27,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		extends
 			AbstractCheck implements AnnotationCheck<ConstraintAnnotation>
 {
-	private final static Logger LOG = Logger.getLogger(AbstractAnnotationCheck.class.getName());
+	private final static Log LOG = Log.getLog(AbstractAnnotationCheck.class);
 
 	public void configure(final ConstraintAnnotation constraintAnnotation)
 	{
@@ -47,10 +46,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			if (LOG.isLoggable(Level.FINE))
-				LOG.log(Level.FINE,
-						"Cannot determine constraint error message based on annotation "
-								+ constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error message based on annotation {}",
+					constraintClazz.getName(), e);
 			message = constraintClazz.getName() + ".violated";
 		}
 
@@ -65,9 +62,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			if (LOG.isLoggable(Level.FINE))
-				LOG.log(Level.FINE, "Cannot determine constraint error code based on annotation "
-						+ constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error code based on annotation {}",
+					constraintClazz.getName(), e);
 			errorCode = constraintClazz.getName();
 		}
 
@@ -83,10 +79,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			if (LOG.isLoggable(Level.FINE))
-				LOG.log(Level.FINE,
-						"Cannot determine constraint error priority based on annotation "
-								+ constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error priority based on annotation {}",
+					constraintClazz.getName(), e);
 		}
 
 		/*
@@ -100,9 +94,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			if (LOG.isLoggable(Level.FINE))
-				LOG.log(Level.FINE, "Cannot determine constraint profiles based on annotation "
-						+ constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint profiles based on annotation {}",
+					constraintClazz.getName(), e);
 		}
 	}
 }

@@ -15,10 +15,9 @@ package net.sf.oval.expression;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
+import net.sf.oval.internal.Log;
 
 import org.jruby.Ruby;
 import org.jruby.javasupport.JavaEmbedUtils;
@@ -30,7 +29,7 @@ import org.jruby.runtime.builtin.IRubyObject;
  */
 public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 {
-	private final static Logger LOG = Logger.getLogger(ExpressionLanguageJRubyImpl.class.getName());
+	private final static Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
 
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
@@ -50,10 +49,7 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 				localVars.append("\n");
 
 			}
-			if (LOG.isLoggable(Level.FINE))
-			{
-				LOG.fine("Evaluating Ruby expression:" + expression);
-			}
+			LOG.debug("Evaluating Ruby expression: {}", expression);
 			final IRubyObject result = runtime.evalScript(localVars + expression);
 			return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
 		}

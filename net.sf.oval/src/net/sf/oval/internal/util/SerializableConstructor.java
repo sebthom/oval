@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import net.sf.oval.internal.Log;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Constructor objects since they do not implement Serializable
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class SerializableConstructor implements Serializable
 {
-	private final static Logger LOG = Logger.getLogger(SerializableConstructor.class.getName());
+	private final static Log LOG = Log.getLog(SerializableConstructor.class);
 
 	private static final WeakHashMap<Constructor, SerializableConstructor> CACHE = new WeakHashMap<Constructor, SerializableConstructor>();
 
@@ -48,15 +48,15 @@ public class SerializableConstructor implements Serializable
 
 	private transient Constructor constructor;
 
-	private final Class<?> declaringClass;
+	private final Class< ? > declaringClass;
 
-	private final Class<?>[] parameterTypes;
+	private final Class< ? >[] parameterTypes;
 
 	protected SerializableConstructor(final Constructor constructor)
 	{
 		this.constructor = constructor;
-		this.parameterTypes = constructor.getParameterTypes();
-		this.declaringClass = constructor.getDeclaringClass();
+		parameterTypes = constructor.getParameterTypes();
+		declaringClass = constructor.getDeclaringClass();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class SerializableConstructor implements Serializable
 	/**
 	 * @return the declaringClass
 	 */
-	public Class<?> getDeclaringClass()
+	public Class< ? > getDeclaringClass()
 	{
 		return declaringClass;
 	}
@@ -78,7 +78,7 @@ public class SerializableConstructor implements Serializable
 	/**
 	 * @return the parameterTypes
 	 */
-	public Class<?>[] getParameterTypes()
+	public Class< ? >[] getParameterTypes()
 	{
 		return parameterTypes;
 	}
@@ -91,9 +91,9 @@ public class SerializableConstructor implements Serializable
 		{
 			constructor = declaringClass.getConstructor(parameterTypes);
 		}
-		catch (NoSuchMethodException ex)
+		catch (final NoSuchMethodException ex)
 		{
-			LOG.log(Level.SEVERE, "Unexpected NoSuchMethodException occured: " + ex, ex);
+			LOG.debug("Unexpected NoSuchMethodException occured", ex);
 			throw new IOException(ex.getMessage());
 		}
 	}

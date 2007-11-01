@@ -12,14 +12,12 @@
  *******************************************************************************/
 package net.sf.oval.integration.spring;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ValidationFailedException;
+import net.sf.oval.internal.Log;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
@@ -30,7 +28,7 @@ import org.springframework.validation.Errors;
  */
 public class SpringValidator implements org.springframework.validation.Validator, InitializingBean
 {
-	private final static Logger LOG = Logger.getLogger(SpringValidator.class.getName());
+	private final static Log LOG = Log.getLog(SpringValidator.class);
 
 	private Validator validator;
 
@@ -93,7 +91,7 @@ public class SpringValidator implements org.springframework.validation.Validator
 		}
 		catch (final ValidationFailedException ex)
 		{
-			SpringValidator.LOG.log(Level.SEVERE, "Unexpected error while validating", ex);
+			LOG.error("Unexpected error during validation", ex);
 
 			errors.reject(ex.getMessage());
 		}

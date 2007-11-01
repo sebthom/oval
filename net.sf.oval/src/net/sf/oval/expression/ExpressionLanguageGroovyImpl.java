@@ -18,10 +18,9 @@ import groovy.lang.GroovyShell;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
+import net.sf.oval.internal.Log;
 
 /**
  * @author Sebastian Thomschke
@@ -29,8 +28,7 @@ import net.sf.oval.exception.ExpressionEvaluationException;
  */
 public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 {
-	private final static Logger LOG = Logger
-			.getLogger(ExpressionLanguageGroovyImpl.class.getName());
+	private final static Log LOG = Log.getLog(ExpressionLanguageGroovyImpl.class);
 
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
@@ -43,10 +41,7 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 				binding.setVariable(entry.getKey(), entry.getValue());
 			}
 			final GroovyShell shell = new GroovyShell(binding);
-			if (LOG.isLoggable(Level.FINE))
-			{
-				LOG.fine("Evaluating Groovy expression:" + expression);
-			}
+			LOG.debug("Evaluating Groovy expression: {}", expression);
 			return shell.evaluate(expression);
 		}
 		catch (final GroovyRuntimeException ex)

@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import net.sf.oval.internal.Log;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class SerializableField implements Serializable
 {
-	private final static Logger LOG = Logger.getLogger(SerializableField.class.getName());
+	private final static Log LOG = Log.getLog(SerializableField.class);
 
 	private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
 
@@ -53,8 +53,8 @@ public class SerializableField implements Serializable
 	protected SerializableField(final Field field)
 	{
 		this.field = field;
-		this.name = field.getName();
-		this.declaringClass = field.getDeclaringClass();
+		name = field.getName();
+		declaringClass = field.getDeclaringClass();
 	}
 
 	/**
@@ -89,9 +89,9 @@ public class SerializableField implements Serializable
 		{
 			field = declaringClass.getField(name);
 		}
-		catch (NoSuchFieldException ex)
+		catch (final NoSuchFieldException ex)
 		{
-			LOG.log(Level.SEVERE, "Unexpected NoSuchFieldException occured: " + ex, ex);
+			LOG.debug("Unexpected NoSuchFieldException occured", ex);
 			throw new IOException(ex.getMessage());
 		}
 	}

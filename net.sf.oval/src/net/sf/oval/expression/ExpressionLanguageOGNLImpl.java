@@ -14,10 +14,9 @@ package net.sf.oval.expression;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
+import net.sf.oval.internal.Log;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -28,7 +27,7 @@ import ognl.OgnlException;
  */
 public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 {
-	private final static Logger LOG = Logger.getLogger(ExpressionLanguageOGNLImpl.class.getName());
+	private final static Log LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
 
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
@@ -42,10 +41,7 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 				ctx.put(entry.getKey(), entry.getValue());
 			}
 
-			if (LOG.isLoggable(Level.FINE))
-			{
-				LOG.fine("Evaluating OGNL expression:" + expression);
-			}
+			LOG.debug("Evaluating OGNL expression: {}", expression);
 			return Ognl.getValue(expression, ctx);
 		}
 		catch (final OgnlException ex)

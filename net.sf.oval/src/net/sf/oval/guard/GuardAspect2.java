@@ -14,10 +14,9 @@ package net.sf.oval.guard;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.exception.ValidationFailedException;
+import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.Invocable;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -41,7 +40,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 @Aspect
 public abstract class GuardAspect2 extends ApiUsageAuditor2
 {
-	private final static Logger LOG = Logger.getLogger(GuardAspect2.class.getName());
+	private final static Log LOG = Log.getLog(GuardAspect2.class);
 
 	@SuppressWarnings("unused")
 	@DeclareParents("(@net.sf.oval.guard.Guarded *)")
@@ -67,7 +66,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	{
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
+		LOG.debug("aroundConstructor() {}", SIGNATURE);
 
 		final Constructor CONSTRUCTOR = SIGNATURE.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();
@@ -91,10 +90,10 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	@SuppressAjWarnings("adviceDidNotMatch")
 	@Around("execution(* (@net.sf.oval.guard.Guarded *).*(..))")
 	public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable
-	{	
+	{
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("around() " + SIGNATURE);
+		LOG.debug("aroundMethod() {}", SIGNATURE);
 
 		final Method METHOD = SIGNATURE.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();
@@ -108,9 +107,10 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 					{
 						return thisJoinPoint.proceed();
 					}
-					catch (Throwable ex)
+					catch (final Throwable ex)
 					{
-						throw new ValidationFailedException("Unexpected exception while invoking method.", ex);
+						throw new ValidationFailedException(
+								"Unexpected exception while invoking method.", ex);
 					}
 				}
 			});
