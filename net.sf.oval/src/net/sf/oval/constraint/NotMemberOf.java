@@ -22,7 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the value is false.
+ * Check if the string representation is not contained in the given string array
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
@@ -32,21 +32,22 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = AssertFalseCheck.class)
-public @interface AssertFalse
+@Constraint(checkWith = NotMemberOfCheck.class)
+public @interface NotMemberOf
 {
-
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.AssertFalse";
+	String errorCode() default "net.sf.oval.constraints.NotMemberOf";
+
+	boolean ignoreCase() default false;
 
 	/**
-	 * message to be used for constructing the ConstraintViolation object
+	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.AssertFalse.violated";
+	String message() default "net.sf.oval.constraints.NotMemberOf.violated";
 
 	/**
 	 * severity passed to the ConstraintViolation object
@@ -57,4 +58,6 @@ public @interface AssertFalse
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	String[] value();
 }

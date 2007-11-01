@@ -50,9 +50,9 @@ public @interface HasSubstring
 	String message() default "net.sf.oval.constraints.Contains.violated";
 
 	/**
-	 * priority passed to the ConstraintViolation object
+	 * severity passed to the ConstraintViolation object
 	 */
-	int priority() default 0;
+	int severity() default 0;
 
 	/**
 	 * The associated validation profiles.

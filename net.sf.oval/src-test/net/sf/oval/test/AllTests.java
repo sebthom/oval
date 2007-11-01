@@ -38,12 +38,15 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.MaxTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MaxLengthTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MaxSizeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MemberOfTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MinTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MinLengthTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MinSizeTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NoSelfReferenceTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotBlankTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotEmptyTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotEqualTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotMemberOfTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNegativeTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNullTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.PastTest.class);

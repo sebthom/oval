@@ -48,9 +48,9 @@ public @interface MaxSize
 	String message() default "net.sf.oval.constraints.MaxSize.violated";
 
 	/**
-	 * priority passed to the ConstraintViolation object
+	 * severity passed to the ConstraintViolation object
 	 */
-	int priority() default 0;
+	int severity() default 0;
 
 	/**
 	 * The associated validation profiles.

@@ -50,7 +50,7 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	}
 
 	@Override
-	public int getPriority()
+	public int getSeverity()
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -83,7 +83,7 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	}
 
 	@Override
-	public void setPriority(final int priority)
+	public void setSeverity(final int severity)
 	{
 		throw new UnsupportedOperationException();
 	}

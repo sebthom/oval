@@ -22,21 +22,20 @@ import net.sf.oval.internal.CollectionFactoryHolder;
 /**
  * @author Sebastian Thomschke
  */
-public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
+public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 {
 	private static final long serialVersionUID = 1L;
 
 	private boolean ignoreCase;
-
-	private String substring;
-	private transient String substringLowerCase;
+	private String testString;
+	private transient String testStringLowerCase;
 
 	@Override
-	public void configure(final HasSubstring constraintAnnotation)
+	public void configure(final NotEqual constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setIgnoreCase(constraintAnnotation.ignoreCase());
-		setSubstring(constraintAnnotation.substring());
+		setTestString(constraintAnnotation.value());
 	}
 
 	@Override
@@ -45,23 +44,23 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("substring", substring);
+		messageVariables.put("testString", testString);
 		return messageVariables;
 	}
 
 	/**
-	 * @return the substring
+	 * @return the testString
 	 */
-	public String getSubstring()
+	public String getTestString()
 	{
-		return substring;
+		return testString;
 	}
 
-	private String getSubstringLowerCase()
+	private String getTestStringLowerCase()
 	{
-		if (substringLowerCase == null && substring != null)
-			substringLowerCase = substring.toLowerCase();
-		return substringLowerCase;
+		if (testStringLowerCase == null && testString != null)
+			testStringLowerCase = testString.toLowerCase();
+		return testStringLowerCase;
 	}
 
 	/**
@@ -77,10 +76,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	{
 		if (value == null) return true;
 
-		if (ignoreCase)
-			return value.toString().toLowerCase().indexOf(getSubstringLowerCase()) > -1;
+		if (ignoreCase) return !value.toString().toLowerCase().equals(getTestStringLowerCase());
 
-		return value.toString().indexOf(substring) > -1;
+		return !value.toString().equals(testString);
 	}
 
 	/**
@@ -92,10 +90,10 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	}
 
 	/**
-	 * @param substring the substring to set
+	 * @param testString the testString to set
 	 */
-	public void setSubstring(final String substring)
+	public void setTestString(final String testString)
 	{
-		this.substring = substring;
+		this.testString = testString;
 	}
 }

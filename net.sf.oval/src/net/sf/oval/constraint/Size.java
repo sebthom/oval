@@ -52,9 +52,9 @@ public @interface Size
 	int min() default 0;
 
 	/**
-	 * priority passed to the ConstraintViolation object
+	 * severity passed to the ConstraintViolation object
 	 */
-	int priority() default 0;
+	int severity() default 0;
 
 	/**
 	 * The associated validation profiles.

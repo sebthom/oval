@@ -52,12 +52,15 @@ import net.sf.oval.constraint.MatchPatternCheck;
 import net.sf.oval.constraint.MaxCheck;
 import net.sf.oval.constraint.MaxLengthCheck;
 import net.sf.oval.constraint.MaxSizeCheck;
+import net.sf.oval.constraint.MemberOfCheck;
 import net.sf.oval.constraint.MinCheck;
 import net.sf.oval.constraint.MinLengthCheck;
 import net.sf.oval.constraint.MinSizeCheck;
 import net.sf.oval.constraint.NoSelfReferenceCheck;
 import net.sf.oval.constraint.NotBlankCheck;
 import net.sf.oval.constraint.NotEmptyCheck;
+import net.sf.oval.constraint.NotEqualCheck;
+import net.sf.oval.constraint.NotMemberOfCheck;
 import net.sf.oval.constraint.NotNegativeCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.constraint.PastCheck;
@@ -102,7 +105,7 @@ public class XMLConfigurer implements Configurer
 			writer.addAttribute("lang", assertCheck.getLang());
 			writer.addAttribute("message", assertCheck.getMessage());
 			writer.addAttribute("errorCode", assertCheck.getErrorCode());
-			writer.addAttribute("priority", Integer.toString(assertCheck.getPriority()));
+			writer.addAttribute("severity", Integer.toString(assertCheck.getSeverity()));
 			writer.startNode("expr");
 			writer.setValue(assertCheck.getExpression());
 			writer.endNode();
@@ -127,8 +130,8 @@ public class XMLConfigurer implements Configurer
 			assertCheck.setLang(reader.getAttribute("lang"));
 			assertCheck.setMessage(reader.getAttribute("message"));
 			assertCheck.setErrorCode(reader.getAttribute("errorCode"));
-			if (reader.getAttribute("priority") != null)
-				assertCheck.setPriority(Integer.parseInt(reader.getAttribute("priority")));
+			if (reader.getAttribute("severity") != null)
+				assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
 
 			reader.moveDown();
 			assertCheck.setExpression(reader.getValue());
@@ -215,12 +218,15 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("max", MaxCheck.class);
 		xStream.alias("maxLength", MaxLengthCheck.class);
 		xStream.alias("maxSize", MaxSizeCheck.class);
+		xStream.alias("memberOf", MemberOfCheck.class);
 		xStream.alias("min", MinCheck.class);
 		xStream.alias("minLength", MinLengthCheck.class);
 		xStream.alias("minSize", MinSizeCheck.class);
 		xStream.alias("noSelfReference", NoSelfReferenceCheck.class);
 		xStream.alias("notBlank", NotBlankCheck.class);
 		xStream.alias("notEmpty", NotEmptyCheck.class);
+		xStream.alias("notEqual", NotEqualCheck.class);
+		xStream.alias("notMemberOf", NotMemberOfCheck.class);
 		xStream.alias("notNegative", NotNegativeCheck.class);
 		xStream.alias("notNull", NotNullCheck.class);
 		xStream.alias("past", PastCheck.class);

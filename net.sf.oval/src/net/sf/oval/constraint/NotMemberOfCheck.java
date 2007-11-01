@@ -12,31 +12,56 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import java.util.List;
 import java.util.Map;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.util.ArrayUtils;
+import net.sf.oval.internal.util.StringUtils;
 
 /**
  * @author Sebastian Thomschke
  */
-public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
+public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 {
 	private static final long serialVersionUID = 1L;
 
 	private boolean ignoreCase;
-
-	private String substring;
-	private transient String substringLowerCase;
+	private List<String> members;
+	private transient List<String> membersLowerCase;
 
 	@Override
-	public void configure(final HasSubstring constraintAnnotation)
+	public void configure(final NotMemberOf constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setIgnoreCase(constraintAnnotation.ignoreCase());
-		setSubstring(constraintAnnotation.substring());
+		setMembers(constraintAnnotation.value());
+	}
+
+	/**
+	 * @return the members
+	 */
+	public List<String> getMembers()
+	{
+		final List<String> v = CollectionFactoryHolder.getFactory().createList();
+		v.addAll(members);
+		return v;
+	}
+
+	private List<String> getMembersLowerCase()
+	{
+		if (membersLowerCase == null)
+		{
+			membersLowerCase = CollectionFactoryHolder.getFactory().createList(members.size());
+			for (final String val : members)
+			{
+				membersLowerCase.add(val.toLowerCase());
+			}
+		}
+		return membersLowerCase;
 	}
 
 	@Override
@@ -45,23 +70,8 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("substring", substring);
+		messageVariables.put("members", StringUtils.implode(members, ","));
 		return messageVariables;
-	}
-
-	/**
-	 * @return the substring
-	 */
-	public String getSubstring()
-	{
-		return substring;
-	}
-
-	private String getSubstringLowerCase()
-	{
-		if (substringLowerCase == null && substring != null)
-			substringLowerCase = substring.toLowerCase();
-		return substringLowerCase;
 	}
 
 	/**
@@ -77,10 +87,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	{
 		if (value == null) return true;
 
-		if (ignoreCase)
-			return value.toString().toLowerCase().indexOf(getSubstringLowerCase()) > -1;
+		if (ignoreCase) return !getMembersLowerCase().contains(value.toString().toLowerCase());
 
-		return value.toString().indexOf(substring) > -1;
+		return !members.contains(value.toString());
 	}
 
 	/**
@@ -92,10 +101,22 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	}
 
 	/**
-	 * @param substring the substring to set
+	 * @param members the members to set
 	 */
-	public void setSubstring(final String substring)
+	public void setMembers(final List<String> members)
 	{
-		this.substring = substring;
+		this.members = CollectionFactoryHolder.getFactory().createList();
+		this.members.addAll(members);
+		membersLowerCase = null;
+	}
+
+	/**
+	 * @param members the members to set
+	 */
+	public void setMembers(final String... members)
+	{
+		this.members = CollectionFactoryHolder.getFactory().createList();
+		ArrayUtils.addAll(this.members, members);
+		membersLowerCase = null;
 	}
 }

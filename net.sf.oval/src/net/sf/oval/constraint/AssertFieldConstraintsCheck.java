@@ -64,7 +64,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	}
 
 	@Override
-	public int getPriority()
+	public int getSeverity()
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -108,7 +108,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	}
 
 	@Override
-	public void setPriority(final int priority)
+	public void setSeverity(final int severity)
 	{
 		throw new UnsupportedOperationException();
 	}

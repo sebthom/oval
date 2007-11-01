@@ -56,9 +56,9 @@ public @interface AssertURL
 	URIScheme[] permittedURISchemes() default {URIScheme.HTTP, URIScheme.HTTPS, URIScheme.FTP};
 
 	/**
-	 * priority passed to the ConstraintViolation object
+	 * severity passed to the ConstraintViolation object
 	 */
-	int priority() default 0;
+	int severity() default 0;
 
 	/**
 	 * The associated validation profiles.
