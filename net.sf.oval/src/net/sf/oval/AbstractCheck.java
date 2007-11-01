@@ -23,7 +23,7 @@ public abstract class AbstractCheck implements Check
 {
 	protected String errorCode;
 	protected String message;
-	protected int priority;
+	protected int severity;
 	protected String[] profiles;
 
 	public String getErrorCode()
@@ -65,14 +65,14 @@ public abstract class AbstractCheck implements Check
 		return null;
 	}
 
-	public int getPriority()
-	{
-		return priority;
-	}
-
 	public String[] getProfiles()
 	{
 		return profiles;
+	}
+
+	public int getSeverity()
+	{
+		return severity;
 	}
 
 	public void setErrorCode(final String failureCode)
@@ -85,13 +85,13 @@ public abstract class AbstractCheck implements Check
 		this.message = message;
 	}
 
-	public void setPriority(final int priority)
-	{
-		this.priority = priority;
-	}
-
 	public void setProfiles(final String... profiles)
 	{
 		this.profiles = profiles;
+	}
+
+	public void setSeverity(final int severity)
+	{
+		this.severity = severity;
 	}
 }

@@ -50,14 +50,14 @@ public interface Check extends Serializable
 	Map<String, String> getMessageVariables();
 
 	/**
-	 * @return the error priority
-	 */
-	int getPriority();
-
-	/**
 	 * @return the profiles, may return null
 	 */
 	String[] getProfiles();
+
+	/**
+	 * @return the severity
+	 */
+	int getSeverity();
 
 	/**
 	 * This method implements the validation logic
@@ -90,12 +90,12 @@ public interface Check extends Serializable
 	void setMessage(String message);
 
 	/**
-	 * @param priority the priority to set
-	 */
-	void setPriority(int priority);
-
-	/**
 	 * @param profiles the profiles to set
 	 */
 	void setProfiles(String... profiles);
+
+	/**
+	 * @param severity the severity to set
+	 */
+	void setSeverity(int severity);
 }

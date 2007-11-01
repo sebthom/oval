@@ -66,12 +66,12 @@ public @interface Post
 	String old() default "";
 
 	/**
-	 * priority passed to the ConstraintViolation object
-	 */
-	int priority() default 0;
-
-	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }

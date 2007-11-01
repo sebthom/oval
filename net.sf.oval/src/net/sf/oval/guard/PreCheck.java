@@ -23,14 +23,14 @@ public class PreCheck
 	private String errorCode;
 	private String language;
 	private String message;
-	private int priority;
+	private int severity;
 	private String[] profiles;
 
 	public void configure(final Pre constraintAnnotation)
 	{
 		setMessage(constraintAnnotation.message());
 		setErrorCode(constraintAnnotation.errorCode());
-		setPriority(constraintAnnotation.priority());
+		setSeverity(constraintAnnotation.severity());
 		setExpression(constraintAnnotation.expr());
 		setLanguage(constraintAnnotation.lang());
 		setProfiles(constraintAnnotation.profiles());
@@ -69,19 +69,19 @@ public class PreCheck
 	}
 
 	/**
-	 * @return the priority
-	 */
-	public int getPriority()
-	{
-		return priority;
-	}
-
-	/**
 	 * @return the profiles
 	 */
 	public String[] getProfiles()
 	{
 		return profiles;
+	}
+
+	/**
+	 * @return the severity
+	 */
+	public int getSeverity()
+	{
+		return severity;
 	}
 
 	/**
@@ -117,18 +117,18 @@ public class PreCheck
 	}
 
 	/**
-	 * @param priority the priority to set
-	 */
-	public void setPriority(final int priority)
-	{
-		this.priority = priority;
-	}
-
-	/**
 	 * @param profiles the profiles to set
 	 */
 	public void setProfiles(final String[] profiles)
 	{
 		this.profiles = profiles;
+	}
+
+	/**
+	 * @param severity the severity to set
+	 */
+	public void setSeverity(final int severity)
+	{
+		this.severity = severity;
 	}
 }

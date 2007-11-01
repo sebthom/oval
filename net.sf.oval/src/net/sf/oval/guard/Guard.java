@@ -1146,7 +1146,7 @@ public class Guard extends Validator
 							messageVariables);
 
 					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage,
-							check.getPriority(), validatedObject, null, context));
+							check.getSeverity(), validatedObject, null, context));
 				}
 			}
 		}
@@ -1206,7 +1206,7 @@ public class Guard extends Validator
 							messageVariables);
 
 					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage,
-							check.getPriority(), validatedObject, null, context));
+							check.getSeverity(), validatedObject, null, context));
 				}
 			}
 		}

@@ -650,7 +650,7 @@ public class Validator
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
 					check.getMessageVariables());
 			violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check
-					.getPriority(), validatedObject, valueToValidate, context));
+					.getSeverity(), validatedObject, valueToValidate, context));
 		}
 	}
 
@@ -775,7 +775,7 @@ public class Validator
 
 			violations
 					.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check
-							.getPriority(), validatedObject, valueToValidate, context,
+							.getSeverity(), validatedObject, valueToValidate, context,
 							additionalViolations));
 		}
 

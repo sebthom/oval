@@ -7,8 +7,11 @@
 
 Built-in constraints:
  + added @net.sf.oval.constraint.InstanceOfAny
+ + added @net.sf.oval.constraint.MemberOf
+ + added @net.sf.oval.constraint.NotEqual
+ + added @net.sf.oval.constraint.NotMemberOf
  + added errorCode property
- + added priority property
+ + added severity property
  
 Expression languages:
  + added support for Ruby (JRuby) as expression language

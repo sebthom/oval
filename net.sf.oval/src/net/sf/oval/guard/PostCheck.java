@@ -21,7 +21,7 @@ public class PostCheck
 
 	private String expression;
 	private String errorCode;
-	private int priority;
+	private int severity;
 	private String message;
 	private String language;
 	private String old;
@@ -31,7 +31,7 @@ public class PostCheck
 	{
 		setMessage(constraintAnnotation.message());
 		setErrorCode(constraintAnnotation.errorCode());
-		setPriority(constraintAnnotation.priority());
+		setSeverity(constraintAnnotation.severity());
 		setExpression(constraintAnnotation.expr());
 		setLanguage(constraintAnnotation.lang());
 		setOld(constraintAnnotation.old());
@@ -79,19 +79,19 @@ public class PostCheck
 	}
 
 	/**
-	 * @return the errorPriority
-	 */
-	public int getPriority()
-	{
-		return priority;
-	}
-
-	/**
 	 * @return the profiles
 	 */
 	public String[] getProfiles()
 	{
 		return profiles;
+	}
+
+	/**
+	 * @return the severity
+	 */
+	public int getSeverity()
+	{
+		return severity;
 	}
 
 	/**
@@ -135,18 +135,18 @@ public class PostCheck
 	}
 
 	/**
-	 * @param priority the priority to set
-	 */
-	public void setPriority(final int priority)
-	{
-		this.priority = priority;
-	}
-
-	/**
 	 * @param profiles the profiles to set
 	 */
 	public void setProfiles(final String[] profiles)
 	{
 		this.profiles = profiles;
+	}
+
+	/**
+	 * @param severity the severity to set
+	 */
+	public void setSeverity(final int severity)
+	{
+		this.severity = severity;
 	}
 }

@@ -35,43 +35,43 @@ public class ConstraintViolation implements Serializable
 	private final OValContext context;
 	private final String errorCode;
 	private final String message;
-	private final int priority;
+	private final int severity;
 
 	private transient Object validatedObject;
 	private transient Object invalidValue;
 
-	public ConstraintViolation(final String errorCode, final String message, final int priority,
+	public ConstraintViolation(final String errorCode, final String message, final int severity,
 			final Object validatedObject, final Object invalidValue, final OValContext context)
 	{
 		this.errorCode = errorCode;
 		this.message = message;
-		this.priority = priority;
+		this.severity = severity;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
 		causes = null;
 	}
 
-	public ConstraintViolation(final String errorCode, final String message, final int priority,
+	public ConstraintViolation(final String errorCode, final String message, final int severity,
 			final Object validatedObject, final Object invalidValue, final OValContext context,
 			final ConstraintViolation... causes)
 	{
 		this.errorCode = errorCode;
 		this.message = message;
-		this.priority = priority;
+		this.severity = severity;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
 		this.causes = causes;
 	}
 
-	public ConstraintViolation(final String errorCode, final String message, final int priority,
+	public ConstraintViolation(final String errorCode, final String message, final int severity,
 			final Object validatedObject, final Object invalidValue, final OValContext context,
 			final List<ConstraintViolation> causes)
 	{
 		this.errorCode = errorCode;
 		this.message = message;
-		this.priority = priority;
+		this.severity = severity;
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
@@ -119,11 +119,11 @@ public class ConstraintViolation implements Serializable
 	}
 
 	/**
-	 * @return the priority
+	 * @return the severity
 	 */
-	public int getPriority()
+	public int getSeverity()
 	{
-		return priority;
+		return severity;
 	}
 
 	/**

@@ -68,18 +68,18 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 
 		/*
-		 * Retrieve the priority value from the constraint annotation via reflection.
+		 * Retrieve the severity value from the constraint annotation via reflection.
 		 */
 		try
 		{
-			final Method getPriority = constraintClazz.getDeclaredMethod("priority",
+			final Method getSeverity = constraintClazz.getDeclaredMethod("severity",
 					(Class< ? >[]) null);
-			priority = ((Number) getPriority.invoke(constraintAnnotation, (Object[]) null))
+			severity = ((Number) getSeverity.invoke(constraintAnnotation, (Object[]) null))
 					.intValue();
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint error priority based on annotation {}",
+			LOG.debug("Cannot determine constraint severity based on annotation {}",
 					constraintClazz.getName(), e);
 		}
 
