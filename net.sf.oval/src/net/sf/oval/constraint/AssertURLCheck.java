@@ -9,6 +9,7 @@
  * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
+ *     Makkari - live connect support.
  *******************************************************************************/
 package net.sf.oval.constraint;
 
@@ -21,6 +22,7 @@ import java.net.URLConnection;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.Log;
 
 /**
  * @author Sebastian Thomschke
@@ -63,6 +65,8 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 
 	private static final long serialVersionUID = 1L;
 
+	private final Log LOG = Log.getLog(AssertURLCheck.class);
+
 	/**
 	 * Specifies if a connection to the URL should be attempted to verify its validity. 
 	 */
@@ -80,18 +84,20 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			final URL theURL = new URL(url);
 			final URLConnection conn = theURL.openConnection();
 			conn.connect();
-			conn.getInputStream();
+			conn.getInputStream().close();
 			if (conn instanceof HttpURLConnection)
 			{
 				final HttpURLConnection httpConnection = (HttpURLConnection) conn;
 				final int rc = httpConnection.getResponseCode();
 
 				if (rc < HttpURLConnection.HTTP_BAD_REQUEST) return true;
+				LOG.trace("Connecting failed with HTTP response code " + rc);
 				return false;
 			}
 		}
 		catch (final IOException e)
 		{
+			LOG.trace("Connecting failed with exception", e);
 			return false;
 		}
 		return true;
@@ -111,13 +117,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public URIScheme[] getPermittedURISchemes()
 	{
-		URIScheme[] schemes = null;
-
-		if (null != permittedURISchemes)
-		{
-			schemes = permittedURISchemes.clone();
-		}
-		return schemes;
+		return permittedURISchemes == null ? null : permittedURISchemes.clone();
 	}
 
 	/**
@@ -133,33 +133,33 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	public boolean isSatisfied(final Object validatedObject, final Object value,
 			final OValContext context, final Validator validator)
 	{
-		String scheme = null;
-
 		if (value == null) return true;
 
-		final String URIString = value.toString().toLowerCase();
+		final String URIString = value.toString();
 
-		// By constructing a java.net.URI object, the string representing the URI will be parsed against RFC 2396.
-		// In case of non compliance a java.net.URISyntaxException will be thrown
 		try
 		{
+			// By constructing a java.net.URI object, the string representing the URI will be parsed against RFC 2396.
+			// In case of non compliance a java.net.URISyntaxException will be thrown
 			final URI uri = new URI(URIString);
+
 			// Make sure that the URI contains: [scheme; scheme-specific-part]
-			scheme = uri.getScheme();
+			final String scheme = uri.getScheme();
 			if (scheme == null || uri.getRawSchemeSpecificPart() == null)
-				throw new java.lang.NullPointerException(
-						"URI scheme or scheme-specific-part not specified");
+			{
+				LOG.trace("URI scheme or scheme-specific-part not specified");
+				return false;
+			}
+
 			// Check whether the URI scheme is supported
-			if (!isURISchemeValid(scheme)) return false;
+			if (!isURISchemeValid(scheme.toLowerCase())) return false;
+
 			// If the connect flag is true then attempt to connect to the URL
 			if (connect) return canConnect(URIString);
 		}
-		catch (final java.net.URISyntaxException uriSyntaxException)
+		catch (final java.net.URISyntaxException ex)
 		{
-			return false;
-		}
-		catch (final java.lang.NullPointerException nullPointerException)
-		{
+			LOG.trace("URI scheme or scheme-specific-part not specified");
 			return false;
 		}
 

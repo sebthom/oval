@@ -9,6 +9,7 @@
  * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
+ *     Makkari - added AssertURLTest
  *******************************************************************************/
 package net.sf.oval.test;
 
@@ -96,8 +97,8 @@ public class AllTests
 		// Tests with JDK collections
 		{
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with JDK collections");
-			AllTests.validatorTests(suite1);
-			AllTests.guardTests(suite1);
+			validatorTests(suite1);
+			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
@@ -115,8 +116,8 @@ public class AllTests
 		{
 			final TestSuite suite1 = new TestSuite(
 					"Tests for net.sf.oval with Javolution collections");
-			AllTests.validatorTests(suite1);
-			AllTests.guardTests(suite1);
+			validatorTests(suite1);
+			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
@@ -133,8 +134,8 @@ public class AllTests
 		// Tests with Trove collections
 		{
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with Trove collections");
-			AllTests.validatorTests(suite1);
-			AllTests.guardTests(suite1);
+			validatorTests(suite1);
+			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
