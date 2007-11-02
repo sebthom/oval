@@ -6,6 +6,7 @@
 ================
 
 Built-in constraints:
+ + added @net.sf.oval.constraint.AssertURL
  + added @net.sf.oval.constraint.InstanceOfAny
  + added @net.sf.oval.constraint.MemberOf
  + added @net.sf.oval.constraint.NotEqual
