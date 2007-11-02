@@ -2,11 +2,11 @@
 [+] Feature added.
 [*] Change.
 
-2007-??-?? v1.10
+2007-11-02 v1.10
 ================
 
 Built-in constraints:
- + added @net.sf.oval.constraint.AssertURL
+ + added @net.sf.oval.constraint.AssertURL (thanks to Makkari)
  + added @net.sf.oval.constraint.InstanceOfAny
  + added @net.sf.oval.constraint.MemberOf
  + added @net.sf.oval.constraint.NotEqual
@@ -44,7 +44,7 @@ Validator:
  + added support for object-level constraints (@Assert, @CheckWith and @ValidateWithMethod can now be declared on class-level)
  
 Refactoring:
- * net.sf.oval.exception.ContraintsViolatedException moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ConstraintsViolatedException moved from package net.sf.oval.guard
  * net.sf.oval.exception.ExceptionTranslator moved from package net.sf.oval.guard
  * net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl moved from package net.sf.oval.guard
  

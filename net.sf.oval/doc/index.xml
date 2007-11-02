@@ -307,11 +307,16 @@ if(exs.size()&gt;0)
         </listitem>
 
         <listitem>
-          <para><command>mvel</command> for MVEL, or</para>
+          <para><command>mvel</command> for MVEL,</para>
         </listitem>
 
         <listitem>
-          <para><command>ognl</command> for OGNL.</para>
+          <para><command>ognl</command> for OGNL,</para>
+        </listitem>
+
+        <listitem>
+          <para><command>ruby</command> or <command>jruby</command> for Ruby
+          (via JRuby)</para>
         </listitem>
       </itemizedlist>
 
@@ -480,8 +485,8 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(entity);</progra
         automatically checked when the constructor is invoked. Invocations of
         the constructor will be prohibited if any of the constraints is not
         satisfied. In such a case a
-        <command>net.sf.oval.guard.ConstraintsViolatedException</command> will
-        be thrown.</para>
+        <command>net.sf.oval.exception.ConstraintsViolatedException</command>
+        will be thrown.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
@@ -506,8 +511,8 @@ BusinessObject bo = new BusinessObject(null);</programlisting>
         checked when the method is invoked. Invocations of to the method will
         be prohibited if any of the constraints is not satisfied. In such a
         case a
-        <command>net.sf.oval.guard.ConstraintsViolatedException</command> will
-        be thrown.</para>
+        <command>net.sf.oval.exception.ConstraintsViolatedException</command>
+        will be thrown.</para>
 
         <programlisting>@net.sf.oval.guard.Guarded
 public class BusinessObject
@@ -667,11 +672,16 @@ public class Transaction {
           </listitem>
 
           <listitem>
-            <para><command>mvel</command> for MVEL, or</para>
+            <para><command>mvel</command> for MVEL,</para>
           </listitem>
 
           <listitem>
-            <para><command>ognl</command> for OGNL.</para>
+            <para><command>ognl</command> for OGNL, or</para>
+          </listitem>
+
+          <listitem>
+            <para><command>ruby</command> or <command>jruby</command> for Ruby
+            (via JRuby)</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -818,11 +828,16 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
           </listitem>
 
           <listitem>
-            <para><command>mvel</command> for MVEL, or</para>
+            <para><command>mvel</command> for MVEL,</para>
           </listitem>
 
           <listitem>
-            <para><command>ognl</command> for OGNL.</para>
+            <para><command>ognl</command> for OGNL, or</para>
+          </listitem>
+
+          <listitem>
+            <para><command>ruby</command> or <command>jruby</command> for Ruby
+            (via JRuby)</para>
           </listitem>
         </itemizedlist>
 
@@ -1411,10 +1426,10 @@ Guard guard = new Guard(xmlConfigurer);</programlisting>
   </section>
 
   <section>
-    <title>Additional Configuration and Customization Options</title>
+    <title>Additional configuration and customization options</title>
 
     <section>
-      <title>Constraint Profiles</title>
+      <title>Constraint profiles</title>
 
       <para>You may come across the requirement to turn on or off the checking
       of certain constraints across your domain model, e.g. based on some
@@ -1456,18 +1471,18 @@ v.validate(p);
     </section>
 
     <section>
-      <title>Collection Factory</title>
+      <title>Collection factory</title>
 
       <para>OVal instantiates all internally used collections indirectly via a
       <command>CollectionFactory</command>. OVal comes with three different
       implementations of the collection factory (Javolution Collections, GNU
       Trove Collections, and JDK Collections). If the Javolution or GNU Trove
       collection classes are detected in the classpath, OVal automatically
-      uses the respective CollectionFactory. If they are not available a
-      collection factory for standard JDK collections is used.</para>
+      uses the respective CollectionFactory otherwise the collection factory
+      for standard JDK collections is used.</para>
 
-      <para>The Collection Factory to be used can be specified via the static
-      <command>Validator.setCollectionFactory(factory)</command>
+      <para>The Collection Factory to be used by OVal can be configured via
+      the static <command>Validator.setCollectionFactory(factory)</command>
       method.</para>
 
       <para>You can implement the
@@ -1476,22 +1491,32 @@ v.validate(p);
     </section>
 
     <section>
-      <title>Additional Expression Languages</title>
+      <title>Adding additional expression languages</title>
 
-      <para>If you would like to express constraints in a scripting language
-      not supported by OVal out of the box, you need to implement the
+      <para>If you want to express constraints in a scripting language not
+      supported by OVal out of the box, you need to implement the
       <command>net.sf.oval.expression.ExpressionLanguage</command> interface
-      and register your implementation with OVal using the
-      <command>Validator.addExpressionLanguage(languageId,
+      for the desired language and register your implementation with OVal
+      using the <command>Validator.addExpressionLanguage(languageId,
       expressionLanguage)</command> method. Then you can use the specified
       languageId with expression language aware constraint annotations such as
-      @Assert, @Pre, or @Post and start expressing constraints with the new
+      @Assert, @Pre, or @Post and start expressing constraints in the new
       expression language.</para>
+    </section>
+
+    <section>
+      <title>Spring integration</title>
+
+      <para>With the class
+      <command>net.sf.oval.integration.spring.SpringValidator</command> OVal
+      provides an implementation of Spring's
+      <command>org.springframework.validation.Validator</command>
+      interface.</para>
     </section>
   </section>
 
   <section>
-    <title>API Documentation</title>
+    <title>API documentation</title>
 
     <para>You can browse OVal's Javadoc <ulink
     url="api/index.html">here</ulink> .</para>
@@ -1576,7 +1601,7 @@ v.validate(p);
 
     <itemizedlist>
       <listitem>
-        <para>Validación Java: Oval, una joya escondida</para>
+        <para>Validación Java: OVal, una joya escondida</para>
 
         <para><ulink
         url="http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html">http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html</ulink></para>
@@ -1650,7 +1675,7 @@ v.validate(p);
   </section>
 
   <section>
-    <title>Trademark Disclaimer</title>
+    <title>Trademark disclaimer</title>
 
     <para><trademark>Java</trademark> and all Java-based trademarks are
     trademarks of Sun Microsystems, Inc. in the United States, other
