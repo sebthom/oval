@@ -1,0 +1,310 @@
+[-] Bug fixed.
+[+] Feature added.
+[*] Change.
+
+2007-11-02 v1.10
+================
+
+Built-in constraints:
+ + added @net.sf.oval.constraint.AssertURL (thanks to Makkari)
+ + added @net.sf.oval.constraint.InstanceOfAny
+ + added @net.sf.oval.constraint.MemberOf
+ + added @net.sf.oval.constraint.NotEqual
+ + added @net.sf.oval.constraint.NotMemberOf
+ + added errorCode property
+ + added severity property
+ 
+Expression languages:
+ + added support for Ruby (JRuby) as expression language
+
+Localization:
+ * update Polish translation of the constraint violation messages (thanks to Christopher Faryna) 
+ + added new translations of the contraint violation messages:
+   + Chinese (thanks to kindloaf)
+   + Dutch (thanks to miep)
+   + Hungarian (thanks to Gabor Nagy)
+   + Italian (thanks to Mastermind X)
+   + Norwegian (thanks to Simen Røkaas)
+   + Portuguese (thanks to Rubem Azenha)
+   + Romanian (thanks to A. Mate)
+   + Russian (thanks to Andrey Qwerty)
+   + Spanish (thanks to Luis Garcia Sevillano)
+   + Swedish (thanks to Johan Hedberg)
+   + Turkish (thanks to Merdan Nouryev)
+
+Testing:
+ + added multi threading test for net.sf.oval.Validator
+ + added tests for net.sf.oval.constraints.*Check classes
+
+Validator:
+ + added method Validator.assertValid(...)
+ + added method Validator.assertValidFieldValue(...)
+ * renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
+ * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
+ + added support for object-level constraints (@Assert, @CheckWith and @ValidateWithMethod can now be declared on class-level)
+ 
+Refactoring:
+ * net.sf.oval.exception.ConstraintsViolatedException moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ExceptionTranslator moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl moved from package net.sf.oval.guard
+ 
+Other Changes:
+ * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
+ - Configuring validateWithMethod constraints via XML was broken (thanks to Ramon Buckland)
+ + added support for different logging frameworks/facades, so far: Log4J, commons logging
+
+2007-07-22 v1.0
+===============
+Annotation configuration:
+ - JPAAnnotationsConfigurer does not configure a NotNullCheck for fields with @Column(nullable=false)
+   that also have @javax.persistence.GeneratedValue or @javax.persistence.Version specified 
+ * renamed @Guarded.applyFieldConstraintsToSetter to @Guarded.applyFieldConstraintsToSetters
+ + added @Guarded.applyFieldConstraintsToConstructors to @Guarded.applyFieldConstraintsToConstructors
+ * JPAAnnotationsConfigurer constraint mappings extended:
+	@javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid
+	@javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid
+	@javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid
+
+Built-in constraints:
+ + added @net.sf.oval.constraint.NotBlank (thanks to Dennis Kieselhorst)
+
+Expression languages:
+ + added support for OGNL as expression language
+ + added support for MVEL as expression language
+
+XML configuration:
+ - fixed some issues with the XML configuration DTD (e.g. [ Bug 1728672 ])
+
+Other changes:
+ + localization support for several exception types added
+ + added static Validator.getCollectionFactory method
+ + added static Validator.setCollectionFactory method
+ * made Validator.setMessageResolver method static
+ * made Validator.getMessageResolver method static
+ * moved net.sf.oval.collection.CollectionFactoryHolder to net.sf.oval.internal
+ - fixed a StackOverflowError that occured during invariant checking for 
+   guarded classes that override the hashCode() method (thanks to io_exception)
+ + documentation improved
+
+
+2007-03-18 v0.9
+===============
+Built-in constraints:
+  * renamed package net.sf.oval.constraints to net.sf.oval.constraint
+  * net.sf.oval.constraint.NoSelfReference: renamed @NotSelfRef to @NoSelfReference
+  * net.sf.oval.constraint.MatchPattern: renamed @RegEx to @MatchPattern
+  + added @net.sf.oval.constraint.Assert for use with expression languages
+  + added @net.sf.oval.constraint.CheckWith (as an alternative to @ValidateWithMethod)
+  + added @net.sf.oval.constraint.Future
+  + added @net.sf.oval.constraint.HasSubstring
+  + added @net.sf.oval.constraint.Max
+  + added @net.sf.oval.constraint.MaxLength
+  + added @net.sf.oval.constraint.MaxSize
+  + added @net.sf.oval.constraint.Min
+  + added @net.sf.oval.constraint.MinLength
+  + added @net.sf.oval.constraint.MinSize
+  + added @net.sf.oval.constraint.Past
+  * when @AssertValid is used on a map the map's keys and values are now validated too by default (thanks to tahura)  
+
+Annotation configuration:
+  * dropped @net.sf.oval.annotations.DefineConstraintSet
+  * net.sf.oval.Constraint: moved from package net.sf.oval.annotations
+  * added @net.sf.oval.configuration.annotation.IsInvariant
+
+XML configuration:
+  - XML configuration now also works for JREs not having the StAX API present
+  * simplified the OVal XML configuration DTD
+
+Expression languages:
+  + added plugable support for expression languages
+  + added support for JavaScript as expression language (via Mozilla Rhino)
+  + added support for Groovy as expression language
+  + added support for BeanShell as expression language
+
+Validator:
+  + validation of static fields and static method return values is now supported
+
+Guard (programming by contract):
+  * replaced everything related to Guard.ReportingMode with Guard.isInProbeMode(...) and Guard.setInProbeMode(...)
+  + added automatic invariant checking
+  + check of pre,post, and/or invariant checks can turned on/off programmatically
+  + constraint violation listeners can now also be registered for interfaces 
+    (= notify about violations for all guarded classes implementing the given interface)
+  + introduced @net.sf.oval.guard.Pre for declaring pre conditions with an expression language
+  + introduced @net.sf.oval.guard.Post for declaring post conditions with an expression language
+  * ConstraintsViolatedException.getMessage() now returns the message of the first constraint violation (thanks to szymon_eu)
+  + added Guard.setExceptionTranslator() allowing you to change the type of exception that is thrown on constraint violations
+  + guarding of static fields and static method return values is now supported
+  * everything related to programming by contract has been moved into a new net.sf.oval.guard package
+    * net.sf.oval.ParamenterNameResolverAspectJImpl: moved from package net.sf.oval.aspectj
+    * net.sf.oval.guard.ApiUsageAuditor: moved from package net.sf.oval.aspectj
+    * net.sf.oval.guard.ApiUsageAuditor2: moved from package net.sf.oval.aspectj
+    * net.sf.oval.guard.ConstraintsViolatedException: moved from package net.sf.oval.exceptions
+    * net.sf.oval.guard.GuardAspect: moved from package net.sf.oval.aspectj
+    * net.sf.oval.guard.GuardAspect2: moved from package net.sf.oval.aspectj
+    * net.sf.oval.guard.Guarded: moved from package net.sf.oval.guard
+    * net.sf.oval.guard.IsGuarded: moved from package net.sf.oval
+    * net.sf.oval.guard.PostValidateThis: moved from package net.sf.oval.annotations
+    * net.sf.oval.guard.PreValidateThis: moved from package net.sf.oval.annotations
+  
+Other changes:
+  + introduced the concept of constraint profiles
+  + added polish translation of the constraint violation messages (thanks to szymon_eu)
+  + added support for GNU Trove collections
+  * renamed package net.sf.oval.collections to net.sf.oval.collection
+  * renamed package net.sf.oval.contexts to net.sf.oval.context
+  * renamed package net.sf.oval.exceptions to net.sf.oval.exception
+  - the ant build script now also creates the dist folder if it does not exist (thanks to tahura)
+  + the ant build script now generates "with-depedencies" distribution archives
+  * improved the maven bundle
+
+
+2006-12-10 v0.8
+===============
++ added JPAAnnotationsConfigurer to translate EJB3 JPA annotations into OVal constraints
+	@javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
+	@javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
+	@javax.persistence.ManyToOne(optional=false)  => @net.sf.oval.constraints.NotNull
+	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
+	@javax.persistence.Column(length=5)           => @net.sf.oval.constraints.Length
+* changed the ant script to generate a maven2 bundle jar in the dist target
+- AssertConstraintSet constraint was ignored when specified for getter methods' return value 
+- NPE was thrown when validating objects against an XML based configuration that uses constraint sets
+- various fixes regarding XML based configuration (thanks to tahura)
++ added more JUnit tests for the xml configuration
++ net.sf.oval.configuration.POJOConfigurer and all configuration elements are now serializable
++ added support for ParaNamer http://paranamer.codehaus.org/ for method parameter name resolving
++ added a DTD for the XML configuration file
+* when @AssertValid is used on a collection the collection's elements are now validated too by default (thanks to tahura)
+
+Refactoring:
+* net.sf.oval.annotations.Guarded: annotation @Constrained renamed to @Guarded
+* net.sf.oval.aspectj.GuardAspect: aspect ConstraintsEnforcerAspect renamed to GuardAspect
+* net.sf.oval.aspectj.GuardAspect2: class ConstraintsEnforcerAspect2 renamed to GuardAspect2
+* net.sf.oval.Guard: class ConstraintsEnforcer renamed to Guard
+
+
+2006-11-12 v0.7
+===============
++ added pluggable support for alternative collection implementations
++ added support for Javolution Collection Classes (http://javolution.org/)
++ changed the ant script to include the JUnit test cases in the sources zip file
+- fixed some serialization related issues
+- fixed NPE in InstanceOfCheck
+* reworked the configuration mechanism
+    + added net.sf.oval.configuration package
+    + added support for POJO based constraint configuration
+    + added support for XML based constraint configuration
++ added the concept of constraint sets
+	+ added @net.sf.oval.annotations.DefineConstraintSet
+	+ added @net.sf.oval.constraints.AssertConstraintSet
+	+ added net.sf.oval.exceptions.UndefinedConstraintSetException
+	+ added net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException
+    + added net.sf.oval.Validator.addConstraintSet(ConstraintSetConfiguration)	
+* made resolving of constraint violation messages customizable
+    + added net.sf.oval.MessageResolver
+    + added net.sf.oval.MessageResolverImpl
+    + added net.sf.oval.Validator.getMessageResolver()
+    + added net.sf.oval.Validator.setMessageResolver(MessageResolver)
+* removed the "check" property from the net.sf.oval.ConstraintViolation class
+
+Refactoring:
+* net.sf.oval.AbstractAnnotationCheck: class AbstractCheck renamed to AbstractAnnotationCheck
+
+
+2006-08-04 v0.6
+===============
++ constraints programmatically specified during runtime via net.sf.oval.Validator.addCheck(...) can now be removed using net.sf.oval.Validator.removeCheck(...)
++ added french translation for the violation messages of the built-in constraints (provided by mimil)
++ added @InstanceOf constraint
+* simplified annotation check loading by introducing a check parameter to the @Constraint annotation that is used to specify the constraint check class
+* refactored AspectJ related code into separate classes in the package net.sf.oval.aspectj to potentially support other AOP libraries later
+* made the code to resolve the variables names of constructor and method parameters configurable via the ParameterNameResolver interface and the Validator.setParameterNameResolver(...) method
++ added @AssertValid constraint
+* moved @FieldConstraints from package net.sf.oval.annotations to net.sf.oval.constraints
+* @FieldConstraints constraint now also considers constraints added to fields during runtime via Validator.addCheck(...)
+* changed all static methods of Validator and ConstraintsEnforcer to non-static to allow multiple validator instances at the same time being configured differently
++ introduced an ignoreIfNull parameter for the @ValidateWithMethod annotation
+* net.sf.oval.annotations.PreValidateThis: annotation @PreValidateObject renamed to @PreValidateThis
+* net.sf.oval.annotations.PostValidateThis: annotation @PostValidateObject renamed to @PostValidateThis
+
+Refactoring:
+- removed net.sf.oval.Validator.setAnnotationCheckLoader(AnnotationCheckLoader)
+- removed net.sf.oval.Validator.getAnnotationCheckLoader()
+- removed net.sf.oval.AnnotationCheckLoader
+- removed net.sf.oval.AnnotationCheckLoaderImpl
+
+
+2006-04-27 v0.5
+===============
+- net.sf.oval.Validator: Validation of inherited classes throws NullPointerException [ Bug 1461805 ]
++ added net.sf.oval.ConstraintViolation which now holds the information of a single constraint violation
++ using @net.sf.oval.annotations.FieldConstraints you can now apply constraints defined for fields to any constructor/method parameter or getter method in the same class
++ added support for localizable error messages
++ added support for parameters in constraint violation messages
++ net.sf.oval.context.ConstructorParameterContext: added method getParameterName()
++ net.sf.oval.context.MethodParameterContext: added method getParameterName()
++ the way how the corresponding checks for constraint annotations are resolved/loaded has been made customizable via net.sf.oval.Validator.setAnnotationCheckLoader(AnnotationCheckLoader)
++ constraints can now be specified programmatically during runtime via net.sf.oval.Validator.addCheck(...) -> this allows you to implement alternative configuration mechanisms
+* net.sf.oval.exceptions.ConstraintViolationsException: now holds an array of ConstraintViolations
+* net.sf.oval.annotations.Validatable: default value for applyFieldConstraintsToSetter() changed from "true" to "false"
+* net.sf.oval.Validator: method validate(Object) now returns List<ConstraintViolation> instead of ArrayList<ConstraintViolationException>
+* classes only need to be annotated with @net.sf.oval.annotations.Constrain when using the "design by contract" feature in conjunction with AspectJ
++ added the aspect ApiUsageAuditor that will report warnings about unsupported usage of annotations in Eclipse IDE 
++ added support for specifying constraints on method return values when using programming by contract (post condition)
+* extended the documentation
+
+Refactoring:
+* net.sf.oval.Validator: refactored AspectJ related fields and methods into a separate class ConstraintsEnforcer
+* net.sf.oval.ClassChecks: Reduced class visibility from public to package
+* net.sf.oval.ConstraintsEnforcer: aspect ValidationAspect renamed to ConstraintsEnforcerAspect
+* net.sf.oval.ConstraintsViolatatedListener: class ValidationListener renamed to ConstraintsViolatatedListener
+* net.sf.oval.ConstraintsViolatatedListener: renamed method onValidationException to onConstraintsViolatedException
+* net.sf.oval.ConstraintsViolatatedAdapter: class ValidationAdapter renamed to ConstraintsViolatatedAdapter
+* net.sf.oval.annotations.Constrain: renamed @Validatable to @Constrain
+* net.sf.oval.annotations.Constraint: renamed @ConstraintAnnotation to @Constraint
+* net.sf.oval.constraints.NotSelfRef: renamed @NotThis to @NotSelfRef
+* net.sf.oval.exceptions.ConstraintAnnotationNotPresentException: class ValidatableAnnotationNotPresentException renamed to ConstraintAnnotationNotPresentException
+* net.sf.oval.exceptions.ConstraintsViolatedException: class ConstraintValidationException renamed to ConstraintsViolatedException
+
+
+2006-03-17 v0.4
+===============
+- net.sf.oval.constraints.AbstractCheck: the message specified in constraint annotations was not used in the ConstraintException [ Bug 1449558 ]
+* improved test cases in package net.sf.oval.test
+- net.sf.oval.ValidationAspect: OVal tried to validate inner classes not having the @Validatable annotation which resulted in net.sf.oval.exceptions.ValidatableAnnotationNotPresent
+* net.sf.oval.ValidationAspect: cleaned up and optimized for performance
+* net.sf.oval.Validator: cleaned up and optimized for performance
+* net.sf.oval.Validator: the removeListener methods now return a boolean value specifying if the listener was registered with the validator
+
+Refactoring:
+* net.sf.oval.Validator: renamed onObjectValidationException(..) methods to onConstraintValidationException(..)
+* net.sf.oval.exception.ConstraintException: class ConstraintException renamed to ConstraintValidationException
+* net.sf.oval.annotations.PreValidateObject: annotation @PreValidate renamed to @PreValidateObject
+* net.sf.oval.annotations.PostValidateObject: annotation @PostValidate renamed to @PostValidateObject
+* net.sf.oval.contexts: renamed net.sf.oval.context to net.sf.oval.contexts
+* net.sf.oval.contexts.ValidationContext: changed from class to interface
+* net.sf.oval.Validator: renamed field defaultValidationMode to validationMode
+* net.sf.oval.exception.ValidatableAnnotationNotPresent renamed to ValidatableAnnotationNotPresentException
+
+
+2005-10-17 v0.3
+===============
++ net.sf.oval.annotations.Validatable: added parameter applyFieldConstraintsToSetter()
+  => constraints specified for fields are now automatically applied to the value parameter of the corresponding setter method
++ net.sf.oval.test.SetterValidationWithFieldConstraintsTest: added
++ net.sf.oval.contraints.NotNegative: added
+* net.sf.oval.constraints.Check: renamed method isValid to isSatisfied
+* net.sf.oval.ClassChecks: now uses the class loader of the constraint annotation to load the corresponding Check class
+* net.sf.oval.ClassChecks: changed the logging level to from WARNING to FINE
+* net.sf.oval.ValidationAspect: changed the logging level to from INFO to FINE
+* net.sf.oval.exception.ValidationException: class ValidationException renamed to OValException
+* net.sf.oval.exception.InvalidValueException: class InvalidValueException renamed to ConstraintException
+* net.sf.oval.exception.ObjectValidationException: dropped
+* net.sf.oval.exception.AccessingFieldValueFailedException: now extends net.sf.oval.exception.ReflectionException
+* net.sf.oval.exception.InvokingGetterFailedException: now extends net.sf.oval.exception.ReflectionException
+
+
+2005-08-17 v0.1alpha
+====================
+[+] initial release

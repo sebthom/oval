@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="OVal">
+
+	<description>
+    	OVal is an extensible object validation framework for Java(tm) 5 or later
+    </description>
+
+	<tstamp>
+		<format property="TODAY" pattern="yyyy-MM-dd" />
+		<format property="NOW" pattern="yyyyMMddHHmm" />
+	</tstamp>
+
+	<!-- ================================ -->
+	<!-- Global properties                -->
+	<!-- ================================ -->
+	<property name="version" value="1.10" />
+	<property name="buildversion" value="${version}.${NOW}" />
+	<property name="maven.artifactId" value="oval" />
+	<property name="jar.basename" value="net.sf.oval" />
+	<property name="dist.basename" value="net.sf.oval" />
+
+	<!-- ================================ -->
+	<!-- Project directories              -->
+	<!-- ================================ -->
+	<property name="src" value="${basedir}/src" />
+	<property name="src-test" value="${basedir}/src-test" />
+	<property name="doc" value="${basedir}/doc" />
+	<property name="res" value="${basedir}/resources" />
+
+	<property name="dist" value="${basedir}/dist" />
+
+	<property name="build" value="${java.io.tmpdir}/${dist.basename}_build" />
+	<property name="bin" value="${build}/bin" />
+
+	<!-- ================================ -->
+	<!-- Class path                       -->
+	<!-- ================================ -->
+	<path id="classpath">
+		<!-- includes all jar files in lib -->
+		<fileset dir="${res}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- ================================ -->
+	<!-- Add. Ant Task definitions        -->
+	<!-- ================================ -->
+	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" classpathref="classpath" />
+
+	<!-- ================================ -->
+	<!-- Target: display properties       -->
+	<!-- ================================ -->
+	<target name="display_properties">
+
+		<echoproperties />
+
+	</target>
+
+	<!-- ================================ -->
+	<!-- Target: clean                    -->
+	<!-- ================================ -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<mkdir dir="${build}" />
+	</target>
+
+	<!-- ================================ -->
+	<!-- Target: doc                      -->
+	<!-- ================================ -->
+	<target name="create_docs" depends="display_properties,clean">
+
+		<mkdir dir="${build}/doc" />
+
+		<!--http://ant.apache.org/manual/CoreTasks/style.html-->
+		<xslt basedir="${doc}" destdir="${build}/doc" style="${res}/docbook/oval.xsl" classpathref="classpath" processor="trax">
+
+			<mapper type="glob" from="*.xml" to="*.html" />
+
+			<outputproperty name="method" value="xml" />
+			<outputproperty name="standalone" value="yes" />
+			<outputproperty name="encoding" value="iso8859_1" />
+			<outputproperty name="indent" value="yes" />
+
+		</xslt>
+
+		<copy todir="${build}/doc/">
+			<fileset dir="${doc}" includes="images/*,css/*" />
+		</copy>
+
+		<mkdir dir="${build}/doc/api" />
+
+		<javadoc doctitle="OVal - object validation framework" windowtitle="OVal" sourcepath="${src}" destdir="${build}/doc/api" packagenames="*" access="protected" author="true" classpathref="classpath" serialwarn="true" splitindex="true" use="true" version="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false">
+
+			<link href="http://java.sun.com/j2se/1.5/docs/api/" />
+
+		</javadoc>
+
+	</target>
+
+	<!-- ================================ -->
+	<!-- Target: compile                  -->
+	<!-- ================================ -->
+	<target name="compile" depends="display_properties,clean">
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${bin}" />
+
+		<!-- run AspectJ compiler to compile the source files -->
+		<iajc srcdir="${src}" destdir="${bin}" debug="on" classpathref="classpath" source="1.5" />
+
+		<copy todir="${bin}/">
+			<fileset dir="${src}" includes="**/*" excludes="**/*.java, **/*.aj" />
+		</copy>
+	</target>
+
+	<!-- ================================ -->
+	<!-- Target: jar                      -->
+	<!-- ================================ -->
+	<target name="jar" depends="compile">
+
+		<jar jarfile="${build}/${jar.basename}_${version}.jar" basedir="${bin}" manifest="${basedir}/META-INF/MANIFEST.MF">
+
+			<manifest>
+				<!-- see http://java.sun.com/j2se/1.5.0/docs/guide/extensions/spec.html -->
+				<!-- see http://java.sun.com/j2se/1.5.0/docs/guide/extensions/versioning.html -->
+				<!-- see http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Manifest -->
+				<!-- see http://java.sun.com/docs/books/tutorial/deployment/jar/manifestindex.html -->
+				<section name="net/sf/oval">
+					<attribute name="Package" value="net.sf.oval" />
+					<attribute name="Specification-Title" value="OVal - Object Validation Framework" />
+					<attribute name="Specification-Version" value="${version}" />
+					<attribute name="Specification-Vendor-Id" value="net.sf.oval" />
+					<attribute name="Specification-URL" value="http://oval.sf.net" />
+					<attribute name="Implementation-Title" value="net.sf.oval" />
+					<attribute name="Implementation-Version" value="${buildversion}" />
+					<attribute name="Implementation-Vendor-Id" value="net.sf.oval" />
+					<attribute name="Implementation-URL" value="http://oval.sf.net" />
+					<attribute name="Sealed" value="true" />
+				</section>
+				<section name="net/sf/oval/internal">
+					<attribute name="Sealed" value="true" />
+				</section>
+				<section name="net/sf/oval/internal/util">
+					<attribute name="Sealed" value="true" />
+				</section>
+				<section name="net/sf/oval/guard">
+					<attribute name="Sealed" value="true" />
+				</section>
+			</manifest>
+
+			<fileset dir="${doc}" includes="*.txt,*.html,*.url" />
+		</jar>
+	</target>
+
+	<!-- ================================ -->
+	<!-- Target: dist                     -->
+	<!-- ================================ -->
+	<target name="dist" depends="jar,create_docs">
+
+		<description>Creates all distribution files</description>
+
+		<!-- ************************************** -->
+		<!-- generate the dist without dependencies -->
+		<!-- ************************************** -->
+		<mkdir dir="${dist}" />
+
+		<copy todir="${build}/">
+			<fileset dir="${doc}" includes="*.txt,*.html,*.url" />
+		</copy>
+
+		<replace file="${build}/README.txt" token="$VERSION$" value="${version}" />
+
+		<zip basedir="${src}" destfile="${build}/${jar.basename}_${version}-src.zip" />
+
+		<zip basedir="${src-test}" update="true" destfile="${build}/${jar.basename}_${version}-src.zip" />
+
+		<delete failonerror="false">
+			<fileset dir="${dist}" includes="${dist.basename}_${buildversion}*" />
+		</delete>
+
+
+		<tar destfile="${dist}/${dist.basename}_${buildversion}.tar.gz" compression="gzip" longfile="gnu">
+			<tarfileset dir="${build}" excludes="bin/**" />
+		</tar>
+
+		<zip basedir="${build}" destfile="${dist}/${dist.basename}_${buildversion}.zip" excludes="bin/**" />
+
+		<!-- *********************************** -->
+		<!-- generate the dist with dependencies -->
+		<!-- *********************************** -->
+		<mkdir dir="${build}/lib" />
+		<copy todir="${build}/lib/">
+			<fileset dir="${res}" includes="**/*" excludes="docbook/**, maven/**, links/**, *.xml" />
+		</copy>
+
+		<tar destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.tar.gz" compression="gzip" longfile="gnu">
+			<tarfileset dir="${build}" excludes="bin/**" />
+		</tar>
+
+		<zip basedir="${build}" destfile="${dist}/${dist.basename}_${buildversion}-with-dependencies.zip" excludes="bin/**" />
+
+		<!-- ************************* -->
+		<!-- generate the maven bundle -->
+		<!-- ************************* -->
+		<mkdir dir="${build}/maven" />
+
+		<copy tofile="${build}/maven/${maven.artifactId}-${version}.jar">
+			<fileset dir="${build}" includes="${jar.basename}_${version}.jar" />
+		</copy>
+
+		<jar basedir="${src}" destfile="${build}/maven/${maven.artifactId}-${version}-sources.jar" />
+
+		<jar basedir="${build}/doc/api" destfile="${build}/maven/${maven.artifactId}-${version}-javadoc.jar" />
+
+		<copy todir="${build}/maven">
+			<fileset dir="${res}/maven" includes="pom.xml" />
+		</copy>
+
+		<replace file="${build}/maven/pom.xml" token="$VERSION$" value="${version}" />
+
+		<jar basedir="${build}/maven" destfile="${dist}/${maven.artifactId}-${version}-bundle.jar" />
+
+		<!-- ******** -->
+		<!-- clean up -->
+		<!-- ******** -->
+		<delete dir="${build}" />
+	</target>
+</project>
