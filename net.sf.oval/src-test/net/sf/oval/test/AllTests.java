@@ -51,6 +51,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNullTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.PastTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.SizeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
 	}
 
 	private static void guardTests(final TestSuite suite)
@@ -90,13 +91,13 @@ public class AllTests
 		// $JUnit-BEGIN$
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
-		constraintsTests(suite);
+		AllTests.constraintsTests(suite);
 
 		// Tests with JDK collections
 		{
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with JDK collections");
-			validatorTests(suite1);
-			guardTests(suite1);
+			AllTests.validatorTests(suite1);
+			AllTests.guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
@@ -114,8 +115,8 @@ public class AllTests
 		{
 			final TestSuite suite1 = new TestSuite(
 					"Tests for net.sf.oval with Javolution collections");
-			validatorTests(suite1);
-			guardTests(suite1);
+			AllTests.validatorTests(suite1);
+			AllTests.guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
@@ -132,8 +133,8 @@ public class AllTests
 		// Tests with Trove collections
 		{
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with Trove collections");
-			validatorTests(suite1);
-			guardTests(suite1);
+			AllTests.validatorTests(suite1);
+			AllTests.guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
 				{
