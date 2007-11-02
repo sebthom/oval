@@ -3,5 +3,5 @@
 - document usage with Spring
 - Spring 2.0 XSD configuration support
 - replace the XML configuration DTD schema with a better XSD schema
-- implement @AssertURL
 - JSR303 http://jcp.org/en/jsr/detail?id=303
+- provide tighter integration with web-app frameworks (JSF, Struts, Wicket etc)

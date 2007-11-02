@@ -39,7 +39,7 @@ Testing:
 Validator:
  + added method Validator.assertValid(...)
  + added method Validator.assertValidFieldValue(...)
- + renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
+ * renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
  * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
  + added support for object-level constraints (@Assert, @CheckWith and @ValidateWithMethod can now be declared on class-level)
  

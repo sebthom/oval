@@ -1,3 +1,25 @@
+OVal 1.10
+=========
+
+New features: 
+------------- 
+ + five new built-in constraints @AssertURL, @InstanceOfAny, @MemberOf, @NotEqual, @NotMemberOf
+ + errorCode and severity can now be specified for constraints
+ + added support for object-level constraints (compound constraints)
+ + support for Ruby as constraints expression language
+ + constraints violation messages translated into Chinese, Dutch, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish
+ + support for different logging frameworks/facades, so far: JDK logging, Log4J, commons logging
+
+1.0 to 1.1 Migration Notes:
+---------------------------
+ * net.sf.oval.exception.ConstraintsViolatedException was moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ExceptionTranslator was moved from package net.sf.oval.guard
+ * net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl was moved from package net.sf.oval.guard
+ * @AssertTrue, @AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
+ * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
+ * renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
+ 
+ 
 OVal 1.0
 ========
 

@@ -1369,7 +1369,7 @@ Guard guard = new Guard(xmlConfigurer);</programlisting>
     <para>Here is an example XML configuration:</para>
 
     <programlisting>&lt;?xml version="1.0" ?&gt;
-&lt;!DOCTYPE oval PUBLIC "-//OVal/OVal Configuration DTD 1.0//EN" "http://oval.sourceforge.net/oval-configuration-1.0.dtd"&gt;
+&lt;!DOCTYPE oval PUBLIC "-//OVal/OVal Configuration DTD 1.1//EN" "http://oval.sourceforge.net/oval-configuration-1.1.dtd"&gt;
 &lt;oval&gt;
   &lt;!-- define a constraint set --&gt;
   &lt;constraintSet id="user.userid"&gt;
