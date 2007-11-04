@@ -26,7 +26,7 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 {
 	private static final long serialVersionUID = 1L;
 
-	private long min;
+	private double min;
 
 	@Override
 	public void configure(final Min constraintAnnotation)
@@ -38,15 +38,16 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory().createMap(2);
-		messageVariables.put("min", Long.toString(min));
+		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
+				.createMap(2);
+		messageVariables.put("min", Double.toString(min));
 		return messageVariables;
 	}
 
 	/**
 	 * @return the min
 	 */
-	public long getMin()
+	public double getMin()
 	{
 		return min;
 	}
@@ -58,13 +59,8 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 
 		if (value instanceof Number)
 		{
-			if (value instanceof Float || value instanceof Double)
-			{
-				final double doubleValue = ((Number) value).doubleValue();
-				return doubleValue >= min;
-			}
-			final long longValue = ((Number) value).longValue();
-			return longValue >= min;
+			final double doubleValue = ((Number) value).doubleValue();
+			return doubleValue >= min;
 		}
 
 		final String stringValue = value.toString();
@@ -73,7 +69,7 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 			final double doubleValue = Double.parseDouble(stringValue);
 			return doubleValue >= min;
 		}
-		catch (NumberFormatException e)
+		catch (final NumberFormatException e)
 		{
 			return false;
 		}
@@ -82,7 +78,7 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 	/**
 	 * @param min the min to set
 	 */
-	public void setMin(final long min)
+	public void setMin(final double min)
 	{
 		this.min = min;
 	}

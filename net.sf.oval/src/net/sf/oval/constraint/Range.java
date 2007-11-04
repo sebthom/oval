@@ -40,7 +40,7 @@ public @interface Range
 	 */
 	String errorCode() default "net.sf.oval.constraints.Range";
 
-	long max() default Long.MAX_VALUE;
+	double max() default Double.MAX_VALUE;
 
 	/**
 	 * message to be used for the ContraintsViolatedException
@@ -49,15 +49,15 @@ public @interface Range
 	 */
 	String message() default "net.sf.oval.constraints.Range.violated";
 
-	long min() default Long.MIN_VALUE;
-
-	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
+	double min() default Double.MIN_VALUE;
 
 	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }

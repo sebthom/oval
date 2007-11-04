@@ -48,14 +48,17 @@ public @interface Min
 	String message() default "net.sf.oval.constraints.Min.violated";
 
 	/**
+	 * The associated validation profiles.
+	 */
+	String[] profiles() default {};
+
+	/**
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
 
 	/**
-	 * The associated validation profiles.
+	 * the minimum value
 	 */
-	String[] profiles() default {};
-
-	long value();
+	double value();
 }

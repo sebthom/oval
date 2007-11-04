@@ -69,7 +69,7 @@ public class CustomConstraintMessageTest extends TestCase
 	}
 
 	private final static String CUSTOM_ERROR_MESSAGE = "The property [name] cannot be null!";
-	private final static String EXPECTED_RANGE_MESSAGE = "An amount of 5 in not in the allowed range (2-4)";
+	private final static String EXPECTED_RANGE_MESSAGE = "An amount of 5 in not in the allowed range (2.0-4.0)";
 
 	/**
 	 * check that custom messages are used correctly

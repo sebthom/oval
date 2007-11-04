@@ -26,7 +26,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 {
 	private static final long serialVersionUID = 1L;
 
-	private long max;
+	private double max;
 
 	@Override
 	public void configure(final Max constraintAnnotation)
@@ -38,7 +38,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	/**
 	 * @return the max
 	 */
-	public long getMax()
+	public double getMax()
 	{
 		return max;
 	}
@@ -48,7 +48,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	{
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
-		messageVariables.put("max", Long.toString(max));
+		messageVariables.put("max", Double.toString(max));
 		return messageVariables;
 	}
 
@@ -59,13 +59,8 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 
 		if (value instanceof Number)
 		{
-			if (value instanceof Float || value instanceof Double)
-			{
-				final double doubleValue = ((Number) value).doubleValue();
-				return doubleValue <= max;
-			}
-			final long longValue = ((Number) value).longValue();
-			return longValue <= max;
+			final double doubleValue = ((Number) value).doubleValue();
+			return doubleValue <= max;
 		}
 
 		final String stringValue = value.toString();
@@ -74,7 +69,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 			final double doubleValue = Double.parseDouble(stringValue);
 			return doubleValue <= max;
 		}
-		catch (NumberFormatException e)
+		catch (final NumberFormatException e)
 		{
 			return false;
 		}
@@ -83,7 +78,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	/**
 	 * @param max the max to set
 	 */
-	public void setMax(final long max)
+	public void setMax(final double max)
 	{
 		this.max = max;
 	}

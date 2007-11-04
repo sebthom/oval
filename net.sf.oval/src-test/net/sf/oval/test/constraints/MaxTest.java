@@ -29,7 +29,7 @@ public class MaxTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, null, null, null));
 
 		check.setMax(100);
-		assertEquals(100, check.getMax());
+		assertEquals(100.0, check.getMax());
 
 		assertTrue(check.isSatisfied(null, "50", null, null));
 		assertTrue(check.isSatisfied(null, 50, null, null));

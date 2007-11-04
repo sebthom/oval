@@ -29,7 +29,7 @@ public class MinTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, null, null, null));
 
 		check.setMin(40);
-		assertEquals(40, check.getMin());
+		assertEquals(40.0, check.getMin());
 
 		assertTrue(check.isSatisfied(null, "40", null, null));
 		assertTrue(check.isSatisfied(null, 40, null, null));

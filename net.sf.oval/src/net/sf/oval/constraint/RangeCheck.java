@@ -26,8 +26,8 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 {
 	private static final long serialVersionUID = 1L;
 
-	private long min = Long.MIN_VALUE;
-	private long max = Long.MAX_VALUE;
+	private double min = Double.MIN_VALUE;
+	private double max = Double.MAX_VALUE;
 
 	@Override
 	public void configure(final Range constraintAnnotation)
@@ -40,26 +40,25 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	/**
 	 * @return the max
 	 */
-	public long getMax()
+	public double getMax()
 	{
 		return max;
 	}
-
 
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
-		messageVariables.put("max", Long.toString(max));
-		messageVariables.put("min", Long.toString(min));
+		messageVariables.put("max", Double.toString(max));
+		messageVariables.put("min", Double.toString(min));
 		return messageVariables;
 	}
 
 	/**
 	 * @return the min
 	 */
-	public long getMin()
+	public double getMin()
 	{
 		return min;
 	}
@@ -71,13 +70,8 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 
 		if (value instanceof Number)
 		{
-			if (value instanceof Float || value instanceof Double)
-			{
-				final double doubleValue = ((Number) value).doubleValue();
-				return doubleValue >= min && doubleValue <= max;
-			}
-			final long longValue = ((Number) value).longValue();
-			return longValue >= min && longValue <= max;
+			final double doubleValue = ((Number) value).doubleValue();
+			return doubleValue >= min && doubleValue <= max;
 		}
 
 		final String stringValue = value.toString();
@@ -86,7 +80,7 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 			final double doubleValue = Double.parseDouble(stringValue);
 			return doubleValue >= min && doubleValue <= max;
 		}
-		catch (NumberFormatException e)
+		catch (final NumberFormatException e)
 		{
 			return false;
 		}
@@ -95,7 +89,7 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	/**
 	 * @param max the max to set
 	 */
-	public void setMax(final long max)
+	public void setMax(final double max)
 	{
 		this.max = max;
 	}
@@ -103,7 +97,7 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	/**
 	 * @param min the min to set
 	 */
-	public void setMin(final long min)
+	public void setMin(final double min)
 	{
 		this.min = min;
 	}
