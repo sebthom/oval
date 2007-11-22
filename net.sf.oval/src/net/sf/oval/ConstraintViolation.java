@@ -83,7 +83,7 @@ public class ConstraintViolation implements Serializable
 	 */
 	public ConstraintViolation[] getCauses()
 	{
-		return causes.clone();
+		return causes == null ? null : causes.clone();
 	}
 
 	/**
