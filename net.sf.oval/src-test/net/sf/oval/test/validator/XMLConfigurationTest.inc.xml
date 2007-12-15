@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE oval PUBLIC 
+   "-//OVal/OVal Configuration DTD 1.1//EN"
+   "http://oval.sourceforge.net/oval-configuration-1.1.dtd">
+<oval>
+<!-- define a constraint set -->
+<constraintSet id="user.userid">
+	<notNull message="{context} is null" />
+	<matchPattern message="{context} does not match the pattern {pattern}">
+		<pattern pattern="^[a-z0-9]{8}$" flags="0" />
+	</matchPattern>
+</constraintSet>
+</oval>

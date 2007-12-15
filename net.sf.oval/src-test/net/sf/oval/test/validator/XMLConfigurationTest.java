@@ -68,9 +68,11 @@ public class XMLConfigurationTest extends TestCase
 
 	public void testImportedFile()
 	{
-		final XMLConfigurer x = new XMLConfigurer();
-		x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
-		validateUser(new Validator(x));
+		final XMLConfigurer x1 = new XMLConfigurer();
+		x1.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.inc.xml"));
+		final XMLConfigurer x2 = new XMLConfigurer();
+		x2.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
+		validateUser(new Validator(x1, x2));
 	}
 
 	public void testSerializedObjectConfiguration() throws Exception
