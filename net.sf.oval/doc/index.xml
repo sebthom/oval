@@ -1601,7 +1601,7 @@ v.validate(p);
 
     <itemizedlist>
       <listitem>
-        <para>Validación Java: OVal, una joya escondida</para>
+        <para>Validación Java: OVal, una joya escondida (2007)</para>
 
         <para><ulink
         url="http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html">http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html</ulink></para>
@@ -1633,6 +1633,15 @@ v.validate(p);
         </ulink></para>
       </listitem>
 
+	  <listitem>
+        <para>OVal e la validazione degli oggetti in Java (2006)</para>
+
+        <para><ulink
+        url="http://www.keepintech.it/blog/?p=52">
+        http://www.keepintech.it/blog/?p=52
+        </ulink></para>
+      </listitem>
+	  
       <listitem>
         <para>Limiting conditional complexity with AOP (2006)</para>
 

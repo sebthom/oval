@@ -2,6 +2,11 @@
 [+] Feature added.
 [*] Change.
 
+200X-XX-XX v1.XX
+================
+- fixed bug 1834537
+- fixed bug 1852088
+
 2007-11-02 v1.10
 ================
 
