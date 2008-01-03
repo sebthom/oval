@@ -29,6 +29,9 @@ public class ConstraintsViolatedException extends OValException
 
 	private final ConstraintViolation[] constraintViolations;
 
+	/**
+	 * @param constraintViolations must not be null
+	 */
 	public ConstraintsViolatedException(final ConstraintViolation... constraintViolations)
 	{
 		// the message of the first occuring constraint violation will be used
@@ -37,6 +40,9 @@ public class ConstraintsViolatedException extends OValException
 		this.constraintViolations = constraintViolations;
 	}
 
+	/**
+	 * @param constraintViolations must not be null
+	 */
 	public ConstraintsViolatedException(final List<ConstraintViolation> constraintViolations)
 	{
 		// the message of the first occuring constraint violation will be used
