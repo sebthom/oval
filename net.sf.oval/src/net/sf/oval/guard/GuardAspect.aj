@@ -32,12 +32,14 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 {
 	private final static Log LOG = Log.getLog(GuardAspect.class);
 
+	private final static ParameterNameResolverAspectJImpl PARAMETER_NAME_RESOLVER = new ParameterNameResolverAspectJImpl();
+	
 	private Guard guard;
 
 	public GuardAspect()
 	{
 		this(new Guard());
-		getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		getGuard().setParameterNameResolver(PARAMETER_NAME_RESOLVER);
 	}
 
 	public GuardAspect(final Guard guard)
@@ -58,43 +60,26 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 	public void setGuard(final Guard guard)
 	{
 		this.guard = guard;
-		getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+		getGuard().setParameterNameResolver(PARAMETER_NAME_RESOLVER);
 	}
 
-	/*
+	/* ****************
 	 * POINT CUTS
-	 */
+	 * ****************/
+	
+	// the scope of the aspect are all classes annotated with @Guarded
 	protected pointcut scope(): @within(Guarded);
 
 	private pointcut allConstructors() : execution(*.new(..));
 
 	private pointcut allMethods() : execution(* *.*(..));
 
-	/*
+	/* ****************
 	 * ADVICES
-	 */
-	declare parents: (@Guarded *) implements IsGuarded;
-
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): scope() && allMethods()
-	{
-		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
-
-		LOG.debug("aroundMethod() {}", SIGNATURE);
-
-		final Method METHOD = SIGNATURE.getMethod();
-		final Object[] args = thisJoinPoint.getArgs();
-		final Object TARGET = thisJoinPoint.getTarget();
-
-		return guard.guardMethod(TARGET, METHOD, args, new Invocable()
-			{
-				public Object invoke()
-				{
-					// invoke the adviced method and return the result
-					return proceed();
-				}
-			});
-	}
+	 * ****************/
+	
+	// add the IsGuarded marker interface to all classes annotated with @Guarded
+	declare parents: (@Guarded *) implements IsGuarded; 
 
 	@SuppressAjWarnings("adviceDidNotMatch")
 	Object around(): scope() && allConstructors()
@@ -120,5 +105,26 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		}
 
 		return result;
+	}
+	
+	@SuppressAjWarnings("adviceDidNotMatch")
+	Object around(): scope() && allMethods()
+	{
+		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
+
+		LOG.debug("aroundMethod() {}", SIGNATURE);
+
+		final Method METHOD = SIGNATURE.getMethod();
+		final Object[] args = thisJoinPoint.getArgs();
+		final Object TARGET = thisJoinPoint.getTarget();
+
+		return guard.guardMethod(TARGET, METHOD, args, new Invocable()
+			{
+				public Object invoke()
+				{
+					// invoke the adviced method and return the result
+					return proceed();
+				}
+			});
 	}
 }

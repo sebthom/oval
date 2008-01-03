@@ -28,14 +28,15 @@ import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
- * This is an annotations based version of the GuardAspect aspect
+ * This is an annotations based version of the GuardAspect aspect.
+ * 
+ * In contrast to GuardAspect no custom scopes are supported yet, 
+ * so only guarding based on the @Guarded annotation is possible right now.
  *
  * To workaround an AspectJ bug use the -XnoInline weave option, in case you are getting errors like:
  * java.lang.VerifyError: (class: net/sf/oval/guard/GuardAspect2, method: ajc$inlineAccessMethod$net_sf_oval_guard_GuardAspect2$net_sf_oval_guard_Guard$guardMethodPost signature: (Lnet/sf/oval/guard/Guard;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;Ljava/lang/Object;)V) Illegal use of nonvirtual function call
  *
  * @author Sebastian Thomschke
- * 
- * @see Guard
  */
 @Aspect
 public abstract class GuardAspect2 extends ApiUsageAuditor2
@@ -43,6 +44,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	private final static Log LOG = Log.getLog(GuardAspect2.class);
 
 	@SuppressWarnings("unused")
+	// add the IsGuarded marker interface to all classes annotated with @Guarded
 	@DeclareParents("(@net.sf.oval.guard.Guarded *)")
 	private IsGuarded implementedInterface;
 
