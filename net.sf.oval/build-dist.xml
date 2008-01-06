@@ -103,13 +103,15 @@
 	<target name="compile" depends="display_properties,clean">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${bin}" />
-
+		
 		<!-- run AspectJ compiler to compile the source files -->
-		<iajc srcdir="${src}" destdir="${bin}" debug="on" classpathref="classpath" source="1.5" />
-
-		<copy todir="${bin}/">
-			<fileset dir="${src}" includes="**/*" excludes="**/*.java, **/*.aj" />
+		<iajc srcdir="${src}" destdir="${bin}" debug="on" classpathref="classpath" source="1.5" target="1.5"/>
+			
+		<copy todir="${bin}">
+			<fileset dir="${src}" includes="**/*" excludes="**/*.java, **/*.aj, **/*.properties" />
 		</copy>
+		
+		<native2ascii src="${src}" dest="${bin}" includes="**/*.properties"/>
 	</target>
 
 	<!-- ================================ -->
