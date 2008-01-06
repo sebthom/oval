@@ -2,10 +2,11 @@
 [+] Feature added.
 [*] Change.
 
-200X-XX-XX v1.XX
+2008-XX-XX v1.XX
 ================
-- fixed bug 1834537
-- fixed bug 1852088
+- fixed bug 1834537 NullPointerException in constraintViolation.getCauses()
+- fixed bug 1852088 Incorrect default message for NotEqual validation
+- fixed bug 1852087 Corrupt default localized messages
 
 2007-11-02 v1.10
 ================
