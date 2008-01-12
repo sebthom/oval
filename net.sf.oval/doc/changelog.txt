@@ -9,6 +9,7 @@
 - fixed bug 1852087 Corrupt default localized messages
 * upgraded to Groovy 1.5.1
 - fixed bug 1868301 OVal with groovy - Performance Evaluation
+* changed AnnotationsConfigurer.initializeCheck(...) to protected to allow better customization of the instantiation of checks
 
 2007-11-02 v1.10
 ================

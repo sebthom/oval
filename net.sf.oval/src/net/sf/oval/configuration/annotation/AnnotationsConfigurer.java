@@ -271,13 +271,15 @@ public class AnnotationsConfigurer implements Configurer
 		return null;
 	}
 
-	private <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(
+	protected <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(
 			final ConstraintAnnotation constraintAnnotation) throws ReflectionException
 	{
 		assert constraintAnnotation != null;
 
 		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(
 				Constraint.class);
+
+		// determine the check class
 		final Class checkClass = constraint.checkWith();
 
 		try
