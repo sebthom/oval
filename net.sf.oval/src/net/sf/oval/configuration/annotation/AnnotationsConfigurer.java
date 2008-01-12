@@ -46,72 +46,8 @@ import net.sf.oval.internal.CollectionFactoryHolder;
  */
 public class AnnotationsConfigurer implements Configurer
 {
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
+	protected void configureConstructorParameterChecks(final ClassConfiguration config)
 	{
-		final ClassConfiguration config = new ClassConfiguration();
-		config.type = clazz;
-
-		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class)
-				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors()
-				: false;
-
-		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class)
-				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
-
-		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type
-				.getAnnotation(Guarded.class).checkInvariants() : false;
-
-		/*
-		 * determine object-level checks
-		 */
-		{
-			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
-			for (final Annotation annotation : clazz.getAnnotations())
-			{
-				// check if the current annotation is a constraint annotation
-				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
-				{
-					checks.add(initializeCheck(annotation));
-				}
-			}
-			if (checks.size() > 0)
-			{
-				config.objectConfiguration = new ObjectConfiguration();
-				config.objectConfiguration.checks = checks;
-			}
-		}
-
-		/*
-		 * determine field checks
-		 */
-		for (final Field field : config.type.getDeclaredFields())
-		{
-			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
-
-			// loop over all annotations of the current field
-			for (final Annotation annotation : field.getAnnotations())
-			{
-				// check if the current annotation is a constraint annotation
-				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
-				{
-					checks.add(initializeCheck(annotation));
-				}
-			}
-			if (checks.size() > 0)
-			{
-				if (config.fieldConfigurations == null)
-					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
-
-				final FieldConfiguration fc = new FieldConfiguration();
-				fc.name = field.getName();
-				fc.checks = checks;
-				config.fieldConfigurations.add(fc);
-			}
-		}
-
-		/*
-		 * determine constructor parameter checks
-		 */
 		for (final Constructor constructor : config.type.getDeclaredConstructors())
 		{
 			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder
@@ -155,10 +91,41 @@ public class AnnotationsConfigurer implements Configurer
 				config.constructorConfigurations.add(cc);
 			}
 		}
+	}
 
-		/*
-		 * determine method return value and parameter checks
-		 */
+	protected void configureFieldChecks(final ClassConfiguration config)
+	{
+		for (final Field field : config.type.getDeclaredFields())
+		{
+			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
+
+			// loop over all annotations of the current field
+			for (final Annotation annotation : field.getAnnotations())
+			{
+				// check if the current annotation is a constraint annotation
+				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
+					checks.add(initializeCheck(annotation));
+				}
+			}
+			if (checks.size() > 0)
+			{
+				if (config.fieldConfigurations == null)
+					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
+
+				final FieldConfiguration fc = new FieldConfiguration();
+				fc.name = field.getName();
+				fc.checks = checks;
+				config.fieldConfigurations.add(fc);
+			}
+		}
+	}
+
+	/**
+	 * configure method return value and parameter checks
+	 */
+	protected void configureMethodChecks(final ClassConfiguration config)
+	{
 		for (final Method method : config.type.getDeclaredMethods())
 		{
 			/*
@@ -262,6 +229,49 @@ public class AnnotationsConfigurer implements Configurer
 				config.methodConfigurations.add(mc);
 			}
 		}
+	}
+
+	protected void configureObjectLevelChecks(final ClassConfiguration config)
+	{
+		final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
+		for (final Annotation annotation : config.type.getAnnotations())
+		{
+			// check if the current annotation is a constraint annotation
+			if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+			{
+				checks.add(initializeCheck(annotation));
+			}
+		}
+		if (checks.size() > 0)
+		{
+			config.objectConfiguration = new ObjectConfiguration();
+			config.objectConfiguration.checks = checks;
+		}
+	}
+
+	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
+	{
+		final ClassConfiguration config = new ClassConfiguration();
+		config.type = clazz;
+
+		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class)
+				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors()
+				: false;
+
+		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class)
+				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
+
+		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type
+				.getAnnotation(Guarded.class).checkInvariants() : false;
+
+		configureObjectLevelChecks(config);
+
+		configureFieldChecks(config);
+
+		configureConstructorParameterChecks(config);
+
+		configureMethodChecks(config);
+
 		return config;
 	}
 
