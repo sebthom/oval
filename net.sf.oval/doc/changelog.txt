@@ -7,6 +7,8 @@
 - fixed bug 1834537 NullPointerException in constraintViolation.getCauses()
 - fixed bug 1852088 Incorrect default message for NotEqual validation
 - fixed bug 1852087 Corrupt default localized messages
+* upgraded to Groovy 1.5.1
+- fixed bug 1868301 OVal with groovy - Performance Evaluation
 
 2007-11-02 v1.10
 ================

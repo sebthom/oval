@@ -13,14 +13,15 @@
 package net.sf.oval.expression;
 
 import groovy.lang.Binding;
-import groovy.lang.GroovyRuntimeException;
 import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.ThreadLocalMap;
 
 /**
  * @author Sebastian Thomschke
@@ -30,21 +31,33 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 {
 	private final static Log LOG = Log.getLog(ExpressionLanguageGroovyImpl.class);
 
+	private final static GroovyShell GROOVY_SHELL = new GroovyShell();
+
+	private final ThreadLocalMap<String, Script> threadScriptCache = new ThreadLocalMap<String, Script>();
+
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
 	{
 		try
 		{
+			final Map<String, Script> scriptCache = threadScriptCache.get();
+			Script script = scriptCache.get(expression);
+			if (script == null)
+			{
+				script = GROOVY_SHELL.parse(expression);
+				scriptCache.put(expression, script);
+			}
+
 			final Binding binding = new Binding();
 			for (final Entry<String, ? > entry : values.entrySet())
 			{
 				binding.setVariable(entry.getKey(), entry.getValue());
 			}
-			final GroovyShell shell = new GroovyShell(binding);
 			LOG.debug("Evaluating Groovy expression: {}", expression);
-			return shell.evaluate(expression);
+			script.setBinding(binding);
+			return script.run();
 		}
-		catch (final GroovyRuntimeException ex)
+		catch (final Exception ex)
 		{
 			throw new ExpressionEvaluationException("Evaluating script with Groovy failed.", ex);
 		}
