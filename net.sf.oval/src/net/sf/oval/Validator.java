@@ -1254,10 +1254,10 @@ public class Validator
 			final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());
 			final Collection<Check> checks = cc.checksForFields.get(validatedField);
 
-			if (checks == null || checks.size() == 0) return null;
-
 			final List<ConstraintViolation> violations = CollectionFactoryHolder.getFactory()
 					.createList();
+
+			if (checks == null || checks.size() == 0) return violations;
 
 			final FieldContext context = new FieldContext(validatedField);
 
