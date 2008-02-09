@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -33,7 +33,7 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	}
 
 	@Override
-	public String getErrorCode()
+	public String getErrorCode() throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -44,13 +44,13 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	}
 
 	@Override
-	public String getMessage()
+	public String getMessage() throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int getSeverity()
+	public int getSeverity() throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -59,14 +59,15 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
 	 */
-	public boolean isSatisfied(final Object validatedObject, final Object value,
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
+			throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void setErrorCode(final String errorCode)
+	public void setErrorCode(final String errorCode) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -77,13 +78,13 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
 	}
 
 	@Override
-	public void setMessage(final String message)
+	public void setMessage(final String message) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void setSeverity(final int severity)
+	public void setSeverity(final int severity) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}

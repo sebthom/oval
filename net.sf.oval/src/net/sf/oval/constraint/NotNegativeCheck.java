@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -22,27 +22,27 @@ import net.sf.oval.context.OValContext;
 public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 {
 	private static final long serialVersionUID = 1L;
-	
-	public boolean isSatisfied(final Object validatedObject, final Object value,
+
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
 	{
-		if (value == null) return true;
+		if (valueToValidate == null) return true;
 
-		if (value instanceof Number)
+		if (valueToValidate instanceof Number)
 		{
-			if (value instanceof Float || value instanceof Double)
+			if (valueToValidate instanceof Float || valueToValidate instanceof Double)
 			{
-				return ((Number) value).doubleValue() >= 0;
+				return ((Number) valueToValidate).doubleValue() >= 0;
 			}
-			return ((Number) value).longValue() >= 0;
+			return ((Number) valueToValidate).longValue() >= 0;
 		}
 
-		final String stringValue = value.toString();
+		final String stringValue = valueToValidate.toString();
 		try
 		{
 			return Double.parseDouble(stringValue) >= 0;
 		}
-		catch (NumberFormatException e)
+		catch (final NumberFormatException e)
 		{
 			return false;
 		}

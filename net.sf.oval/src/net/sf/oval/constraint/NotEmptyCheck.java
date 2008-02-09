@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -23,11 +23,11 @@ public class NotEmptyCheck extends AbstractAnnotationCheck<NotBlank>
 {
 	private static final long serialVersionUID = 1L;
 
-	public boolean isSatisfied(final Object validatedObject, final Object value,
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
 	{
-		if (value == null) return true;
+		if (valueToValidate == null) return true;
 
-		return value.toString().length() > 0;
+		return valueToValidate.toString().length() > 0;
 	}
 }

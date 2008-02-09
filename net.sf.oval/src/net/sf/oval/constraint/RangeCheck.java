@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -63,18 +63,18 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 		return min;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object value,
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
 	{
-		if (value == null) return true;
+		if (valueToValidate == null) return true;
 
-		if (value instanceof Number)
+		if (valueToValidate instanceof Number)
 		{
-			final double doubleValue = ((Number) value).doubleValue();
+			final double doubleValue = ((Number) valueToValidate).doubleValue();
 			return doubleValue >= min && doubleValue <= max;
 		}
 
-		final String stringValue = value.toString();
+		final String stringValue = valueToValidate.toString();
 		try
 		{
 			final double doubleValue = Double.parseDouble(stringValue);

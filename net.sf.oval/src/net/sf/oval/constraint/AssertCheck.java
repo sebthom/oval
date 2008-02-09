@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -40,16 +40,6 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		setLang(constraintAnnotation.lang());
 	}
 
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
-		messageVariables.put("expression", expr);
-		messageVariables.put("language", lang);
-		return messageVariables;
-	}
-
 	/**
 	 * @return the expression
 	 */
@@ -66,12 +56,22 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		return lang;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object validatedValue,
+	@Override
+	public Map<String, String> getMessageVariables()
+	{
+		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
+				.createMap(2);
+		messageVariables.put("expression", expr);
+		messageVariables.put("language", lang);
+		return messageVariables;
+	}
+
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
 			throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
 	{
-		Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
-		values.put("_value", validatedValue);
+		final Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
+		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 
 		final ExpressionLanguage el = validator.getExpressionLanguage(lang);
@@ -83,7 +83,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	 */
 	public void setExpression(final String expression)
 	{
-		this.expr = expression;
+		expr = expression;
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	 */
 	public void setLang(final String language)
 	{
-		this.lang = language;
+		lang = language;
 	}
 
 }

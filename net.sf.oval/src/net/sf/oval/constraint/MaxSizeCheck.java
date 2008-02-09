@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -54,24 +54,24 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 		return messageVariables;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object value,
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
 	{
-		if (value == null) return true;
+		if (valueToValidate == null) return true;
 
-		if (value instanceof Collection)
+		if (valueToValidate instanceof Collection)
 		{
-			final int size = ((Collection) value).size();
+			final int size = ((Collection) valueToValidate).size();
 			return size <= max;
 		}
-		if (value instanceof Map)
+		if (valueToValidate instanceof Map)
 		{
-			final int size = ((Map) value).size();
+			final int size = ((Map) valueToValidate).size();
 			return size <= max;
 		}
-		if (value.getClass().isArray())
+		if (valueToValidate.getClass().isArray())
 		{
-			final int size = Array.getLength(value);
+			final int size = Array.getLength(valueToValidate);
 			return size <= max;
 		}
 		return false;

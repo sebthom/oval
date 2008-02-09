@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -33,21 +33,22 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	}
 
 	/**
-	 *  <b>This method is not used.</b><br>
-	 *  The validation of this special constraint is directly performed by the Validator class
-	 */
-	public boolean isSatisfied(final Object validatedObject, final Object value,
-			final OValContext context, final Validator validator)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	/**
 	 * @return true if all elements of a collection must be valid 
 	 */
 	public boolean isRequireValidElements()
 	{
 		return requireValidElements;
+	}
+
+	/**
+	 *  <b>This method is not used.</b><br>
+	 *  The validation of this special constraint is directly performed by the Validator class
+	 */
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
+			final OValContext context, final Validator validator)
+			throws UnsupportedOperationException
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	/**

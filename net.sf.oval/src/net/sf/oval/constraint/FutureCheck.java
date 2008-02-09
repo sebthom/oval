@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -28,27 +28,27 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 {
 	private static final long serialVersionUID = 1L;
 
-	public boolean isSatisfied(final Object validatedObject, final Object value,
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator)
 	{
-		if (value == null) return true;
+		if (valueToValidate == null) return true;
 
 		// check if the value is a Date
-		if (value instanceof Date)
+		if (valueToValidate instanceof Date)
 		{
 			// return ((Date) value).after(new Date());
-			return ((Date) value).getTime() > System.currentTimeMillis();
+			return ((Date) valueToValidate).getTime() > System.currentTimeMillis();
 		}
 
 		// check if the value is a Calendar
-		if (value instanceof Calendar)
+		if (valueToValidate instanceof Calendar)
 		{
 			// return ((Calendar) value).getTime().after(new Date());
-			return ((Calendar) value).getTime().getTime() > System.currentTimeMillis();
+			return ((Calendar) valueToValidate).getTime().getTime() > System.currentTimeMillis();
 		}
 
 		// see if we can extract a date based on the object's String representation
-		final String stringValue = value.toString();
+		final String stringValue = valueToValidate.toString();
 		try
 		{
 			// return DateFormat.getDateTimeInstance().parse(stringValue).after(new Date());
