@@ -53,6 +53,7 @@ import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.expression.ExpressionLanguageBeanShellImpl;
 import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
+import net.sf.oval.expression.ExpressionLanguageJEXLImpl;
 import net.sf.oval.expression.ExpressionLanguageJRubyImpl;
 import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
 import net.sf.oval.expression.ExpressionLanguageMVELImpl;
@@ -130,7 +131,7 @@ public class Validator
 		MessageResolverHolder.setMessageResolver(messageResolver);
 	}
 
-	private final Map<Class, ClassChecks> checksByClass = new WeakHashMap<Class, ClassChecks>();
+	private final Map<Class< ? >, ClassChecks> checksByClass = new WeakHashMap<Class< ? >, ClassChecks>();
 
 	private final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>(4);
 
@@ -197,7 +198,8 @@ public class Validator
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
 	 */
-	public void addChecks(final Class clazz, final Check... checks) throws IllegalArgumentException
+	public void addChecks(final Class< ? > clazz, final Check... checks)
+			throws IllegalArgumentException
 	{
 		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
 		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
@@ -263,7 +265,7 @@ public class Validator
 				{
 					if (constructorConfig.parameterConfigurations != null)
 					{
-						final Class< ? >[] parameterTypes = new Class[constructorConfig.parameterConfigurations
+						final Class[] parameterTypes = new Class[constructorConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = constructorConfig.parameterConfigurations.size(); i < l; i++)
@@ -344,7 +346,7 @@ public class Validator
 					}
 					else
 					{
-						final Class< ? >[] parameterTypes = new Class[methodConfig.parameterConfigurations
+						final Class[] parameterTypes = new Class[methodConfig.parameterConfigurations
 								.size()];
 
 						for (int i = 0, l = methodConfig.parameterConfigurations.size(); i < l; i++)
@@ -677,7 +679,7 @@ public class Validator
 			final Object validatedObject, final Object valueToValidate, final OValContext context)
 			throws OValException
 	{
-		Class targetClass;
+		Class< ? > targetClass;
 
 		/*
 		 * set the targetClass based on the validation context
@@ -782,7 +784,7 @@ public class Validator
 		// if the value to validate is a collection also validate the collection items
 		if (valueToValidate instanceof Collection && check.isRequireValidElements())
 		{
-			for (final Object item : (Collection) valueToValidate)
+			for (final Object item : (Collection< ? >) valueToValidate)
 			{
 				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 			}
@@ -791,12 +793,12 @@ public class Validator
 		// if the value to validate is a map also validate the map keys and values
 		else if (valueToValidate instanceof Map && check.isRequireValidElements())
 		{
-			for (final Object item : ((Map) valueToValidate).keySet())
+			for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
 			{
 				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 			}
 
-			for (final Object item : ((Map) valueToValidate).values())
+			for (final Object item : ((Map< ? , ? >) valueToValidate).values())
 			{
 				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 			}
@@ -870,7 +872,7 @@ public class Validator
 	 * @param clazz
 	 * @throws IllegalArgumentException if <code>clazz == null</code> 
 	 */
-	public Check[] getChecks(final Class clazz) throws IllegalArgumentException
+	public Check[] getChecks(final Class< ? > clazz) throws IllegalArgumentException
 	{
 		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
 
@@ -921,7 +923,7 @@ public class Validator
 	 * @throws IllegalArgumentException if <code>clazz == null</code>
 	 * @throws OValException
 	 */
-	protected ClassChecks getClassChecks(final Class clazz) throws IllegalArgumentException,
+	protected ClassChecks getClassChecks(final Class< ? > clazz) throws IllegalArgumentException,
 			OValException
 	{
 		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
@@ -1047,6 +1049,12 @@ public class Validator
 			addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl());
 			addExpressionLanguage("jruby", getExpressionLanguage("ruby"));
 		}
+
+		// JEXL support
+		if (ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
+		{
+			addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
+		}
 	}
 
 	/**
@@ -1117,7 +1125,7 @@ public class Validator
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
 	 */
-	public void removeChecks(final Class clazz, final Check... checks)
+	public void removeChecks(final Class< ? > clazz, final Check... checks)
 			throws IllegalArgumentException
 	{
 		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
@@ -1294,7 +1302,7 @@ public class Validator
 		try
 		{
 			if (validatedObject instanceof Class)
-				validateStaticInvariants((Class) validatedObject, violations);
+				validateStaticInvariants((Class< ? >) validatedObject, violations);
 			else
 				validateObjectInvariants(validatedObject, validatedObject.getClass(), violations);
 		}
@@ -1381,7 +1389,7 @@ public class Validator
 	 * Validates the static field and static getter constrains of the given class.
 	 * Constraints specified for super classes are not taken in account.
 	 */
-	private void validateStaticInvariants(final Class validatedClass,
+	private void validateStaticInvariants(final Class< ? > validatedClass,
 			final List<ConstraintViolation> violations) throws ValidationFailedException
 	{
 		assert validatedClass != null;

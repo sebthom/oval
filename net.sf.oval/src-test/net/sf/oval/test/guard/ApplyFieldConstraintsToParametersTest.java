@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -164,8 +164,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 		}
 		{
-			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class< ? >[]{String.class});
+			final Method setter = p.getClass().getMethod("setZipCode2", new Class[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			guard.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
@@ -176,8 +175,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			guard.removeChecks(setter, 0, check);
 		}
 		{
-			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class< ? >[]{String.class});
+			final Method setter = p.getClass().getMethod("setZipCode2", new Class[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			check.setFieldName("firstName");
 			guard.addChecks(setter, 0, check);

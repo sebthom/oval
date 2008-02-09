@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -30,10 +30,9 @@ public class StaticMethodsTest extends TestCase
 		@NotNull(message = "NULL")
 		public static String value;
 
-		public static void setValue(@AssertFieldConstraints
-		String value)
+		public static void doSomethingPost()
 		{
-			TestEntity.value = value;
+		//
 		}
 
 		public static void doSomethingPre()
@@ -41,32 +40,11 @@ public class StaticMethodsTest extends TestCase
 		//
 		}
 
-		public static void doSomethingPost()
+		public static void setValue(@AssertFieldConstraints
+		final String value)
 		{
-		//
+			TestEntity.value = value;
 		}
-	}
-
-	public void testPreValidateThis() throws Exception
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		TestEntity.value = null;
-
-		try
-		{
-			TestEntity.doSomethingPre();
-			fail();
-		}
-		catch (ConstraintsViolatedException ex)
-		{
-			assertTrue(ex.getConstraintViolations().length == 1);
-			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
-		}
-
-		TestEntity.value = "";
-		TestEntity.doSomethingPre();
 	}
 
 	public void testPostValidateThis() throws Exception
@@ -81,7 +59,7 @@ public class StaticMethodsTest extends TestCase
 			TestEntity.doSomethingPost();
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertTrue(ex.getConstraintViolations().length == 1);
 			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
@@ -89,6 +67,28 @@ public class StaticMethodsTest extends TestCase
 
 		TestEntity.value = "";
 		TestEntity.doSomethingPost();
+	}
+
+	public void testPreValidateThis() throws Exception
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		TestEntity.value = null;
+
+		try
+		{
+			TestEntity.doSomethingPre();
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertTrue(ex.getConstraintViolations().length == 1);
+			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
+		}
+
+		TestEntity.value = "";
+		TestEntity.doSomethingPre();
 	}
 
 	public void testSetterValidation() throws Exception
@@ -101,7 +101,7 @@ public class StaticMethodsTest extends TestCase
 			TestEntity.setValue(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertTrue(ex.getConstraintViolations().length == 1);
 			assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));

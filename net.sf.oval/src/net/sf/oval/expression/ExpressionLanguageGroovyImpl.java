@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -21,11 +21,11 @@ import java.util.Map.Entry;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
-import net.sf.oval.internal.util.ThreadLocalMap;
+import net.sf.oval.internal.util.ObjectCache;
+import net.sf.oval.internal.util.ThreadLocalObjectCache;
 
 /**
  * @author Sebastian Thomschke
- *
  */
 public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 {
@@ -33,14 +33,14 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 
 	private final static GroovyShell GROOVY_SHELL = new GroovyShell();
 
-	private final ThreadLocalMap<String, Script> threadScriptCache = new ThreadLocalMap<String, Script>();
+	private final ThreadLocalObjectCache<String, Script> threadScriptCache = new ThreadLocalObjectCache<String, Script>();
 
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
 	{
 		try
 		{
-			final Map<String, Script> scriptCache = threadScriptCache.get();
+			final ObjectCache<String, Script> scriptCache = threadScriptCache.get();
 			Script script = scriptCache.get(expression);
 			if (script == null)
 			{

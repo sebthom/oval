@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -35,7 +35,7 @@ public final class ReflectionUtils
 	/**
 	 * @return the field or null if the field does not exist
 	 */
-	public static Field getField(final Class clazz, final String fieldName)
+	public static Field getField(final Class< ? > clazz, final String fieldName)
 	{
 		try
 		{
@@ -55,9 +55,9 @@ public final class ReflectionUtils
 	{
 		if (!ReflectionUtils.isSetter(setter)) return null;
 
-		final Class[] methodParameterTypes = setter.getParameterTypes();
+		final Class< ? >[] methodParameterTypes = setter.getParameterTypes();
 		final String methodName = setter.getName();
-		final Class clazz = setter.getDeclaringClass();
+		final Class< ? > clazz = setter.getDeclaringClass();
 
 		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field
 		// name)
@@ -117,12 +117,12 @@ public final class ReflectionUtils
 		return field;
 	}
 
-	public static Field getFieldRecursive(final Class clazz, final String fieldName)
+	public static Field getFieldRecursive(final Class< ? > clazz, final String fieldName)
 	{
 		final Field f = ReflectionUtils.getField(clazz, fieldName);
 		if (f != null) return f;
 
-		final Class superclazz = clazz.getSuperclass();
+		final Class< ? > superclazz = clazz.getSuperclass();
 		if (superclazz == null) return null;
 
 		return ReflectionUtils.getFieldRecursive(superclazz, fieldName);
@@ -156,7 +156,7 @@ public final class ReflectionUtils
 
 		final List<Method> methods = CollectionFactoryHolder.getFactory().createList(
 				interfaces.length);
-		for (final Class iface : interfaces)
+		for (final Class< ? > iface : interfaces)
 		{
 			final Method m = ReflectionUtils.getMethod(iface, methodName, parameterTypes);
 			if (m != null) methods.add(m);
@@ -224,15 +224,15 @@ public final class ReflectionUtils
 		return fieldName;
 	}
 
-	public static boolean hasField(final Class clazz, final String fieldName)
+	public static boolean hasField(final Class< ? > clazz, final String fieldName)
 	{
-		return ReflectionUtils.getField(clazz, fieldName) != null;
+		return getField(clazz, fieldName) != null;
 	}
 
 	public static boolean hasMethod(final Class< ? > clazz, final String methodName,
 			final Class< ? >... parameterTypes)
 	{
-		return ReflectionUtils.getMethod(clazz, methodName, parameterTypes) != null;
+		return getMethod(clazz, methodName, parameterTypes) != null;
 	}
 
 	/**
@@ -305,7 +305,7 @@ public final class ReflectionUtils
 	 */
 	public static boolean isSetter(final Method method)
 	{
-		final Class[] methodParameterTypes = method.getParameterTypes();
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
 
 		// check if method has exactly one parameter
 		if (methodParameterTypes.length != 1) return false;

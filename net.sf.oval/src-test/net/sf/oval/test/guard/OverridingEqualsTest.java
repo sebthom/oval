@@ -1,6 +1,15 @@
-/**
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
+ * Thomschke.
  * 
- */
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
@@ -16,10 +25,10 @@ public class OverridingEqualsTest extends TestCase
 	@Guarded
 	public class Entity
 	{
-		private int foo;
+		protected int foo;
 
 		@Override
-		public boolean equals(Object o)
+		public boolean equals(final Object o)
 		{
 			final boolean retVal;
 			if (o == null)
@@ -42,10 +51,10 @@ public class OverridingEqualsTest extends TestCase
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
-		Entity a1 = new Entity();
+
+		final Entity a1 = new Entity();
 		a1.foo = 2;
-		Entity a2 = new Entity();
+		final Entity a2 = new Entity();
 		a2.foo = 2;
 
 		assertEquals(a1, a2);

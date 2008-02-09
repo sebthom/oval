@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -43,7 +43,7 @@ public class ConstraintSetTest extends TestCase
 		}
 
 		public void setZipCode(@AssertConstraintSet(id = "zipCode")
-		String zipCode)
+		final String zipCode)
 		{
 			this.zipCode = zipCode;
 		}
@@ -51,31 +51,31 @@ public class ConstraintSetTest extends TestCase
 
 	public void testConstraintSetValidation()
 	{
-		ConstraintSet constraintSet = new ConstraintSet("zipCode");
-		List<Check> checks = new ArrayList<Check>();
+		final ConstraintSet constraintSet = new ConstraintSet("zipCode");
+		final List<Check> checks = new ArrayList<Check>();
 		constraintSet.setChecks(checks);
 
-		NotNullCheck notNull = new NotNullCheck();
+		final NotNullCheck notNull = new NotNullCheck();
 		notNull.setMessage("NOT_NULL");
 		checks.add(notNull);
 
-		LengthCheck length = new LengthCheck();
+		final LengthCheck length = new LengthCheck();
 		length.setMessage("LENGTH");
 		length.setMax(6);
 		checks.add(length);
 
-		NotEmptyCheck notEmpty = new NotEmptyCheck();
+		final NotEmptyCheck notEmpty = new NotEmptyCheck();
 		notEmpty.setMessage("NOT_EMPTY");
 		checks.add(notEmpty);
 
-		MatchPatternCheck matchPattern = new MatchPatternCheck();
+		final MatchPatternCheck matchPattern = new MatchPatternCheck();
 		matchPattern.setMessage("MATCH_PATTERN");
 		matchPattern.setPattern("^[0-9]*$", 0);
 		checks.add(matchPattern);
 
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
-		
+
 		guard.addConstraintSet(constraintSet, false);
 
 		{

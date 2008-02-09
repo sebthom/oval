@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -62,7 +62,7 @@ public class XMLConfigurationTest extends TestCase
 		// do nothing
 		}
 
-		public User(String userId, String managerId, int somethingElse)
+		public User(final String userId, final String managerId, final int somethingElse)
 		{
 			this.userId = userId;
 			this.managerId = managerId;
@@ -79,7 +79,7 @@ public class XMLConfigurationTest extends TestCase
 		/**
 		 * @param managerId the managerId to set
 		 */
-		public void setManagerId(String managerId)
+		public void setManagerId(final String managerId)
 		{
 			this.managerId = managerId;
 		}
@@ -89,16 +89,16 @@ public class XMLConfigurationTest extends TestCase
 	{
 		try
 		{
-			XMLConfigurer x = new XMLConfigurer();
+			final XMLConfigurer x = new XMLConfigurer();
 			x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
 
-			Guard guard = new Guard(x);
+			final Guard guard = new Guard(x);
 			guard.setInvariantsEnabled(false);
 			TestGuardAspect.aspectOf().setGuard(guard);
 
 			validateUser();
 		}
-		catch (ValidationFailedException ex)
+		catch (final ValidationFailedException ex)
 		{
 			ex.getCause().printStackTrace();
 			throw ex;
@@ -107,22 +107,22 @@ public class XMLConfigurationTest extends TestCase
 
 	public void testSerializedObjectConfiguration()
 	{
-		XMLConfigurer x = new XMLConfigurer();
+		final XMLConfigurer x = new XMLConfigurer();
 
 		/*
 		 * define a configuration
 		 */
 		final Set<ConstraintSetConfiguration> constraintSetsConfig = new HashSet<ConstraintSetConfiguration>();
 		{
-			ConstraintSetConfiguration csf = new ConstraintSetConfiguration();
+			final ConstraintSetConfiguration csf = new ConstraintSetConfiguration();
 			constraintSetsConfig.add(csf);
 
 			csf.id = "user.userid";
 			csf.checks = new ArrayList<Check>();
-			NotNullCheck nnc = new NotNullCheck();
+			final NotNullCheck nnc = new NotNullCheck();
 			nnc.setMessage("{context} is null");
 			csf.checks.add(nnc);
-			MatchPatternCheck rec = new MatchPatternCheck();
+			final MatchPatternCheck rec = new MatchPatternCheck();
 			rec.setPattern(Pattern.compile("^[a-z0-9]{8}$", 0));
 			rec.setMessage("{context} does not match the pattern {pattern}");
 			csf.checks.add(rec);
@@ -130,72 +130,72 @@ public class XMLConfigurationTest extends TestCase
 
 		final Set<ClassConfiguration> classConfigs = new HashSet<ClassConfiguration>();
 		{
-			ClassConfiguration cf = new ClassConfiguration();
+			final ClassConfiguration cf = new ClassConfiguration();
 			classConfigs.add(cf);
 			cf.type = User.class;
 
 			cf.fieldConfigurations = new HashSet<FieldConfiguration>();
 			{
-				FieldConfiguration fc = new FieldConfiguration();
+				final FieldConfiguration fc = new FieldConfiguration();
 				cf.fieldConfigurations.add(fc);
 
 				fc.name = "firstName";
 				fc.checks = new ArrayList<Check>();
-				LengthCheck lc = new LengthCheck();
+				final LengthCheck lc = new LengthCheck();
 				lc.setMessage("{context} is not between {min} and {max} characters long");
 				lc.setMax(3);
 				fc.checks.add(lc);
 			}
 			{
-				FieldConfiguration fc = new FieldConfiguration();
+				final FieldConfiguration fc = new FieldConfiguration();
 				cf.fieldConfigurations.add(fc);
 
 				fc.name = "lastName";
 				fc.checks = new ArrayList<Check>();
-				LengthCheck lc = new LengthCheck();
+				final LengthCheck lc = new LengthCheck();
 				lc.setMessage("{context} is not between {min} and {max} characters long");
 				lc.setMax(5);
 				fc.checks.add(lc);
 			}
 			{
-				FieldConfiguration fc = new FieldConfiguration();
+				final FieldConfiguration fc = new FieldConfiguration();
 				fc.overwrite = Boolean.TRUE;
 				cf.fieldConfigurations.add(fc);
 
 				fc.name = "userId";
 				fc.checks = new ArrayList<Check>();
-				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
 				fc.checks.add(acsc);
 			}
 
 			cf.constructorConfigurations = new HashSet<ConstructorConfiguration>();
 			{
-				ConstructorConfiguration cc = new ConstructorConfiguration();
+				final ConstructorConfiguration cc = new ConstructorConfiguration();
 				cf.constructorConfigurations.add(cc);
 				cc.parameterConfigurations = new ArrayList<ParameterConfiguration>();
 
-				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
 
-				ParameterConfiguration pc1 = new ParameterConfiguration();
+				final ParameterConfiguration pc1 = new ParameterConfiguration();
 				pc1.type = String.class;
 				pc1.checks = new ArrayList<Check>();
 				pc1.checks.add(acsc);
 				cc.parameterConfigurations.add(pc1);
-				ParameterConfiguration pc2 = new ParameterConfiguration();
+				final ParameterConfiguration pc2 = new ParameterConfiguration();
 				pc2.type = String.class;
 				pc2.checks = new ArrayList<Check>();
 				pc2.checks.add(acsc);
 				cc.parameterConfigurations.add(pc2);
-				ParameterConfiguration pc3 = new ParameterConfiguration();
+				final ParameterConfiguration pc3 = new ParameterConfiguration();
 				pc3.type = int.class;
 				cc.parameterConfigurations.add(pc3);
 			}
 
 			cf.methodConfigurations = new HashSet<MethodConfiguration>();
 			{
-				AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
+				final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
 				acsc.setId("user.userid");
 
 				MethodConfiguration mc = new MethodConfiguration();
@@ -209,7 +209,7 @@ public class XMLConfigurationTest extends TestCase
 				cf.methodConfigurations.add(mc);
 				mc.name = "setManagerId";
 				mc.parameterConfigurations = new ArrayList<ParameterConfiguration>();
-				ParameterConfiguration pc1 = new ParameterConfiguration();
+				final ParameterConfiguration pc1 = new ParameterConfiguration();
 				pc1.type = String.class;
 				pc1.checks = new ArrayList<Check>();
 				pc1.checks.add(acsc);
@@ -223,14 +223,14 @@ public class XMLConfigurationTest extends TestCase
 		/*
 		 * serialize the configuration to XML
 		 */
-		String xmlConfig = x.toXML();
+		final String xmlConfig = x.toXML();
 
 		/*
 		 * deserialize the configuration from XML
 		 */
 		x.fromXML(xmlConfig);
 
-		Guard guard = new Guard(x);
+		final Guard guard = new Guard(x);
 		guard.setInvariantsEnabled(false);
 		TestGuardAspect.aspectOf().setGuard(guard);
 
@@ -239,7 +239,7 @@ public class XMLConfigurationTest extends TestCase
 
 	private void validateUser()
 	{
-		ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
+		final ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
 		TestGuardAspect.aspectOf().getGuard().addListener(listener, User.class);
 
 		listener.clear();
@@ -248,9 +248,9 @@ public class XMLConfigurationTest extends TestCase
 			new User(null, null, 1);
 			fail("ConstraintViolationException expected");
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(2, violations.length);
 			assertEquals(
 					User.class.getName()
@@ -265,13 +265,13 @@ public class XMLConfigurationTest extends TestCase
 		listener.clear();
 		try
 		{
-			User user = new User("12345678", "12345678", 1);
+			final User user = new User("12345678", "12345678", 1);
 			user.setManagerId(null);
 			fail("ConstraintViolationException expected");
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(1, violations.length);
 			assertEquals(User.class.getName()
 					+ ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
@@ -281,13 +281,13 @@ public class XMLConfigurationTest extends TestCase
 		listener.clear();
 		try
 		{
-			User user = new User();
+			final User user = new User();
 			user.getManagerId();
 			fail("ConstraintViolationException expected");
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
-			ConstraintViolation[] violations = ex.getConstraintViolations();
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(1, violations.length);
 			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0]
 					.getMessage());

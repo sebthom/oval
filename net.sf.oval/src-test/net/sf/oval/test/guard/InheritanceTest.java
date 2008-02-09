@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -24,6 +24,19 @@ import net.sf.oval.guard.Guarded;
  */
 public class InheritanceTest extends TestCase
 {
+	@Guarded
+	public static class Entity extends SuperEntity
+	{
+		/**
+		 * @param name the name to set
+		 */
+		public void setName2(@AssertFieldConstraints
+		final String name)
+		{
+			this.name = name;
+		}
+	}
+
 	@Guarded(applyFieldConstraintsToSetters = true)
 	public static class SuperEntity
 	{
@@ -41,20 +54,7 @@ public class InheritanceTest extends TestCase
 		/**
 		 * @param name the name to set
 		 */
-		public void setName(String name)
-		{
-			this.name = name;
-		}
-	}
-
-	@Guarded
-	public static class Entity extends SuperEntity
-	{
-		/**
-		 * @param name the name to set
-		 */
-		public void setName2(@AssertFieldConstraints
-		String name)
+		public void setName(final String name)
 		{
 			this.name = name;
 		}
@@ -65,14 +65,14 @@ public class InheritanceTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 
-		Entity e = new Entity();
+		final Entity e = new Entity();
 
 		try
 		{
 			e.setName(null);
 			fail("ConstraintViolationException should have been thrown");
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			// expected
 		}
@@ -82,7 +82,7 @@ public class InheritanceTest extends TestCase
 			e.setName2(null);
 			fail("ConstraintViolationException should have been thrown");
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			// expected
 		}

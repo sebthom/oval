@@ -43,11 +43,11 @@
 		<dependency>
 			<groupId>aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>[1.5.3,)</version>
+			<version>[1.5.4,)</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.beanshell</groupId>
 			<artifactId>bsh</artifactId>
@@ -72,10 +72,18 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-jexl</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>[1.1.1,)</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		
         <dependency>
             <groupId>org.jruby</groupId>
             <artifactId>jruby</artifactId>
-            <version>[1.0.0,)</version>
+            <version>[1.0.3,)</version>
             <scope>compile</scope>
 			<optional>true</optional>
         </dependency>

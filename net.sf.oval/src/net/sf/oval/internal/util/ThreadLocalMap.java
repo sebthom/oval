@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -19,13 +19,13 @@ import net.sf.oval.internal.CollectionFactoryHolder;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalMap<K, V> extends ThreadLocal
+public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
 {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<K, V> get()
 	{
-		return (Map<K, V>) super.get();
+		return super.get();
 	}
 
 	@Override

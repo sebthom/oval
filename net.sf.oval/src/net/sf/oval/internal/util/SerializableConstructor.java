@@ -28,11 +28,11 @@ public class SerializableConstructor implements Serializable
 {
 	private final static Log LOG = Log.getLog(SerializableConstructor.class);
 
-	private static final WeakHashMap<Constructor, SerializableConstructor> CACHE = new WeakHashMap<Constructor, SerializableConstructor>();
+	private static final WeakHashMap<Constructor< ? >, SerializableConstructor> CACHE = new WeakHashMap<Constructor< ? >, SerializableConstructor>();
 
 	private static final long serialVersionUID = 1L;
 
-	public static SerializableConstructor getInstance(final Constructor constructor)
+	public static SerializableConstructor getInstance(final Constructor< ? > constructor)
 	{
 		/*
 		 * intentionally the following code is not synchronized
@@ -46,13 +46,13 @@ public class SerializableConstructor implements Serializable
 		return sm;
 	}
 
-	private transient Constructor constructor;
+	private transient Constructor< ? > constructor;
 
 	private final Class< ? > declaringClass;
 
 	private final Class< ? >[] parameterTypes;
 
-	protected SerializableConstructor(final Constructor constructor)
+	protected SerializableConstructor(final Constructor< ? > constructor)
 	{
 		this.constructor = constructor;
 		parameterTypes = constructor.getParameterTypes();
@@ -62,7 +62,7 @@ public class SerializableConstructor implements Serializable
 	/**
 	 * @return the constructor
 	 */
-	public Constructor getConstructor()
+	public Constructor< ? > getConstructor()
 	{
 		return constructor;
 	}

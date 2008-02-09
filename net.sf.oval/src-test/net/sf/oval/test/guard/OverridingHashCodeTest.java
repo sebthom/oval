@@ -1,6 +1,15 @@
-/**
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
+ * Thomschke.
  * 
- */
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
@@ -11,7 +20,6 @@ import net.sf.oval.guard.Guarded;
 
 /**
  * @author Sebastian Thomschke
- *
  */
 public class OverridingHashCodeTest extends TestCase
 {
@@ -25,7 +33,7 @@ public class OverridingHashCodeTest extends TestCase
 		}
 
 		public void setFoo(@NotNull
-		String s)
+		final String s)
 		{
 		//
 		}
@@ -40,7 +48,7 @@ public class OverridingHashCodeTest extends TestCase
 			new Entity().setFoo(null);
 			fail("Violation expected");
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
 			// expected
 		}

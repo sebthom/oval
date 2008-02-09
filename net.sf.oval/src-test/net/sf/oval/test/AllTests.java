@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -74,6 +74,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostBeanShellTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.PrePostJEXLTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostMVELTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostRubyTest.class);
@@ -159,6 +160,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.AssertJEXLTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertMVELTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);

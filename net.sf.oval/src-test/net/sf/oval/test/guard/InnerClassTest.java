@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -27,6 +27,26 @@ public class InnerClassTest extends TestCase
 	@Guarded
 	protected static class TestEntity
 	{
+		@Guarded(applyFieldConstraintsToSetters = true)
+		protected static class InnerClassGuarded
+		{
+			@NotNull
+			protected String name;
+
+			protected InnerClassGuarded(final String name)
+			{
+				this.name = name;
+			}
+
+			/**
+			 * @param name the name to set
+			 */
+			public void setName(final String name)
+			{
+				this.name = name;
+			}
+		}
+
 		protected static class InnerClassNotGuarded
 		{
 			@NotNull
@@ -35,7 +55,7 @@ public class InnerClassTest extends TestCase
 			/**
 			 * the @PostValidateObject annotation should lead to a warning by the ApiUsageAuditor
 			 */
-			private InnerClassNotGuarded(String name)
+			protected InnerClassNotGuarded(final String name)
 			{
 				this.name = name;
 			}
@@ -43,44 +63,11 @@ public class InnerClassTest extends TestCase
 			/**
 			 * @param name the name to set
 			 */
-			public void setName(String name)
+			public void setName(final String name)
 			{
 				this.name = name;
 			}
 		}
-
-		@Guarded(applyFieldConstraintsToSetters = true)
-		protected static class InnerClassGuarded
-		{
-			@NotNull
-			protected String name;
-
-			private InnerClassGuarded(String name)
-			{
-				this.name = name;
-			}
-
-			/**
-			 * @param name the name to set
-			 */
-			public void setName(String name)
-			{
-				this.name = name;
-			}
-		}
-	}
-
-	/**
-	 * test that specified constraints for inner classes not marked with @Constrained
-	 * are ignored
-	 */
-	public void testInnerClassNotGuarded()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		TestEntity.InnerClassNotGuarded instance = new TestEntity.InnerClassNotGuarded(null);
-		instance.setName(null);
 	}
 
 	public void testInnerClassGuarded()
@@ -94,7 +81,7 @@ public class InnerClassTest extends TestCase
 			new TestEntity.InnerClassGuarded(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			// expected
 		}
@@ -108,9 +95,22 @@ public class InnerClassTest extends TestCase
 			instance.setName(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			// expected
 		}
+	}
+
+	/**
+	 * test that specified constraints for inner classes not marked with @Constrained
+	 * are ignored
+	 */
+	public void testInnerClassNotGuarded()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestEntity.InnerClassNotGuarded instance = new TestEntity.InnerClassNotGuarded(null);
+		instance.setName(null);
 	}
 }

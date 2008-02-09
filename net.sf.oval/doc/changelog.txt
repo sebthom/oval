@@ -4,13 +4,18 @@
 
 2008-XX-XX v1.XX
 ================
+* upgraded to MVEL 1.2.22
+* upgraded to Javolution 5.2.6
+* upgraded to AspectJ 1.5.4
+* upgraded to Groovy 1.5.4
+* upgraded to JRuby 1.0.3
 - fixed bug 1885645 Validator.validateFieldValue should not return null
 - fixed bug 1834537 NullPointerException in constraintViolation.getCauses()
 - fixed bug 1852088 Incorrect default message for NotEqual validation
 - fixed bug 1852087 Corrupt default localized messages
-* upgraded to Groovy 1.5.4
 - fixed bug 1868301 OVal with groovy - Performance Evaluation
 * changed AnnotationsConfigurer.initializeCheck(...) to protected to allow better customization of the instantiation of checks
++ added support for Apache Commons JEXL as expression language
 
 2007-11-02 v1.10
 ================

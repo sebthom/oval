@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -40,7 +40,7 @@ public class PrePostValidateThisTest extends TestCase
 		}
 
 		@PostValidateThis
-		public TestEntity(String name)
+		public TestEntity(final String name)
 		{
 			this.name = name;
 		}
@@ -51,13 +51,13 @@ public class PrePostValidateThisTest extends TestCase
 			return name;
 		}
 
-		public void setName(String name)
+		public void setName(final String name)
 		{
 			this.name = name;
 		}
 
 		@PostValidateThis
-		public void setNamePost(String name)
+		public void setNamePost(final String name)
 		{
 			this.name = name;
 		}
@@ -71,15 +71,54 @@ public class PrePostValidateThisTest extends TestCase
 
 			fail();
 		}
-		catch (ConstraintsViolatedException e)
+		catch (final ConstraintsViolatedException e)
 		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
-			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+			final ConstraintViolation[] violations = e.getConstraintViolations();
+			assertNotNull(violations);
+			assertEquals(1, violations.length);
+			assertEquals("NOT_NULL", violations[0].getMessage());
 			assertTrue(violations[0].getContext() instanceof FieldContext);
 		}
 
 		new TestEntity("test");
+	}
+
+	public void testMethodValidation()
+	{
+		final TestEntity t = new TestEntity();
+
+		try
+		{
+			t.getName();
+			fail();
+		}
+		catch (final ConstraintsViolatedException e)
+		{
+			final ConstraintViolation[] violations = e.getConstraintViolations();
+			assertNotNull(violations);
+			assertTrue(violations.length > 0);
+			assertEquals("NOT_NULL", violations[0].getMessage());
+			assertTrue(violations[0].getContext() instanceof FieldContext);
+		}
+
+		t.setName("test");
+
+		try
+		{
+			t.setName(null);
+			fail();
+		}
+		catch (final ConstraintsViolatedException e)
+		{
+			final ConstraintViolation[] violations = e.getConstraintViolations();
+			assertNotNull(violations);
+			assertTrue(violations.length > 0);
+			assertEquals("NOT_NULL", violations[0].getMessage());
+			assertTrue(violations[0].getContext() instanceof MethodParameterContext);
+		}
+
+		t.setName("the name");
+		assertNotNull(t.getName());
 	}
 
 	public void testMethodValidationInProbeMode()
@@ -118,41 +157,5 @@ public class PrePostValidateThisTest extends TestCase
 		assertNull(t.getName());
 		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 		assertTrue(va.getConstraintViolations().size() == 0);
-	}
-
-	public void testMethodValidation()
-	{
-		final TestEntity t = new TestEntity();
-
-		try
-		{
-			t.getName();
-			fail();
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length > 0);
-			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-			assertTrue(violations[0].getContext() instanceof FieldContext);
-		}
-
-		t.setName("test");
-
-		try
-		{
-			t.setName(null);
-			fail();
-		}
-		catch (ConstraintsViolatedException e)
-		{
-			ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length > 0);
-			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-			assertTrue(violations[0].getContext() instanceof MethodParameterContext);
-		}
-
-		t.setName("the name");
-		assertNotNull(t.getName());
 	}
 }
