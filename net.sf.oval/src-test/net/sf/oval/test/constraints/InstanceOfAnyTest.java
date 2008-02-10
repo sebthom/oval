@@ -52,7 +52,7 @@ public class InstanceOfAnyTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, new ClassB(), null, null));
 		assertFalse(check.isSatisfied(null, "bla", null, null));
 
-		check.setTypes(new Class[]{InterfaceA.class, InterfaceB.class});
+		check.setTypes(new Class< ? >[]{InterfaceA.class, InterfaceB.class});
 		assertEquals(InterfaceA.class, check.getTypes()[0]);
 		assertEquals(InterfaceB.class, check.getTypes()[1]);
 
