@@ -21,6 +21,7 @@ public class NotEqualToFieldTest extends AbstractContraintsTest
 {
 	public static class EnrichedEntity extends Entity
 	{
+		@SuppressWarnings("hiding")
 		protected String password1;
 
 		protected String password1Alternative;
