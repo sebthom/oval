@@ -31,6 +31,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertFalseTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.EqualToFieldTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.HasSubStringTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.InstanceOfAnyTest.class);
@@ -47,6 +48,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.NotBlankTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotEmptyTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotEqualTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.NotEqualToFieldTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotMemberOfTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNegativeTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNullTest.class);

@@ -53,7 +53,7 @@ public final class ReflectionUtils
 	 */
 	public static Field getFieldForSetter(final Method setter)
 	{
-		if (!ReflectionUtils.isSetter(setter)) return null;
+		if (!isSetter(setter)) return null;
 
 		final Class< ? >[] methodParameterTypes = setter.getParameterTypes();
 		final String methodName = setter.getName();
@@ -119,13 +119,13 @@ public final class ReflectionUtils
 
 	public static Field getFieldRecursive(final Class< ? > clazz, final String fieldName)
 	{
-		final Field f = ReflectionUtils.getField(clazz, fieldName);
+		final Field f = getField(clazz, fieldName);
 		if (f != null) return f;
 
 		final Class< ? > superclazz = clazz.getSuperclass();
 		if (superclazz == null) return null;
 
-		return ReflectionUtils.getFieldRecursive(superclazz, fieldName);
+		return getFieldRecursive(superclazz, fieldName);
 	}
 
 	public static Object getFieldValue(final Field field, final Object obj)
@@ -143,10 +143,42 @@ public final class ReflectionUtils
 		}
 	}
 
+	public static Method getGetter(final Class< ? > clazz, final String fieldName)
+	{
+		final String appendix = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+		try
+		{
+			return clazz.getDeclaredMethod("get" + appendix);
+		}
+		catch (final NoSuchMethodException e)
+		{
+			//
+		}
+		try
+		{
+			return clazz.getDeclaredMethod("is" + appendix);
+		}
+		catch (final NoSuchMethodException e)
+		{
+			return null;
+		}
+	}
+
+	public static Method getGetterRecursive(final Class< ? > clazz, final String fieldName)
+	{
+		final Method m = getGetter(clazz, fieldName);
+		if (m != null) return m;
+
+		final Class< ? > superclazz = clazz.getSuperclass();
+		if (superclazz == null) return null;
+
+		return getGetterRecursive(superclazz, fieldName);
+	}
+
 	public static List<Method> getInterfaceMethods(final Method method)
 	{
 		// static methods cannot be overridden
-		if (ReflectionUtils.isStatic(method)) return null;
+		if (isStatic(method)) return null;
 
 		final Class< ? >[] interfaces = method.getDeclaringClass().getInterfaces();
 		if (interfaces.length == 0) return null;
@@ -158,7 +190,7 @@ public final class ReflectionUtils
 				interfaces.length);
 		for (final Class< ? > iface : interfaces)
 		{
-			final Method m = ReflectionUtils.getMethod(iface, methodName, parameterTypes);
+			final Method m = getMethod(iface, methodName, parameterTypes);
 			if (m != null) methods.add(m);
 		}
 		return methods;
@@ -183,7 +215,7 @@ public final class ReflectionUtils
 	public static Method getSuperMethod(final Method method)
 	{
 		// static methods cannot be overridden
-		if (ReflectionUtils.isStatic(method)) return null;
+		if (isStatic(method)) return null;
 
 		final String methodName = method.getName();
 		final Class< ? >[] parameterTypes = method.getParameterTypes();
@@ -194,8 +226,8 @@ public final class ReflectionUtils
 		{
 			currentClass = currentClass.getSuperclass();
 
-			final Method m = ReflectionUtils.getMethod(currentClass, methodName, parameterTypes);
-			if (m != null && !ReflectionUtils.isPrivate(m)) return m;
+			final Method m = getMethod(currentClass, methodName, parameterTypes);
+			if (m != null && !isPrivate(m)) return m;
 		}
 		return null;
 	}

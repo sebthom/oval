@@ -16,6 +16,8 @@
 - fixed bug 1868301 OVal with groovy - Performance Evaluation
 * changed AnnotationsConfigurer.initializeCheck(...) to protected to allow better customization of the instantiation of checks
 + added support for Apache Commons JEXL as expression language
++ added @net.sf.oval.constraitn.EqualToField (thanks to anydoby for the idea)
++ added @net.sf.oval.constraitn.NotEqualToField (thanks to anydoby for the idea)
 
 2007-11-02 v1.10
 ================
