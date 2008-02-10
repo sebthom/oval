@@ -61,12 +61,12 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 
 		if (valueToValidate instanceof Collection)
 		{
-			final int size = ((Collection) valueToValidate).size();
+			final int size = ((Collection< ? >) valueToValidate).size();
 			return size <= max;
 		}
 		if (valueToValidate instanceof Map)
 		{
-			final int size = ((Map) valueToValidate).size();
+			final int size = ((Map< ? , ? >) valueToValidate).size();
 			return size <= max;
 		}
 		if (valueToValidate.getClass().isArray())

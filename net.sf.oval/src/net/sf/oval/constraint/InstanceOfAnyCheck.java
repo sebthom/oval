@@ -27,7 +27,7 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 {
 	private static final long serialVersionUID = 1L;
 
-	private Class[] types;
+	private Class< ? >[] types;
 
 	@Override
 	public void configure(final InstanceOfAny constraintAnnotation)
@@ -60,7 +60,7 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 	/**
 	 * @return the type
 	 */
-	public Class[] getTypes()
+	public Class< ? >[] getTypes()
 	{
 		return types;
 	}
@@ -70,7 +70,7 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 	{
 		if (valueToValidate == null) return true;
 
-		for (final Class type : types)
+		for (final Class< ? > type : types)
 		{
 			if (type.isInstance(valueToValidate)) return true;
 		}
@@ -80,7 +80,7 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 	/**
 	 * @param types the types to set
 	 */
-	public void setTypes(final Class... types)
+	public void setTypes(final Class< ? >... types)
 	{
 		this.types = types;
 	}

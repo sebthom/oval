@@ -61,12 +61,12 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 
 		if (valueToValidate instanceof Collection)
 		{
-			final int size = ((Collection) valueToValidate).size();
+			final int size = ((Collection< ? >) valueToValidate).size();
 			return size >= min;
 		}
 		if (valueToValidate instanceof Map)
 		{
-			final int size = ((Map) valueToValidate).size();
+			final int size = ((Map< ? , ? >) valueToValidate).size();
 			return size >= min;
 		}
 		if (valueToValidate.getClass().isArray())

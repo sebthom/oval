@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -35,15 +35,15 @@ public @interface AssertFieldConstraints
 	 * The class in which the field is declared. If omitted the current class and it's super classes are searched for a field with the given name.
 	 * The default value Void.class means the current class.
 	 */
-	Class declaringClass() default Void.class;
-
-	/**
-	 * Name of the field. If not specified, the constraints of the field with the same name as the annotated constructor/method parameter are applied.
-	 */
-	String value() default "";
+	Class< ? > declaringClass() default Void.class;
 
 	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * Name of the field. If not specified, the constraints of the field with the same name as the annotated constructor/method parameter are applied.
+	 */
+	String value() default "";
 }

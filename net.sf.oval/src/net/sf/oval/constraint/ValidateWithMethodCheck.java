@@ -30,7 +30,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 
 	private boolean ignoreIfNull;
 	private String methodName;
-	private Class parameterType;
+	private Class< ? > parameterType;
 
 	@Override
 	public void configure(final ValidateWithMethod constraintAnnotation)
@@ -63,7 +63,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	/**
 	 * @return the parameterType
 	 */
-	public Class getParameterType()
+	public Class< ? > getParameterType()
 	{
 		return parameterType;
 	}
@@ -115,7 +115,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	/**
 	 * @param parameterType the parameterType to set
 	 */
-	public void setParameterType(final Class parameterType)
+	public void setParameterType(final Class< ? > parameterType)
 	{
 		this.parameterType = parameterType;
 	}

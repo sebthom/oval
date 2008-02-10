@@ -25,7 +25,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 
 	private String fieldName;
 
-	private Class declaringClass;
+	private Class< ? > declaringClass;
 
 	@Override
 	public void configure(final AssertFieldConstraints constraintAnnotation)
@@ -38,7 +38,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	/**
 	 * @return the declaringClass
 	 */
-	public Class getDeclaringClass()
+	public Class< ? > getDeclaringClass()
 	{
 		return declaringClass;
 	}
@@ -83,7 +83,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	/**
 	 * @param declaringClass the declaringClass to set
 	 */
-	public void setDeclaringClass(final Class declaringClass)
+	public void setDeclaringClass(final Class< ? > declaringClass)
 	{
 		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
 	}

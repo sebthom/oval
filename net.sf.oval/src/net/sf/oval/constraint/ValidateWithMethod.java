@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -58,15 +58,15 @@ public @interface ValidateWithMethod
 	/**
 	 * type of the method parameter
 	 */
-	Class parameterType();
-
-	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
+	Class< ? > parameterType();
 
 	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }

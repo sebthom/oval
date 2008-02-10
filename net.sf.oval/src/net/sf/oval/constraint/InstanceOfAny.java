@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -46,17 +46,17 @@ public @interface InstanceOfAny
 	String message() default "net.sf.oval.constraints.InstanceOfAny.violated";
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
 
 	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
+
+	/**
 	 * Classes and/or Interfaces to test against
 	 */
-	Class[] value();
+	Class< ? >[] value();
 }

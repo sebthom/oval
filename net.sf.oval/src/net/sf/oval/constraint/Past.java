@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -45,15 +45,15 @@ public @interface Past
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Future.violated";
-
-	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
+	String message() default "net.sf.oval.constraints.Past.violated";
 
 	/**
 	 * The associated validation profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }

@@ -60,7 +60,7 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	/**
 	 * @return the type
 	 */
-	public Class[] getTypes()
+	public Class< ? >[] getTypes()
 	{
 		return types;
 	}
@@ -70,7 +70,7 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	{
 		if (valueToValidate == null) return true;
 
-		for (final Class type : types)
+		for (final Class< ? > type : types)
 		{
 			if (!type.isInstance(valueToValidate)) return false;
 		}
@@ -80,7 +80,7 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	/**
 	 * @param types the types to set
 	 */
-	public void setTypes(final Class... types)
+	public void setTypes(final Class< ? >... types)
 	{
 		this.types = types;
 	}
