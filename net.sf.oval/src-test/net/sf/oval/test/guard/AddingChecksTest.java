@@ -56,7 +56,7 @@ public class AddingChecksTest extends TestCase
 	{
 		protected String name;
 
-		private TestEntity2(final String name)
+		protected TestEntity2(final String name)
 		{
 			this.name = name;
 		}
@@ -75,7 +75,7 @@ public class AddingChecksTest extends TestCase
 	{
 		protected String name;
 
-		private TestEntity3(final String name)
+		protected TestEntity3(final String name)
 		{
 			this.name = name;
 		}

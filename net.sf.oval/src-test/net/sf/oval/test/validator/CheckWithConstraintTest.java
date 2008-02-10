@@ -26,16 +26,15 @@ import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
  */
 public class CheckWithConstraintTest extends TestCase
 {
-
-	private static class TestEntity1
+	protected static class TestEntity1
 	{
-		private static class NameCheck1 implements SimpleCheck
+		protected static class NameCheck1 implements SimpleCheck
 		{
-			private static final long serialVersionUID = 1L;
+			protected static final long serialVersionUID = 1L;
 
-			public boolean isSatisfied(Object validatedObject, Object value)
+			public boolean isSatisfied(final Object validatedObject, final Object value)
 			{
-				String name = (String) value;
+				final String name = (String) value;
 
 				if (name == null) return false;
 				if (name.length() == 0) return false;
@@ -48,13 +47,13 @@ public class CheckWithConstraintTest extends TestCase
 		public String name;
 	}
 
-	private static class TestEntity2
+	protected static class TestEntity2
 	{
-		private static class NameCheck2 implements SimpleCheck
+		protected static class NameCheck2 implements SimpleCheck
 		{
-			private static final long serialVersionUID = 1L;
+			protected static final long serialVersionUID = 1L;
 
-			public boolean isSatisfied(Object validatedObject, Object value)
+			public boolean isSatisfied(final Object validatedObject, final Object value)
 			{
 				return ((TestEntity2) validatedObject).isValidName((String) value);
 			}
@@ -64,7 +63,7 @@ public class CheckWithConstraintTest extends TestCase
 		@NotNull
 		public String name;
 
-		private boolean isValidName(String name)
+		protected boolean isValidName(final String name)
 		{
 			if (name.length() == 0) return false;
 			if (name.length() > 4) return false;

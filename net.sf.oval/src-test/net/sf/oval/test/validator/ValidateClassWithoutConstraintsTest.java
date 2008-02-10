@@ -28,7 +28,7 @@ public class ValidateClassWithoutConstraintsTest extends TestCase
 	{
 		protected String name;
 
-		private TestEntity(final String name)
+		protected TestEntity(final String name)
 		{
 			this.name = name;
 		}
@@ -47,18 +47,18 @@ public class ValidateClassWithoutConstraintsTest extends TestCase
 		final TestEntity e = new TestEntity(null);
 
 		final Validator v = new Validator();
-		List<ConstraintViolation> violations = v.validate(e);
+		final List<ConstraintViolation> violations = v.validate(e);
 		assertEquals(0, violations.size());
 	}
-	
+
 	public void testEmptyXmlConfigurer()
 	{
-		XMLConfigurer xmlConfigurer = new XMLConfigurer();  
-		Validator v = new Validator(xmlConfigurer);
-		
+		final XMLConfigurer xmlConfigurer = new XMLConfigurer();
+		final Validator v = new Validator(xmlConfigurer);
+
 		final TestEntity e = new TestEntity(null);
-		
-		List<ConstraintViolation> violations = v.validate(e);
+
+		final List<ConstraintViolation> violations = v.validate(e);
 		assertEquals(0, violations.size());
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -31,7 +31,7 @@ public class AddingChecksTest extends TestCase
 	{
 		protected String name;
 
-		private TestEntity(String name)
+		protected TestEntity(final String name)
 		{
 			this.name = name;
 		}
@@ -39,7 +39,7 @@ public class AddingChecksTest extends TestCase
 		/**
 		 * @param name the name to set
 		 */
-		public void setName(String name)
+		public void setName(final String name)
 		{
 			this.name = name;
 		}
@@ -52,16 +52,16 @@ public class AddingChecksTest extends TestCase
 	{
 		final Validator validator = new Validator();
 
-		TestEntity entity = new TestEntity(null);
+		final TestEntity entity = new TestEntity(null);
 		assertTrue(validator.validate(entity).size() == 0);
 
-		Field field = TestEntity.class.getDeclaredField("name");
-		NotNullCheck notNullCheck = new NotNullCheck();
+		final Field field = TestEntity.class.getDeclaredField("name");
+		final NotNullCheck notNullCheck = new NotNullCheck();
 		notNullCheck.setMessage("NOT_NULL");
-		
+
 		validator.addChecks(field, notNullCheck);
 
-		List<ConstraintViolation> violations = validator.validate(entity);
+		final List<ConstraintViolation> violations = validator.validate(entity);
 		assertTrue(violations.size() == 1);
 		assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 	}
@@ -76,15 +76,15 @@ public class AddingChecksTest extends TestCase
 
 		try
 		{
-			Method setter = TestEntity.class
-					.getDeclaredMethod("setName", new Class<?>[]{String.class});
+			final Method setter = TestEntity.class.getDeclaredMethod("setName",
+					new Class[]{String.class});
 
 			validator.addChecks(setter, new NotNullCheck());
 			fail();
 		}
-		catch (InvalidConfigurationException e)
+		catch (final InvalidConfigurationException e)
 		{
-			//expected
+			// expected
 		}
 	}
 }

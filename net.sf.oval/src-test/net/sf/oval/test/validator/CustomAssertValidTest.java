@@ -45,7 +45,7 @@ import net.sf.oval.exception.ReflectionException;
  */
 public class CustomAssertValidTest extends TestCase
 {
-	private static class Address
+	protected static class Address
 	{
 		@NotNull
 		public String street;
@@ -63,8 +63,9 @@ public class CustomAssertValidTest extends TestCase
 		public Person contact;
 	}
 
-	private class CustomAnnotationConfigurer extends AnnotationsConfigurer
+	protected class CustomAnnotationConfigurer extends AnnotationsConfigurer
 	{
+		@SuppressWarnings("unchecked")
 		@Override
 		protected <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(
 				final ConstraintAnnotation constraintAnnotation) throws ReflectionException
@@ -126,7 +127,7 @@ public class CustomAssertValidTest extends TestCase
 		}
 	}
 
-	private static class Person
+	protected static class Person
 	{
 		@NotNull
 		public String firstName;
@@ -148,7 +149,7 @@ public class CustomAssertValidTest extends TestCase
 
 	}
 
-	private static class Registry
+	protected static class Registry
 	{
 		@CustomAssertValid
 		public List<Address[]> addressClusters;

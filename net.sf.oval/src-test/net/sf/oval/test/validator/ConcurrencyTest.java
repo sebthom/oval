@@ -28,7 +28,7 @@ public class ConcurrencyTest extends TestCase
 	{
 		@NotNull
 		@MaxLength(5)
-		private String name;
+		protected String name;
 
 		public String getName()
 		{
