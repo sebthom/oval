@@ -65,7 +65,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 
 	private static final long serialVersionUID = 1L;
 
-	private final Log LOG = Log.getLog(AssertURLCheck.class);
+	private static final Log LOG = Log.getLog(AssertURLCheck.class);
 
 	/**
 	 * Specifies if a connection to the URL should be attempted to verify its validity. 

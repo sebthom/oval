@@ -41,8 +41,10 @@ import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.AssertFalseCheck;
 import net.sf.oval.constraint.AssertFieldConstraintsCheck;
 import net.sf.oval.constraint.AssertTrueCheck;
+import net.sf.oval.constraint.AssertURLCheck;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.CheckWithCheck;
+import net.sf.oval.constraint.EqualToFieldCheck;
 import net.sf.oval.constraint.FutureCheck;
 import net.sf.oval.constraint.HasSubstringCheck;
 import net.sf.oval.constraint.InstanceOfAnyCheck;
@@ -60,6 +62,7 @@ import net.sf.oval.constraint.NoSelfReferenceCheck;
 import net.sf.oval.constraint.NotBlankCheck;
 import net.sf.oval.constraint.NotEmptyCheck;
 import net.sf.oval.constraint.NotEqualCheck;
+import net.sf.oval.constraint.NotEqualToFieldCheck;
 import net.sf.oval.constraint.NotMemberOfCheck;
 import net.sf.oval.constraint.NotNegativeCheck;
 import net.sf.oval.constraint.NotNullCheck;
@@ -67,6 +70,8 @@ import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.RangeCheck;
 import net.sf.oval.constraint.SizeCheck;
 import net.sf.oval.constraint.ValidateWithMethodCheck;
+import net.sf.oval.constraint.AssertURLCheck.URIScheme;
+import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 import net.sf.oval.exception.OValException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
@@ -76,6 +81,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -91,8 +97,9 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  */
 public class XMLConfigurer implements Configurer
 {
-	private final static class AssertCheckConverter implements Converter
+	protected final static class AssertCheckConverter implements Converter
 	{
+		@SuppressWarnings("unchecked")
 		public boolean canConvert(final Class clazz)
 		{
 			return clazz.equals(AssertCheck.class);
@@ -180,6 +187,15 @@ public class XMLConfigurer implements Configurer
 
 	protected final void configureXStream()
 	{
+		xStream.registerConverter(new CollectionConverter(xStream.getMapper())
+			{
+				@SuppressWarnings("unchecked")
+				@Override
+				public boolean canConvert(final Class type)
+				{
+					return List.class.isAssignableFrom(type);
+				}
+			});
 		xStream.registerConverter(new AssertCheckConverter());
 
 		xStream.useAttributeFor(Class.class);
@@ -207,8 +223,15 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("assertFalse", AssertFalseCheck.class);
 		xStream.alias("assertFieldConstraints", AssertFieldConstraintsCheck.class);
 		xStream.alias("assertTrue", AssertTrueCheck.class);
+		{
+			xStream.alias("assertURL", AssertURLCheck.class);
+			xStream.alias("permittedURIScheme", URIScheme.class);
+			xStream.addImplicitCollection(AssertURLCheck.class, "permittedURISchemes",
+					URIScheme.class);
+		}
 		xStream.alias("assertValid", AssertValidCheck.class);
 		xStream.alias("checkWith", CheckWithCheck.class);
+		xStream.alias("equalToField", EqualToFieldCheck.class);
 		xStream.alias("future", FutureCheck.class);
 		xStream.alias("hasSubstring", HasSubstringCheck.class);
 		xStream.alias("instanceOf", InstanceOfCheck.class);
@@ -226,11 +249,13 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("notBlank", NotBlankCheck.class);
 		xStream.alias("notEmpty", NotEmptyCheck.class);
 		xStream.alias("notEqual", NotEqualCheck.class);
+		xStream.alias("notEqualToField", NotEqualToFieldCheck.class);
 		xStream.alias("notMemberOf", NotMemberOfCheck.class);
 		xStream.alias("notNegative", NotNegativeCheck.class);
 		xStream.alias("notNull", NotNullCheck.class);
 		xStream.alias("past", PastCheck.class);
 		xStream.alias("range", RangeCheck.class);
+		xStream.alias("simpleCheck", SimpleCheck.class);
 		xStream.alias("size", SizeCheck.class);
 		xStream.alias("validateWithMethod", ValidateWithMethodCheck.class);
 
