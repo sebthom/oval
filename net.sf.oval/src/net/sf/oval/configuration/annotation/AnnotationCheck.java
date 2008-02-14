@@ -15,6 +15,7 @@ package net.sf.oval.configuration.annotation;
 import java.lang.annotation.Annotation;
 
 import net.sf.oval.Check;
+import net.sf.oval.exception.InvalidConfigurationException;
 
 /**
  * Interface for constraint checks that are configurable via annotations.
@@ -23,5 +24,5 @@ import net.sf.oval.Check;
  */
 public interface AnnotationCheck<ConstraintAnnotation extends Annotation> extends Check
 {
-	void configure(ConstraintAnnotation constraintAnnotation);
+	void configure(ConstraintAnnotation constraintAnnotation) throws InvalidConfigurationException;
 }

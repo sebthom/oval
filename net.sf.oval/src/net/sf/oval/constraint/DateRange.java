@@ -22,7 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if value equals the value of the referenced field
+ * Check if the date is within the a date range.
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
@@ -32,26 +32,50 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = EqualToFieldCheck.class)
-public @interface EqualToField
+@Constraint(checkWith = DateRangeCheck.class)
+public @interface DateRange
 {
-	/**
-	 * The class in which the field is declared. If omitted the current class and it's super classes are searched for a field with the given name.
-	 * The default value Void.class means the current class.
-	 */
-	Class< ? > declaringClass() default Void.class;
-
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.EqualToField";
+	String errorCode() default "net.sf.oval.constraints.DateRange";
+
+	/**
+	 * The format of the specified dates in a form understandable by the SimpleDateFormat class.
+	 * Defaults to the default format style of the default locale.
+	 */
+	String format() default "";
+
+	/**
+	 * The upper date compared against in the format specified with the dateFormat parameter. If not specified then no upper boundary check is performed.<br>
+	 * Special values are:
+	 * <ul>
+	 * <li><code>now</code>
+	 * <li><code>today</code>
+	 * <li><code>yesterday</code>
+	 * <li><code>tomorrow</code>
+	 * </ul>
+	 */
+	String max() default "";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.EqualToField.violated";
+	String message() default "net.sf.oval.constraints.DateRange.violated";
+
+	/**
+	 * The lower date compared against in the format specified with the dateFormat parameter. If not specified then no upper boundary check is performed.<br>
+	 * Special values are:
+	 * <ul>
+	 * <li><code>now</code>
+	 * <li><code>today</code>
+	 * <li><code>yesterday</code>
+	 * <li><code>tomorrow</code>
+	 * </ul>
+	 */
+	String min() default "";
 
 	/**
 	 * The associated validation profiles.
@@ -62,15 +86,4 @@ public @interface EqualToField
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
-
-	/**
-	 * if set to true the field's value will be retrieved via
-	 * the corresponding getter method instead of reflection 
-	 */
-	boolean useGetter() default false;
-
-	/**
-	 * name of the field
-	 */
-	String value();
 }

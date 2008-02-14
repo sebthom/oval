@@ -31,6 +31,8 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertFalseTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.DateRangeTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.EqualToFieldTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.HasSubStringTest.class);
@@ -53,8 +55,8 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNegativeTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotNullTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.PastTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.RangeTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.SizeTest.class);
-		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
 	}
 
 	private static void guardTests(final TestSuite suite)
@@ -95,11 +97,10 @@ public class AllTests
 		// $JUnit-BEGIN$
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
-		AllTests.constraintsTests(suite);
-
 		// Tests with JDK collections
 		{
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with JDK collections");
+			constraintsTests(suite1);
 			validatorTests(suite1);
 			guardTests(suite1);
 			integrationTests(suite1);
@@ -119,6 +120,7 @@ public class AllTests
 		{
 			final TestSuite suite1 = new TestSuite(
 					"Tests for net.sf.oval with Javolution collections");
+			constraintsTests(suite1);
 			validatorTests(suite1);
 			guardTests(suite1);
 			integrationTests(suite1);
@@ -137,6 +139,7 @@ public class AllTests
 		// Tests with Trove collections
 		{
 			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with Trove collections");
+			constraintsTests(suite1);
 			validatorTests(suite1);
 			guardTests(suite1);
 			integrationTests(suite1);

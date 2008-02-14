@@ -48,7 +48,7 @@ public class AnnotationsConfigurer implements Configurer
 {
 	protected void configureConstructorParameterChecks(final ClassConfiguration config)
 	{
-		for (final Constructor constructor : config.type.getDeclaredConstructors())
+		for (final Constructor< ? > constructor : config.type.getDeclaredConstructors())
 		{
 			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder
 					.getFactory().createList(4);
@@ -290,7 +290,7 @@ public class AnnotationsConfigurer implements Configurer
 				Constraint.class);
 
 		// determine the check class
-		final Class checkClass = constraint.checkWith();
+		final Class< ? > checkClass = constraint.checkWith();
 
 		try
 		{

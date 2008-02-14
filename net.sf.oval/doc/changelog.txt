@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2008-XX-XX v1.XX
+2008-XX-XX v1.20
 ================
 * upgraded to MVEL 1.2.22
 * upgraded to Javolution 5.2.6
@@ -18,6 +18,7 @@
 + added support for Apache Commons JEXL as expression language
 + added @net.sf.oval.constraitn.EqualToField (thanks to anydoby for the idea)
 + added @net.sf.oval.constraitn.NotEqualToField (thanks to anydoby for the idea)
++ added @net.sf.oval.constraitn.DateRange (thanks to anydoby for the idea)
 
 2007-11-02 v1.10
 ================
