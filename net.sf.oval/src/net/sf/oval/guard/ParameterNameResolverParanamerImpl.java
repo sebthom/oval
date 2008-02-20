@@ -21,8 +21,8 @@ import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
- * This implementation that uses com.thoughtworks.paranamer.Paranamer (ttp://paranamer.codehaus.org/)
- * to determinethe names of paramater names as a fallback the results of a 
+ * This implementation that uses com.thoughtworks.paranamer.Paranamer (http://paranamer.codehaus.org/)
+ * to determine the names of paramater names as a fallback the results of a 
  * ParameterNameResolverEnumerationImpl are returned
  *  
  * @author Sebastian Thomschke

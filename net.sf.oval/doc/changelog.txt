@@ -9,6 +9,7 @@
 * upgraded to AspectJ 1.5.4
 * upgraded to Groovy 1.5.4
 * upgraded to JRuby 1.0.3
+* upgraded to Paranamer 1.1.1
 - fixed bug 1885645 Validator.validateFieldValue should not return null
 - fixed bug 1834537 NullPointerException in constraintViolation.getCauses()
 - fixed bug 1852088 Incorrect default message for NotEqual validation
