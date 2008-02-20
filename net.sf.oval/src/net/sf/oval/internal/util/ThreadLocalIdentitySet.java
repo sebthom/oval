@@ -15,18 +15,18 @@ package net.sf.oval.internal.util;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalIdentitySet<T> extends ThreadLocal
+public class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>>
 {
-	@Override
-	public IdentitySet<T> initialValue()
-	{
-		return new IdentitySet<T>();
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public IdentitySet<T> get()
 	{
-		return (IdentitySet<T>) super.get();
+		return super.get();
+	}
+
+	@Override
+	public IdentitySet<T> initialValue()
+	{
+		return new IdentitySet<T>();
 	}
 }

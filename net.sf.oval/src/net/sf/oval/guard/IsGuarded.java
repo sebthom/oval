@@ -19,8 +19,6 @@ package net.sf.oval.guard;
  * <b>Important:</b> Do NOT directly implement this interface in your classes.
  * 
  * @author Sebastian Thomschke
- * 
- * @see net.sf.oval.guard.GuardAspect
  */
 public interface IsGuarded
 {

@@ -15,18 +15,18 @@ package net.sf.oval.internal.util;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalWeakHashSet<T> extends ThreadLocal
+public class ThreadLocalWeakHashSet<T> extends ThreadLocal<WeakHashSet<T>>
 {
-	@Override
-	public WeakHashSet<T> initialValue()
-	{
-		return new WeakHashSet<T>();
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public WeakHashSet<T> get()
 	{
-		return (WeakHashSet<T>) super.get();
+		return super.get();
+	}
+
+	@Override
+	public WeakHashSet<T> initialValue()
+	{
+		return new WeakHashSet<T>();
 	}
 }

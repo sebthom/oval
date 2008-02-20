@@ -26,13 +26,20 @@ import java.lang.annotation.Target;
  * classes annotated with @Guarded.
  * 
  * @author Sebastian Thomschke
- * @see net.sf.oval.guard.GuardAspect
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Guarded
 {
+	/**
+	 * Automatically apply field constraints to 
+	 * the corresponding parameters of constructors
+	 * declared within the same class. A corresponding paramater
+	 * is a parameter with the same name and type as the field.
+	 */
+	boolean applyFieldConstraintsToConstructors() default false;
+
 	/**
 	 * Automatically apply field constraints to the
 	 * parameters of the corresponding setter methods 
@@ -41,14 +48,6 @@ public @interface Guarded
 	 * its parameter has as the same type as the field.
 	 */
 	boolean applyFieldConstraintsToSetters() default false;
-
-	/**
-	 * Automatically apply field constraints to 
-	 * the corresponding parameters of constructors
-	 * declared within the same class. A corresponding paramater
-	 * is a parameter with the same name and type as the field.
-	 */
-	boolean applyFieldConstraintsToConstructors() default false;
 
 	/**
 	 * Specifies if invariants are checked after constructor

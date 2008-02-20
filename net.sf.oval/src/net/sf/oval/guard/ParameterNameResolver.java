@@ -25,10 +25,10 @@ public interface ParameterNameResolver
 	/**
 	 * returns an empty String array if no parameters are declared
 	 */
-	String[] getParameterNames(Method method) throws ReflectionException;
+	String[] getParameterNames(Constructor< ? > constructor) throws ReflectionException;
 
 	/**
 	 * returns an empty String array if no parameters are declared
 	 */
-	String[] getParameterNames(Constructor constructor) throws ReflectionException;
+	String[] getParameterNames(Method method) throws ReflectionException;
 }

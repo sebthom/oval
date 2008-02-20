@@ -19,9 +19,9 @@ public class ClassContext extends OValContext
 {
 	private static final long serialVersionUID = 1L;
 
-	private final Class clazz;
+	private final Class< ? > clazz;
 
-	public ClassContext(final Class clazz)
+	public ClassContext(final Class< ? > clazz)
 	{
 		this.clazz = clazz;
 	}
@@ -29,7 +29,7 @@ public class ClassContext extends OValContext
 	/**
 	 * @return the clazz
 	 */
-	public Class getClazz()
+	public Class< ? > getClazz()
 	{
 		return clazz;
 	}

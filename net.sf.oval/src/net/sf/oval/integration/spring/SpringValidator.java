@@ -63,6 +63,7 @@ public class SpringValidator implements org.springframework.validation.Validator
 		this.validator = validator;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz)
 	{
 		return true;

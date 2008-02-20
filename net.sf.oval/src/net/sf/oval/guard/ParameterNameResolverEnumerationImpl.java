@@ -28,6 +28,26 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 {
 	private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
+	public String[] getParameterNames(final Constructor< ? > constructor)
+			throws ReflectionException
+	{
+		/*
+		 * intentionally the following code is not synchronized
+		 */
+		String[] parameterNames = parameterNamesCache.get(constructor);
+		if (parameterNames == null)
+		{
+			final int parameterCount = constructor.getParameterTypes().length;
+			parameterNames = new String[parameterCount];
+			for (int i = 0; i < parameterCount; i++)
+			{
+				parameterNames[i] = "arg" + i;
+			}
+			parameterNamesCache.put(constructor, parameterNames);
+		}
+		return parameterNames;
+	}
+
 	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
 		/*
@@ -43,25 +63,6 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 				parameterNames[i] = "arg" + i;
 			}
 			parameterNamesCache.put(method, parameterNames);
-		}
-		return parameterNames;
-	}
-
-	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
-	{
-		/*
-		 * intentionally the following code is not synchronized
-		 */
-		String[] parameterNames = parameterNamesCache.get(constructor);
-		if (parameterNames == null)
-		{
-			final int parameterCount = constructor.getParameterTypes().length;
-			parameterNames = new String[parameterCount];
-			for (int i = 0; i < parameterCount; i++)
-			{
-				parameterNames[i] = "arg" + i;
-			}
-			parameterNamesCache.put(constructor, parameterNames);
 		}
 		return parameterNames;
 	}

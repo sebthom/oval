@@ -48,7 +48,7 @@ public class ClassChecks
 	/**
 	 * checks on constructors' parameter values
 	 */
-	public final Map<Constructor, Map<Integer, Set<Check>>> checksForConstructorParameters = CollectionFactoryHolder
+	public final Map<Constructor< ? >, Map<Integer, Set<Check>>> checksForConstructorParameters = CollectionFactoryHolder
 			.getFactory().createMap(2);
 
 	/**
@@ -81,7 +81,7 @@ public class ClassChecks
 	public final Map<Method, Set<PreCheck>> checksForMethodsPreExecution = CollectionFactoryHolder
 			.getFactory().createMap();
 
-	public final Class clazz;
+	public final Class< ? > clazz;
 
 	/**
 	 * all non-static fields that have value constraints.
@@ -125,35 +125,6 @@ public class ClassChecks
 
 		this.clazz = clazz;
 		isGuarded = IsGuarded.class.isAssignableFrom(clazz);
-	}
-
-	/**
-	 * adds constraint checks to a constructor parameter 
-	 *  
-	 * @param constructor
-	 * @param parameterIndex
-	 * @param checks
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
-	 */
-	public void addConstructorParameterChecks(final Constructor constructor,
-			final int parameterIndex, final Check... checks) throws InvalidConfigurationException
-	{
-		addConstructorParameterChecks(constructor, parameterIndex, (Object) checks);
-	}
-
-	/**
-	 * adds constraint checks to a constructor parameter 
-	 *  
-	 * @param constructor
-	 * @param parameterIndex
-	 * @param checks
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
-	 */
-	public void addConstructorParameterChecks(final Constructor constructor,
-			final int parameterIndex, final Collection<Check> checks)
-			throws InvalidConfigurationException
-	{
-		addConstructorParameterChecks(constructor, parameterIndex, (Object) checks);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -201,6 +172,35 @@ public class ClassChecks
 				ArrayUtils.addAll(checksOfConstructorParameter, (Check[]) checks);
 			}
 		}
+	}
+
+	/**
+	 * adds constraint checks to a constructor parameter 
+	 *  
+	 * @param constructor
+	 * @param parameterIndex
+	 * @param checks
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 */
+	public void addConstructorParameterChecks(final Constructor< ? > constructor,
+			final int parameterIndex, final Check... checks) throws InvalidConfigurationException
+	{
+		addConstructorParameterChecks(constructor, parameterIndex, (Object) checks);
+	}
+
+	/**
+	 * adds constraint checks to a constructor parameter 
+	 *  
+	 * @param constructor
+	 * @param parameterIndex
+	 * @param checks
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 */
+	public void addConstructorParameterChecks(final Constructor< ? > constructor,
+			final int parameterIndex, final Collection<Check> checks)
+			throws InvalidConfigurationException
+	{
+		addConstructorParameterChecks(constructor, parameterIndex, (Object) checks);
 	}
 
 	/**
@@ -563,12 +563,12 @@ public class ClassChecks
 		constrainedStaticMethods.clear();
 	}
 
-	public void clearConstructorChecks(final Constructor constructor)
+	public void clearConstructorChecks(final Constructor< ? > constructor)
 	{
 		clearConstructorParameterChecks(constructor);
 	}
 
-	public void clearConstructorParameterChecks(final Constructor constructor)
+	public void clearConstructorParameterChecks(final Constructor< ? > constructor)
 	{
 		synchronized (checksForConstructorParameters)
 		{
@@ -576,7 +576,7 @@ public class ClassChecks
 		}
 	}
 
-	public void clearConstructorParameterChecks(final Constructor constructor,
+	public void clearConstructorParameterChecks(final Constructor< ? > constructor,
 			final int parameterIndex)
 	{
 		synchronized (checksForConstructorParameters)
@@ -673,7 +673,7 @@ public class ClassChecks
 		}
 	}
 
-	public void removeConstructorParameterChecks(final Constructor constructor,
+	public void removeConstructorParameterChecks(final Constructor< ? > constructor,
 			final int parameterIndex, final Check... checks)
 	{
 		synchronized (checksForConstructorParameters)

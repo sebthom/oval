@@ -70,7 +70,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 
 		LOG.debug("aroundConstructor() {}", SIGNATURE);
 
-		final Constructor CONSTRUCTOR = SIGNATURE.getConstructor();
+		final Constructor< ? > CONSTRUCTOR = SIGNATURE.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();
 		final Object TARGET = thisJoinPoint.getTarget();
 

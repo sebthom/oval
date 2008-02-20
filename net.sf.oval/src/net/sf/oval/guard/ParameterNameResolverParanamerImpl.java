@@ -43,7 +43,8 @@ public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 		this.paranamer = paranamer;
 	}
 
-	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
+	public String[] getParameterNames(final Constructor< ? > constructor)
+			throws ReflectionException
 	{
 		return fallback.getParameterNames(constructor);
 	}

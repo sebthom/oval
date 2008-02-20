@@ -19,18 +19,18 @@ import net.sf.oval.internal.CollectionFactoryHolder;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalList<T> extends ThreadLocal
+public class ThreadLocalList<T> extends ThreadLocal<List<T>>
 {
-	@Override
-	public List<T> initialValue()
-	{
-		return CollectionFactoryHolder.getFactory().createList();
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> get()
 	{
-		return (List<T>) super.get();
+		return super.get();
+	}
+
+	@Override
+	public List<T> initialValue()
+	{
+		return CollectionFactoryHolder.getFactory().createList();
 	}
 }

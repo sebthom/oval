@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
  * instead it will throw a ConstraintsViolatedException exception.<br> 
  *
  * @author Sebastian Thomschke
- * @see net.sf.oval.guard.GuardAspect
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

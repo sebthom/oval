@@ -77,8 +77,9 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		return map.keySet().containsAll(c);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == this) return true;
 

@@ -34,83 +34,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 {
 	private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
-	public String[] getParameterNames(final Method method) throws ReflectionException
-	{
-		/*
-		 * intentionally the following code is not synchronized
-		 */
-		String[] parameterNames = parameterNamesCache.get(method);
-		if (parameterNames == null)
-		{
-			try
-			{
-				determineParamterNames(method.getDeclaringClass());
-				parameterNames = parameterNamesCache.get(method);
-			}
-			catch (IllegalArgumentException e)
-			{
-				throw new ReflectionException("Cannot detemine parameter names for method "
-						+ method, e);
-			}
-			catch (IllegalAccessException e)
-			{
-				throw new ReflectionException("Cannot detemine parameter names for method "
-						+ method, e);
-			}
-		}
-
-		if (parameterNames == null)
-		{
-			final int parameterCount = method.getParameterTypes().length;
-			parameterNames = new String[parameterCount];
-			for (int i = 0; i < parameterCount; i++)
-			{
-				parameterNames[i] = "parameter" + i;
-			}
-			parameterNamesCache.put(method, parameterNames);
-		}
-		return parameterNames;
-	}
-
-	public String[] getParameterNames(final Constructor constructor) throws ReflectionException
-	{
-		/*
-		 * intentionally the following code is not synchronized
-		 */
-		String[] parameterNames = parameterNamesCache.get(constructor);
-		if (parameterNames == null)
-		{
-			try
-			{
-				determineParamterNames(constructor.getDeclaringClass());
-				parameterNames = parameterNamesCache.get(constructor);
-			}
-			catch (IllegalArgumentException e)
-			{
-				throw new ReflectionException("Cannot detemine parameter names for constructor "
-						+ constructor, e);
-			}
-			catch (IllegalAccessException e)
-			{
-				throw new ReflectionException("Cannot detemine parameter names for constructor "
-						+ constructor, e);
-			}
-		}
-
-		if (parameterNames == null)
-		{
-			final int parameterCount = constructor.getParameterTypes().length;
-			parameterNames = new String[parameterCount];
-			for (int i = 0; i < parameterCount; i++)
-			{
-				parameterNames[i] = "parameter" + i;
-			}
-			parameterNamesCache.put(constructor, parameterNames);
-		}
-		return parameterNames;
-	}
-
-	private void determineParamterNames(final Class clazz) throws IllegalArgumentException,
+	private void determineParamterNames(final Class< ? > clazz) throws IllegalArgumentException,
 			IllegalAccessException
 	{
 		assert clazz != null;
@@ -131,7 +55,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 							.getSignature();
 					final String[] parameterNames = sig.getParameterNames();
 
-					final Constructor constr = sig.getConstructor();
+					final Constructor< ? > constr = sig.getConstructor();
 
 					if (parameterNames.length > 0) parameterNamesCache.put(constr, parameterNames);
 				}
@@ -146,5 +70,82 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 				}
 			}
 		}
+	}
+
+	public String[] getParameterNames(final Constructor< ? > constructor)
+			throws ReflectionException
+	{
+		/*
+		 * intentionally the following code is not synchronized
+		 */
+		String[] parameterNames = parameterNamesCache.get(constructor);
+		if (parameterNames == null)
+		{
+			try
+			{
+				determineParamterNames(constructor.getDeclaringClass());
+				parameterNames = parameterNamesCache.get(constructor);
+			}
+			catch (final IllegalArgumentException e)
+			{
+				throw new ReflectionException("Cannot detemine parameter names for constructor "
+						+ constructor, e);
+			}
+			catch (final IllegalAccessException e)
+			{
+				throw new ReflectionException("Cannot detemine parameter names for constructor "
+						+ constructor, e);
+			}
+		}
+
+		if (parameterNames == null)
+		{
+			final int parameterCount = constructor.getParameterTypes().length;
+			parameterNames = new String[parameterCount];
+			for (int i = 0; i < parameterCount; i++)
+			{
+				parameterNames[i] = "parameter" + i;
+			}
+			parameterNamesCache.put(constructor, parameterNames);
+		}
+		return parameterNames;
+	}
+
+	public String[] getParameterNames(final Method method) throws ReflectionException
+	{
+		/*
+		 * intentionally the following code is not synchronized
+		 */
+		String[] parameterNames = parameterNamesCache.get(method);
+		if (parameterNames == null)
+		{
+			try
+			{
+				determineParamterNames(method.getDeclaringClass());
+				parameterNames = parameterNamesCache.get(method);
+			}
+			catch (final IllegalArgumentException e)
+			{
+				throw new ReflectionException("Cannot detemine parameter names for method "
+						+ method, e);
+			}
+			catch (final IllegalAccessException e)
+			{
+				throw new ReflectionException("Cannot detemine parameter names for method "
+						+ method, e);
+			}
+		}
+
+		if (parameterNames == null)
+		{
+			final int parameterCount = method.getParameterTypes().length;
+			parameterNames = new String[parameterCount];
+			for (int i = 0; i < parameterCount; i++)
+			{
+				parameterNames[i] = "parameter" + i;
+			}
+			parameterNamesCache.put(method, parameterNames);
+		}
+		return parameterNames;
 	}
 }

@@ -26,14 +26,14 @@ import net.sf.oval.logging.LoggerFactoryJDKImpl;
  */
 public final class Log
 {
+	private static LoggerFactory loggerFactory = new LoggerFactoryJDKImpl();
+
 	/* cannot use CollectionFactoryHolder.getFactory().createMap(32) here, since 
 	 * the collection factory uses the Log itself which is not yet initialized
 	 */
 	private final static Map<String, Log> logRegistry = new HashMap<String, Log>(32);
 
-	private static LoggerFactory loggerFactory = new LoggerFactoryJDKImpl();
-
-	public static Log getLog(final Class clazz)
+	public static Log getLog(final Class< ? > clazz)
 	{
 		if (clazz == null) throw new IllegalArgumentException("clazz cannot be null");
 		return getLog(clazz.getName());

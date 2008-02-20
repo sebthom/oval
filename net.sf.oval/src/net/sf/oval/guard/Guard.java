@@ -75,7 +75,7 @@ public class Guard extends Validator
 
 	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(
 			4);
-	private final Map<Class, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class, Set<ConstraintsViolatedListener>>(
+	private final Map<Class< ? >, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class< ? >, Set<ConstraintsViolatedListener>>(
 			4);
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>(
 			4);
@@ -114,7 +114,7 @@ public class Guard extends Validator
 	 * @throws IllegalArgumentException if <code>constructor == null</code> or <code>checks == null</code> or checks is empty
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void addChecks(final Constructor constructor, final int parameterIndex,
+	public void addChecks(final Constructor< ? > constructor, final int parameterIndex,
 			final Check... checks) throws IllegalArgumentException, InvalidConfigurationException
 	{
 		if (constructor == null) throw new IllegalArgumentException("constructor cannot be null");
@@ -224,8 +224,8 @@ public class Guard extends Validator
 	 * @return <code>true</code> if the listener was not yet registered
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code> 
 	 */
-	public boolean addListener(final ConstraintsViolatedListener listener, final Class guardedClass)
-			throws IllegalArgumentException
+	public boolean addListener(final ConstraintsViolatedListener listener,
+			final Class< ? > guardedClass) throws IllegalArgumentException
 	{
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
 		if (guardedClass == null)
@@ -399,8 +399,9 @@ public class Guard extends Validator
 	 * @throws ConstraintsViolatedException
 	 * @throws ValidationFailedException
 	 */
-	protected void guardConstructorPost(final Object guardedObject, final Constructor constructor,
-			final Object[] args) throws ConstraintsViolatedException, ValidationFailedException
+	protected void guardConstructorPost(final Object guardedObject,
+			final Constructor< ? > constructor, final Object[] args)
+			throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return;
 
@@ -438,8 +439,9 @@ public class Guard extends Validator
 	 * @throws ConstraintsViolatedException if anything precondition is not satisfied
 	 * @throws ValidationFailedException 
 	 */
-	protected void guardConstructorPre(final Object guardedObject, final Constructor constructor,
-			final Object[] args) throws ConstraintsViolatedException, ValidationFailedException
+	protected void guardConstructorPre(final Object guardedObject,
+			final Constructor< ? > constructor, final Object[] args)
+			throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return;
 
@@ -593,8 +595,8 @@ public class Guard extends Validator
 	 * @return <code>true</code> if the listener is registered
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code> 
 	 */
-	public boolean hasListener(final ConstraintsViolatedListener listener, final Class guardedClass)
-			throws IllegalArgumentException
+	public boolean hasListener(final ConstraintsViolatedListener listener,
+			final Class< ? > guardedClass) throws IllegalArgumentException
 	{
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
 		if (guardedClass == null)
@@ -671,7 +673,7 @@ public class Guard extends Validator
 	 * @param guardedClass the guarded class
 	 * @return the isInvariantChecksActivated
 	 */
-	public boolean isInvariantsEnabled(final Class guardedClass)
+	public boolean isInvariantsEnabled(final Class< ? > guardedClass)
 	{
 		final ClassChecks cc = getClassChecks(guardedClass);
 		return cc.isCheckInvariants;
@@ -725,7 +727,7 @@ public class Guard extends Validator
 
 		// get the interface listeners
 		{
-			for (final Class interfaze : guardedObject.getClass().getInterfaces())
+			for (final Class< ? > interfaze : guardedObject.getClass().getInterfaces())
 			{
 				final Set<ConstraintsViolatedListener> interfaceListeners = listenersByClass
 						.get(interfaze);
@@ -762,7 +764,7 @@ public class Guard extends Validator
 	 * @param checks
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void removeChecks(final Constructor constructor, final int parameterIndex,
+	public void removeChecks(final Constructor< ? > constructor, final int parameterIndex,
 			final Check... checks) throws InvalidConfigurationException
 	{
 		if (constructor == null) throw new IllegalArgumentException("constructor cannot be null");
@@ -851,7 +853,7 @@ public class Guard extends Validator
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code> 
 	 */
 	public boolean removeListener(final ConstraintsViolatedListener listener,
-			final Class guardedClass) throws IllegalArgumentException
+			final Class< ? > guardedClass) throws IllegalArgumentException
 	{
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
 		if (guardedClass == null)
@@ -982,7 +984,7 @@ public class Guard extends Validator
 	 * @throws ValidationFailedException
 	 */
 	protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
-			final Constructor constructor, final Object[] argsToValidate)
+			final Constructor< ? > constructor, final Object[] argsToValidate)
 			throws ValidationFailedException
 	{
 		try
@@ -1063,12 +1065,11 @@ public class Guard extends Validator
 			if (parameterChecks == null) return;
 
 			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
-			final boolean hasParameters = parameterNames.length > 0;
 
 			/*
 			 * parameter constraints validation
 			 */
-			if (parameterChecks != null && hasParameters)
+			if (parameterNames.length > 0)
 			{
 				for (int i = 0; i < args.length; i++)
 				{
