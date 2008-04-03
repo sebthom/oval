@@ -20,6 +20,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -151,9 +152,13 @@ public class JPAAnnotationsConfigurer implements Configurer
 			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
 		}
 
-		final LengthCheck lengthCheck = new LengthCheck();
-		lengthCheck.setMax(annotation.length());
-		checks.add(lengthCheck);
+		// only consider length parameter if @Lob is not present
+		if (!field.isAnnotationPresent(Lob.class))
+		{
+			final LengthCheck lengthCheck = new LengthCheck();
+			lengthCheck.setMax(annotation.length());
+			checks.add(lengthCheck);
+		}
 	}
 
 	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks,
