@@ -40,7 +40,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getMessage = constraintClazz.getDeclaredMethod("message", (Class[]) null);
+			final Method getMessage = constraintClazz.getDeclaredMethod("message",
+					(Class< ? >[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
@@ -56,7 +57,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getErrorCode = constraintClazz.getDeclaredMethod("errorCode",
-					(Class[]) null);
+					(Class< ? >[]) null);
 			errorCode = (String) getErrorCode.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
@@ -71,8 +72,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getSeverity = constraintClazz
-					.getDeclaredMethod("severity", (Class[]) null);
+			final Method getSeverity = constraintClazz.getDeclaredMethod("severity",
+					(Class< ? >[]) null);
 			severity = ((Number) getSeverity.invoke(constraintAnnotation, (Object[]) null))
 					.intValue();
 		}
@@ -87,8 +88,8 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getProfiles = constraintClazz
-					.getDeclaredMethod("profiles", (Class[]) null);
+			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles",
+					(Class< ? >[]) null);
 			profiles = (String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)

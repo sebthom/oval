@@ -27,7 +27,7 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 {
 	private static final long serialVersionUID = 1L;
 
-	private Class[] types;
+	private Class< ? >[] types;
 
 	@Override
 	public void configure(final InstanceOf constraintAnnotation)

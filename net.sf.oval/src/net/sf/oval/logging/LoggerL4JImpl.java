@@ -20,8 +20,9 @@ import org.apache.log4j.Level;
  */
 public class LoggerL4JImpl implements Logger
 {
+	private final static String WRAPPER = "net.sf.oval.logging";
+
 	private final org.apache.log4j.Logger log;
-	private final String WRAPPER = "net.sf.oval.internal.Log";
 
 	public LoggerL4JImpl(final String name)
 	{
