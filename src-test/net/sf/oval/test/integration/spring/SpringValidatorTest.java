@@ -28,10 +28,10 @@ public class SpringValidatorTest extends TestCase
 	public static class Entity
 	{
 		@NotNull(errorCode = "E1", message = "M1")
-		private String name;
+		protected String name;
 
 		@NotNegative(errorCode = "E2", message = "M2")
-		private int age;
+		protected int age;
 
 		public int getAge()
 		{
