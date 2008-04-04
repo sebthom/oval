@@ -36,14 +36,14 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public void configure(final Assert constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setExpression(constraintAnnotation.expr());
+		setExpr(constraintAnnotation.expr());
 		setLang(constraintAnnotation.lang());
 	}
 
 	/**
 	 * @return the expression
 	 */
-	public String getExpression()
+	public String getExpr()
 	{
 		return expr;
 	}
@@ -81,7 +81,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	/**
 	 * @param expression the expression to set
 	 */
-	public void setExpression(final String expression)
+	public void setExpr(final String expression)
 	{
 		expr = expression;
 	}

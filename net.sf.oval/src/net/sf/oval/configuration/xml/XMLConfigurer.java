@@ -114,7 +114,7 @@ public class XMLConfigurer implements Configurer
 			writer.addAttribute("errorCode", assertCheck.getErrorCode());
 			writer.addAttribute("severity", Integer.toString(assertCheck.getSeverity()));
 			writer.startNode("expr");
-			writer.setValue(assertCheck.getExpression());
+			writer.setValue(assertCheck.getExpr());
 			writer.endNode();
 			final String[] profiles = assertCheck.getProfiles();
 			if (profiles != null && profiles.length > 0)
@@ -141,7 +141,7 @@ public class XMLConfigurer implements Configurer
 				assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
 
 			reader.moveDown();
-			assertCheck.setExpression(reader.getValue());
+			assertCheck.setExpr(reader.getValue());
 			reader.moveUp();
 			if (reader.hasMoreChildren())
 			{

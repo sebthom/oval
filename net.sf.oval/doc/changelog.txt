@@ -17,6 +17,7 @@
 - fixed bug 1868301 OVal with groovy - Performance Evaluation
 - fixed bug 1911078 Japanese message resource
 - fixed bug 1917978 Length of @Column should be ignored if @Lob is present
+- fixed bug 1934263 Versionconflict with WLS10.0 Clientlib
 * changed AnnotationsConfigurer.initializeCheck(...) to protected to allow better customization of the instantiation of checks
 + added support for Apache Commons JEXL as expression language
 + added @net.sf.oval.constraitn.EqualToField (thanks to anydoby for the idea)

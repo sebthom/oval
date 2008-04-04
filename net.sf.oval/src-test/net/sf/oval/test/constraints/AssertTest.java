@@ -27,13 +27,13 @@ public class AssertTest extends AbstractContraintsTest
 		check.setLang(language);
 		assertEquals(check.getLang(), language);
 
-		check.setExpression(expr1);
-		assertEquals(check.getExpression(), expr1);
+		check.setExpr(expr1);
+		assertEquals(check.getExpr(), expr1);
 		assertFalse(check.isSatisfied(this, null, null, validator));
 		assertTrue(check.isSatisfied(this, "", null, validator));
 
-		check.setExpression(expr2);
-		assertEquals(check.getExpression(), expr2);
+		check.setExpr(expr2);
+		assertEquals(check.getExpr(), expr2);
 		assertFalse(check.isSatisfied(null, null, null, validator));
 		assertTrue(check.isSatisfied(this, null, null, validator));
 	}

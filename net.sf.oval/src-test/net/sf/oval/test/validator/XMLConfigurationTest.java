@@ -113,7 +113,7 @@ public class XMLConfigurationTest extends TestCase
 				fc.name = "firstName";
 				fc.checks = new ArrayList<Check>();
 				final AssertCheck ac = new AssertCheck();
-				ac.setExpression("_value != null && _value.length() < 3");
+				ac.setExpr("_value != null && _value.length() < 3");
 				ac.setMessage("{context} cannot be longer than 3 characters");
 				ac.setLang("groovy");
 				fc.checks.add(ac);
