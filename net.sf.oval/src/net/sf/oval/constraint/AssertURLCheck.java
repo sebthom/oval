@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.List;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -75,7 +77,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	/**
 	 * Specifies the allowed URL schemes.
 	 */
-	private URIScheme[] permittedURISchemes;
+	private List<URIScheme> permittedURISchemes;
 
 	private boolean canConnect(final String url)
 	{
@@ -117,7 +119,8 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public URIScheme[] getPermittedURISchemes()
 	{
-		return permittedURISchemes == null ? null : permittedURISchemes.clone();
+		return permittedURISchemes == null ? null : permittedURISchemes
+				.toArray(new URIScheme[permittedURISchemes.size()]);
 	}
 
 	/**
@@ -195,6 +198,9 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public void setPermittedURISchemes(final URIScheme[] permittedURISchemes)
 	{
-		this.permittedURISchemes = permittedURISchemes == null ? null : permittedURISchemes.clone();
+		if (permittedURISchemes == null)
+			this.permittedURISchemes = null;
+		else
+			this.permittedURISchemes = Arrays.asList(permittedURISchemes);
 	}
 }

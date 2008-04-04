@@ -23,7 +23,7 @@ Hashtable techniques
    reduces the O (big-oh) in the performance of the hashtable algorithm.
    The size of the tables used in Trove's maps/sets is always a prime
    number, improving the probability of an optimal distribution of
-   entries across the table, and so reducing the the likelihood of
+   entries across the table, and so reducing the likelihood of
    performance-degrading collisions. Trove sets are not backed by maps,
    and so using a THashSet does not result in the allocation of an unused
    "values" array.

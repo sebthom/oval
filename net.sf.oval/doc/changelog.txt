@@ -4,12 +4,15 @@
 
 2008-XX-XX v1.20
 ================
-* upgraded to MVEL 1.2.22
+* upgraded to MVEL 1.2.24
 * upgraded to Javolution 5.2.6
 * upgraded to AspectJ 1.5.4
 * upgraded to Groovy 1.5.4
 * upgraded to JRuby 1.0.3
-* upgraded to Paranamer 1.1.1
+* upgraded to Paranamer 1.1.2
+* upgraded to Rhino 1.7R1
+* upgraded to GNU Trove 2.0.3
+* upgraded to XStream 1.3
 - fixed bug 1885645 Validator.validateFieldValue should not return null
 - fixed bug 1834537 NullPointerException in constraintViolation.getCauses()
 - fixed bug 1852088 Incorrect default message for NotEqual validation
