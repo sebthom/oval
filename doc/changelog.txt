@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2008-XX-XX v1.20
+2008-04-05 v1.20
 ================
 * upgraded to MVEL 1.2.24
 * upgraded to Javolution 5.2.6
@@ -13,19 +13,19 @@
 * upgraded to Rhino 1.7R1
 * upgraded to GNU Trove 2.0.3
 * upgraded to XStream 1.3
-- fixed bug 1885645 Validator.validateFieldValue should not return null
-- fixed bug 1834537 NullPointerException in constraintViolation.getCauses()
-- fixed bug 1852088 Incorrect default message for NotEqual validation
-- fixed bug 1852087 Corrupt default localized messages
-- fixed bug 1868301 OVal with groovy - Performance Evaluation
-- fixed bug 1911078 Japanese message resource
-- fixed bug 1917978 Length of @Column should be ignored if @Lob is present
-- fixed bug 1934263 Versionconflict with WLS10.0 Clientlib
-* changed AnnotationsConfigurer.initializeCheck(...) to protected to allow better customization of the instantiation of checks
+- fixed bug [ 1885645 ] Validator.validateFieldValue should not return null
+- fixed bug [ 1834537 ] NullPointerException in constraintViolation.getCauses()
+- fixed bug [ 1852088 ] Incorrect default message for NotEqual validation
+- fixed bug [ 1852087 ] Corrupt default localized messages
+- fixed bug [ 1868301 ] OVal with groovy - Performance Evaluation
+- fixed bug [ 1917978 ] Length of @Column should be ignored if @Lob is present
+- fixed bug [ 1934263 ] Versionconflict with WLS10.0 Clientlib
+* changed scope of AnnotationsConfigurer.initializeCheck(...) to protected to allow better customization of the instantiation of checks
 + added support for Apache Commons JEXL as expression language
-+ added @net.sf.oval.constraitn.EqualToField (thanks to anydoby for the idea)
-+ added @net.sf.oval.constraitn.NotEqualToField (thanks to anydoby for the idea)
-+ added @net.sf.oval.constraitn.DateRange (thanks to anydoby for the idea)
++ added @net.sf.oval.constraint.EqualToField (thanks to anydoby for the idea)
++ added @net.sf.oval.constraint.NotEqualToField (thanks to anydoby for the idea)
++ added @net.sf.oval.constraint.DateRange (thanks to anydoby for the idea)
++ added Japanse translation of the constraint violation messages [ 1911078 ] (thanks to Shinpei Ohtani)
 
 2007-11-02 v1.10
 ================
@@ -44,7 +44,7 @@ Expression languages:
 
 Localization:
  * update Polish translation of the constraint violation messages (thanks to Christopher Faryna) 
- + added new translations of the contraint violation messages:
+ + added new translations of the constraint violation messages:
    + Chinese (thanks to kindloaf)
    + Dutch (thanks to miep)
    + Hungarian (thanks to Gabor Nagy)
@@ -318,7 +318,7 @@ Refactoring:
 + net.sf.oval.annotations.Validatable: added parameter applyFieldConstraintsToSetter()
   => constraints specified for fields are now automatically applied to the value parameter of the corresponding setter method
 + net.sf.oval.test.SetterValidationWithFieldConstraintsTest: added
-+ net.sf.oval.contraints.NotNegative: added
++ net.sf.oval.constraints.NotNegative: added
 * net.sf.oval.constraints.Check: renamed method isValid to isSatisfied
 * net.sf.oval.ClassChecks: now uses the class loader of the constraint annotation to load the corresponding Check class
 * net.sf.oval.ClassChecks: changed the logging level to from WARNING to FINE
