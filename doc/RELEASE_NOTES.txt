@@ -1,3 +1,25 @@
+OVal 1.20
+=========
+
+New features:  
+-------------  
++ added support for Apache Commons JEXL as expression language 
++ added @net.sf.oval.constraint.EqualToField (thanks to anydoby for the idea) 
++ added @net.sf.oval.constraint.NotEqualToField (thanks to anydoby for the idea) 
++ added @net.sf.oval.constraint.DateRange (thanks to anydoby for the idea) 
++ added Japanse translation of the constraint violation messages [ 1911078 ] (thanks to Shinpei Ohtani) 
+ 
+Issues solved: 
+-------------- 
+- fixed bug [ 1885645 ] Validator.validateFieldValue should not return null 
+- fixed bug [ 1834537 ] NullPointerException in constraintViolation.getCauses() 
+- fixed bug [ 1852088 ] Incorrect default message for NotEqual validation 
+- fixed bug [ 1852087 ] Corrupt default localized messages 
+- fixed bug [ 1868301 ] OVal with groovy - Performance Evaluation 
+- fixed bug [ 1917978 ] Length of @Column should be ignored if @Lob is present 
+- fixed bug [ 1934263 ] Versionconflict with WLS10.0 Clientlib 
+
+
 OVal 1.10
 =========
 
