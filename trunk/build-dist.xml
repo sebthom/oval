@@ -22,8 +22,8 @@
 	<!-- ================================ -->
 	<!-- Project directories              -->
 	<!-- ================================ -->
-	<property name="src" value="${basedir}/src" />
-	<property name="src-test" value="${basedir}/src-test" />
+	<property name="src" value="${basedir}/src/main/java" />
+	<property name="src-test" value="${basedir}/src/test/java" />
 	<property name="doc" value="${basedir}/doc" />
 	<property name="res" value="${basedir}/resources" />
 
