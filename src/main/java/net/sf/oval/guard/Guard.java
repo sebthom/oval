@@ -43,6 +43,7 @@ import net.sf.oval.internal.util.Invocable;
 import net.sf.oval.internal.util.ListOrderedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.ThreadLocalIdentitySet;
+import net.sf.oval.internal.util.ThreadLocalList;
 import net.sf.oval.internal.util.ThreadLocalWeakHashSet;
 
 /**
@@ -54,11 +55,30 @@ public class Guard extends Validator
 {
 	private final static Log LOG = Log.getLog(Guard.class);
 
+	/**
+	 * string based on validated object hashcode + method hashcode for currently validated method return values  
+	 */
+	private final static ThreadLocalList<String> currentlyCheckingMethodReturnValues = new ThreadLocalList<String>();
+
+	/**
+	 * string based on validated object hashcode + method hashcode for currently validated method pre-conditions  
+	 */
+	private final static ThreadLocalList<String> currentlyCheckingPreConditions = new ThreadLocalList<String>();
+
+	/**
+	 * string based on validated object hashcode + method hashcode for currently validated method post-conditions  
+	 */
+	private final static ThreadLocalList<String> currentlyCheckingPostConditions = new ThreadLocalList<String>();
+
+	/**
+	 * holds the objects for which invariants are currently checked for
+	 */
 	private final ThreadLocalIdentitySet<Object> currentlyInvariantCheckingFor = new ThreadLocalIdentitySet<Object>();
 
 	private boolean isActivated = true;
 	private boolean isInvariantsEnabled = true;
 	private boolean isPreConditionsEnabled = true;
+
 	private boolean isPostConditionsEnabled = true;
 
 	/**
@@ -72,11 +92,11 @@ public class Guard extends Validator
 	 * Used for performance improvements.
 	 */
 	private boolean isProbeModeFeatureUsed = false;
-
 	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(
 			4);
 	private final Map<Class< ? >, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class< ? >, Set<ConstraintsViolatedListener>>(
 			4);
+
 	private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>(
 			4);
 
@@ -1106,6 +1126,15 @@ public class Guard extends Validator
 			final Object[] args, final Object returnValue, final Map<PostCheck, Object> oldValues,
 			final List<ConstraintViolation> violations) throws ValidationFailedException
 	{
+		final String key = System.identityHashCode(validatedObject) + " "
+				+ System.identityHashCode(method);
+
+		/*
+		 *  avoid circular references
+		 */
+		if (currentlyCheckingPostConditions.get().contains(key)) return;
+
+		currentlyCheckingPostConditions.get().add(key);
 		try
 		{
 			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -1157,6 +1186,10 @@ public class Guard extends Validator
 					"Method post conditions validation failed. Method: " + method
 							+ " Validated object: " + validatedObject, ex);
 		}
+		finally
+		{
+			currentlyCheckingPreConditions.get().remove(key);
+		}
 	}
 
 	/**
@@ -1168,6 +1201,15 @@ public class Guard extends Validator
 			final Object[] args, final List<ConstraintViolation> violations)
 			throws ValidationFailedException
 	{
+		final String key = System.identityHashCode(validatedObject) + " "
+				+ System.identityHashCode(method);
+
+		/*
+		 *  avoid circular references
+		 */
+		if (currentlyCheckingPreConditions.get().contains(key)) return;
+
+		currentlyCheckingPreConditions.get().add(key);
 		try
 		{
 			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -1213,9 +1255,12 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException(
-					"Method post conditions validation failed. Method: " + method
-							+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method pre conditions validation failed. Method: "
+					+ method + " Validated object: " + validatedObject, ex);
+		}
+		finally
+		{
+			currentlyCheckingPreConditions.get().remove(key);
 		}
 	}
 
@@ -1228,6 +1273,22 @@ public class Guard extends Validator
 			final Object returnValue, final List<ConstraintViolation> violations)
 			throws ValidationFailedException
 	{
+		final String key = System.identityHashCode(validatedObject) + " "
+				+ System.identityHashCode(method);
+
+		/*
+		 *  avoid circular references, e.g.
+		 *
+		 *  private String name;
+		 *  
+		 *  @Assert("_this.name != null", lang="groovy")
+		 *  public String getName { return name; }
+		 *  
+		 *  => Grovvy will invoke the getter to return the value, invocations of the getter will trigger the validation of the method return values again, including the @Assert constraint
+		 */
+		if (currentlyCheckingMethodReturnValues.get().contains(key)) return;
+
+		currentlyCheckingMethodReturnValues.get().add(key);
 		try
 		{
 			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -1247,6 +1308,10 @@ public class Guard extends Validator
 			throw new ValidationFailedException(
 					"Method post conditions validation failed. Method: " + method
 							+ " Validated object: " + validatedObject, ex);
+		}
+		finally
+		{
+			currentlyCheckingMethodReturnValues.get().remove(key);
 		}
 	}
 }

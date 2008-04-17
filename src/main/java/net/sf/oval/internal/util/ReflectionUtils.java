@@ -317,6 +317,12 @@ public final class ReflectionUtils
 				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
 	}
 
+	// public Constructor getDeclaredConstructorOfNonStaticInnerClass(Class)
+	public static boolean isNonStaticInnerClass(final Class< ? > clazz)
+	{
+		return clazz.getName().indexOf('$') > -1 && (clazz.getModifiers() & Modifier.STATIC) == 0;
+	}
+
 	public static boolean isPackage(final Member member)
 	{
 		return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;

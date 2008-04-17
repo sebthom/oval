@@ -13,8 +13,8 @@
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
+import net.sf.oval.constraint.Assert;
 import net.sf.oval.constraint.Length;
-import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
@@ -27,9 +27,13 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 	@Guarded
 	public static class TestEntity
 	{
-		public String name = "";
+		protected String name = "";
 
-		@NotNull(message = "NOT_NULL")
+		/* we explicitly use _this.name here to check for circular issues, since OGNL and other 
+		 * scripting languages (Groovy, MVEL, ...) will invoke the getter themselves to retrieve the property value
+		 * and will not directly access the field
+		 */
+		@Assert(expr = "_this.name != null", lang = "bsh", message = "NOT_NULL")
 		@Length(max = 4, message = "LENGTH")
 		public String getName()
 		{
@@ -70,5 +74,4 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase
 			assertTrue(e.getConstraintViolations()[0].getMessage().equals("LENGTH"));
 		}
 	}
-
 }

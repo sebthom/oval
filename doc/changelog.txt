@@ -2,6 +2,10 @@
 [+] Feature added.
 [*] Change.
 
+2008-0?-0? v1.30
+================
+- fixed an StackOverflowError that occurs when referencing the same property via _this.<property_name> in scripted pre/post conditions
+
 2008-04-05 v1.20
 ================
 * upgraded to MVEL 1.2.24
