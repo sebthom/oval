@@ -111,12 +111,22 @@
       </listitem>
 
       <listitem>
+        <para>Apache Commons JEXL is required if you want to define
+        constraints via JEXL expressions.</para>
+      </listitem>
+
+      <listitem>
         <para>BeanShell is required if you want to define constraints via
         BeanShell expressions.</para>
       </listitem>
 
       <listitem>
         <para>Groovy is required if you want to define constraints via Groovy
+        expressions.</para>
+      </listitem>
+
+      <listitem>
+        <para>JRuby is required if you want to define constraints via Ruby
         expressions.</para>
       </listitem>
 
@@ -299,6 +309,10 @@ if(exs.size()&gt;0)
 
         <listitem>
           <para><command>groovy</command> for Groovy,</para>
+        </listitem>
+
+        <listitem>
+          <para><command>jexl</command> for JEXL,</para>
         </listitem>
 
         <listitem>
@@ -667,6 +681,10 @@ public class Transaction {
           </listitem>
 
           <listitem>
+            <para><command>jexl</command> for JEXL,</para>
+          </listitem>
+
+          <listitem>
             <para><command>js</command> or <command>javascript</command> for
             JavaScript (via Mozilla Rhino),</para>
           </listitem>
@@ -820,6 +838,10 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(bo);</programlis
 
           <listitem>
             <para><command>groovy</command> for Groovy,</para>
+          </listitem>
+
+          <listitem>
+            <para><command>jexl</command> for Groovy,</para>
           </listitem>
 
           <listitem>
@@ -1633,15 +1655,13 @@ v.validate(p);
         </ulink></para>
       </listitem>
 
-	  <listitem>
+      <listitem>
         <para>OVal e la validazione degli oggetti in Java (2006)</para>
 
-        <para><ulink
-        url="http://www.keepintech.it/blog/?p=52">
-        http://www.keepintech.it/blog/?p=52
-        </ulink></para>
+        <para><ulink url="http://www.keepintech.it/blog/?p=52">
+        http://www.keepintech.it/blog/?p=52 </ulink></para>
       </listitem>
-	  
+
       <listitem>
         <para>Limiting conditional complexity with AOP (2006)</para>
 
@@ -1677,8 +1697,19 @@ v.validate(p);
       <listitem>
         <para>Cayenne annotations</para>
 
-        <para><ulink
-        url="???">http://sourceforge.net/projects/cayannotations/</ulink></para>
+        <para><ulink url="http://sourceforge.net/projects/cayannotations/">http://sourceforge.net/projects/cayannotations/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>jsfatwork</para>
+
+		<para><ulink url="http://code.google.com/p/jsfatwork/">http://code.google.com/p/jsfatwork/</ulink></para>
+      </listitem>
+	  
+      <listitem>
+        <para>Polyforms</para>
+
+		<para><ulink url="http://code.google.com/p/polyforms/">http://code.google.com/p/polyforms/</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
