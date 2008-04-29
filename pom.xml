@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.20-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
-
 	<name>OVal</name>
-	<url>http://maven.apache.org</url>
-
 	<url>http://oval.sf.net</url>
 	<description>object validation framework for Java 5 or later</description>
 
@@ -42,151 +40,137 @@
 				<role>developer</role>
 			</roles>
 			<timezone>-1</timezone>
-		</developer>
+		</developer>		
 	</developers>
 
 	<scm>
 		<url>http://svn.sourceforge.net/viewvc/oval/net.sf.oval/</url>
 	</scm>
 
-	<dependencies>
+ <repositories>
+    <repository>
+      <id>net.sf.oval-repo</id>
+      <name>Oval Repository for Maven</name>
+      <url>http://oval.sourceforge.net/mvn-repo/release</url>
+      <layout>default</layout>
+    </repository>    
+  </repositories>
 
-		<dependency>
-			<groupId>aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>[1.5.4,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
+  <distributionManagement>
+    <repository>
+      <id>oval-release</id>
+   		<url>scpexe://shell.sourceforge.net:/home/groups/o/ov/oval/htdocs/mvn-repo/release</url>
+   	</repository>
+   	<snapshotRepository>
+      <id>oval-snapshot</id>
+   		<url>scpexe://shell.sourceforge.net:/home/groups/o/ov/oval/htdocs/mvn-repo/snapshot</url>
+   	</snapshotRepository>
+   	<site>
+   		<id>oval-site</id>
+   		<url>scpexe://shell.sourceforge.net:/home/group/o/ov/oval/htdocs/site</url>
+   	</site>
+  </distributionManagement>
 
-		<dependency>
-			<groupId>org.beanshell</groupId>
-			<artifactId>bsh</artifactId>
-			<version>[2.0b4,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>[1.0,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>javolution</groupId>
-			<artifactId>javolution</artifactId>
-			<version>[4.2.6,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-jexl</groupId>
-			<artifactId>commons-jexl</artifactId>
-			<version>[1.1.1,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jruby</groupId>
-			<artifactId>jruby</artifactId>
-			<version>[1.0.3,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>[1.2,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>mvel</groupId>
-			<artifactId>mvel</artifactId>
-			<version>[1.0.0,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>ognl</groupId>
-			<artifactId>ognl</artifactId>
-			<version>[2.6.0,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>com.thoughtworks.paranamer</groupId>
-			<artifactId>paranamer</artifactId>
-			<version>[1.1.1,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>rhino</groupId>
-			<artifactId>js</artifactId>
-			<version>[1.6R5,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>trove</groupId>
-			<artifactId>trove</artifactId>
-			<version>[2.0,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<version>[1.2.1,)</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>[3.8.1,)</version>
-			<scope>test</scope>
-			<optional>true</optional>
-		</dependency>
-
-	</dependencies>
-
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beanshell</groupId>
+      <artifactId>bsh</artifactId>
+      <version>2.0b4</version>
+    </dependency>
+    <dependency>
+      <groupId>ognl</groupId>
+      <artifactId>ognl</artifactId>
+      <version>2.6.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jruby</groupId>
+      <artifactId>jruby-complete</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>rhino</groupId>
+      <artifactId>js</artifactId>
+      <version>1.7R1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javolution</groupId>
+      <artifactId>javolution</artifactId>
+      <version>5.2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javolution</groupId>
+      <artifactId>javolution</artifactId>
+      <version>5.2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>2.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>1.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-jexl</groupId>
+      <artifactId>commons-jexl</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel</artifactId>
+      <version>1.2.24-java1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.paranamer</groupId>
+      <artifactId>paranamer</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>    
+    </dependency>
+    <dependency>
+      <!-- TODO: bring this version to the central maven2 repository:-->
+      <groupId>trove</groupId>
+      <artifactId>trove</artifactId>
+      <version>2.0.3</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -209,7 +193,25 @@
 				</configuration>
 
 			</plugin>
-		</plugins>
-	</build>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>aspectj-maven-plugin</artifactId>
+          <executions>
+              <execution>
+                  <goals>
+                      <goal>compile</goal>  
+                      <goal>test-compile</goal>
+                  </goals>
+              </execution>
+         </executions>
+         <configuration>
+          <complianceLevel>1.5</complianceLevel>
+          <source>1.5</source>
+          <testAspectDirectory>src/test/java</testAspectDirectory>
+          <aspectDirectory>src/main/java</aspectDirectory>
+         </configuration>
+     </plugin>
+    </plugins>
+  </build>
 
 </project>
