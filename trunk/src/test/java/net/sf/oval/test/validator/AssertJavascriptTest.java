@@ -42,13 +42,6 @@ public class AssertJavascriptTest extends TestCase
 		final Validator validator = new Validator();
 
 		final Person person = new Person();
-		new Thread(new Runnable()
-			{
-				public void run()
-				{
-
-				}
-			});
 
 		final Thread thread1 = new Thread(new Runnable()
 			{
