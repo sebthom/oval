@@ -11,10 +11,14 @@ http://maven.apache.org/xsd/assembly-1.0.0.xsd">
 		<fileSet>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>README*</include>
-				<include>LICENSE*</include>
-				<include>NOTICE*</include>
-				<include>pom.xml</include>
+				<include>LICENSE.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>README.txt</include>
 			</includes>
 		</fileSet>
 		<fileSet>
