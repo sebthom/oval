@@ -17,9 +17,12 @@ import java.util.Map.Entry;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.ObjectCache;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EvaluatorException;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 
 /**
@@ -32,9 +35,11 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 
 	private final Scriptable parentScope;
 
+	private final ObjectCache<String, Script> scriptCache = new ObjectCache<String, Script>();
+
 	public ExpressionLanguageJavaScriptImpl()
 	{
-		final Context ctx = Context.enter();
+		final Context ctx = ContextFactory.getGlobal().enterContext();
 		try
 		{
 			parentScope = ctx.initStandardObjects();
@@ -48,9 +53,17 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 	public Object evaluate(final String expression, final Map<String, ? > values)
 			throws ExpressionEvaluationException
 	{
-		final Context ctx = Context.enter();
+		final Context ctx = ContextFactory.getGlobal().enterContext();
 		try
 		{
+			Script script = scriptCache.get(expression);
+			if (script == null)
+			{
+				ctx.setOptimizationLevel(9);
+				script = ctx.compileString(expression, "<cmd>", 1, null);
+				scriptCache.put(expression, script);
+			}
+
 			final Scriptable scope = ctx.newObject(parentScope);
 			scope.setPrototype(parentScope);
 			scope.setParentScope(null);
@@ -59,8 +72,9 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 			{
 				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
 			}
+
 			LOG.debug("Evaluating JavaScript expression: {}", expression);
-			return ctx.evaluateString(scope, expression, "<cmd>", 1, null);
+			return script.exec(ctx, scope);
 		}
 		catch (final EvaluatorException ex)
 		{

@@ -50,7 +50,7 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 
 			}
 			LOG.debug("Evaluating Ruby expression: {}", expression);
-			final IRubyObject result = runtime.evalScript(localVars + expression);
+			final IRubyObject result = runtime.evalScriptlet(localVars + expression);
 			return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
 		}
 		catch (final RuntimeException ex)
