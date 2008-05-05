@@ -37,6 +37,65 @@ public class AssertJavascriptTest extends TestCase
 		public String zipCode;
 	}
 
+	public void testConcurrency() throws InterruptedException
+	{
+		final Validator validator = new Validator();
+
+		final Person person = new Person();
+		new Thread(new Runnable()
+			{
+				public void run()
+				{
+
+				}
+			});
+
+		final Thread thread1 = new Thread(new Runnable()
+			{
+				public void run()
+				{
+					for (int i = 0; i < 500; i++)
+					{
+						// test not null
+						assertTrue(validator.validate(person).size() == 4);
+
+						try
+						{
+							Thread.sleep(2);
+						}
+						catch (InterruptedException e)
+						{
+							Thread.currentThread().interrupt();
+						}
+					}
+				}
+			});
+		final Thread thread2 = new Thread(new Runnable()
+			{
+				public void run()
+				{
+					for (int i = 0; i < 500; i++)
+					{
+						// test not null
+						assertTrue(validator.validate(person).size() == 4);
+
+						try
+						{
+							Thread.sleep(2);
+						}
+						catch (InterruptedException e)
+						{
+							Thread.currentThread().interrupt();
+						}
+					}
+				}
+			});
+		thread1.run();
+		thread2.run();
+		thread1.join();
+		thread2.join();
+	}
+
 	public void testJavaScriptExpression()
 	{
 		final Validator validator = new Validator();
