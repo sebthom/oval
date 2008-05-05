@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project xmlns="site" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="site http://maven.apache.org/maven-1.x/plugins/xdoc/maven-navigation.xsd"
+	name="OVal - the object validation framework for Java&#8482; 5 or later">
+
+	<publishDate position="left" format="yyyy-MM-dd" />
+	<version position="left" />
+
+	<!-- http://maven.apache.org/plugins/maven-site-plugin/examples/sitedescriptor.html -->
+
+	<bannerLeft>
+		<name>${project.name}</name>
+		<src>images/oval-banner.png</src>
+		<href>${project.url}</href>
+	</bannerLeft>
+
+	<body>
+		<head>
+			<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+		</head>
+
+		<links>
+			<item name="Home" href="${project.url}" />
+		</links>
+
+		<!-- for multi-module projects 
+			<breadcrumbs>
+			<item name="${project.name}" href="index.html" mce_href="index.html" />
+			</breadcrumbs>
+			
+			<menu ref="parent" />
+			<menu ref="modules" />
+		-->
+
+		<menu name="${project.name} ${project.version}">
+			<item name="About" href="index.html" />
+			<item name="User Guide" href="userguide.html" />
+			<item name="Roadmap" href="roadmap.html" />
+		</menu>
+
+		<menu ref="reports" />
+	</body>
+
+	<poweredBy>
+		<logo name="Maven" href="http://maven.apache.org/" img="images/logos/maven-feather.png" />
+	</poweredBy>
+
+</project>
