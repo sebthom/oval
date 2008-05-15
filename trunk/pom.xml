@@ -299,7 +299,7 @@
 						<goals>
 							<goal>generate-html</goal>
 						</goals>
-						<phase>pre-site</phase>
+            <phase>generate-resources</phase>
 					</execution>
 				</executions>
 				<configuration>
@@ -391,7 +391,6 @@
 							<goal>compile</goal>
 							<goal>test-compile</goal>
 						</goals>
-						<phase>compile</phase>
 					</execution>
 				</executions>
 				<configuration>

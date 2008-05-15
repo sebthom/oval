@@ -283,7 +283,7 @@ public class ClassChecks
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addMethodParameterChecks(final Method method, final int parameterIndex,
+	private void addMethodParameterChecks(final Method method, final int parameterIndex,
 			final Object checks) throws InvalidConfigurationException
 	{
 		if (!isGuarded)
@@ -323,11 +323,7 @@ public class ClassChecks
 			}
 			else 
 			{
-				if (checks instanceof Check) {
-					ArrayUtils.addAll(checksOfMethodParameter, new Check[] {(Check)checks});
-				} else {
-					ArrayUtils.addAll(checksOfMethodParameter, (Check[]) checks);
-				}
+				ArrayUtils.addAll(checksOfMethodParameter, (Check[]) checks);
 			}
 		}
 	}
