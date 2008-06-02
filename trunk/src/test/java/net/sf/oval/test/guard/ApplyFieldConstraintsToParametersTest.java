@@ -32,7 +32,7 @@ import net.sf.oval.guard.Guarded;
 public class ApplyFieldConstraintsToParametersTest extends TestCase
 {
 	@Guarded
-	private class Person
+	protected class Person
 	{
 		@NotNull(message = "NOT_NULL")
 		private String firstName = "";

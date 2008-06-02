@@ -33,7 +33,7 @@ import net.sf.oval.guard.Guarded;
 public class ConstraintSetTest extends TestCase
 {
 	@Guarded
-	private class Person
+	protected class Person
 	{
 		private String zipCode;
 
