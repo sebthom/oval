@@ -1717,9 +1717,9 @@ Guard guard = new Guard(xmlConfigurer);
   <!-- define a constraint set -->
   <constraintSet id="user.userid">
     <notNull />
-    <regEx>
+    <matchPattern>
       <pattern pattern="^[a-z0-9]{8}$" flags="0" />
-    </regEx>
+    </matchPattern>
   </constraintSet>
 
   <!-- define checks for the acme.model.User class -->
@@ -2095,6 +2095,17 @@ v.validate(p);
 				</para>
 			</listitem>
 		</itemizedlist>
+	</section>
+
+	<section>
+		<title>Acknowledgements</title>
+
+		<para>YourKit is kindly supporting open source projects with its full-featured Java Profiler.</para>
+
+		<para>
+			YourKit, LLC is creator of innovative and intelligent tools for profiling Java and .NET applications. Take a
+			look at YourKit's leading software products: <ulink url="http://www.yourkit.com/java/profiler/">YourKit Java Profiler</ulink> and <ulink url="http://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</ulink>.
+		</para>
 	</section>
 
 	<section>
