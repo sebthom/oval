@@ -26,7 +26,7 @@ import net.sf.oval.guard.Guarded;
 public class CustomConstraintMessageTest extends TestCase
 {
 	@Guarded(applyFieldConstraintsToSetters = true)
-	private class TestEntity
+	protected class TestEntity
 	{
 		@Range(min = 2, max = 4, message = "An amount of {invalidValue} in not in the allowed range ({min}-{max})")
 		private int amount = 2;

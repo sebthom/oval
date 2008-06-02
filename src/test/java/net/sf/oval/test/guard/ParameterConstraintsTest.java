@@ -103,7 +103,8 @@ public class ParameterConstraintsTest extends TestCase
 		catch (final ConstraintsViolatedException e)
 		{
 			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
+			assertNotNull(violations);
+			assertEquals(1, violations.length);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof FieldContext);
 		}
@@ -123,7 +124,8 @@ public class ParameterConstraintsTest extends TestCase
 		catch (final ConstraintsViolatedException e)
 		{
 			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length > 0);
+			assertNotNull(violations);
+			assertTrue(violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 		}
 
@@ -136,7 +138,8 @@ public class ParameterConstraintsTest extends TestCase
 		catch (final ConstraintsViolatedException e)
 		{
 			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length > 0);
+			assertNotNull(violations);
+			assertTrue(violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("LENGTH"));
 		}
 	}

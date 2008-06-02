@@ -166,7 +166,7 @@ public class AddingChecksTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 
-		final Constructor constructor = TestEntity2.class
+		final Constructor<TestEntity2> constructor = TestEntity2.class
 				.getDeclaredConstructor(new Class< ? >[]{String.class});
 		final NotNullCheck notNullCheck = new NotNullCheck();
 		notNullCheck.setMessage("NOT_NULL");

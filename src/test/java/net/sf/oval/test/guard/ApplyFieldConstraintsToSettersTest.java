@@ -28,7 +28,7 @@ import net.sf.oval.guard.Guarded;
 public class ApplyFieldConstraintsToSettersTest extends TestCase
 {
 	@Guarded(applyFieldConstraintsToSetters = true)
-	private class Person
+	protected class Person
 	{
 		@AssertTrue(message = "ASSERT_TRUE")
 		private boolean isValid = true;

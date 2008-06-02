@@ -114,7 +114,8 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		catch (final ConstraintsViolatedException e)
 		{
 			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length > 0);
+			assertNotNull(violations);
+			assertTrue(violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 		}
 
@@ -127,7 +128,8 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		catch (final ConstraintsViolatedException e)
 		{
 			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length > 0);
+			assertNotNull(violations);
+			assertTrue(violations.length > 0);
 			assertTrue(violations[0].getMessage().equals("LENGTH"));
 		}
 	}
