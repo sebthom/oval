@@ -88,6 +88,12 @@ public class ConstraintViolation implements Serializable
 
 	/**
 	 * @return Returns the context where the constraint violation occured.
+	 * @see net.sf.oval.context.ClassContext
+	 * @see net.sf.oval.context.FieldContext
+	 * @see net.sf.oval.context.MethodEntryContext
+	 * @see net.sf.oval.context.MethodExitContext
+	 * @see net.sf.oval.context.MethodParameterContext
+	 * @see net.sf.oval.context.MethodReturnValueContext
 	 */
 	public OValContext getContext()
 	{

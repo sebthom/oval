@@ -332,7 +332,7 @@ public class XMLConfigurer implements Configurer
 		}
 	}
 
-	public synchronized void fromXML(final File input) throws IOException
+	public void fromXML(final File input) throws IOException
 	{
 		final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(input));
 		try
@@ -345,17 +345,17 @@ public class XMLConfigurer implements Configurer
 		}
 	}
 
-	public synchronized void fromXML(final InputStream input)
+	public void fromXML(final InputStream input)
 	{
 		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
 
-	public synchronized void fromXML(final Reader input)
+	public void fromXML(final Reader input)
 	{
 		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
 
-	public synchronized void fromXML(final String input)
+	public void fromXML(final String input)
 	{
 		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
