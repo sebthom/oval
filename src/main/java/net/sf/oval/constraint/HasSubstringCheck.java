@@ -36,7 +36,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	{
 		super.configure(constraintAnnotation);
 		setIgnoreCase(constraintAnnotation.ignoreCase());
-		setSubstring(constraintAnnotation.substring());
+		setSubstring(constraintAnnotation.value());
 	}
 
 	@Override

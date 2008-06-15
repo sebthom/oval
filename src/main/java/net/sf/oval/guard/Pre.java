@@ -62,7 +62,7 @@ public @interface Pre
 	String message() default "net.sf.oval.guard.Pre.violated";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

@@ -172,6 +172,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
 		suite
 				.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);

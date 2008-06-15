@@ -54,7 +54,7 @@ public @interface EqualToField
 	String message() default "net.sf.oval.constraints.EqualToField.violated";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

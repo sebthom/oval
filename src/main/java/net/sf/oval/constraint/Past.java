@@ -48,7 +48,7 @@ public @interface Past
 	String message() default "net.sf.oval.constraints.Past.violated";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

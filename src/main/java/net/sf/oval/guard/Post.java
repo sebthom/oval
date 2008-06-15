@@ -66,7 +66,7 @@ public @interface Post
 	String old() default "";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

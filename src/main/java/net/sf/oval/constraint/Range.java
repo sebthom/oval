@@ -52,7 +52,7 @@ public @interface Range
 	double min() default Double.MIN_VALUE;
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

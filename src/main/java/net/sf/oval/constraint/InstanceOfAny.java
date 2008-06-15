@@ -46,7 +46,7 @@ public @interface InstanceOfAny
 	String message() default "net.sf.oval.constraints.InstanceOfAny.violated";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

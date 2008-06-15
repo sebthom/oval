@@ -38,7 +38,7 @@ public @interface AssertFieldConstraints
 	Class< ? > declaringClass() default Void.class;
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

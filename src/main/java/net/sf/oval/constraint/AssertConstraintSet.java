@@ -37,7 +37,7 @@ public @interface AssertConstraintSet
 	String id();
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 }

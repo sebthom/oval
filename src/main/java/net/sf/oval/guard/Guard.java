@@ -40,7 +40,7 @@ import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.Invocable;
-import net.sf.oval.internal.util.ListOrderedSet;
+import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.ThreadLocalIdentitySet;
 import net.sf.oval.internal.util.ThreadLocalList;
@@ -723,7 +723,7 @@ public class Guard extends Validator
 		// happens for static methods
 		if (guardedObject == null) return;
 
-		final ListOrderedSet<ConstraintsViolatedListener> listenersToNotify = new ListOrderedSet<ConstraintsViolatedListener>();
+		final LinkedSet<ConstraintsViolatedListener> listenersToNotify = new LinkedSet<ConstraintsViolatedListener>();
 
 		// get the object listeners
 		{
