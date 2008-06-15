@@ -55,9 +55,9 @@ public @interface HasSubstring
 	int severity() default 0;
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 
-	String substring();
+	String value();
 }

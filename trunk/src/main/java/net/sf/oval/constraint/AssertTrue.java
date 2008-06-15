@@ -54,7 +54,7 @@ public @interface AssertTrue
 	int severity() default 0;
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 }

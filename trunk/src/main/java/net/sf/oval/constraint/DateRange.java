@@ -78,7 +78,7 @@ public @interface DateRange
 	String min() default "";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

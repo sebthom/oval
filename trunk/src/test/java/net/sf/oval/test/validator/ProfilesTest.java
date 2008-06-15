@@ -24,7 +24,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class ProfilesTest extends TestCase
 {
-	private static class Person
+	protected static class Person
 	{
 		@NotNull(profiles = {"profile1"}, message = "NOTNULL1")
 		public String firstName;

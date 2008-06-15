@@ -48,7 +48,7 @@ public @interface Max
 	String message() default "net.sf.oval.constraints.Max.violated";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

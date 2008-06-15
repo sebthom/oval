@@ -65,7 +65,7 @@ import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
 import net.sf.oval.internal.MessageResolverHolder;
-import net.sf.oval.internal.util.ListOrderedSet;
+import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalList;
@@ -133,7 +133,7 @@ public class Validator
 
 	private final Map<Class< ? >, ClassChecks> checksByClass = new WeakHashMap<Class< ? >, ClassChecks>();
 
-	private final ListOrderedSet<Configurer> configurers = new ListOrderedSet<Configurer>(4);
+	private final List<Configurer> configurers = new LinkedSet<Configurer>(4);
 
 	private final Map<String, ConstraintSet> constraintSetsById = CollectionFactoryHolder
 			.getFactory().createMap(4);
@@ -944,7 +944,7 @@ public class Validator
 	}
 
 	/**
-	 * @return the internal list with the registered configurers
+	 * @return the internal linked set with the registered configurers
 	 */
 	public List<Configurer> getConfigurers()
 	{

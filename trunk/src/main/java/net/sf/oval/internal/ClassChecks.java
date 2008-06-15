@@ -26,6 +26,7 @@ import net.sf.oval.guard.IsGuarded;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.util.ArrayUtils;
+import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
@@ -43,7 +44,7 @@ public class ClassChecks
 	/**
 	 * compound constraints / object level invariants
 	 */
-	public final Set<Check> checksForObject = CollectionFactoryHolder.getFactory().createSet(2);
+	public final Set<Check> checksForObject = new LinkedSet<Check>(2);
 
 	/**
 	 * checks on constructors' parameter values
@@ -87,27 +88,25 @@ public class ClassChecks
 	 * all non-static fields that have value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Field> constrainedStaticFields = CollectionFactoryHolder.getFactory()
-			.createSet();
+	public final Set<Field> constrainedStaticFields = new LinkedSet<Field>();
 
 	/**
 	 * all static non-void, non-parameterized methods marked as invariant that have return value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Method> constrainedStaticMethods = CollectionFactoryHolder.getFactory()
-			.createSet();
+	public final Set<Method> constrainedStaticMethods = new LinkedSet<Method>();
 
 	/**
 	 * all non-static fields that have value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Field> constrainedFields = CollectionFactoryHolder.getFactory().createSet();
+	public final Set<Field> constrainedFields = new LinkedSet<Field>();
 
 	/**
 	 * all non-static non-void, non-parameterized methods marked as invariant that have return value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Method> constrainedMethods = CollectionFactoryHolder.getFactory().createSet();
+	public final Set<Method> constrainedMethods = new LinkedSet<Method>();
 
 	public final boolean isGuarded;
 
@@ -159,7 +158,7 @@ public class ClassChecks
 					.get(parameterIndex);
 			if (checksOfConstructorParameter == null)
 			{
-				checksOfConstructorParameter = CollectionFactoryHolder.getFactory().createSet(2);
+				checksOfConstructorParameter = new LinkedSet<Check>(2);
 				checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
 			}
 
@@ -235,7 +234,7 @@ public class ClassChecks
 			Set<Check> checksOfField = checksForFields.get(field);
 			if (checksOfField == null)
 			{
-				checksOfField = CollectionFactoryHolder.getFactory().createSet(2);
+				checksOfField = new LinkedSet<Check>(2);
 				checksForFields.put(field, checksOfField);
 				if (ReflectionUtils.isStatic(field))
 					constrainedStaticFields.add(field);
@@ -313,7 +312,7 @@ public class ClassChecks
 			Set<Check> checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
 			if (checksOfMethodParameter == null)
 			{
-				checksOfMethodParameter = CollectionFactoryHolder.getFactory().createSet(2);
+				checksOfMethodParameter = new LinkedSet<Check>(2);
 				checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
 			}
 
@@ -321,7 +320,7 @@ public class ClassChecks
 			{
 				checksOfMethodParameter.addAll((Collection<Check>) checks);
 			}
-			else 
+			else
 			{
 				ArrayUtils.addAll(checksOfMethodParameter, (Check[]) checks);
 			}
@@ -353,7 +352,7 @@ public class ClassChecks
 			Set<PostCheck> postChecks = checksForMethodsPostExcecution.get(method);
 			if (postChecks == null)
 			{
-				postChecks = CollectionFactoryHolder.getFactory().createSet(2);
+				postChecks = new LinkedSet<PostCheck>(2);
 				checksForMethodsPostExcecution.put(method, postChecks);
 			}
 
@@ -404,7 +403,7 @@ public class ClassChecks
 			Set<PreCheck> preChecks = checksForMethodsPreExecution.get(method);
 			if (preChecks == null)
 			{
-				preChecks = CollectionFactoryHolder.getFactory().createSet(2);
+				preChecks = new LinkedSet<PreCheck>(2);
 				checksForMethodsPreExecution.put(method, preChecks);
 			}
 
@@ -505,7 +504,7 @@ public class ClassChecks
 			Set<Check> methodChecks = checksForMethodReturnValues.get(method);
 			if (methodChecks == null)
 			{
-				methodChecks = CollectionFactoryHolder.getFactory().createSet(2);
+				methodChecks = new LinkedSet<Check>(2);
 				checksForMethodReturnValues.put(method, methodChecks);
 			}
 

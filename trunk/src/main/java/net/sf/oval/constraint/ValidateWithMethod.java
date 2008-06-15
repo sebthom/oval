@@ -61,7 +61,7 @@ public @interface ValidateWithMethod
 	Class< ? > parameterType();
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 

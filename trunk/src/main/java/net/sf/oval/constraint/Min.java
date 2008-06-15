@@ -48,7 +48,7 @@ public @interface Min
 	String message() default "net.sf.oval.constraints.Min.violated";
 
 	/**
-	 * The associated validation profiles.
+	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
 
