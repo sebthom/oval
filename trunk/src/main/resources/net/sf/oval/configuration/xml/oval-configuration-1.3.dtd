@@ -148,11 +148,11 @@ The node body contains the script expression as CDATA
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.EqualToField -->
 <!ELEMENT equalToField (profiles?) >
+<!ATTLIST equalToField declaringClass NMTOKEN #IMPLIED>
 <!ATTLIST equalToField errorCode CDATA #IMPLIED >
 <!ATTLIST equalToField fieldName NMTOKEN #REQUIRED >
 <!ATTLIST equalToField message CDATA #IMPLIED >
 <!ATTLIST equalToField severity NMTOKEN #IMPLIED >
-<!ATTLIST equalToField declaringClass NMTOKEN #IMPLIED>
 <!ATTLIST equalToField useGetter (true|false) #REQUIRED>
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Future -->
@@ -195,6 +195,7 @@ The node body contains the script expression as CDATA
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MatchPattern -->
 <!ELEMENT matchPattern (pattern*,profiles?) >
 <!ATTLIST matchPattern errorCode CDATA #IMPLIED >
+<!ATTLIST matchPattern matchAll (true|false) #REQUIRED >
 <!ATTLIST matchPattern message CDATA #IMPLIED >
 <!ATTLIST matchPattern severity NMTOKEN #IMPLIED >
 
