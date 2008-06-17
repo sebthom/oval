@@ -18,13 +18,14 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -77,7 +78,8 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	/**
 	 * Specifies the allowed URL schemes.
 	 */
-	private List<URIScheme> permittedURISchemes;
+	private final List<URIScheme> permittedURISchemes = CollectionFactoryHolder.getFactory()
+			.createList(2);
 
 	private boolean canConnect(final String url)
 	{
@@ -119,7 +121,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public URIScheme[] getPermittedURISchemes()
 	{
-		return permittedURISchemes == null ? null : permittedURISchemes
+		return permittedURISchemes.size() == 0 ? null : permittedURISchemes
 				.toArray(new URIScheme[permittedURISchemes.size()]);
 	}
 
@@ -171,12 +173,9 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 
 	private boolean isURISchemeValid(final String url)
 	{
-		if (permittedURISchemes != null)
+		for (final URIScheme scheme : permittedURISchemes)
 		{
-			for (final URIScheme scheme : permittedURISchemes)
-			{
-				if (url.startsWith(scheme.getScheme())) return true;
-			}
+			if (url.startsWith(scheme.getScheme())) return true;
 		}
 		return false;
 	}
@@ -198,9 +197,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public void setPermittedURISchemes(final URIScheme[] permittedURISchemes)
 	{
-		if (permittedURISchemes == null)
-			this.permittedURISchemes = null;
-		else
-			this.permittedURISchemes = Arrays.asList(permittedURISchemes);
+		this.permittedURISchemes.clear();
+		ArrayUtils.addAll(this.permittedURISchemes, permittedURISchemes);
 	}
 }

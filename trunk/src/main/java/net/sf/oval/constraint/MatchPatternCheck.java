@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -19,6 +21,7 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -27,13 +30,44 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 {
 	private static final long serialVersionUID = 1L;
 
-	private Pattern pattern;
+	private final List<Pattern> patterns = CollectionFactoryHolder.getFactory().createList(2);
+	private boolean matchAll = true;
+
+	/**
+	 * @return the matchAll
+	 */
+	public boolean isMatchAll()
+	{
+		return matchAll;
+	}
+
+	/**
+	 * @param matchAll the matchAll to set
+	 */
+	public void setMatchAll(final boolean matchAll)
+	{
+		this.matchAll = matchAll;
+	}
 
 	@Override
 	public void configure(final MatchPattern constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setPattern(constraintAnnotation.pattern(), constraintAnnotation.flags());
+
+		setMatchAll(constraintAnnotation.matchAll());
+
+		synchronized (patterns)
+		{
+			patterns.clear();
+			final String[] stringPatterns = constraintAnnotation.pattern();
+			final int[] f = constraintAnnotation.flags();
+			for (int i = 0, l = stringPatterns.length; i < l; i++)
+			{
+				final int flag = f.length > i ? f[i] : 0;
+				final Pattern p = Pattern.compile(stringPatterns[i], flag);
+				patterns.add(p);
+			}
+		}
 	}
 
 	@Override
@@ -41,16 +75,20 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	{
 		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
 				.createMap(2);
-		messageVariables.put("pattern", pattern.pattern());
+		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString()
+				: patterns.toString());
 		return messageVariables;
 	}
 
 	/**
 	 * @return the pattern
 	 */
-	public Pattern getPattern()
+	public Pattern[] getPatterns()
 	{
-		return pattern;
+		synchronized (patterns)
+		{
+			return patterns.toArray(new Pattern[patterns.size()]);
+		}
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
@@ -58,7 +96,20 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	{
 		if (valueToValidate == null) return true;
 
-		return pattern.matcher(valueToValidate.toString()).matches();
+		for (final Pattern p : patterns)
+		{
+			final boolean matches = p.matcher(valueToValidate.toString()).matches();
+
+			if (matches)
+			{
+				if (!matchAll) return true;
+			}
+			else
+			{
+				if (matchAll) return false;
+			}
+		}
+		return matchAll ? true : false;
 	}
 
 	/**
@@ -66,7 +117,11 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	 */
 	public void setPattern(final Pattern pattern)
 	{
-		this.pattern = pattern;
+		synchronized (patterns)
+		{
+			patterns.clear();
+			patterns.add(pattern);
+		}
 	}
 
 	/**
@@ -74,6 +129,34 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	 */
 	public void setPattern(final String pattern, final int flags)
 	{
-		this.pattern = Pattern.compile(pattern, flags);
+		synchronized (patterns)
+		{
+			patterns.clear();
+			patterns.add(Pattern.compile(pattern, flags));
+		}
+	}
+
+	/**
+	 * @param patterns the patterns to set
+	 */
+	public void setPatterns(final Collection<Pattern> patterns)
+	{
+		synchronized (this.patterns)
+		{
+			this.patterns.clear();
+			this.patterns.addAll(patterns);
+		}
+	}
+
+	/**
+	 * @param patterns the patterns to set
+	 */
+	public void setPatterns(final Pattern[] patterns)
+	{
+		synchronized (this.patterns)
+		{
+			this.patterns.clear();
+			ArrayUtils.addAll(this.patterns, patterns);
+		}
 	}
 }

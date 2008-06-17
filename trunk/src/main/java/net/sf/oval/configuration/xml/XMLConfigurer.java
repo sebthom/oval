@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.Configurer;
@@ -237,7 +238,11 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("instanceOf", InstanceOfCheck.class);
 		xStream.alias("instanceOfAny", InstanceOfAnyCheck.class);
 		xStream.alias("length", LengthCheck.class);
-		xStream.alias("matchPattern", MatchPatternCheck.class);
+		{
+			xStream.alias("matchPattern", MatchPatternCheck.class);
+			xStream.alias("pattern", Pattern.class);
+			xStream.addImplicitCollection(MatchPatternCheck.class, "patterns", Pattern.class);
+		}
 		xStream.alias("max", MaxCheck.class);
 		xStream.alias("maxLength", MaxLengthCheck.class);
 		xStream.alias("maxSize", MaxSizeCheck.class);
