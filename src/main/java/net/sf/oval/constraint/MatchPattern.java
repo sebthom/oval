@@ -44,10 +44,10 @@ public @interface MatchPattern
 	 *  Match flags, a bit mask that may include
 	 *         Pattern.CASE_INSENSITIVE, Pattern.MULTILINE, Pattern.DOTALL,
 	 *         Pattern.UNICODE_CASE, Pattern.CANON_EQ
-	 *         
+	 *
 	 * @see java.util.regex.Pattern
 	 */
-	int flags() default 0;
+	int[] flags() default 0;
 
 	/**
 	 * message to be used for the ContraintsViolatedException
@@ -57,7 +57,7 @@ public @interface MatchPattern
 	String message() default "net.sf.oval.constraints.MatchPattern.violated";
 
 	/**
-	 * The regular expression to match against
+	 * The regular expression(s) to match against
 	 * <br><br>
 	 * Examples:<br>
 	 * decimal number: "^-{0,1}(\\d*|(\\d{1,3}([,]\\d{3})*))[.]?\\d*$"<br>
@@ -66,7 +66,12 @@ public @interface MatchPattern
 	 * 
 	 * @see java.util.regex.Pattern
 	 */
-	String pattern();
+	String[] pattern();
+
+	/**
+	 * specifies if all of the declared patterns must match or if one is sufficient 
+	 */
+	boolean matchAll() default true;
 
 	/**
 	 * severity passed to the ConstraintViolation object

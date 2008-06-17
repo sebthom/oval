@@ -31,6 +31,8 @@ public final class ArrayUtils
 		if (collection == null)
 			throw new IllegalArgumentException("Argument collection must not be null");
 
+		if (elements == null) return 0;
+
 		int count = 0;
 		for (final T elem : elements)
 		{

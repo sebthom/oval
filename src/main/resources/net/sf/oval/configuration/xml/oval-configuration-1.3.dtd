@@ -193,7 +193,7 @@ The node body contains the script expression as CDATA
 <!ATTLIST length severity NMTOKEN #IMPLIED >
 
 <!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MatchPattern -->
-<!ELEMENT matchPattern (pattern,profiles?) >
+<!ELEMENT matchPattern (pattern*,profiles?) >
 <!ATTLIST matchPattern errorCode CDATA #IMPLIED >
 <!ATTLIST matchPattern message CDATA #IMPLIED >
 <!ATTLIST matchPattern severity NMTOKEN #IMPLIED >
