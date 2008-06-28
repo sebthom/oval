@@ -25,7 +25,7 @@
 
 		<!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
 		<field name="userId" overwrite="true">
-			<!-- use the checks defined for the constaint set "user.userid" -->
+			<!-- use the checks defined for the constraint set "user.userid" -->
 			<assertConstraintSet id="user.userid" />
 		</field>
 
@@ -48,7 +48,7 @@
 
 		<!-- define a getter return value check -->
 		<method name="getManagerId">
-			<!-- returnValue -  use the checks defined for the constaint set "user.userid" -->
+			<!-- returnValue -  use the checks defined for the constraint set "user.userid" -->
 			<returnValue>
 				<assertConstraintSet id="user.userid" />
 			</returnValue>
