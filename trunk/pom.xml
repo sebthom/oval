@@ -3,8 +3,11 @@
 	@author Holger Riegel
 	@author Sebastian Thomschke 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -200,6 +203,10 @@
 					<artifactId>ant</artifactId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.apache.ant</groupId>
+					<artifactId>ant-launcher</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>jline</groupId>
 					<artifactId>jline</artifactId>
 				</exclusion>
@@ -244,7 +251,7 @@
 
 			<!--**********************************************************************************
 				phase: validate
-				**********************************************************************************-->
+				**********************************************************************************			-->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -283,7 +290,7 @@
 
 			<!--********************************************************************************** 
 				phase: generate-sources
-				**********************************************************************************-->
+				**********************************************************************************			-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.1</version>
@@ -308,7 +315,7 @@
 
 			<!--********************************************************************************** 
 				phase: generate-resources
-				**********************************************************************************-->
+				**********************************************************************************			-->
 			<plugin>
 				<!-- better docbook support -->
 				<groupId>com.agilejava.docbkx</groupId>
@@ -318,7 +325,9 @@
 						<goals>
 							<goal>generate-html</goal>
 						</goals>
-						<!-- needs to be in generate-resources and not pre-site since we also want to include the documentation in the distributions and not just the site-->
+						<!-- 
+							needs to be in generate-resources and not pre-site since we also want to include the 
+							documentation in the distributions and not just the site						-->
 						<phase>generate-resources</phase>
 					</execution>
 				</executions>
@@ -392,7 +401,7 @@
 
 			<!--**********************************************************************************
 				phase: compile
-				**********************************************************************************-->
+				**********************************************************************************			-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -422,7 +431,7 @@
 
 			<!--**********************************************************************************
 				phase: package
-				**********************************************************************************-->
+				**********************************************************************************			-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
