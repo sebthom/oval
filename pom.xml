@@ -132,13 +132,19 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.5.4</version>
+			<version>1.6.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -238,7 +244,7 @@
 
 			<!--**********************************************************************************
 				phase: validate
-				********************************************************************************** -->
+				**********************************************************************************-->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -277,7 +283,7 @@
 
 			<!--********************************************************************************** 
 				phase: generate-sources
-				********************************************************************************** -->
+				**********************************************************************************-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.1</version>
@@ -302,7 +308,7 @@
 
 			<!--********************************************************************************** 
 				phase: generate-resources
-				********************************************************************************** -->
+				**********************************************************************************-->
 			<plugin>
 				<!-- better docbook support -->
 				<groupId>com.agilejava.docbkx</groupId>
@@ -312,7 +318,7 @@
 						<goals>
 							<goal>generate-html</goal>
 						</goals>
-						<!-- needs to be in generate-resources and not pre-site since we also want to include the documentation in the distributions and not just the site -->
+						<!-- needs to be in generate-resources and not pre-site since we also want to include the documentation in the distributions and not just the site-->
 						<phase>generate-resources</phase>
 					</execution>
 				</executions>
@@ -386,7 +392,7 @@
 
 			<!--**********************************************************************************
 				phase: compile
-				********************************************************************************** -->
+				**********************************************************************************-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -416,7 +422,7 @@
 
 			<!--**********************************************************************************
 				phase: package
-				********************************************************************************** -->
+				**********************************************************************************-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>

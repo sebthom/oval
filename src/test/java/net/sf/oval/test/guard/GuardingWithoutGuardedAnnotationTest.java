@@ -78,7 +78,8 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 		catch (final ConstraintsViolatedException e)
 		{
 			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
+			assertNotNull(violations);
+			assertEquals(1, violations.length);
 			assertTrue(violations[0].getMessage().equals("NOT_NULL"));
 			assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
 		}

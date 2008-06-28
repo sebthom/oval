@@ -88,7 +88,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 
 		LOG.debug("aroundCounstructor() {}", SIGNATURE);
 
-		final Constructor CONSTRUCTOR = SIGNATURE.getConstructor();
+		final Constructor<?> CONSTRUCTOR = SIGNATURE.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();
 		final Object TARGET = thisJoinPoint.getTarget();
 
@@ -122,7 +122,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 			{
 				public Object invoke()
 				{
-					// invoke the adviced method and return the result
+					// invoke the advised method and return the result
 					return proceed();
 				}
 			});

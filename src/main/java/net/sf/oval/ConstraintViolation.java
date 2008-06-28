@@ -21,7 +21,7 @@ import net.sf.oval.internal.Log;
 
 /**
  * An instance of this class provides detailed information about a single constraint violation 
- * that occured during validation.
+ * that occurred during validation.
  * 
  * @author Sebastian Thomschke
  */
@@ -147,18 +147,11 @@ public class ConstraintViolation implements Serializable
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	private void readObject(final java.io.ObjectInputStream in) throws IOException,
-			ClassNotFoundException
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
-		if (in.readBoolean())
-		{
-			validatedObject = in.readObject();
-		}
-		if (in.readBoolean())
-		{
-			invalidValue = in.readObject();
-		}
+		if (in.readBoolean()) validatedObject = in.readObject();
+		if (in.readBoolean()) invalidValue = in.readObject();
 	}
 
 	@Override
@@ -184,9 +177,8 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			LOG.warn("Field 'validatedObject' not serialized because the field value object "
-					+ validatedObject + " of type " + invalidValue.getClass()
-					+ " does not implement " + Serializable.class.getName());
+			LOG.warn("Field 'validatedObject' not serialized because the field value object " + validatedObject
+					+ " of type " + invalidValue.getClass() + " does not implement " + Serializable.class.getName());
 
 			// indicate validatedObject does not implement Serializable
 			out.writeBoolean(false);
