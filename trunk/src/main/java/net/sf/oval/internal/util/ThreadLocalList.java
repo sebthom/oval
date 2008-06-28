@@ -21,7 +21,6 @@ import net.sf.oval.internal.CollectionFactoryHolder;
  */
 public class ThreadLocalList<T> extends ThreadLocal<List<T>>
 {
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> get()
 	{

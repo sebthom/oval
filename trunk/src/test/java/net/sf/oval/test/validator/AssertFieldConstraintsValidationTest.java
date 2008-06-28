@@ -27,7 +27,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class AssertFieldConstraintsValidationTest extends TestCase
 {
-	private static class Person
+	protected static class Person
 	{
 		@NotNull
 		public String firstName;

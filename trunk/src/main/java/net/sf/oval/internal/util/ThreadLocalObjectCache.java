@@ -29,7 +29,6 @@ public class ThreadLocalObjectCache<K, V> extends ThreadLocal<ObjectCache<K, V>>
 		this.maxElementsToKeep = maxElementsToKeep;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ObjectCache<K, V> get()
 	{

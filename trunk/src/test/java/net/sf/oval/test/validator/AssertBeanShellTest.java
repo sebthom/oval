@@ -24,7 +24,7 @@ import net.sf.oval.constraint.Assert;
  */
 public class AssertBeanShellTest extends TestCase
 {
-	private static class Person
+	protected static class Person
 	{
 		@Assert(expr = "_value!=null", lang = "bsh", errorCode = "C1")
 		public String firstName;
