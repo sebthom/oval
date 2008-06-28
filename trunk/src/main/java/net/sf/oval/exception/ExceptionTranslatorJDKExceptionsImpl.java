@@ -50,7 +50,7 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 			{
 				final IllegalArgumentException iaex = new IllegalArgumentException(cv.getMessage());
 				iaex.setStackTrace(ex.getStackTrace());
-				if (LOG.isDebug()) LOG.debug("Translated Exception" + ex + " to " + iaex, ex);
+				LOG.debug("Translated Exception {1} to {2}", ex, iaex);
 				return iaex;
 			}
 
@@ -59,7 +59,7 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 			{
 				final IllegalStateException ise = new IllegalStateException(cv.getMessage());
 				ise.setStackTrace(ex.getStackTrace());
-				if (LOG.isDebug()) LOG.debug("Translated Exception" + ex + " to " + ise, ex);
+				LOG.debug("Translated Exception {1} to {2}", ex, ise);
 				return ise;
 			}
 		}
@@ -68,7 +68,7 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 		{
 			final RuntimeException rex = new RuntimeException(ex.getMessage());
 			rex.setStackTrace(ex.getStackTrace());
-			if (LOG.isDebug()) LOG.debug("Translated Exception" + ex + " to " + rex, ex);
+			LOG.debug("Translated Exception {1} to {2}", ex, rex);
 			return rex;
 		}
 	}

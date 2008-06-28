@@ -49,7 +49,7 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 				localVars.append("\n");
 
 			}
-			LOG.debug("Evaluating Ruby expression: {}", expression);
+			LOG.debug("Evaluating Ruby expression: {1}", expression);
 			final IRubyObject result = runtime.evalScriptlet(localVars + expression);
 			return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
 		}

@@ -41,7 +41,7 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 				ctx.put(entry.getKey(), entry.getValue());
 			}
 
-			LOG.debug("Evaluating OGNL expression: {}", expression);
+			LOG.debug("Evaluating OGNL expression: {1}", expression);
 			return Ognl.getValue(expression, ctx);
 		}
 		catch (final OgnlException ex)

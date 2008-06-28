@@ -46,7 +46,7 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 			final JexlContext ctx = JexlHelper.createContext();
 			ctx.setVars(values);
 
-			LOG.debug("Evaluating JEXL expression: {}", expression);
+			LOG.debug("Evaluating JEXL expression: {1}", expression);
 			return expr.evaluate(ctx);
 		}
 		catch (final Exception ex)

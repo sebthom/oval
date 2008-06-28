@@ -27,8 +27,7 @@ public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 {
 	private final static Log LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
 
-	public Object evaluate(final String expression, final Map<String, ? > values)
-			throws ExpressionEvaluationException
+	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		try
 		{
@@ -38,7 +37,7 @@ public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 			{
 				interpreter.set(entry.getKey(), entry.getValue());
 			}
-			LOG.debug("Evaluating BeanShell expression: {}", expression);
+			LOG.debug("Evaluating BeanShell expression: {1}", expression);
 			return interpreter.eval(expression);
 		}
 		catch (final EvalError ex)
@@ -53,7 +52,9 @@ public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
+		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
+		}
 		return (Boolean) result;
 	}
 }

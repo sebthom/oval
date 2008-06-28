@@ -134,9 +134,18 @@ public class Guard extends Validator
 	public void addChecks(final Constructor< ? > constructor, final int parameterIndex, final Check... checks)
 			throws IllegalArgumentException, InvalidConfigurationException
 	{
-		if (constructor == null) throw new IllegalArgumentException("constructor cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (constructor == null)
+		{
+			throw new IllegalArgumentException("constructor cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 		cc.addConstructorParameterChecks(constructor, parameterIndex, checks);
@@ -155,9 +164,18 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final Check... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.addMethodReturnValueChecks(method, null, checks);
@@ -175,9 +193,18 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final int parameterIndex, final Check... checks)
 			throws IllegalArgumentException, InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.addMethodParameterChecks(method, parameterIndex, checks);
@@ -194,9 +221,18 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final PostCheck... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.addMethodPostChecks(method, checks);
@@ -213,9 +249,18 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final PreCheck... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.addMethodPreChecks(method, checks);
@@ -230,7 +275,10 @@ public class Guard extends Validator
 	 */
 	public boolean addListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
 
 		isListenersFeatureUsed = true;
 		return listeners.add(listener);
@@ -247,8 +295,14 @@ public class Guard extends Validator
 	public boolean addListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
 			throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
-		if (guardedClass == null) throw new IllegalArgumentException("guardedClass cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
+		if (guardedClass == null)
+		{
+			throw new IllegalArgumentException("guardedClass cannot be null");
+		}
 
 		isListenersFeatureUsed = true;
 
@@ -275,8 +329,14 @@ public class Guard extends Validator
 	 */
 	public boolean addListener(final ConstraintsViolatedListener listener, final Object guardedObject)
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
-		if (guardedObject == null) throw new IllegalArgumentException("guardedObject cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
+		if (guardedObject == null)
+		{
+			throw new IllegalArgumentException("guardedObject cannot be null");
+		}
 
 		isListenersFeatureUsed = true;
 
@@ -331,7 +391,9 @@ public class Guard extends Validator
 						}
 					}
 					else
+					{
 						values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+					}
 
 					oldValues.put(check, eng.evaluate(check.getOld(), values));
 				}
@@ -355,7 +417,10 @@ public class Guard extends Validator
 	 */
 	public Check[] getChecks(final Method method, final int parameterIndex) throws InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -374,7 +439,10 @@ public class Guard extends Validator
 	 */
 	public PostCheck[] getChecksPost(final Method method) throws IllegalArgumentException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -390,7 +458,10 @@ public class Guard extends Validator
 	 */
 	public PreCheck[] getChecksPre(final Method method) throws IllegalArgumentException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -430,7 +501,10 @@ public class Guard extends Validator
 				if (violations.size() > 0)
 				{
 					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+					if (isListenersFeatureUsed)
+					{
+						notifyListeners(guardedObject, violationException);
+					}
 
 					throw translateException(violationException);
 				}
@@ -464,7 +538,10 @@ public class Guard extends Validator
 				if (violations != null)
 				{
 					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-					if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+					if (isListenersFeatureUsed)
+					{
+						notifyListeners(guardedObject, violationException);
+					}
 
 					throw translateException(violationException);
 				}
@@ -500,28 +577,41 @@ public class Guard extends Validator
 		final List<ConstraintViolation> violations = CollectionFactoryHolder.getFactory().createList();
 
 		// if static method use the declaring class as guardedObject
-		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
+		if (guardedObject == null && ReflectionUtils.isStatic(method))
+		{
+			guardedObject = method.getDeclaringClass();
+		}
 
 		try
 		{
 			// check invariants
 			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
+			{
 				validateInvariants(guardedObject, violations);
+			}
 
 			if (isPreConditionsEnabled)
 			{
 				// method parameter validation
 				if (violations.size() == 0 && args.length > 0)
+				{
 					validateMethodParameters(guardedObject, method, args, violations);
+				}
 
 				// @Pre validation
-				if (violations.size() == 0) validateMethodPre(guardedObject, method, args, violations);
+				if (violations.size() == 0)
+				{
+					validateMethodPre(guardedObject, method, args, violations);
+				}
 			}
 
 			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+				if (isListenersFeatureUsed)
+				{
+					notifyListeners(guardedObject, violationException);
+				}
 
 				// don't throw an exception if the method is a setter and suppressing for precondition is enabled
 				if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return null;
@@ -553,17 +643,25 @@ public class Guard extends Validator
 			{
 
 				// method return value
-				if (violations.size() == 0) validateMethodReturnValue(guardedObject, method, returnValue, violations);
+				if (violations.size() == 0)
+				{
+					validateMethodReturnValue(guardedObject, method, returnValue, violations);
+				}
 
 				// @Post
 				if (violations.size() == 0)
+				{
 					validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
+				}
 			}
 
 			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
+				if (isListenersFeatureUsed)
+				{
+					notifyListeners(guardedObject, violationException);
+				}
 
 				throw translateException(violationException);
 			}
@@ -582,7 +680,10 @@ public class Guard extends Validator
 	 */
 	public boolean hasListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
 
 		return listeners.contains(listener);
 	}
@@ -596,8 +697,14 @@ public class Guard extends Validator
 	public boolean hasListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
 			throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
-		if (guardedClass == null) throw new IllegalArgumentException("guardedClass cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
+		if (guardedClass == null)
+		{
+			throw new IllegalArgumentException("guardedClass cannot be null");
+		}
 
 		final Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedClass);
 
@@ -615,8 +722,14 @@ public class Guard extends Validator
 	public boolean hasListener(final ConstraintsViolatedListener listener, final Object guardedObject)
 			throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
-		if (guardedObject == null) throw new IllegalArgumentException("guardedObject cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
+		if (guardedObject == null)
+		{
+			throw new IllegalArgumentException("guardedObject cannot be null");
+		}
 
 		final Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
 
@@ -740,7 +853,7 @@ public class Guard extends Validator
 			}
 			catch (final RuntimeException rex)
 			{
-				LOG.warn("Notifying listener '{}' failed.", listener, rex);
+				LOG.warn("Notifying listener '{1}' failed.", listener, rex);
 			}
 		}
 
@@ -757,9 +870,18 @@ public class Guard extends Validator
 	public void removeChecks(final Constructor< ? > constructor, final int parameterIndex, final Check... checks)
 			throws InvalidConfigurationException
 	{
-		if (constructor == null) throw new IllegalArgumentException("constructor cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (constructor == null)
+		{
+			throw new IllegalArgumentException("constructor cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
 		cc.removeConstructorParameterChecks(constructor, parameterIndex, checks);
@@ -778,9 +900,18 @@ public class Guard extends Validator
 	public void removeChecks(final Method method, final int parameterIndex, final Check... checks)
 			throws InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.removeMethodParameterChecks(method, parameterIndex, checks);
@@ -796,9 +927,18 @@ public class Guard extends Validator
 	 */
 	public void removeChecks(final Method method, final PostCheck... checks) throws InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.removeMethodPostChecks(method, checks);
@@ -814,9 +954,18 @@ public class Guard extends Validator
 	 */
 	public void removeChecks(final Method method, final PreCheck... checks) throws InvalidConfigurationException
 	{
-		if (method == null) throw new IllegalArgumentException("method cannot be null");
-		if (checks == null) throw new IllegalArgumentException("checks cannot be null");
-		if (checks.length == 0) throw new IllegalArgumentException("checks cannot empty");
+		if (method == null)
+		{
+			throw new IllegalArgumentException("method cannot be null");
+		}
+		if (checks == null)
+		{
+			throw new IllegalArgumentException("checks cannot be null");
+		}
+		if (checks.length == 0)
+		{
+			throw new IllegalArgumentException("checks cannot empty");
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 		cc.removeMethodPreChecks(method, checks);
@@ -831,7 +980,10 @@ public class Guard extends Validator
 	 */
 	public boolean removeListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
 
 		return listeners.remove(listener);
 	}
@@ -847,8 +999,14 @@ public class Guard extends Validator
 	public boolean removeListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
 			throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
-		if (guardedClass == null) throw new IllegalArgumentException("guardedClass cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
+		if (guardedClass == null)
+		{
+			throw new IllegalArgumentException("guardedClass cannot be null");
+		}
 
 		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(guardedClass);
 
@@ -866,8 +1024,14 @@ public class Guard extends Validator
 	public boolean removeListener(final ConstraintsViolatedListener listener, final Object guardedObject)
 			throws IllegalArgumentException
 	{
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null");
-		if (guardedObject == null) throw new IllegalArgumentException("guardedObject cannot be null");
+		if (listener == null)
+		{
+			throw new IllegalArgumentException("listener cannot be null");
+		}
+		if (guardedObject == null)
+		{
+			throw new IllegalArgumentException("guardedObject cannot be null");
+		}
 
 		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject.get(guardedObject);
 
@@ -897,18 +1061,25 @@ public class Guard extends Validator
 	 */
 	public void setInProbeMode(final Object guardedObject, final boolean isInProbeMode) throws IllegalArgumentException
 	{
-		if (guardedObject == null) throw new IllegalArgumentException("guardedObject cannot be null");
+		if (guardedObject == null)
+		{
+			throw new IllegalArgumentException("guardedObject cannot be null");
+		}
 
 		if (guardedObject instanceof Class)
 		{
-			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {}", guardedObject);
+			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {1}", guardedObject);
 		}
 		isProbeModeFeatureUsed = true;
 
 		if (isInProbeMode)
+		{
 			objectsInProbeMode.get().add(guardedObject);
+		}
 		else
+		{
 			objectsInProbeMode.get().remove(guardedObject);
+		}
 	}
 
 	/**
@@ -940,7 +1111,10 @@ public class Guard extends Validator
 	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
 			throws IllegalArgumentException
 	{
-		if (parameterNameResolver == null) throw new IllegalArgumentException("parameterNameResolver cannot be null");
+		if (parameterNameResolver == null)
+		{
+			throw new IllegalArgumentException("parameterNameResolver cannot be null");
+		}
 
 		this.parameterNameResolver = parameterNameResolver;
 	}
@@ -1102,7 +1276,10 @@ public class Guard extends Validator
 
 			for (final PostCheck check : postChecks)
 			{
-				if (!isAnyProfileEnabled(check.getProfiles())) continue;
+				if (!isAnyProfileEnabled(check.getProfiles()))
+				{
+					continue;
+				}
 
 				final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
 				final Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
@@ -1118,7 +1295,9 @@ public class Guard extends Validator
 					}
 				}
 				else
+				{
 					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+				}
 
 				if (!eng.evaluateAsBoolean(check.getExpression(), values))
 				{
@@ -1172,7 +1351,10 @@ public class Guard extends Validator
 
 			for (final PreCheck check : preChecks)
 			{
-				if (!isAnyProfileEnabled(check.getProfiles())) continue;
+				if (!isAnyProfileEnabled(check.getProfiles()))
+				{
+					continue;
+				}
 
 				final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
 				final Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
@@ -1186,7 +1368,9 @@ public class Guard extends Validator
 					}
 				}
 				else
+				{
 					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
+				}
 
 				if (!eng.evaluateAsBoolean(check.getExpression(), values))
 				{

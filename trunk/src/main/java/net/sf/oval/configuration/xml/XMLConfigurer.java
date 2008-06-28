@@ -73,7 +73,7 @@ import net.sf.oval.constraint.SizeCheck;
 import net.sf.oval.constraint.ValidateWithMethodCheck;
 import net.sf.oval.constraint.AssertURLCheck.URIScheme;
 import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
-import net.sf.oval.exception.OValException;
+import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.util.ReflectionUtils;
@@ -106,8 +106,7 @@ public class XMLConfigurer implements Configurer
 			return clazz.equals(AssertCheck.class);
 		}
 
-		public void marshal(final Object value, final HierarchicalStreamWriter writer,
-				final MarshallingContext context)
+		public void marshal(final Object value, final HierarchicalStreamWriter writer, final MarshallingContext context)
 		{
 			final AssertCheck assertCheck = (AssertCheck) value;
 			writer.addAttribute("lang", assertCheck.getLang());
@@ -131,15 +130,16 @@ public class XMLConfigurer implements Configurer
 			}
 		}
 
-		public Object unmarshal(final HierarchicalStreamReader reader,
-				final UnmarshallingContext context)
+		public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context)
 		{
 			final AssertCheck assertCheck = new AssertCheck();
 			assertCheck.setLang(reader.getAttribute("lang"));
 			assertCheck.setMessage(reader.getAttribute("message"));
 			assertCheck.setErrorCode(reader.getAttribute("errorCode"));
 			if (reader.getAttribute("severity") != null)
+			{
 				assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
+			}
 
 			reader.moveDown();
 			assertCheck.setExpr(reader.getValue());
@@ -151,7 +151,10 @@ public class XMLConfigurer implements Configurer
 				while (reader.hasMoreChildren())
 				{
 					reader.moveDown();
-					if ("string".equals(reader.getNodeName())) profiles.add(reader.getValue());
+					if ("string".equals(reader.getNodeName()))
+					{
+						profiles.add(reader.getValue());
+					}
 					reader.moveUp();
 				}
 				reader.moveUp();
@@ -227,8 +230,7 @@ public class XMLConfigurer implements Configurer
 		{
 			xStream.alias("assertURL", AssertURLCheck.class);
 			xStream.alias("permittedURIScheme", URIScheme.class);
-			xStream.addImplicitCollection(AssertURLCheck.class, "permittedURISchemes",
-					URIScheme.class);
+			xStream.addImplicitCollection(AssertURLCheck.class, "permittedURISchemes", URIScheme.class);
 		}
 		xStream.alias("assertValid", AssertValidCheck.class);
 		xStream.alias("checkWith", CheckWithCheck.class);
@@ -274,15 +276,15 @@ public class XMLConfigurer implements Configurer
 			xStream.addImplicitCollection(ConstraintSetConfiguration.class, "checks");
 
 			// <class> -> net.sf.oval.configuration.elements.ClassConfiguration
-			xStream.addImplicitCollection(POJOConfigurer.class, "classConfigurations",
-					ClassConfiguration.class);
+			xStream.addImplicitCollection(POJOConfigurer.class, "classConfigurations", ClassConfiguration.class);
 			xStream.alias("class", ClassConfiguration.class);
 			{
 				xStream.alias("object", ObjectConfiguration.class);
 
 				// <field> -> net.sf.oval.configuration.elements.FieldConfiguration
-				xStream.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",
-						FieldConfiguration.class);
+				xStream
+						.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",
+								FieldConfiguration.class);
 				xStream.alias("field", FieldConfiguration.class);
 				xStream.addImplicitCollection(FieldConfiguration.class, "checks");
 
@@ -292,13 +294,13 @@ public class XMLConfigurer implements Configurer
 				xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
 
 				// <constructor> -> net.sf.oval.configuration.elements.ConstructorConfiguration
-				xStream.addImplicitCollection(ClassConfiguration.class,
-						"constructorConfigurations", ConstructorConfiguration.class);
+				xStream.addImplicitCollection(ClassConfiguration.class, "constructorConfigurations",
+						ConstructorConfiguration.class);
 				xStream.alias("constructor", ConstructorConfiguration.class);
 				{
 					// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
-					xStream.addImplicitCollection(ConstructorConfiguration.class,
-							"parameterConfigurations", ParameterConfiguration.class);
+					xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations",
+							ParameterConfiguration.class);
 				}
 
 				// <method> -> net.sf.oval.configuration.elements.MethodConfiguration
@@ -307,30 +309,24 @@ public class XMLConfigurer implements Configurer
 				xStream.alias("method", MethodConfiguration.class);
 				{
 					// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
-					xStream.addImplicitCollection(MethodConfiguration.class,
-							"parameterConfigurations", ParameterConfiguration.class);
+					xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",
+							ParameterConfiguration.class);
 
 					// <returnValue> -> net.sf.oval.configuration.elements.MethodConfiguration.returnValueConfiguration
 					// -> MethodReturnValueConfiguration
-					xStream.aliasField("returnValue", MethodConfiguration.class,
-							"returnValueConfiguration");
-					xStream.addImplicitCollection(MethodReturnValueConfiguration.class, "checks",
-							Check.class);
+					xStream.aliasField("returnValue", MethodConfiguration.class, "returnValueConfiguration");
+					xStream.addImplicitCollection(MethodReturnValueConfiguration.class, "checks", Check.class);
 
 					// <pre> -> net.sf.oval.configuration.elements.MethodConfiguration.preExecutionConfiguration ->
 					// MethodPreExecutionConfiguration
-					xStream.aliasField("pre", MethodConfiguration.class,
-							"preExecutionConfiguration");
-					xStream.addImplicitCollection(MethodPostExecutionConfiguration.class, "checks",
-							PreCheck.class);
+					xStream.aliasField("pre", MethodConfiguration.class, "preExecutionConfiguration");
+					xStream.addImplicitCollection(MethodPostExecutionConfiguration.class, "checks", PreCheck.class);
 					xStream.alias("preCheck", PreCheck.class);
 
 					// <post> -> net.sf.oval.configuration.elements.MethodConfiguration.postExecutionConfiguration ->
 					// MethodPpstExecutionConfiguration
-					xStream.aliasField("post", MethodConfiguration.class,
-							"postExecutionConfiguration");
-					xStream.addImplicitCollection(MethodPreExecutionConfiguration.class, "checks",
-							PostCheck.class);
+					xStream.aliasField("post", MethodConfiguration.class, "postExecutionConfiguration");
+					xStream.addImplicitCollection(MethodPreExecutionConfiguration.class, "checks", PostCheck.class);
 					xStream.alias("postCheck", PostCheck.class);
 				}
 			}
@@ -365,13 +361,13 @@ public class XMLConfigurer implements Configurer
 		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
 
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
+	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws InvalidConfigurationException
 	{
 		return pojoConfigurer.getClassConfiguration(clazz);
 	}
 
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
-			throws OValException
+			throws InvalidConfigurationException
 	{
 		return pojoConfigurer.getConstraintSetConfiguration(constraintSetId);
 	}

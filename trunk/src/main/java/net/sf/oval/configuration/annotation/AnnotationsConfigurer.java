@@ -30,7 +30,6 @@ import net.sf.oval.configuration.pojo.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.pojo.elements.ObjectConfiguration;
 import net.sf.oval.configuration.pojo.elements.ParameterConfiguration;
-import net.sf.oval.exception.OValException;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.Post;
@@ -50,16 +49,14 @@ public class AnnotationsConfigurer implements Configurer
 	{
 		for (final Constructor< ? > constructor : config.type.getDeclaredConstructors())
 		{
-			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder
-					.getFactory().createList(4);
+			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder.getFactory().createList(4);
 
 			final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
 
 			// loop over all parameters of the current constructor
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final List<Check> parameterChecks = CollectionFactoryHolder.getFactory()
-						.createList(4);
+				final List<Check> parameterChecks = CollectionFactoryHolder.getFactory().createList(4);
 
 				// loop over all annotations of the current constructor parameter
 				for (final Annotation annotation : parameterAnnotations[i])
@@ -76,14 +73,14 @@ public class AnnotationsConfigurer implements Configurer
 				pc.type = constructor.getParameterTypes()[i];
 				pc.checks = parameterChecks;
 			}
-			final boolean postValidateThis = constructor
-					.isAnnotationPresent(PostValidateThis.class);
+			final boolean postValidateThis = constructor.isAnnotationPresent(PostValidateThis.class);
 
 			if (parametersConfig.size() > 0 | postValidateThis)
 			{
 				if (config.constructorConfigurations == null)
-					config.constructorConfigurations = CollectionFactoryHolder.getFactory()
-							.createSet(2);
+				{
+					config.constructorConfigurations = CollectionFactoryHolder.getFactory().createSet(2);
+				}
 
 				final ConstructorConfiguration cc = new ConstructorConfiguration();
 				cc.parameterConfigurations = parametersConfig;
@@ -111,7 +108,9 @@ public class AnnotationsConfigurer implements Configurer
 			if (checks.size() > 0)
 			{
 				if (config.fieldConfigurations == null)
+				{
 					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
+				}
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
@@ -131,8 +130,7 @@ public class AnnotationsConfigurer implements Configurer
 			/*
 			 * determine method return value checks
 			 */
-			final List<Check> returnValueChecks = CollectionFactoryHolder.getFactory()
-					.createList(2);
+			final List<Check> returnValueChecks = CollectionFactoryHolder.getFactory().createList(2);
 			final List<PreCheck> preChecks = CollectionFactoryHolder.getFactory().createList(2);
 			final List<PostCheck> postChecks = CollectionFactoryHolder.getFactory().createList(2);
 			boolean preValidateThis = false;
@@ -172,16 +170,14 @@ public class AnnotationsConfigurer implements Configurer
 			/*
 			 * determine parameter checks
 			 */
-			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder
-					.getFactory().createList(4);
+			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder.getFactory().createList(4);
 
 			final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 
 			// loop over all parameters of the current method
 			for (int i = 0; i < parameterAnnotations.length; i++)
 			{
-				final List<Check> parameterChecks = CollectionFactoryHolder.getFactory()
-						.createList(4);
+				final List<Check> parameterChecks = CollectionFactoryHolder.getFactory().createList(4);
 
 				// loop over all annotations of the current method parameter
 				for (final Annotation annotation : parameterAnnotations[i])
@@ -203,7 +199,9 @@ public class AnnotationsConfigurer implements Configurer
 					|| postChecks.size() > 0 || preValidateThis || postValidateThis)
 			{
 				if (config.methodConfigurations == null)
+				{
 					config.methodConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
+				}
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
@@ -249,20 +247,19 @@ public class AnnotationsConfigurer implements Configurer
 		}
 	}
 
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
+	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
 
-		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class)
-				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors()
-				: false;
+		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class) ? config.type
+				.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors() : false;
 
-		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class)
-				? config.type.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
+		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class) ? config.type
+				.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
 
-		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type
-				.getAnnotation(Guarded.class).checkInvariants() : false;
+		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type.getAnnotation(
+				Guarded.class).checkInvariants() : false;
 
 		configureObjectLevelChecks(config);
 
@@ -276,7 +273,6 @@ public class AnnotationsConfigurer implements Configurer
 	}
 
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
-			throws OValException
 	{
 		return null;
 	}
@@ -286,8 +282,7 @@ public class AnnotationsConfigurer implements Configurer
 	{
 		assert constraintAnnotation != null;
 
-		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(
-				Constraint.class);
+		final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(Constraint.class);
 
 		// determine the check class
 		final Class< ? > checkClass = constraint.checkWith();
@@ -303,8 +298,7 @@ public class AnnotationsConfigurer implements Configurer
 		}
 		catch (final Exception e)
 		{
-			throw new ReflectionException("Cannot initialize constraint check "
-					+ checkClass.getName(), e);
+			throw new ReflectionException("Cannot initialize constraint check " + checkClass.getName(), e);
 		}
 	}
 }

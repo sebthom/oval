@@ -73,7 +73,7 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
 			}
 
-			LOG.debug("Evaluating JavaScript expression: {}", expression);
+			LOG.debug("Evaluating JavaScript expression: {1}", expression);
 			return script.exec(ctx, scope);
 		}
 		catch (final EvaluatorException ex)

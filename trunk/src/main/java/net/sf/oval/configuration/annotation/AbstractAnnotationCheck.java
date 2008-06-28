@@ -47,7 +47,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint error message based on annotation {}", constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error message based on annotation {1}", constraintClazz.getName(), e);
 			message = constraintClazz.getName() + ".violated";
 		}
 
@@ -61,7 +61,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint error code based on annotation {}", constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error code based on annotation {1}", constraintClazz.getName(), e);
 			errorCode = constraintClazz.getName();
 		}
 
@@ -75,7 +75,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint severity based on annotation {}", constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint severity based on annotation {1}", constraintClazz.getName(), e);
 		}
 
 		/*
@@ -88,7 +88,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint profiles based on annotation {}", constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint profiles based on annotation {1}", constraintClazz.getName(), e);
 		}
 	}
 }
