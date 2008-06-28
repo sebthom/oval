@@ -21,7 +21,6 @@ import net.sf.oval.internal.CollectionFactoryHolder;
  */
 public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
 {
-	@SuppressWarnings("unchecked")
 	@Override
 	public Map<K, V> get()
 	{

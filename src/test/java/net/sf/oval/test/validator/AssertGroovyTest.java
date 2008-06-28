@@ -24,7 +24,7 @@ import net.sf.oval.Validator;
 public class AssertGroovyTest extends TestCase
 {
 	@net.sf.oval.constraint.Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "groovy", errorCode = "C0")
-	private static class Person
+	protected static class Person
 	{
 		@net.sf.oval.constraint.Assert(expr = "_value!=null", lang = "groovy", errorCode = "C1")
 		public String firstName;

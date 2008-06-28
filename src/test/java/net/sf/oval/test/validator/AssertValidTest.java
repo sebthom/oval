@@ -34,7 +34,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class AssertValidTest extends TestCase
 {
-	private static class Address
+	protected static class Address
 	{
 		@NotNull
 		public String street;
@@ -52,7 +52,7 @@ public class AssertValidTest extends TestCase
 		public Person contact;
 	}
 
-	private static class Person
+	protected static class Person
 	{
 		@NotNull
 		public String firstName;
@@ -74,7 +74,7 @@ public class AssertValidTest extends TestCase
 
 	}
 
-	private static class Registry
+	protected static class Registry
 	{
 		@AssertValid
 		public List<Address[]> addressClusters;

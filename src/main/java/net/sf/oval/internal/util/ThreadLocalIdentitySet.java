@@ -17,7 +17,6 @@ package net.sf.oval.internal.util;
  */
 public class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>>
 {
-	@SuppressWarnings("unchecked")
 	@Override
 	public IdentitySet<T> get()
 	{

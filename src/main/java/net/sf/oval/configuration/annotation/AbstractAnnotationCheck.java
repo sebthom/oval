@@ -23,10 +23,12 @@ import net.sf.oval.internal.Log;
  * 
  * @author Sebastian Thomschke
  */
-public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annotation>
-		extends
-			AbstractCheck implements AnnotationCheck<ConstraintAnnotation>
+public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annotation> extends AbstractCheck
+		implements
+			AnnotationCheck<ConstraintAnnotation>
 {
+	private static final long serialVersionUID = 1L;
+
 	private final static Log LOG = Log.getLog(AbstractAnnotationCheck.class);
 
 	public void configure(final ConstraintAnnotation constraintAnnotation)
@@ -40,14 +42,12 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getMessage = constraintClazz.getDeclaredMethod("message",
-					(Class< ? >[]) null);
+			final Method getMessage = constraintClazz.getDeclaredMethod("message", (Class< ? >[]) null);
 			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint error message based on annotation {}",
-					constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error message based on annotation {}", constraintClazz.getName(), e);
 			message = constraintClazz.getName() + ".violated";
 		}
 
@@ -56,14 +56,12 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getErrorCode = constraintClazz.getDeclaredMethod("errorCode",
-					(Class< ? >[]) null);
+			final Method getErrorCode = constraintClazz.getDeclaredMethod("errorCode", (Class< ? >[]) null);
 			errorCode = (String) getErrorCode.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint error code based on annotation {}",
-					constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint error code based on annotation {}", constraintClazz.getName(), e);
 			errorCode = constraintClazz.getName();
 		}
 
@@ -72,15 +70,12 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getSeverity = constraintClazz.getDeclaredMethod("severity",
-					(Class< ? >[]) null);
-			severity = ((Number) getSeverity.invoke(constraintAnnotation, (Object[]) null))
-					.intValue();
+			final Method getSeverity = constraintClazz.getDeclaredMethod("severity", (Class< ? >[]) null);
+			severity = ((Number) getSeverity.invoke(constraintAnnotation, (Object[]) null)).intValue();
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint severity based on annotation {}",
-					constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint severity based on annotation {}", constraintClazz.getName(), e);
 		}
 
 		/*
@@ -88,14 +83,12 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		try
 		{
-			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles",
-					(Class< ? >[]) null);
+			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles", (Class< ? >[]) null);
 			profiles = (String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null);
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint profiles based on annotation {}",
-					constraintClazz.getName(), e);
+			LOG.debug("Cannot determine constraint profiles based on annotation {}", constraintClazz.getName(), e);
 		}
 	}
 }

@@ -25,7 +25,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class StaticFieldsAndGettersTest extends TestCase
 {
-	private static class TestEntity
+	protected static class TestEntity
 	{
 		@NotNull
 		public static String staticA;

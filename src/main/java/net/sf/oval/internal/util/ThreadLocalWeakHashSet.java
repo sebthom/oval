@@ -17,7 +17,6 @@ package net.sf.oval.internal.util;
  */
 public class ThreadLocalWeakHashSet<T> extends ThreadLocal<WeakHashSet<T>>
 {
-	@SuppressWarnings("unchecked")
 	@Override
 	public WeakHashSet<T> get()
 	{

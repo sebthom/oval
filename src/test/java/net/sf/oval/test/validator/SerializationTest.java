@@ -30,7 +30,7 @@ import net.sf.oval.constraint.Length;
  */
 public class SerializationTest extends TestCase
 {
-	private static class Person implements Serializable
+	protected static class Person implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,6 @@ public class SerializationTest extends TestCase
 		public String firstName;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testSerialization() throws IOException, ClassNotFoundException
 	{
 		final Validator validator = new Validator();

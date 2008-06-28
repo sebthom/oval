@@ -24,7 +24,7 @@ import net.sf.oval.constraint.ValidateWithMethod;
  */
 public class ValidateWithMethodConstraintTest extends TestCase
 {
-	private static class TestEntity
+	protected static class TestEntity
 	{
 		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class, ignoreIfNull = false)
 		public String name;

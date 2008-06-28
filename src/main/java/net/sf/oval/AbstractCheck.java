@@ -21,6 +21,8 @@ import java.util.Map;
  */
 public abstract class AbstractCheck implements Check
 {
+	private static final long serialVersionUID = 1L;
+	
 	protected String errorCode;
 	protected String message;
 	protected int severity;
