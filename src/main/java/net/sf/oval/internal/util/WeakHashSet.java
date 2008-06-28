@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
+import static java.lang.Boolean.TRUE;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -49,7 +51,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 
 	public boolean add(final E o)
 	{
-		return map.put(o, Boolean.TRUE) == null;
+		return map.put(o, TRUE) == null;
 	}
 
 	public boolean addAll(final Collection< ? extends E> c)
@@ -57,7 +59,10 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		int count = 0;
 		for (final E e : c)
 		{
-			if (add(e)) count++;
+			if (add(e))
+			{
+				count++;
+			}
 		}
 		return count > 0;
 	}
@@ -96,7 +101,10 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		int hash = 0;
 		for (final E e : map.keySet())
 		{
-			if (e != null) hash += e.hashCode();
+			if (e != null)
+			{
+				hash += e.hashCode();
+			}
 		}
 		return hash;
 	}
@@ -112,12 +120,10 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 	}
 
 	/**
-	 * Reconstitute the <tt>WeakHashSet</tt> instance from a stream (that is,
-	 * deserialize it).
+	 * Reads the <tt>WeakHashSet</tt> instance from a stream.
 	 */
 	@SuppressWarnings("unchecked")
-	private void readObject(final ObjectInputStream ois) throws java.io.IOException,
-			ClassNotFoundException
+	private void readObject(final ObjectInputStream ois) throws java.io.IOException, ClassNotFoundException
 	{
 		// materialize any hidden serialization magic
 		ois.defaultReadObject();
@@ -129,13 +135,13 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		map = new WeakHashMap<E, Object>(size);
 		for (int i = 0; i < size; i++)
 		{
-			map.put((E) ois.readObject(), Boolean.TRUE);
+			map.put((E) ois.readObject(), TRUE);
 		}
 	}
 
 	public boolean remove(final Object o)
 	{
-		return map.remove(o) == Boolean.TRUE;
+		return map.remove(o) == TRUE;
 	}
 
 	public boolean removeAll(final Collection< ? > c)
@@ -164,8 +170,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 	}
 
 	/**
-	 * Save the state of this <tt>WeakHashSet</tt> instance to a stream (that is,
-	 * serialize this set).
+	 * Writes the state of this <tt>WeakHashSet</tt> instance to a stream.
 	 */
 	private void writeObject(final ObjectOutputStream oos) throws java.io.IOException
 	{

@@ -75,10 +75,10 @@ public final class ReflectionUtils
 			// check if field and method parameter are of the same type
 			if (!field.getType().equals(methodParameterTypes[0]))
 			{
-				if (LOG.isWarn())
-					LOG.warn("Found field <" + fieldName + "> in class <" + clazz.getName()
-							+ ">that matches setter <" + methodName
-							+ "> name, but mismatches parameter type.");
+				LOG
+						.warn(
+								"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
+								fieldName, clazz.getName(), methodName);
 				field = null;
 			}
 		}
@@ -90,8 +90,7 @@ public final class ReflectionUtils
 		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() =>
 		// field isEnabled)
 		if (field == null
-				&& (methodParameterTypes[0].equals(boolean.class) || methodParameterTypes[0]
-						.equals(Boolean.class)))
+				&& (methodParameterTypes[0].equals(boolean.class) || methodParameterTypes[0].equals(Boolean.class)))
 		{
 			fieldName = "is" + methodName.substring(3);
 
@@ -102,9 +101,10 @@ public final class ReflectionUtils
 				// check if found field is of boolean or Boolean
 				if (!field.getType().equals(boolean.class) && field.getType().equals(Boolean.class))
 				{
-					if (LOG.isWarn())
-						LOG.warn("Found field <" + fieldName + "> that matches setter <"
-								+ methodName + "> name, but mismatches parameter type.");
+					LOG
+							.warn(
+									"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
+									fieldName, clazz.getName(), methodName);
 					field = null;
 				}
 			}
@@ -128,18 +128,19 @@ public final class ReflectionUtils
 		return getFieldRecursive(superclazz, fieldName);
 	}
 
-	public static Object getFieldValue(final Field field, final Object obj)
-			throws AccessingFieldValueFailedException
+	public static Object getFieldValue(final Field field, final Object obj) throws AccessingFieldValueFailedException
 	{
 		try
 		{
-			if (!field.isAccessible()) field.setAccessible(true);
+			if (!field.isAccessible())
+			{
+				field.setAccessible(true);
+			}
 			return field.get(obj);
 		}
 		catch (final Exception ex)
 		{
-			throw new AccessingFieldValueFailedException(field.getName(), obj, new FieldContext(
-					field), ex);
+			throw new AccessingFieldValueFailedException(field.getName(), obj, new FieldContext(field), ex);
 		}
 	}
 
@@ -186,12 +187,14 @@ public final class ReflectionUtils
 		final String methodName = method.getName();
 		final Class< ? >[] parameterTypes = method.getParameterTypes();
 
-		final List<Method> methods = CollectionFactoryHolder.getFactory().createList(
-				interfaces.length);
+		final List<Method> methods = CollectionFactoryHolder.getFactory().createList(interfaces.length);
 		for (final Class< ? > iface : interfaces)
 		{
 			final Method m = getMethod(iface, methodName, parameterTypes);
-			if (m != null) methods.add(m);
+			if (m != null)
+			{
+				methods.add(m);
+			}
 		}
 		return methods;
 	}
@@ -199,8 +202,8 @@ public final class ReflectionUtils
 	/**
 	 * @return the method or null if the method does not exist
 	 */
-	public static Method getMethod(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes) throws SecurityException
+	public static Method getMethod(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
+			throws SecurityException
 	{
 		try
 		{
@@ -240,17 +243,25 @@ public final class ReflectionUtils
 		{
 			fieldName = fieldName.substring(3);
 			if (fieldName.length() == 1)
+			{
 				fieldName = fieldName.toLowerCase();
+			}
 			else
+			{
 				fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+			}
 		}
 		else if (fieldName.startsWith("is") && fieldName.length() > 2)
 		{
 			fieldName = fieldName.substring(2);
 			if (fieldName.length() == 1)
+			{
 				fieldName = fieldName.toLowerCase();
+			}
 			else
+			{
 				fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+			}
 		}
 
 		return fieldName;
@@ -261,8 +272,7 @@ public final class ReflectionUtils
 		return getField(clazz, fieldName) != null;
 	}
 
-	public static boolean hasMethod(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes)
+	public static boolean hasMethod(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
 	{
 		return getMethod(clazz, methodName, parameterTypes) != null;
 	}
@@ -280,13 +290,16 @@ public final class ReflectionUtils
 	{
 		try
 		{
-			if (!method.isAccessible()) method.setAccessible(true);
+			if (!method.isAccessible())
+			{
+				method.setAccessible(true);
+			}
 			return method.invoke(obj, args);
 		}
 		catch (final Exception ex)
 		{
-			throw new InvokingMethodFailedException("Executing method " + method.getName()
-					+ " failed.", obj, new MethodReturnValueContext(method), ex);
+			throw new InvokingMethodFailedException("Executing method " + method.getName() + " failed.", obj,
+					new MethodReturnValueContext(method), ex);
 		}
 	}
 

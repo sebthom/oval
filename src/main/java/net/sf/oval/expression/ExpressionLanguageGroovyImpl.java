@@ -35,8 +35,7 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 
 	private final ThreadLocalObjectCache<String, Script> threadScriptCache = new ThreadLocalObjectCache<String, Script>();
 
-	public Object evaluate(final String expression, final Map<String, ? > values)
-			throws ExpressionEvaluationException
+	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		try
 		{
@@ -53,7 +52,7 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 			{
 				binding.setVariable(entry.getKey(), entry.getValue());
 			}
-			LOG.debug("Evaluating Groovy expression: {}", expression);
+			LOG.debug("Evaluating Groovy expression: {1}", expression);
 			script.setBinding(binding);
 			return script.run();
 		}
@@ -69,7 +68,9 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
+		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
+		}
 		return (Boolean) result;
 	}
 }

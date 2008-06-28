@@ -68,7 +68,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	{
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
-		LOG.debug("aroundConstructor() {}", SIGNATURE);
+		LOG.debug("aroundConstructor() {1}", SIGNATURE);
 
 		final Constructor< ? > CONSTRUCTOR = SIGNATURE.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();
@@ -95,7 +95,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	{
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
-		LOG.debug("aroundMethod() {}", SIGNATURE);
+		LOG.debug("aroundMethod() {1}", SIGNATURE);
 
 		final Method METHOD = SIGNATURE.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();
@@ -111,8 +111,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 					}
 					catch (final Throwable ex)
 					{
-						throw new ValidationFailedException(
-								"Unexpected exception while invoking method.", ex);
+						throw new ValidationFailedException("Unexpected exception while invoking method.", ex);
 					}
 				}
 			});

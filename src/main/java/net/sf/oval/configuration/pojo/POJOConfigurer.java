@@ -18,7 +18,6 @@ import java.util.Set;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
-import net.sf.oval.exception.OValException;
 
 /**
  * @author Sebastian Thomschke
@@ -51,7 +50,6 @@ public class POJOConfigurer implements Configurer, Serializable
 	}
 
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
-			throws OValException
 	{
 		if (constraintSetConfigurations == null) return null;
 
@@ -81,8 +79,7 @@ public class POJOConfigurer implements Configurer, Serializable
 	/**
 	 * @param constraintSetConfigurations the constraintSetConfigurations to set
 	 */
-	public void setConstraintSetConfigurations(
-			final Set<ConstraintSetConfiguration> constraintSetConfigurations)
+	public void setConstraintSetConfigurations(final Set<ConstraintSetConfiguration> constraintSetConfigurations)
 	{
 		this.constraintSetConfigurations = constraintSetConfigurations;
 	}

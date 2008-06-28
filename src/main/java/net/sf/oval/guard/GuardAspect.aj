@@ -86,7 +86,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 	{
 		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
-		LOG.debug("aroundCounstructor() {}", SIGNATURE);
+		LOG.debug("aroundCounstructor() {1}", SIGNATURE);
 
 		final Constructor<?> CONSTRUCTOR = SIGNATURE.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();
@@ -112,7 +112,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 	{
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
-		LOG.debug("aroundMethod() {}", SIGNATURE);
+		LOG.debug("aroundMethod() {1}", SIGNATURE);
 
 		final Method METHOD = SIGNATURE.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();

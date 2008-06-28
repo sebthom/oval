@@ -34,7 +34,6 @@ import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.NotNullCheck;
-import net.sf.oval.exception.OValException;
 import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
@@ -64,7 +63,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return applyFieldConstraintsToConstructors;
 	}
 
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws OValException
+	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
@@ -105,7 +104,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 			if (checks.size() > 0)
 			{
 				if (config.fieldConfigurations == null)
+				{
 					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(8);
+				}
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
@@ -117,13 +118,11 @@ public class JPAAnnotationsConfigurer implements Configurer
 	}
 
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
-			throws OValException
 	{
 		return null;
 	}
 
-	protected void initializeChecks(final Basic annotation, final Collection<Check> checks,
-			final Field field)
+	protected void initializeChecks(final Basic annotation, final Collection<Check> checks, final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -134,8 +133,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	protected void initializeChecks(final Column annotation, final Collection<Check> checks,
-			final Field field)
+	protected void initializeChecks(final Column annotation, final Collection<Check> checks, final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -161,8 +159,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks,
-			final Field field)
+	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks, final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -174,8 +171,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
 	}
 
-	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks,
-			final Field field)
+	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks, final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -183,8 +179,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
 	}
 
-	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks,
-			final Field field)
+	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks, final Field field)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -207,8 +202,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 	/**
 	 * @param applyFieldConstraintsToConstructors the applyFieldConstraintsToConstructors to set
 	 */
-	public void setApplyFieldConstraintsToConstructors(
-			final Boolean applyFieldConstraintsToConstructors)
+	public void setApplyFieldConstraintsToConstructors(final Boolean applyFieldConstraintsToConstructors)
 	{
 		this.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
 	}
