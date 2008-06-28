@@ -16,6 +16,7 @@
 * changed parameter substring() of annotation @HasSubstring() to value() which allows less verbose usage, e.g. @HasSubstring("foo") instead of @HasSubstring(substring="foo")
 * OVal now respects the order in which constraints, fields are returned by the reflection API when validating objects (thanks to CannyDuck)
 * @MatchPattern can now match against multiple patterns
++ added support for logging via SLF4J
 
 2008-04-05 v1.20
 ================

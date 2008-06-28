@@ -35,7 +35,7 @@ public @interface Guarded
 	/**
 	 * Automatically apply field constraints to 
 	 * the corresponding parameters of constructors
-	 * declared within the same class. A corresponding paramater
+	 * declared within the same class. A corresponding parameter
 	 * is a parameter with the same name and type as the field.
 	 */
 	boolean applyFieldConstraintsToConstructors() default false;

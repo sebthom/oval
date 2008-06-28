@@ -65,7 +65,6 @@ public class CustomConstraintMessageTest extends TestCase
 		{
 			this.name = name;
 		}
-
 	}
 
 	private final static String CUSTOM_ERROR_MESSAGE = "The property [name] cannot be null!";
@@ -89,12 +88,12 @@ public class CustomConstraintMessageTest extends TestCase
 		catch (final ConstraintsViolatedException ex)
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
+			assertNotNull(violations);
+			assertEquals(1, violations.length);
 
 			if (!CUSTOM_ERROR_MESSAGE.equals(violations[0].getMessage()))
 				fail("The returned error message <" + violations[0].getMessage()
-						+ "> does not equal the specified custom error message <"
-						+ CUSTOM_ERROR_MESSAGE + ">");
+						+ "> does not equal the specified custom error message <" + CUSTOM_ERROR_MESSAGE + ">");
 		}
 
 		try
@@ -105,12 +104,12 @@ public class CustomConstraintMessageTest extends TestCase
 		catch (final ConstraintsViolatedException ex)
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertTrue(violations != null && violations.length == 1);
+			assertNotNull(violations);
+			assertEquals(1, violations.length);
 
 			if (!EXPECTED_RANGE_MESSAGE.equals(violations[0].getMessage()))
 				fail("The returned error message <" + violations[0].getMessage()
-						+ "> does not equal the specified custom error message <"
-						+ EXPECTED_RANGE_MESSAGE + ">");
+						+ "> does not equal the specified custom error message <" + EXPECTED_RANGE_MESSAGE + ">");
 		}
 	}
 }

@@ -15,9 +15,11 @@ package net.sf.oval.context;
 import java.io.Serializable;
 
 /**
+ * The root class of the validation context classes.
+ *
  * @author Sebastian Thomschke
  */
-public class OValContext implements Serializable
+public abstract class OValContext implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 }

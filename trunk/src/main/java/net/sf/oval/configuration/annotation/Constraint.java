@@ -20,8 +20,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotations tagged with this annotation
- * represent single-value constraints.<br>
+ * Annotations tagged with this annotation represent single-value constraints.
+ * 
  * @author Sebastian Thomschke
  */
 @Documented
@@ -30,8 +30,8 @@ import java.lang.annotation.Target;
 public @interface Constraint
 {
 	/**
-	 * The class implementing the constraint logic. It can 
-	 * check if a value satisfies the constraint.
+	 * The class implementing the constraint logic.
+	 * It can check if a value satisfies the constraint.
 	 */
 	Class< ? extends AnnotationCheck< ? extends Annotation>> checkWith();
 }

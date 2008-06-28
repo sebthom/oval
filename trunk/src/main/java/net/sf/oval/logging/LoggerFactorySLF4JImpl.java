@@ -10,21 +10,15 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.configuration.pojo.elements;
-
-import java.util.List;
-
-import net.sf.oval.Check;
+package net.sf.oval.logging;
 
 /**
  * @author Sebastian Thomschke
  */
-public class MethodReturnValueConfiguration extends ConfigurationElement
+public class LoggerFactorySLF4JImpl implements LoggerFactory
 {
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * checks for a method's return value that need to be verified after method execution
-	 */
-	public List<Check> checks;
+	public Logger createLogger(final String name)
+	{
+		return new LoggerSLF4JImpl(name);
+	}
 }
