@@ -32,8 +32,6 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = NotNullCheck.class)
 public @interface NotNull
 {
-	AssertFalse doo() default @AssertFalse();
-
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
@@ -47,12 +45,12 @@ public @interface NotNull
 	String message() default "net.sf.oval.constraints.NotNull.violated";
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }
