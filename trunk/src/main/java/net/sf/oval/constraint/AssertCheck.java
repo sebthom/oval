@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -20,7 +22,6 @@ import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.exception.ExpressionLanguageNotAvailableException;
 import net.sf.oval.expression.ExpressionLanguage;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
@@ -59,18 +60,16 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("expression", expr);
 		messageVariables.put("language", lang);
 		return messageVariables;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
-			throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator) throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
 	{
-		final Map<String, Object> values = CollectionFactoryHolder.getFactory().createMap();
+		final Map<String, Object> values = getCollectionFactory().createMap();
 		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 

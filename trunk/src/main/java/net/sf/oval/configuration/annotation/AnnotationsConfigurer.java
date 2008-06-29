@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.configuration.annotation;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -19,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import net.sf.oval.Check;
+import net.sf.oval.CheckExclusion;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
@@ -38,63 +41,70 @@ import net.sf.oval.guard.PostValidateThis;
 import net.sf.oval.guard.Pre;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.guard.PreValidateThis;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AnnotationsConfigurer implements Configurer
 {
-	protected void configureConstructorParameterChecks(final ClassConfiguration config)
+	protected void configureConstructorParameterChecks(final ClassConfiguration classCfg)
 	{
-		for (final Constructor< ? > constructor : config.type.getDeclaredConstructors())
+		for (final Constructor< ? > ctor : classCfg.type.getDeclaredConstructors())
 		{
-			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder.getFactory().createList(4);
+			final List<ParameterConfiguration> paramCfg = getCollectionFactory().createList(2);
 
-			final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+			final Annotation[][] paramAnnotations = ctor.getParameterAnnotations();
 
 			// loop over all parameters of the current constructor
-			for (int i = 0; i < parameterAnnotations.length; i++)
+			for (int i = 0; i < paramAnnotations.length; i++)
 			{
-				final List<Check> parameterChecks = CollectionFactoryHolder.getFactory().createList(4);
+				final List<Check> paramChecks = getCollectionFactory().createList(2);
+				final List<CheckExclusion> paramCheckExclusions = getCollectionFactory().createList(2);
 
 				// loop over all annotations of the current constructor parameter
-				for (final Annotation annotation : parameterAnnotations[i])
+				for (final Annotation annotation : paramAnnotations[i])
 				{
 					// check if the current annotation is a constraint annotation
 					if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 					{
-						parameterChecks.add(initializeCheck(annotation));
+						paramChecks.add(initializeCheck(annotation));
+					}
+
+					// check if the current annotation is a exclusion annotation
+					else if (annotation.annotationType().isAnnotationPresent(Exclusion.class))
+					{
+						paramCheckExclusions.add(initializeExclusion(annotation));
 					}
 				}
 
 				final ParameterConfiguration pc = new ParameterConfiguration();
-				parametersConfig.add(pc);
-				pc.type = constructor.getParameterTypes()[i];
-				pc.checks = parameterChecks;
+				paramCfg.add(pc);
+				pc.type = ctor.getParameterTypes()[i];
+				pc.checks = paramChecks.size() == 0 ? null : paramChecks;
+				pc.checkExclusions = paramCheckExclusions.size() == 0 ? null : paramCheckExclusions;
 			}
-			final boolean postValidateThis = constructor.isAnnotationPresent(PostValidateThis.class);
+			final boolean postValidateThis = ctor.isAnnotationPresent(PostValidateThis.class);
 
-			if (parametersConfig.size() > 0 | postValidateThis)
+			if (paramCfg.size() > 0 | postValidateThis)
 			{
-				if (config.constructorConfigurations == null)
+				if (classCfg.constructorConfigurations == null)
 				{
-					config.constructorConfigurations = CollectionFactoryHolder.getFactory().createSet(2);
+					classCfg.constructorConfigurations = getCollectionFactory().createSet(2);
 				}
 
 				final ConstructorConfiguration cc = new ConstructorConfiguration();
-				cc.parameterConfigurations = parametersConfig;
+				cc.parameterConfigurations = paramCfg;
 				cc.postCheckInvariants = postValidateThis;
-				config.constructorConfigurations.add(cc);
+				classCfg.constructorConfigurations.add(cc);
 			}
 		}
 	}
 
-	protected void configureFieldChecks(final ClassConfiguration config)
+	protected void configureFieldChecks(final ClassConfiguration classCfg)
 	{
-		for (final Field field : config.type.getDeclaredFields())
+		for (final Field field : classCfg.type.getDeclaredFields())
 		{
-			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
+			final List<Check> checks = getCollectionFactory().createList(2);
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
@@ -107,15 +117,15 @@ public class AnnotationsConfigurer implements Configurer
 			}
 			if (checks.size() > 0)
 			{
-				if (config.fieldConfigurations == null)
+				if (classCfg.fieldConfigurations == null)
 				{
-					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
+					classCfg.fieldConfigurations = getCollectionFactory().createSet(2);
 				}
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
 				fc.checks = checks;
-				config.fieldConfigurations.add(fc);
+				classCfg.fieldConfigurations.add(fc);
 			}
 		}
 	}
@@ -123,16 +133,16 @@ public class AnnotationsConfigurer implements Configurer
 	/**
 	 * configure method return value and parameter checks
 	 */
-	protected void configureMethodChecks(final ClassConfiguration config)
+	protected void configureMethodChecks(final ClassConfiguration classCfg)
 	{
-		for (final Method method : config.type.getDeclaredMethods())
+		for (final Method method : classCfg.type.getDeclaredMethods())
 		{
 			/*
-			 * determine method return value checks
+			 * determine method return value checks and method pre/post conditions
 			 */
-			final List<Check> returnValueChecks = CollectionFactoryHolder.getFactory().createList(2);
-			final List<PreCheck> preChecks = CollectionFactoryHolder.getFactory().createList(2);
-			final List<PostCheck> postChecks = CollectionFactoryHolder.getFactory().createList(2);
+			final List<Check> returnValueChecks = getCollectionFactory().createList(2);
+			final List<PreCheck> preChecks = getCollectionFactory().createList(2);
+			final List<PostCheck> postChecks = getCollectionFactory().createList(2);
 			boolean preValidateThis = false;
 			boolean postValidateThis = false;
 
@@ -170,42 +180,51 @@ public class AnnotationsConfigurer implements Configurer
 			/*
 			 * determine parameter checks
 			 */
-			final List<ParameterConfiguration> parametersConfig = CollectionFactoryHolder.getFactory().createList(4);
+			final List<ParameterConfiguration> paramCfg = getCollectionFactory().createList(2);
 
-			final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+			final Annotation[][] paramAnnotations = method.getParameterAnnotations();
 
 			// loop over all parameters of the current method
-			for (int i = 0; i < parameterAnnotations.length; i++)
+			for (int i = 0; i < paramAnnotations.length; i++)
 			{
-				final List<Check> parameterChecks = CollectionFactoryHolder.getFactory().createList(4);
+				final List<Check> paramChecks = getCollectionFactory().createList(2);
+				final List<CheckExclusion> paramCheckExclusions = getCollectionFactory().createList(2);
 
 				// loop over all annotations of the current method parameter
-				for (final Annotation annotation : parameterAnnotations[i])
+				for (final Annotation annotation : paramAnnotations[i])
 				{
 					// check if the current annotation is a constraint annotation
 					if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 					{
-						parameterChecks.add(initializeCheck(annotation));
+						paramChecks.add(initializeCheck(annotation));
+					}
+
+					// check if the current annotation is a exclusion annotation
+					else if (annotation.annotationType().isAnnotationPresent(Exclusion.class))
+					{
+						paramCheckExclusions.add(initializeExclusion(annotation));
 					}
 				}
 
 				final ParameterConfiguration pc = new ParameterConfiguration();
-				parametersConfig.add(pc);
+				paramCfg.add(pc);
 				pc.type = method.getParameterTypes()[i];
-				pc.checks = parameterChecks;
+				pc.checks = paramChecks.size() == 0 ? null : paramChecks;
+				pc.checkExclusions = paramCheckExclusions.size() == 0 ? null : paramCheckExclusions;
 			}
 
-			if (parametersConfig.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0
-					|| postChecks.size() > 0 || preValidateThis || postValidateThis)
+			// check if anything has been configured for this method at all
+			if (paramCfg.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0 || postChecks.size() > 0
+					|| preValidateThis || postValidateThis)
 			{
-				if (config.methodConfigurations == null)
+				if (classCfg.methodConfigurations == null)
 				{
-					config.methodConfigurations = CollectionFactoryHolder.getFactory().createSet(4);
+					classCfg.methodConfigurations = getCollectionFactory().createSet(2);
 				}
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
-				mc.parameterConfigurations = parametersConfig;
+				mc.parameterConfigurations = paramCfg;
 				mc.isInvariant = method.isAnnotationPresent(IsInvariant.class);
 				mc.preCheckInvariants = preValidateThis;
 				mc.postCheckInvariants = postValidateThis;
@@ -224,15 +243,15 @@ public class AnnotationsConfigurer implements Configurer
 					mc.postExecutionConfiguration = new MethodPostExecutionConfiguration();
 					mc.postExecutionConfiguration.checks = postChecks;
 				}
-				config.methodConfigurations.add(mc);
+				classCfg.methodConfigurations.add(mc);
 			}
 		}
 	}
 
-	protected void configureObjectLevelChecks(final ClassConfiguration config)
+	protected void configureObjectLevelChecks(final ClassConfiguration classCfg)
 	{
-		final List<Check> checks = CollectionFactoryHolder.getFactory().createList(2);
-		for (final Annotation annotation : config.type.getAnnotations())
+		final List<Check> checks = getCollectionFactory().createList(2);
+		for (final Annotation annotation : classCfg.type.getAnnotations())
 		{
 			// check if the current annotation is a constraint annotation
 			if (annotation.annotationType().isAnnotationPresent(Constraint.class))
@@ -242,34 +261,29 @@ public class AnnotationsConfigurer implements Configurer
 		}
 		if (checks.size() > 0)
 		{
-			config.objectConfiguration = new ObjectConfiguration();
-			config.objectConfiguration.checks = checks;
+			classCfg.objectConfiguration = new ObjectConfiguration();
+			classCfg.objectConfiguration.checks = checks;
 		}
 	}
 
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
-		final ClassConfiguration config = new ClassConfiguration();
-		config.type = clazz;
+		final ClassConfiguration classCfg = new ClassConfiguration();
+		classCfg.type = clazz;
 
-		config.applyFieldConstraintsToConstructors = config.type.isAnnotationPresent(Guarded.class) ? config.type
-				.getAnnotation(Guarded.class).applyFieldConstraintsToConstructors() : false;
+		final Guarded guarded = clazz.getAnnotation(Guarded.class);
 
-		config.applyFieldConstraintsToSetters = config.type.isAnnotationPresent(Guarded.class) ? config.type
-				.getAnnotation(Guarded.class).applyFieldConstraintsToSetters() : false;
+		classCfg.applyFieldConstraintsToConstructors = guarded != null && guarded.applyFieldConstraintsToConstructors();
+		classCfg.applyFieldConstraintsToSetters = guarded != null && guarded.applyFieldConstraintsToSetters();
+		classCfg.assertParametersNotNull = guarded != null && guarded.assertParametersNotNull();
+		classCfg.checkInvariants = guarded != null && guarded.checkInvariants();
 
-		config.checkInvariants = config.type.isAnnotationPresent(Guarded.class) ? config.type.getAnnotation(
-				Guarded.class).checkInvariants() : false;
+		configureObjectLevelChecks(classCfg);
+		configureFieldChecks(classCfg);
+		configureConstructorParameterChecks(classCfg);
+		configureMethodChecks(classCfg);
 
-		configureObjectLevelChecks(config);
-
-		configureFieldChecks(config);
-
-		configureConstructorParameterChecks(config);
-
-		configureMethodChecks(config);
-
-		return config;
+		return classCfg;
 	}
 
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
@@ -299,6 +313,31 @@ public class AnnotationsConfigurer implements Configurer
 		catch (final Exception e)
 		{
 			throw new ReflectionException("Cannot initialize constraint check " + checkClass.getName(), e);
+		}
+	}
+
+	protected <ExclusionAnnotation extends Annotation> AnnotationCheckExclusion<ExclusionAnnotation> initializeExclusion(
+			final ExclusionAnnotation exclusionAnnotation) throws ReflectionException
+	{
+		assert exclusionAnnotation != null;
+
+		final Exclusion constraint = exclusionAnnotation.annotationType().getAnnotation(Exclusion.class);
+
+		// determine the check class
+		final Class< ? > exclusionClass = constraint.excludeWith();
+
+		try
+		{
+			// instantiate the appropriate exclusion for the found annotation
+			@SuppressWarnings("unchecked")
+			final AnnotationCheckExclusion<ExclusionAnnotation> exclusion = (AnnotationCheckExclusion<ExclusionAnnotation>) exclusionClass
+					.newInstance();
+			exclusion.configure(exclusionAnnotation);
+			return exclusion;
+		}
+		catch (final Exception e)
+		{
+			throw new ReflectionException("Cannot initialize constraint exclusion " + exclusionClass.getName(), e);
 		}
 	}
 }

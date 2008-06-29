@@ -10,26 +10,19 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.internal.util;
+package net.sf.oval.configuration.annotation;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import java.lang.annotation.Annotation;
 
-import java.util.Map;
+import net.sf.oval.CheckExclusion;
+import net.sf.oval.exception.InvalidConfigurationException;
 
 /**
+ * Interface for constraint checks that are configurable via annotations.
+ * 
  * @author Sebastian Thomschke
  */
-public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
+public interface AnnotationCheckExclusion<ExclusionAnnotation extends Annotation> extends CheckExclusion
 {
-	@Override
-	public Map<K, V> get()
-	{
-		return super.get();
-	}
-
-	@Override
-	public Map<K, V> initialValue()
-	{
-		return getCollectionFactory().createMap();
-	}
+	void configure(ExclusionAnnotation exclusionAnnotation) throws InvalidConfigurationException;
 }

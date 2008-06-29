@@ -12,12 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Map;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
@@ -42,8 +43,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
 		messageVariables.put("substring", substring);
 		return messageVariables;
@@ -60,7 +60,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	private String getSubstringLowerCase()
 	{
 		if (substringLowerCase == null && substring != null)
+		{
 			substringLowerCase = substring.toLowerCase();
+		}
 		return substringLowerCase;
 	}
 
@@ -72,13 +74,12 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 		return ignoreCase;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
-		if (ignoreCase)
-			return valueToValidate.toString().toLowerCase().indexOf(getSubstringLowerCase()) > -1;
+		if (ignoreCase) return valueToValidate.toString().toLowerCase().indexOf(getSubstringLowerCase()) > -1;
 
 		return valueToValidate.toString().indexOf(substring) > -1;
 	}

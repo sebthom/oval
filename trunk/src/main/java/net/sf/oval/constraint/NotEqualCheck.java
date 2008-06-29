@@ -12,12 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Map;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
@@ -41,8 +42,7 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
 		messageVariables.put("testString", testString);
 		return messageVariables;
@@ -59,7 +59,9 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	private String getTestStringLowerCase()
 	{
 		if (testStringLowerCase == null && testString != null)
+		{
 			testStringLowerCase = testString.toLowerCase();
+		}
 		return testStringLowerCase;
 	}
 
@@ -71,13 +73,12 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 		return ignoreCase;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
-		if (ignoreCase)
-			return !valueToValidate.toString().toLowerCase().equals(getTestStringLowerCase());
+		if (ignoreCase) return !valueToValidate.toString().toLowerCase().equals(getTestStringLowerCase());
 
 		return !valueToValidate.toString().equals(testString);
 	}

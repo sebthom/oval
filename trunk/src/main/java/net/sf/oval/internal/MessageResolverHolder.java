@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.internal;
 
+import net.sf.oval.internal.util.Assert;
 import net.sf.oval.localization.MessageResolver;
 import net.sf.oval.localization.MessageResolverImpl;
 
@@ -35,12 +36,11 @@ public final class MessageResolverHolder
 	/**
 	 * 
 	 * @param messageResolver the new messageResolver to use
+	 * @throws IllegalArgumentException if <code>messageResolver == null</code>
 	 */
-	public static void setMessageResolver(final MessageResolver messageResolver)
-			throws IllegalArgumentException
+	public static void setMessageResolver(final MessageResolver messageResolver) throws IllegalArgumentException
 	{
-		if (messageResolver == null)
-			throw new IllegalArgumentException("messageResolver cannot be null");
+		Assert.notNull("messageResolver", messageResolver);
 
 		MessageResolverHolder.messageResolver = messageResolver;
 	}

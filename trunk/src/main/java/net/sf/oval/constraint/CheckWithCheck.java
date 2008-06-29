@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -20,7 +22,7 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ReflectionException;
-import net.sf.oval.internal.CollectionFactoryHolder;
+import net.sf.oval.internal.util.Assert;
 
 /**
  * @author Sebastian Thomschke
@@ -48,8 +50,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(4);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
 		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
 		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
 		return messageVariables;
@@ -71,8 +72,8 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		return ignoreIfNull;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator) throws ReflectionException
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator) throws ReflectionException
 	{
 		if (valueToValidate == null && ignoreIfNull) return true;
 
@@ -89,12 +90,12 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 
 	/**
 	 * @param simpleCheckType the simpleCheckType to set
+	 * @throws IllegalArgumentException if <code>simpleCheckType == null</code>
 	 */
-	public void setSimpleCheck(final Class< ? extends SimpleCheck> simpleCheckType)
-			throws ReflectionException, IllegalArgumentException
+	public void setSimpleCheck(final Class< ? extends SimpleCheck> simpleCheckType) throws ReflectionException,
+			IllegalArgumentException
 	{
-		if (simpleCheckType == null)
-			throw new IllegalArgumentException("simpleCheckType cannot be null");
+		Assert.notNull("simpleCheckType", simpleCheckType);
 
 		try
 		{
@@ -105,17 +106,17 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		}
 		catch (final Exception ex)
 		{
-			throw new ReflectionException("Cannot instantiate an object of type  "
-					+ simpleCheckType.getName(), ex);
+			throw new ReflectionException("Cannot instantiate an object of type  " + simpleCheckType.getName(), ex);
 		}
 	}
 
 	/**
 	 * @param simpleCheck the simpleCheck to set
+	 * @throws IllegalArgumentException if <code>simpleCheck == null</code>
 	 */
 	public void setSimpleCheck(final SimpleCheck simpleCheck) throws IllegalArgumentException
 	{
-		if (simpleCheck == null) throw new IllegalArgumentException("simpleCheck cannot be null");
+		Assert.notNull("simpleCheck", simpleCheck);
 
 		this.simpleCheck = simpleCheck;
 	}

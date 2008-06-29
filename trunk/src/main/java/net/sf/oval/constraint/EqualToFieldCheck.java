@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -23,7 +25,6 @@ import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.FieldNotFoundException;
 import net.sf.oval.exception.InvokingMethodFailedException;
 import net.sf.oval.exception.MethodNotFoundException;
-import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
@@ -67,17 +68,16 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("fieldName", fieldName);
-		messageVariables.put("declaringClass", declaringClass == null
-				|| declaringClass == Void.class ? null : declaringClass.getName());
+		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
+				: declaringClass.getName());
 		messageVariables.put("useGetter", Boolean.toString(useGetter));
 		return messageVariables;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
@@ -88,8 +88,10 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 		{
 			final Method getter = ReflectionUtils.getGetterRecursive(clazz, fieldName);
 			if (getter == null)
-				throw new MethodNotFoundException("Getter for field <" + fieldName
-						+ "> not found in class <" + clazz + "> or it's super classes.");
+			{
+				throw new MethodNotFoundException("Getter for field <" + fieldName + "> not found in class <" + clazz
+						+ "> or it's super classes.");
+			}
 
 			try
 			{
@@ -106,8 +108,10 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 			final Field field = ReflectionUtils.getFieldRecursive(clazz, fieldName);
 
 			if (field == null)
-				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <"
-						+ clazz + "> or it's super classes.");
+			{
+				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <" + clazz
+						+ "> or it's super classes.");
+			}
 
 			valueToCompare = ReflectionUtils.getFieldValue(field, validatedObject);
 		}

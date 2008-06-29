@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
- * 
  * @author Sebastian Thomschke
  */
 public final class ArrayUtils
@@ -26,17 +25,22 @@ public final class ArrayUtils
 	public final static Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 	public final static String[] EMPTY_STRING_ARRAY = new String[0];
 
-	public static <T> int addAll(final Collection<T> collection, final T... elements)
+	/**
+	 * @throws IllegalArgumentException if <code>collection == null</code>
+	 */
+	public static <T> int addAll(final Collection<T> collection, final T... elements) throws IllegalArgumentException
 	{
-		if (collection == null)
-			throw new IllegalArgumentException("Argument collection must not be null");
+		Assert.notNull("collection", collection);
 
 		if (elements == null) return 0;
 
 		int count = 0;
 		for (final T elem : elements)
 		{
-			if (collection.add(elem)) count++;
+			if (collection.add(elem))
+			{
+				count++;
+			}
 		}
 		return count;
 	}

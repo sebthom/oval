@@ -10,26 +10,29 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.internal.util;
+package net.sf.oval.constraint.exclusion;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.Map;
+import net.sf.oval.configuration.annotation.Exclusion;
 
 /**
+ * Declares a parameter to be nullable.
+ * 
  * @author Sebastian Thomschke
  */
-public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER})
+@Exclusion(excludeWith = NullableExclusion.class)
+public @interface Nullable
 {
-	@Override
-	public Map<K, V> get()
-	{
-		return super.get();
-	}
-
-	@Override
-	public Map<K, V> initialValue()
-	{
-		return getCollectionFactory().createMap();
-	}
+	/**
+	 * The associated constraint profiles.
+	 */
+	String[] profiles() default {};
 }

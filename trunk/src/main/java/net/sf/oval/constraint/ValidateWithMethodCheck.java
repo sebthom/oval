@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -19,7 +21,6 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ReflectionException;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
@@ -44,8 +45,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(4);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
 		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
 		messageVariables.put("methodName", methodName);
 		messageVariables.put("parameterType", parameterType.getName());
@@ -76,23 +76,21 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 		return ignoreIfNull;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator) throws ReflectionException
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator) throws ReflectionException
 	{
 		if (valueToValidate == null && ignoreIfNull) return true;
 
 		try
 		{
-			final Method method = validatedObject.getClass().getDeclaredMethod(methodName,
-					parameterType);
+			final Method method = validatedObject.getClass().getDeclaredMethod(methodName, parameterType);
 			method.setAccessible(true);
 			return ((Boolean) method.invoke(validatedObject, valueToValidate)).booleanValue();
 		}
 		catch (final Exception e)
 		{
-			throw new ReflectionException("Calling validation method "
-					+ validatedObject.getClass().getName() + "." + methodName + "("
-					+ validatedObject.getClass().getName() + ") failed.", e);
+			throw new ReflectionException("Calling validation method " + validatedObject.getClass().getName() + "."
+					+ methodName + "(" + validatedObject.getClass().getName() + ") failed.", e);
 		}
 	}
 

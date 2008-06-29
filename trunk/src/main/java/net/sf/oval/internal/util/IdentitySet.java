@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -20,8 +22,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.oval.internal.CollectionFactoryHolder;
-
+/**
+ * @author Sebastian Thomschke
+ */
 public class IdentitySet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -34,7 +37,7 @@ public class IdentitySet<E> implements Set<E>, Serializable
 	 */
 	public IdentitySet()
 	{
-		map = CollectionFactoryHolder.getFactory().createMap();
+		map = getCollectionFactory().createMap();
 	}
 
 	/**
@@ -43,58 +46,80 @@ public class IdentitySet<E> implements Set<E>, Serializable
 	 */
 	public IdentitySet(final int initialCapacity)
 	{
-		map = CollectionFactoryHolder.getFactory().createMap(initialCapacity);
+		map = getCollectionFactory().createMap(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean add(final E o)
 	{
 		final int hash = System.identityHashCode(o);
 		return map.put(hash, o) == null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean addAll(final Collection< ? extends E> c)
 	{
 		int count = 0;
 		for (final E e : c)
 		{
-			if (add(e)) count++;
+			if (add(e))
+			{
+				count++;
+			}
 		}
 		return count > 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void clear()
 	{
 		map.clear();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean contains(final Object o)
 	{
 		final int hash = System.identityHashCode(o);
 		return map.containsKey(hash);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean containsAll(final Collection< ? > c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isEmpty()
 	{
 		return map.isEmpty();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Iterator<E> iterator()
 	{
 		return map.values().iterator();
 	}
 
 	/**
-	 * Reconstitute the <tt>IdentitySet</tt> instance from a stream (that is,
-	 * deserialize it).
+	 * Reads the <tt>IdentitySet</tt> instance from a stream.
 	 */
 	@SuppressWarnings("unchecked")
-	private void readObject(final ObjectInputStream ois) throws java.io.IOException,
-			ClassNotFoundException
+	private void readObject(final ObjectInputStream ois) throws java.io.IOException, ClassNotFoundException
 	{
 		// materialize any hidden serialization magic
 		ois.defaultReadObject();
@@ -103,7 +128,7 @@ public class IdentitySet<E> implements Set<E>, Serializable
 		final int size = ois.readInt();
 
 		// materialize the elements
-		map = CollectionFactoryHolder.getFactory().createMap(size);
+		map = getCollectionFactory().createMap(size);
 		for (int i = 0; i < size; i++)
 		{
 			final E o = (E) ois.readObject();
@@ -112,45 +137,65 @@ public class IdentitySet<E> implements Set<E>, Serializable
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean remove(final Object o)
 	{
 		final int hash = System.identityHashCode(o);
 		return map.remove(hash) != null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean removeAll(final Collection< ? > c)
 	{
 		boolean modified = false;
 		for (final Object e : c)
 		{
-			if (remove(e)) modified = true;
+			if (remove(e))
+			{
+				modified = true;
+			}
 		}
 		return modified;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean retainAll(final Collection< ? > c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int size()
 	{
 		return map.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object[] toArray()
 	{
 		return map.values().toArray();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T> T[] toArray(final T[] a)
 	{
 		return map.values().toArray(a);
 	}
 
 	/**
-	 * Save the state of this <tt>IdentitySet</tt> instance to a stream (that is,
-	 * serialize this set).
+	 * Writes state of this <tt>IdentitySet</tt> instance to a stream.
 	 */
 	private void writeObject(final ObjectOutputStream oos) throws java.io.IOException
 	{

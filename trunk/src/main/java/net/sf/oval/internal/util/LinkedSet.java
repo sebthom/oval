@@ -12,13 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  *  @author Sebastian Thomschke
@@ -32,7 +32,7 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	 */
 	public LinkedSet()
 	{
-		list = CollectionFactoryHolder.getFactory().createList(16);
+		list = getCollectionFactory().createList(16);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	 */
 	public LinkedSet(final int initialCapacity)
 	{
-		list = CollectionFactoryHolder.getFactory().createList(initialCapacity);
+		list = getCollectionFactory().createList(initialCapacity);
 	}
 
 	public boolean add(final E e)
@@ -52,7 +52,10 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 
 	public void add(final int index, final E e)
 	{
-		if (!list.contains(e)) list.add(index, e);
+		if (!list.contains(e))
+		{
+			list.add(index, e);
+		}
 	}
 
 	public boolean addAll(final Collection< ? extends E> c)
@@ -71,7 +74,7 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 
 	public boolean addAll(final int index, final Collection< ? extends E> c)
 	{
-		final List<E> tmp = CollectionFactoryHolder.getFactory().createList(c.size());
+		final List<E> tmp = getCollectionFactory().createList(c.size());
 		for (final E o : c)
 		{
 			if (!list.contains(o))
@@ -192,10 +195,7 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 
 		if (elementIndex == index) return element;
 
-		if (elementIndex == -1)
-		{
-			return list.set(index, element);
-		}
+		if (elementIndex == -1) return list.set(index, element);
 		if (elementIndex > index)
 		{
 			list.remove(element);

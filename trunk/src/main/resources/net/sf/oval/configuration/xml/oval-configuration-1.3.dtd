@@ -26,6 +26,7 @@ or
 <!ELEMENT class ( object?,(field|constructor|method)* ) >
 <!ATTLIST class applyFieldConstraintsToConstructors (true|false) #IMPLIED >
 <!ATTLIST class applyFieldConstraintsToSetters (true|false) #IMPLIED >
+<!ATTLIST class assertParametersNotNull (true|false) #IMPLIED >
 <!ATTLIST class checkInvariants (true|false) #IMPLIED >
 <!ATTLIST class overwrite (true|false) #IMPLIED >
 <!ATTLIST class type CDATA #REQUIRED >
@@ -55,7 +56,10 @@ To identify the correct method you are required to list all parameters, includin
 <!ATTLIST method overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a constructor/method parameter -->
-<!ELEMENT parameter ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT parameter ( (
+    assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod|
+    nullable
+)* )>
 <!ATTLIST parameter overwrite (true|false) #IMPLIED >
 <!ATTLIST parameter type CDATA #REQUIRED >
 
@@ -338,3 +342,6 @@ The node body contains the script expression as CDATA
 <!ATTLIST validateWithMethod severity NMTOKEN #IMPLIED >
 <!ATTLIST validateWithMethod methodName NMTOKEN #REQUIRED >
 <!ATTLIST validateWithMethod parameterType CDATA #REQUIRED >
+
+<!-- built-in exclusion, corresponds to net.sf.oval.constraint.exclusion.Nullable -->
+<!ELEMENT nullable (profiles?) >
