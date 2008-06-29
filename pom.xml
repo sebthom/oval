@@ -3,18 +3,15 @@
 	@author Holger Riegel
 	@author Sebastian Thomschke 
 -->
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" 
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
 	<version>1.30-SNAPSHOT</version>
-
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -28,12 +25,10 @@
 		Besides field/property validation OVal implements Programming by Contract features by utilizing AspectJ based
 		aspects. This for example allows runtime validation of method arguments.
 	</description>
-
 	<organization>
 		<name>The OVal Development Team</name>
 		<url>http://oval.sf.net/</url>
 	</organization>
-
 	<licenses>
 		<license>
 			<name>Eclipse Public License - v 1.0</name>
@@ -42,7 +37,6 @@
 			<url>http://oval.sf.net/license/epl-v10.txt</url>
 		</license>
 	</licenses>
-
 	<developers>
 		<developer>
 			<id>sebthom</id>
@@ -64,13 +58,11 @@
 			<timezone>-1</timezone>
 		</developer>
 	</developers>
-
 	<scm>
 		<url>http://oval.svn.sourceforge.net/viewvc/oval/trunk</url>
 		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk</connection>
 		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk</developerConnection>
 	</scm>
-
 	<repositories>
 		<repository>
 			<id>net.sf.oval-repo</id>
@@ -79,7 +71,6 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-
 	<distributionManagement>
 		<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963</downloadUrl>
 		<repository>
@@ -95,12 +86,10 @@
 			<url>scp://shell.sourceforge.net:/home/group/o/ov/oval/htdocs/site</url>
 		</site>
 	</distributionManagement>
-
 	<issueManagement>
 		<system>sourceforge</system>
 		<url>http://sourceforge.net/tracker/?group_id=145963</url>
 	</issueManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -245,13 +234,12 @@
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
-
-			<!--**********************************************************************************
-				phase: validate
-				**********************************************************************************			-->
+			<!--
+				********************************************************************************** phase: validate
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -287,10 +275,10 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!--********************************************************************************** 
-				phase: generate-sources
-				**********************************************************************************			-->
+			<!--
+				********************************************************************************** phase: generate-sources
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.1</version>
@@ -299,10 +287,16 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<copy todir="${project.build.directory}">
-									<fileset dir="${basedir}" includes="README.txt" />
+								<copy
+									todir="${project.build.directory}"
+								>
+									<fileset
+										dir="${basedir}"
+										includes="README.txt" />
 								</copy>
-								<replace file="${project.build.directory}/README.txt" token="$VERSION$"
+								<replace
+									file="${project.build.directory}/README.txt"
+									token="$VERSION$"
 									value="${pom.version}" />
 							</tasks>
 						</configuration>
@@ -312,10 +306,10 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!--********************************************************************************** 
-				phase: generate-resources
-				**********************************************************************************			-->
+			<!--
+				********************************************************************************** phase: generate-resources
+				**********************************************************************************
+			-->
 			<plugin>
 				<!-- better docbook support -->
 				<groupId>com.agilejava.docbkx</groupId>
@@ -325,24 +319,22 @@
 						<goals>
 							<goal>generate-html</goal>
 						</goals>
-						<!-- 
-							needs to be in generate-resources and not pre-site since we also want to include the 
-							documentation in the distributions and not just the site						-->
+						<!--
+							needs to be in generate-resources and not pre-site since we also want to include the documentation in the
+							distributions and not just the site
+						-->
 						<phase>generate-resources</phase>
 					</execution>
 				</executions>
 				<configuration>
 					<!--
-						see	http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/
-						and	http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html
+						see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/ and
+						http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html
 					-->
-
 					<sourceDirectory>${basedir}/src/site/docbook</sourceDirectory>
 					<targetDirectory>${project.build.directory}/site</targetDirectory>
-
 					<highlightDefaultLanguage>java</highlightDefaultLanguage>
 					<highlightSource>1</highlightSource>
-
 					<graphicDefaultExtension>png</graphicDefaultExtension>
 					<useExtensions>1</useExtensions>
 					<tocSectionDepth>2</tocSectionDepth>
@@ -379,7 +371,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>native2ascii-maven-plugin</artifactId>
@@ -398,10 +389,10 @@
 					<encoding>UTF8</encoding>
 				</configuration>
 			</plugin>
-
-			<!--**********************************************************************************
-				phase: compile
-				**********************************************************************************			-->
+			<!--
+				********************************************************************************** phase: compile
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -409,7 +400,6 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
@@ -427,11 +417,23 @@
 					<testAspectDirectory>${basedir}/src/test/java</testAspectDirectory>
 					<aspectDirectory>${basedir}/src/main/java</aspectDirectory>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjrt</artifactId>
+						<version>1.6.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>1.6.0</version>
+					</dependency>
+				</dependencies>
 			</plugin>
-
-			<!--**********************************************************************************
-				phase: package
-				**********************************************************************************			-->
+			<!--
+				********************************************************************************** phase: package
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -465,17 +467,13 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<!-- we are generating the site in the package phase because we want to include it in the distribution -->
 				<artifactId>maven-site-plugin</artifactId>
 				<dependencies>
-					<!-- docbook support, unfortunately very limited
-						<dependency>
-						<groupId>org.apache.maven.doxia</groupId>
-						<artifactId>doxia-module-docbook-simple</artifactId>
-						<version>1.0-alpha-10-SNAPSHOT</version>
-						</dependency>
+					<!--
+						docbook support, unfortunately very limited <dependency> <groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-docbook-simple</artifactId> <version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 
 					<!-- TWIKI support -->
@@ -499,7 +497,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
@@ -527,7 +524,7 @@
 					<downloadSources>true</downloadSources>
 					<classpathContainers>
 						<classpathContainer>
-							org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5
+							org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5 
 						</classpathContainer>
 					</classpathContainers>
 					<additionalProjectnatures>
@@ -540,7 +537,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<reporting>
 		<plugins>
 			<plugin>

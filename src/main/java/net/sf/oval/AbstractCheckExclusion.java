@@ -10,26 +10,33 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.internal.util;
-
-import static net.sf.oval.Validator.getCollectionFactory;
+package net.sf.oval;
 
 import java.util.Map;
 
 /**
+ * Partial implementation of exclusion classes.
+ * 
  * @author Sebastian Thomschke
  */
-public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
+public abstract class AbstractCheckExclusion implements CheckExclusion
 {
-	@Override
-	public Map<K, V> get()
+	private static final long serialVersionUID = 1L;
+
+	protected String[] profiles;
+
+	public Map<String, String> getMessageVariables()
 	{
-		return super.get();
+		return null;
 	}
 
-	@Override
-	public Map<K, V> initialValue()
+	public String[] getProfiles()
 	{
-		return getCollectionFactory().createMap();
+		return profiles;
+	}
+
+	public void setProfiles(final String... profiles)
+	{
+		this.profiles = profiles;
 	}
 }

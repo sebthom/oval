@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.sf.oval.Check;
+import net.sf.oval.CheckExclusion;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.POJOConfigurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
@@ -73,6 +74,7 @@ import net.sf.oval.constraint.SizeCheck;
 import net.sf.oval.constraint.ValidateWithMethodCheck;
 import net.sf.oval.constraint.AssertURLCheck.URIScheme;
 import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
+import net.sf.oval.constraint.exclusion.NullableExclusion;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
@@ -266,6 +268,9 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("size", SizeCheck.class);
 		xStream.alias("validateWithMethod", ValidateWithMethodCheck.class);
 
+		// check exclusions short forms
+		xStream.alias("nullable", NullableExclusion.class);
+
 		// <oval> -> net.sf.oval.configuration.POJOConfigurer
 		xStream.alias("oval", POJOConfigurer.class);
 		{
@@ -292,6 +297,7 @@ public class XMLConfigurer implements Configurer
 				// used within ConstructorConfiguration and MethodConfiguration
 				xStream.alias("parameter", ParameterConfiguration.class);
 				xStream.addImplicitCollection(ParameterConfiguration.class, "checks", Check.class);
+				xStream.addImplicitCollection(ParameterConfiguration.class, "checkExclusions", CheckExclusion.class);
 
 				// <constructor> -> net.sf.oval.configuration.elements.ConstructorConfiguration
 				xStream.addImplicitCollection(ClassConfiguration.class, "constructorConfigurations",

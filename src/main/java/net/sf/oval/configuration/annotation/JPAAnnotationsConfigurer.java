@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.configuration.annotation;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -34,7 +36,6 @@ import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.NotNullCheck;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * Constraints configurer that interprets certain EJB3 JPA annotations:
@@ -75,7 +76,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		 */
 		for (final Field field : config.type.getDeclaredFields())
 		{
-			final List<Check> checks = CollectionFactoryHolder.getFactory().createList(4);
+			final List<Check> checks = getCollectionFactory().createList(4);
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
@@ -105,7 +106,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 			{
 				if (config.fieldConfigurations == null)
 				{
-					config.fieldConfigurations = CollectionFactoryHolder.getFactory().createSet(8);
+					config.fieldConfigurations = getCollectionFactory().createSet(8);
 				}
 
 				final FieldConfiguration fc = new FieldConfiguration();

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.logging;
 
+import net.sf.oval.internal.util.Assert;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -23,9 +25,13 @@ public class LoggerJCLImpl implements Logger
 {
 	private final Log log;
 
-	public LoggerJCLImpl(final String name)
+	/**
+	 * @param name the name of the logger
+	 * @throws IllegalArgumentException if <code>name == null</code>
+	 */
+	public LoggerJCLImpl(final String name) throws IllegalArgumentException
 	{
-		if (name == null) throw new IllegalArgumentException("name cannot be null");
+		Assert.notNull("name", name);
 
 		log = LogFactory.getLog(name);
 	}

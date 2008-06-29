@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.logging;
 
+import net.sf.oval.internal.util.Assert;
+
 import org.apache.log4j.Level;
 
 /**
@@ -24,9 +26,13 @@ public class LoggerL4JImpl implements Logger
 
 	private final org.apache.log4j.Logger log;
 
-	public LoggerL4JImpl(final String name)
+	/**
+	 * @param name the name of the logger
+	 * @throws IllegalArgumentException if <code>name == null</code>
+	 */
+	public LoggerL4JImpl(final String name) throws IllegalArgumentException
 	{
-		if (name == null) throw new IllegalArgumentException("name cannot be null");
+		Assert.notNull("name", name);
 		log = org.apache.log4j.Logger.getLogger(name);
 	}
 

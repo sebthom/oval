@@ -13,6 +13,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -23,7 +25,6 @@ import java.util.List;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ArrayUtils;
 
@@ -78,8 +79,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	/**
 	 * Specifies the allowed URL schemes.
 	 */
-	private final List<URIScheme> permittedURISchemes = CollectionFactoryHolder.getFactory()
-			.createList(2);
+	private final List<URIScheme> permittedURISchemes = getCollectionFactory().createList(2);
 
 	private boolean canConnect(final String url)
 	{
@@ -121,8 +121,8 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public URIScheme[] getPermittedURISchemes()
 	{
-		return permittedURISchemes.size() == 0 ? null : permittedURISchemes
-				.toArray(new URIScheme[permittedURISchemes.size()]);
+		return permittedURISchemes.size() == 0 ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes
+				.size()]);
 	}
 
 	/**
@@ -135,8 +135,8 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		return connect;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 

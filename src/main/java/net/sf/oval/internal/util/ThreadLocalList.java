@@ -12,9 +12,9 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
-import java.util.List;
+import static net.sf.oval.Validator.getCollectionFactory;
 
-import net.sf.oval.internal.CollectionFactoryHolder;
+import java.util.List;
 
 /**
  * @author Sebastian Thomschke
@@ -30,6 +30,6 @@ public class ThreadLocalList<T> extends ThreadLocal<List<T>>
 	@Override
 	public List<T> initialValue()
 	{
-		return CollectionFactoryHolder.getFactory().createList();
+		return getCollectionFactory().createList();
 	}
 }

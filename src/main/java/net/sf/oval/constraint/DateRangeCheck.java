@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,7 +27,6 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.InvalidConfigurationException;
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * @author Sebastian Thomschke
@@ -73,13 +74,9 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		if (maxMillis == null)
 		{
 			if (max == null || max.length() == 0)
-			{
 				return Long.MAX_VALUE;
-			}
 			else if ("now".equals(max))
-			{
 				return System.currentTimeMillis();
-			}
 			else if ("today".equals(max))
 			{
 				final Calendar cal = Calendar.getInstance();
@@ -121,8 +118,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				}
 				catch (final ParseException e)
 				{
-					throw new InvalidConfigurationException("Unable to parse the max Date String",
-							e);
+					throw new InvalidConfigurationException("Unable to parse the max Date String", e);
 				}
 			}
 			else
@@ -133,8 +129,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				}
 				catch (final ParseException e)
 				{
-					throw new InvalidConfigurationException("Unable to parse the max Date String",
-							e);
+					throw new InvalidConfigurationException("Unable to parse the max Date String", e);
 				}
 			}
 		}
@@ -144,8 +139,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(3);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
 		messageVariables.put("min", min == null ? ".." : min);
 		messageVariables.put("max", max == null ? ".." : max);
 		messageVariables.put("format", format);
@@ -165,13 +159,9 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		if (minMillis == null)
 		{
 			if (min == null || min.length() == 0)
-			{
 				return 0L;
-			}
 			else if ("now".equals(min))
-			{
 				return System.currentTimeMillis();
-			}
 			else if ("today".equals(max))
 			{
 				final Calendar cal = Calendar.getInstance();
@@ -210,8 +200,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				}
 				catch (final ParseException e)
 				{
-					throw new InvalidConfigurationException("Unable to parse the min Date String",
-							e);
+					throw new InvalidConfigurationException("Unable to parse the min Date String", e);
 				}
 			}
 			else
@@ -222,16 +211,15 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				}
 				catch (final ParseException e)
 				{
-					throw new InvalidConfigurationException("Unable to parse the min Date String",
-							e);
+					throw new InvalidConfigurationException("Unable to parse the min Date String", e);
 				}
 			}
 		}
 		return minMillis;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
@@ -256,15 +244,16 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 			try
 			{
 				if (format != null)
+				{
 					try
 					{
 						valueInMillis = new SimpleDateFormat(format).parse(stringValue).getTime();
 					}
 					catch (final ParseException ex)
 					{
-						LOG.log(Level.FINE, "valueToValidate not parsable with specified format "
-								+ format, ex);
+						LOG.log(Level.FINE, "valueToValidate not parsable with specified format " + format, ex);
 					}
+				}
 
 				if (valueInMillis == -1)
 				{

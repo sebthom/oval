@@ -15,6 +15,8 @@ package net.sf.oval.logging;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import net.sf.oval.internal.util.Assert;
+
 /**
  * JDK Logging Wrapper
  * @author Sebastian Thomschke
@@ -24,9 +26,14 @@ public class LoggerJDKImpl implements Logger
 	private final java.util.logging.Logger log;
 	private final String name;
 
-	public LoggerJDKImpl(final String name)
+	/**
+	 * @param name the name of the logger
+	 * @throws IllegalArgumentException if <code>name == null</code>
+	 */
+	public LoggerJDKImpl(final String name) throws IllegalArgumentException
 	{
-		if (name == null) throw new IllegalArgumentException("name cannot be null");
+		Assert.notNull("name", name);
+
 		this.name = name;
 		log = java.util.logging.Logger.getLogger(name);
 	}

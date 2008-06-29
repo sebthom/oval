@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.logging.Logger;
 import net.sf.oval.logging.LoggerFactory;
@@ -33,21 +34,17 @@ public final class Log
 	 */
 	private final static Map<String, Log> logRegistry = new HashMap<String, Log>(32);
 
-	public static Log getLog(final Class< ? > clazz)
+	public static Log getLog(final Class< ? > clazz) throws IllegalArgumentException
 	{
-		if (clazz == null)
-		{
-			throw new IllegalArgumentException("clazz cannot be null");
-		}
+		Assert.notNull("clazz", clazz);
+
 		return getLog(clazz.getName());
 	}
 
-	public synchronized static Log getLog(final String name)
+	public synchronized static Log getLog(final String name) throws IllegalArgumentException
 	{
-		if (name == null)
-		{
-			throw new IllegalArgumentException("name cannot be null");
-		}
+		Assert.notNull("name", name);
+
 		Log log = logRegistry.get(name);
 		if (log == null)
 		{
@@ -70,12 +67,9 @@ public final class Log
 	/**
 	 * @param loggerFactory the loggerFactory to set
 	 */
-	public static void setLoggerFactory(final LoggerFactory loggerFactory)
+	public static void setLoggerFactory(final LoggerFactory loggerFactory) throws IllegalArgumentException
 	{
-		if (loggerFactory == null)
-		{
-			throw new IllegalArgumentException("loggerFactory cannot be null");
-		}
+		Assert.notNull("loggerFactory", loggerFactory);
 
 		synchronized (logRegistry)
 		{
@@ -304,10 +298,7 @@ public final class Log
 
 	private void setLogger(final Logger logger)
 	{
-		if (logger == null)
-		{
-			throw new IllegalArgumentException("logger cannot be null");
-		}
+		Assert.notNull("logger", logger);
 
 		this.logger = logger;
 	}

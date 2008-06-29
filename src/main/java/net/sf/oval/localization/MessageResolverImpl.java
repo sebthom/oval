@@ -12,13 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.localization;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import net.sf.oval.internal.CollectionFactoryHolder;
 
 /**
  * Default implementation that resolves messages based
@@ -28,8 +28,7 @@ import net.sf.oval.internal.CollectionFactoryHolder;
  */
 public class MessageResolverImpl implements MessageResolver
 {
-	private final Map<ResourceBundle, List<String>> messageBundleKeys = CollectionFactoryHolder
-			.getFactory().createMap(8);
+	private final Map<ResourceBundle, List<String>> messageBundleKeys = getCollectionFactory().createMap(8);
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
 
@@ -52,10 +51,9 @@ public class MessageResolverImpl implements MessageResolver
 		if (messageBundles.contains(messageBundle)) return false;
 
 		messageBundles.addFirst(messageBundle);
-		final List<String> keys = CollectionFactoryHolder.getFactory().createList();
+		final List<String> keys = getCollectionFactory().createList();
 
-		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum
-				.hasMoreElements();)
+		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum.hasMoreElements();)
 		{
 			keys.add(keysEnum.nextElement());
 		}
@@ -70,10 +68,7 @@ public class MessageResolverImpl implements MessageResolver
 		for (final ResourceBundle bundle : messageBundles)
 		{
 			final List<String> keys = messageBundleKeys.get(bundle);
-			if (keys.contains(key))
-			{
-				return bundle.getString(key);
-			}
+			if (keys.contains(key)) return bundle.getString(key);
 		}
 		return null;
 	}

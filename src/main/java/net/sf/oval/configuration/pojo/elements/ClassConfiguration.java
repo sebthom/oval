@@ -62,6 +62,12 @@ public class ClassConfiguration extends ConfigurationElement
 	public Boolean applyFieldConstraintsToSetters;
 
 	/**
+	 * Declares if parameter values of constructors and methods are expected to be not null.
+	 * This can be weakened by using the @net.sf.oval.constraint.exclusion.Nullable annotation on specific parameters.
+	 */
+	public Boolean assertParametersNotNull;
+
+	/**
 	 * Specifies if invariants are checked prior and after calls to
 	 * non-private methods and constructors.
 	 */

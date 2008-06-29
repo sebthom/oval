@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -22,7 +24,6 @@ import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.exception.AccessingFieldValueFailedException;
 import net.sf.oval.exception.InvokingMethodFailedException;
-import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.Log;
 
 /**
@@ -187,7 +188,7 @@ public final class ReflectionUtils
 		final String methodName = method.getName();
 		final Class< ? >[] parameterTypes = method.getParameterTypes();
 
-		final List<Method> methods = CollectionFactoryHolder.getFactory().createList(interfaces.length);
+		final List<Method> methods = getCollectionFactory().createList(interfaces.length);
 		for (final Class< ? > iface : interfaces)
 		{
 			final Method m = getMethod(iface, methodName, parameterTypes);

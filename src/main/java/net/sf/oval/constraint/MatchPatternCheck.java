@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,6 @@ import java.util.regex.Pattern;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.util.ArrayUtils;
 
 /**
@@ -30,24 +31,8 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 {
 	private static final long serialVersionUID = 1L;
 
-	private final List<Pattern> patterns = CollectionFactoryHolder.getFactory().createList(2);
+	private final List<Pattern> patterns = getCollectionFactory().createList(2);
 	private boolean matchAll = true;
-
-	/**
-	 * @return the matchAll
-	 */
-	public boolean isMatchAll()
-	{
-		return matchAll;
-	}
-
-	/**
-	 * @param matchAll the matchAll to set
-	 */
-	public void setMatchAll(final boolean matchAll)
-	{
-		this.matchAll = matchAll;
-	}
 
 	@Override
 	public void configure(final MatchPattern constraintAnnotation)
@@ -73,10 +58,8 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
-		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString()
-				: patterns.toString());
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
 		return messageVariables;
 	}
 
@@ -91,8 +74,16 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 		}
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	/**
+	 * @return the matchAll
+	 */
+	public boolean isMatchAll()
+	{
+		return matchAll;
+	}
+
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
@@ -110,6 +101,14 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 			}
 		}
 		return matchAll ? true : false;
+	}
+
+	/**
+	 * @param matchAll the matchAll to set
+	 */
+	public void setMatchAll(final boolean matchAll)
+	{
+		this.matchAll = matchAll;
 	}
 
 	/**

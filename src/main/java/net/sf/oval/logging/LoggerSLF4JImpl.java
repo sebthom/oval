@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.logging;
 
+import net.sf.oval.internal.util.Assert;
+
 /**
  * SLF4J Wrapper
  * @author Sebastian Thomschke
@@ -20,10 +22,13 @@ public class LoggerSLF4JImpl implements Logger
 {
 	private final org.slf4j.Logger log;
 
-	public LoggerSLF4JImpl(final String name)
+	/**
+	 * @param name the name of the logger
+	 * @throws IllegalArgumentException if <code>name == null</code>
+	 */
+	public LoggerSLF4JImpl(final String name) throws IllegalArgumentException
 	{
-		if (name == null) throw new IllegalArgumentException("name cannot be null");
-
+		Assert.notNull("name", name);
 		log = org.slf4j.LoggerFactory.getLogger(name);
 	}
 

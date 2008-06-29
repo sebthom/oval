@@ -72,6 +72,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.InnerClassTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.MethodReturnValueConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.NullableTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.OverridingEqualsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.OverridingHashCodeTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ParameterConstraintsTest.class);
@@ -118,8 +119,7 @@ public class AllTests
 
 		// Tests with Javolution collections
 		{
-			final TestSuite suite1 = new TestSuite(
-					"Tests for net.sf.oval with Javolution collections");
+			final TestSuite suite1 = new TestSuite("Tests for net.sf.oval with Javolution collections");
 			constraintsTests(suite1);
 			validatorTests(suite1);
 			guardTests(suite1);
@@ -174,8 +174,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
-		suite
-				.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);

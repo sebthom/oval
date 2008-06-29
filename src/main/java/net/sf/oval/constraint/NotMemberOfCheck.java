@@ -12,13 +12,14 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.List;
 import java.util.Map;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.internal.CollectionFactoryHolder;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.StringUtils;
 
@@ -46,7 +47,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	 */
 	public List<String> getMembers()
 	{
-		final List<String> v = CollectionFactoryHolder.getFactory().createList();
+		final List<String> v = getCollectionFactory().createList();
 		v.addAll(members);
 		return v;
 	}
@@ -55,7 +56,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	{
 		if (membersLowerCase == null)
 		{
-			membersLowerCase = CollectionFactoryHolder.getFactory().createList(members.size());
+			membersLowerCase = getCollectionFactory().createList(members.size());
 			for (final String val : members)
 			{
 				membersLowerCase.add(val.toLowerCase());
@@ -67,8 +68,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
-		final Map<String, String> messageVariables = CollectionFactoryHolder.getFactory()
-				.createMap(2);
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
 		messageVariables.put("members", StringUtils.implode(members, ","));
 		return messageVariables;
@@ -82,13 +82,12 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		return ignoreCase;
 	}
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
-		if (ignoreCase)
-			return !getMembersLowerCase().contains(valueToValidate.toString().toLowerCase());
+		if (ignoreCase) return !getMembersLowerCase().contains(valueToValidate.toString().toLowerCase());
 
 		return !members.contains(valueToValidate.toString());
 	}
@@ -106,7 +105,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	 */
 	public void setMembers(final List<String> members)
 	{
-		this.members = CollectionFactoryHolder.getFactory().createList();
+		this.members = getCollectionFactory().createList();
 		this.members.addAll(members);
 		membersLowerCase = null;
 	}
@@ -116,7 +115,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	 */
 	public void setMembers(final String... members)
 	{
-		this.members = CollectionFactoryHolder.getFactory().createList();
+		this.members = getCollectionFactory().createList();
 		ArrayUtils.addAll(this.members, members);
 		membersLowerCase = null;
 	}
