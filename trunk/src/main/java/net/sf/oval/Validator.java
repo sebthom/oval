@@ -72,13 +72,15 @@ import net.sf.oval.guard.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.internal.ClassChecks;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
-import net.sf.oval.internal.MessageResolverHolder;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalList;
-import net.sf.oval.localization.MessageResolver;
+import net.sf.oval.localization.context.ToStringValidationContextRenderer;
+import net.sf.oval.localization.context.OValContextRenderer;
+import net.sf.oval.localization.message.MessageResolver;
+import net.sf.oval.localization.message.ResourceBundleMessageResolver;
 import net.sf.oval.logging.LoggerFactory;
 
 /**
@@ -97,6 +99,8 @@ public class Validator
 	private final static Log LOG = Log.getLog(Validator.class);
 
 	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
+	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
+	private static MessageResolver messageResolver = ResourceBundleMessageResolver.INSTANCE;
 
 	private static CollectionFactory _createDefaultCollectionFactory()
 	{
@@ -131,6 +135,14 @@ public class Validator
 	}
 
 	/**
+	 * @return the contextRenderer
+	 */
+	public static OValContextRenderer getContextRenderer()
+	{
+		return contextRenderer;
+	}
+
+	/**
 	 * @return the loggerFactory
 	 */
 	public static LoggerFactory getLoggerFactory()
@@ -143,7 +155,7 @@ public class Validator
 	 */
 	public static MessageResolver getMessageResolver()
 	{
-		return MessageResolverHolder.getMessageResolver();
+		return messageResolver;
 	}
 
 	/**
@@ -154,6 +166,14 @@ public class Validator
 	{
 		Assert.notNull("factory", factory);
 		Validator.collectionFactory = factory;
+	}
+
+	/**
+	 * @param contextRenderer the contextRenderer to set
+	 */
+	public static void setContextRenderer(final OValContextRenderer contextRenderer)
+	{
+		Validator.contextRenderer = contextRenderer;
 	}
 
 	/**
@@ -170,7 +190,7 @@ public class Validator
 	 */
 	public static void setMessageResolver(final MessageResolver messageResolver) throws IllegalArgumentException
 	{
-		MessageResolverHolder.setMessageResolver(messageResolver);
+		Validator.messageResolver = messageResolver;
 	}
 
 	private final Map<Class< ? >, ClassChecks> checksByClass = new WeakHashMap<Class< ? >, ClassChecks>();
@@ -181,21 +201,21 @@ public class Validator
 
 	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
 
+	private final Set<String> disabledProfiles = collectionFactory.createSet();
+
+	private final Set<String> enabledProfiles = collectionFactory.createSet();
+
+	private ExceptionTranslator exceptionTranslator;
+
 	private final Map<String, ExpressionLanguage> expressionLanguages = collectionFactory.createMap(4);
+
+	private boolean isAllProfilesEnabledByDefault = true;
 
 	/**
 	 * Flag that indicates any configuration method related to profiles was called.
 	 * Used for performance improvements.
 	 */
 	private boolean isProfilesFeatureUsed = false;
-
-	private boolean isAllProfilesEnabledByDefault = true;
-
-	private final Set<String> disabledProfiles = collectionFactory.createSet();
-
-	private final Set<String> enabledProfiles = collectionFactory.createSet();
-
-	private ExceptionTranslator exceptionTranslator;
 
 	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
 
@@ -1372,7 +1392,7 @@ public class Validator
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
 
-		message = StringUtils.replaceAll(message, "{context}", context.toString());
+		message = StringUtils.replaceAll(message, "{context}", contextRenderer.render(context));
 		message = StringUtils.replaceAll(message, "{invalidValue}", value == null ? "null" : value.toString());
 
 		return message;

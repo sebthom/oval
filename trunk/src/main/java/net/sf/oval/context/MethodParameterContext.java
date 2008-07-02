@@ -14,7 +14,7 @@ package net.sf.oval.context;
 
 import java.lang.reflect.Method;
 
-import net.sf.oval.internal.MessageResolverHolder;
+import net.sf.oval.Validator;
 import net.sf.oval.internal.util.SerializableMethod;
 import net.sf.oval.internal.util.StringUtils;
 
@@ -29,8 +29,7 @@ public class MethodParameterContext extends OValContext
 	private final int parameterIndex;
 	private final String parameterName;
 
-	public MethodParameterContext(final Method method, final int parameterIndex,
-			final String parameterName)
+	public MethodParameterContext(final Method method, final int parameterIndex, final String parameterName)
 	{
 		this.method = SerializableMethod.getInstance(method);
 		this.parameterIndex = parameterIndex;
@@ -64,17 +63,10 @@ public class MethodParameterContext extends OValContext
 	@Override
 	public String toString()
 	{
-		return method.getDeclaringClass().getName()
-				+ "."
-				+ method.getName()
-				+ "("
-				+ StringUtils.implode(method.getParameterTypes(), ",")
-				+ ") "
-				+ MessageResolverHolder.getMessageResolver().getMessage(
-						"net.sf.oval.context.MethodParameterContext.parameter")
-				+ " "
-				+ parameterIndex
-				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName
-						+ ")");
+		return method.getDeclaringClass().getName() + "." + method.getName() + "("
+				+ StringUtils.implode(method.getParameterTypes(), ",") + ") "
+				+ Validator.getMessageResolver().getMessage("net.sf.oval.context.MethodParameterContext.parameter")
+				+ " " + parameterIndex
+				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName + ")");
 	}
 }

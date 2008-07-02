@@ -10,12 +10,19 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.localization;
+package net.sf.oval.localization.context;
+
+import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
  */
-public interface MessageResolver
+public class ToStringValidationContextRenderer implements OValContextRenderer
 {
-	String getMessage(String key);
+	public final static ToStringValidationContextRenderer INSTANCE = new ToStringValidationContextRenderer();
+
+	public String render(final OValContext ovalContext)
+	{
+		return ovalContext.toString();
+	}
 }
