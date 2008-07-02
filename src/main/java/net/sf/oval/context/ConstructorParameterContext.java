@@ -14,7 +14,7 @@ package net.sf.oval.context;
 
 import java.lang.reflect.Constructor;
 
-import net.sf.oval.internal.MessageResolverHolder;
+import net.sf.oval.Validator;
 import net.sf.oval.internal.util.SerializableConstructor;
 import net.sf.oval.internal.util.StringUtils;
 
@@ -34,8 +34,8 @@ public class ConstructorParameterContext extends OValContext
 	 * @param constructor
 	 * @param parameterIndex
 	 */
-	public ConstructorParameterContext(final Constructor< ? > constructor,
-			final int parameterIndex, final String parameterName)
+	public ConstructorParameterContext(final Constructor< ? > constructor, final int parameterIndex,
+			final String parameterName)
 	{
 		this.constructor = SerializableConstructor.getInstance(constructor);
 		this.parameterIndex = parameterIndex;
@@ -45,7 +45,7 @@ public class ConstructorParameterContext extends OValContext
 	/**
 	 * @return Returns the constructor.
 	 */
-	public Constructor<?> getConstructor()
+	public Constructor< ? > getConstructor()
 	{
 		return constructor.getConstructor();
 	}
@@ -73,11 +73,8 @@ public class ConstructorParameterContext extends OValContext
 				+ "("
 				+ StringUtils.implode(constructor.getParameterTypes(), ",")
 				+ ") "
-				+ MessageResolverHolder.getMessageResolver().getMessage(
-						"net.sf.oval.context.ConstructorParameterContext.parameter")
-				+ " "
-				+ parameterIndex
-				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName
-						+ ")");
+				+ Validator.getMessageResolver()
+						.getMessage("net.sf.oval.context.ConstructorParameterContext.parameter") + " " + parameterIndex
+				+ (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName + ")");
 	}
 }

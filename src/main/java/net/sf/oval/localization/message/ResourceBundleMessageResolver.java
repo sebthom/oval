@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.localization;
+package net.sf.oval.localization.message;
 
 import static net.sf.oval.Validator.getCollectionFactory;
 
@@ -26,15 +26,15 @@ import java.util.ResourceBundle;
  * 
  * @author Sebastian Thomschke
  */
-public class MessageResolverImpl implements MessageResolver
+public class ResourceBundleMessageResolver implements MessageResolver
 {
 	private final Map<ResourceBundle, List<String>> messageBundleKeys = getCollectionFactory().createMap(8);
 
 	private final LinkedList<ResourceBundle> messageBundles = new LinkedList<ResourceBundle>();
 
-	public static final MessageResolverImpl INSTANCE = new MessageResolverImpl();
+	public static final ResourceBundleMessageResolver INSTANCE = new ResourceBundleMessageResolver();
 
-	public MessageResolverImpl()
+	public ResourceBundleMessageResolver()
 	{
 		// add the message bundle for the pre-built constraints in the default locale
 		addMessageBundle(ResourceBundle.getBundle("net/sf/oval/Messages"));
