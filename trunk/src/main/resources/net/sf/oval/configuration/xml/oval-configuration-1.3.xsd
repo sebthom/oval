@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	XSD for OVal
+ -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://oval.sf.net/oval-configuration"
+	xmlns:tns="http://oval.sf.net/oval-configuration" elementFormDefault="qualified" version="1.3.0"
+>
+	<element name="oval">
+		<annotation>
+			<documentation>The oval element is the root of the descriptor.</documentation>
+		</annotation>
+		<complexType>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="class" type="tns:Class" minOccurs="0" />
+				<element name="constraintSet" type="tns:ConstraintSet" minOccurs="0" />
+			</choice>
+		</complexType>
+	</element>
+	<complexType name="ConstraintSet">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<attribute name="id" use="required" type="NMTOKEN" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Class">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence>
+					<element name="object" type="tns:Object" minOccurs="0" maxOccurs="1" />
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element name="field" type="tns:Field" />
+						<element name="constructor" type="tns:Constructor" />
+						<element name="method" type="tns:Method" />
+					</choice>
+				</sequence>
+				<attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false" />
+				<attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false" />
+				<attribute name="assertParametersNotNull" use="optional" type="boolean" default="false" />
+				<attribute name="checkInvariants" use="optional" type="boolean" default="false" />
+				<attribute name="type" use="required" type="QName" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ConfigurationElement" abstract="true">
+		<attribute name="overwrite" use="optional" type="boolean" />
+	</complexType>
+	<complexType name="Constraint" abstract="true">
+		<attribute name="errorCode" use="optional" type="string" />
+		<attribute name="message" use="optional" type="string" />
+		<attribute name="severity" use="optional" type="string" />
+	</complexType>
+	<complexType name="Profiles">
+		<sequence>
+			<element name="string" type="string" />
+		</sequence>
+	</complexType>
+	<complexType name="ConstraintsAwareConfigurationElement">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="assert" type="tns:ConstraintAssert" />
+					<element name="checkWith" type="tns:ConstraintCheckWith" />
+					<element name="validateWithMethod" type="tns:ConstraintValidateWithMethod" />
+					<!-- TODO -->
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Field">
+		<complexContent>
+			<extension base="tns:ConstraintsAwareConfigurationElement">
+				<attribute name="name" use="required" type="QName" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Constructor">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<element name="parameter" type="tns:Parameter" />
+				</sequence>
+				<attribute name="postCheckInvariants" use="optional" type="boolean" default="false" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Method">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<element name="parameter" type="tns:Parameter" />
+				</sequence>
+				<!-- TODO preExcecution?,returnValue?,postExcecution? -->
+				<attribute name="name" use="required" type="QName" />
+				<attribute name="isInvariant" use="optional" type="boolean" default="false" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Parameter">
+		<complexContent>
+			<extension base="tns:ConstraintsAwareConfigurationElement">
+				<attribute name="type" use="required" type="QName" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Object">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="assert" type="tns:ConstraintAssert" />
+					<element name="checkWith" type="tns:ConstraintCheckWith" />
+					<element name="validateWithMethod" type="tns:ConstraintValidateWithMethod" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ConstraintAssert">
+		<complexContent>
+			<extension base="tns:Constraint">
+			<!-- TODO -->
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ConstraintCheckWith">
+		<complexContent>
+			<extension base="tns:Constraint">
+			<!-- TODO -->
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ConstraintValidateWithMethod">
+		<complexContent>
+			<extension base="tns:Constraint">
+			<!-- TODO -->
+			</extension>
+		</complexContent>
+	</complexType>
+</schema>
