@@ -3,9 +3,7 @@
 	@author Holger Riegel
 	@author Sebastian Thomschke 
 -->
-<project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
 	<modelVersion>4.0.0</modelVersion>
@@ -182,6 +180,18 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.1_3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>1.5.6</version>
@@ -291,17 +301,10 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<copy
-									todir="${project.build.directory}"
-								>
-									<fileset
-										dir="${basedir}"
-										includes="README.txt" />
+								<copy todir="${project.build.directory}">
+									<fileset dir="${basedir}" includes="README.txt" />
 								</copy>
-								<replace
-									file="${project.build.directory}/README.txt"
-									token="$VERSION$"
-									value="${pom.version}" />
+								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${pom.version}" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -443,7 +446,7 @@
 				<configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile>-->
 					<archive>
-						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+						<manifestFile>src/main/java/META-INF/MANIFEST.MF</manifestFile>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<Bundle-Version>${pom.version}</Bundle-Version>

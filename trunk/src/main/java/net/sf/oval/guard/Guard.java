@@ -468,25 +468,25 @@ public class Guard extends Validator
 		// check invariants
 		if (isInvariantsEnabled && cc.isCheckInvariants || cc.methodsWithCheckInvariantsPost.contains(ctor))
 		{
+			final List<ConstraintViolation> violations = getCollectionFactory().createList();
 			try
 			{
-				final List<ConstraintViolation> violations = getCollectionFactory().createList();
 				validateInvariants(guardedObject, violations);
-
-				if (violations.size() > 0)
-				{
-					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-					if (isListenersFeatureUsed)
-					{
-						notifyListeners(guardedObject, violationException);
-					}
-
-					throw translateException(violationException);
-				}
 			}
 			catch (final ValidationFailedException ex)
 			{
 				throw translateException(ex);
+			}
+
+			if (violations.size() > 0)
+			{
+				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+				if (isListenersFeatureUsed)
+				{
+					notifyListeners(guardedObject, violationException);
+				}
+
+				throw translateException(violationException);
 			}
 		}
 	}
@@ -505,24 +505,25 @@ public class Guard extends Validator
 		// constructor parameter validation
 		if (isPreConditionsEnabled && args.length > 0)
 		{
+			final List<ConstraintViolation> violations;
 			try
 			{
-				final List<ConstraintViolation> violations = validateConstructorParameters(guardedObject, ctor, args);
-
-				if (violations != null)
-				{
-					final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-					if (isListenersFeatureUsed)
-					{
-						notifyListeners(guardedObject, violationException);
-					}
-
-					throw translateException(violationException);
-				}
+				violations = validateConstructorParameters(guardedObject, ctor, args);
 			}
 			catch (final ValidationFailedException ex)
 			{
 				throw translateException(ex);
+			}
+
+			if (violations != null)
+			{
+				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+				if (isListenersFeatureUsed)
+				{
+					notifyListeners(guardedObject, violationException);
+				}
+
+				throw translateException(violationException);
 			}
 		}
 	}
@@ -541,7 +542,17 @@ public class Guard extends Validator
 	protected Object guardMethod(Object guardedObject, final Method method, final Object[] args,
 			final Invocable invocable) throws ConstraintsViolatedException, ValidationFailedException
 	{
-		if (!isActivated) return invocable.invoke();
+		if (!isActivated)
+		{
+			try
+			{
+				return invocable.invoke();
+			}
+			catch (final Exception ex)
+			{
+				throw new ValidationFailedException("Invoking the method failed.", ex);
+			}
+		}
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -578,32 +589,40 @@ public class Guard extends Validator
 					validateMethodPre(guardedObject, method, args, violations);
 				}
 			}
-
-			if (violations.size() > 0)
-			{
-				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-				if (isListenersFeatureUsed)
-				{
-					notifyListeners(guardedObject, violationException);
-				}
-
-				// don't throw an exception if the method is a setter and suppressing for precondition is enabled
-				if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return null;
-
-				throw translateException(violationException);
-			}
-
-			// abort method execution if in probe mode
-			if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return null;
 		}
 		catch (final ValidationFailedException ex)
 		{
 			throw translateException(ex);
 		}
 
+		if (violations.size() > 0)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+			if (isListenersFeatureUsed)
+			{
+				notifyListeners(guardedObject, violationException);
+			}
+
+			// don't throw an exception if the method is a setter and suppressing for precondition is enabled
+			if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return null;
+
+			throw translateException(violationException);
+		}
+
+		// abort method execution if in probe mode
+		if (isProbeModeFeatureUsed && isInProbeMode(guardedObject)) return null;
+
 		final Map<PostCheck, Object> postCheckOldValues = calculateMethodPostOldValues(guardedObject, method, args);
 
-		final Object returnValue = invocable.invoke();
+		final Object returnValue;
+		try
+		{
+			returnValue = invocable.invoke();
+		}
+		catch (final Exception ex)
+		{
+			throw new ValidationFailedException("Invoking the method failed.", ex);
+		}
 
 		try
 		{
@@ -628,22 +647,23 @@ public class Guard extends Validator
 					validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
 				}
 			}
-
-			if (violations.size() > 0)
-			{
-				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-				if (isListenersFeatureUsed)
-				{
-					notifyListeners(guardedObject, violationException);
-				}
-
-				throw translateException(violationException);
-			}
 		}
 		catch (final ValidationFailedException ex)
 		{
 			throw translateException(ex);
 		}
+
+		if (violations.size() > 0)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+			if (isListenersFeatureUsed)
+			{
+				notifyListeners(guardedObject, violationException);
+			}
+
+			throw translateException(violationException);
+		}
+
 		return returnValue;
 	}
 

@@ -90,6 +90,7 @@ public class AllTests
 
 	private static void integrationTests(final TestSuite suite) throws Exception
 	{
+		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringAOPAllianceTest.class);
 		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringValidatorTest.class);
 	}
 
