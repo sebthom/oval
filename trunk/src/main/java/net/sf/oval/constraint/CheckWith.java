@@ -24,7 +24,7 @@ import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 
 /**
  * Check the value by a method of the same class that takes the value as argument and returns true if valid
- * and false if invalid<br>
+ * and false if invalid.
  * 
  * @author Sebastian Thomschke
  */
@@ -52,14 +52,14 @@ public @interface CheckWith
 	String message() default "net.sf.oval.constraints.CheckWith.violated";
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 
 	/**
 	 * Check class to use for validation. If this class is an inner class

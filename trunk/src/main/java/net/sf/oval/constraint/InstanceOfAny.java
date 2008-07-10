@@ -22,8 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the value is an instance of the specified class or 
- * implements <u>one</u> of the specified interfaces.
+ * Check if the value is an instance of the specified class or implements <u>one</u> of the specified interfaces.
  *  
  * <br><br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull

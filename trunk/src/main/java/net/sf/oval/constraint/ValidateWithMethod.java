@@ -23,7 +23,7 @@ import net.sf.oval.configuration.annotation.Constraint;
 
 /**
  * Check the value by a method of the same class that takes the value as argument and returns true if valid
- * and false if invalid<br>
+ * and false if invalid.
  * 
  * @author Sebastian Thomschke
  */
