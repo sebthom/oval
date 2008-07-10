@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 import net.sf.oval.configuration.annotation.Exclusion;
 
 /**
- * Declares a parameter to be nullable.
+ * Allows a value to be nullable.
  * 
  * @author Sebastian Thomschke
  */

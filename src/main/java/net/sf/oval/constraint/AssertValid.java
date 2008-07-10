@@ -22,7 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the value passes a validation by Validator.validate()
+ * Check if the value passes a validation by Validator.validate().
  * 
  * @author Sebastian Thomschke
  */
@@ -45,11 +45,6 @@ public @interface AssertValid
 	String message() default "net.sf.oval.constraints.AssertValid.violated";
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
@@ -58,4 +53,9 @@ public @interface AssertValid
 	 * Specifies if the keys and values of a collection/map must be valid too.
 	 */
 	boolean requireValidElements() default true;
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }

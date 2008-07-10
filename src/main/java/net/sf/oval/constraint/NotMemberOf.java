@@ -22,7 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the string representation is not contained in the given string array
+ * Check if the string representation is not contained in the given string array.
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull

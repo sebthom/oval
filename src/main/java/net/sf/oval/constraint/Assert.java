@@ -22,7 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if evaluating the expression in the specified expression language returns true.<br>
+ * Check if evaluating the expression in the specified expression language returns true.
  * 
  * @author Sebastian Thomschke
  */
@@ -60,12 +60,12 @@ public @interface Assert
 	String message() default "net.sf.oval.constraints.Assert.violated";
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }
