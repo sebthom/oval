@@ -25,7 +25,7 @@ import net.sf.oval.configuration.annotation.Constraint;
  * Check if the number is greater than or equal to X
  * 
  * <br><br>
- * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
+ * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
  */
