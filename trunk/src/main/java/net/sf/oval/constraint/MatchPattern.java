@@ -25,7 +25,7 @@ import net.sf.oval.configuration.annotation.Constraint;
  * Check if the specified regular expression pattern is matched.
  * 
  * <br><br>
- * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
+ * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
  */
@@ -50,6 +50,11 @@ public @interface MatchPattern
 	int[] flags() default 0;
 
 	/**
+	 * specifies if all of the declared patterns must match or if one is sufficient 
+	 */
+	boolean matchAll() default true;
+
+	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
@@ -69,17 +74,12 @@ public @interface MatchPattern
 	String[] pattern();
 
 	/**
-	 * specifies if all of the declared patterns must match or if one is sufficient 
+	 * The associated constraint profiles.
 	 */
-	boolean matchAll() default true;
+	String[] profiles() default {};
 
 	/**
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
-
-	/**
-	 * The associated constraint profiles.
-	 */
-	String[] profiles() default {};
 }

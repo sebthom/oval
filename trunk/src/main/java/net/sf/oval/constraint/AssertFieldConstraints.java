@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Checks if the value satsifies the constraints defined for the specified field.
+ * Check if the value satisfies the constraints defined for the specified field.
  * 
  * @author Sebastian Thomschke
  */

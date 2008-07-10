@@ -25,7 +25,7 @@ import net.sf.oval.configuration.annotation.Constraint;
  * Check if the string representation is contained in the given string array
  * 
  * <br><br>
- * <b>Note:</b> This constraint is also satisified when the value to validate is null, therefore you might also need to specified @NotNull
+ * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
  */
@@ -50,14 +50,14 @@ public @interface MemberOf
 	String message() default "net.sf.oval.constraints.MemberOf.violated";
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 
 	String[] value();
 }

@@ -23,7 +23,10 @@ import net.sf.oval.configuration.annotation.Constraint;
 import net.sf.oval.constraint.AssertURLCheck.URIScheme;
 
 /**
- * Check if the value passes a validation by Validator.validate()
+ * Check if the value is a valid URL.
+ * 
+ * <br><br>
+ * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
  * 
  * @author Sebastian Thomschke
  */
@@ -56,12 +59,12 @@ public @interface AssertURL
 	URIScheme[] permittedURISchemes() default {URIScheme.HTTP, URIScheme.HTTPS, URIScheme.FTP};
 
 	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
-
-	/**
 	 * The associated constraint profiles.
 	 */
 	String[] profiles() default {};
+
+	/**
+	 * severity passed to the ConstraintViolation object
+	 */
+	int severity() default 0;
 }
