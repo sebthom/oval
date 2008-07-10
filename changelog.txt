@@ -23,6 +23,7 @@
 * renamed MessageResolverImpl to ResourceBundleMessageResolver
 * moved MessageResolver classes from net.sf.oval.localization to net.sf.oval.localization.message
 + introduced net.sf.oval.localization.context.OValContextRenderer
++ added configuration XSD as replacement for the DTD 
 
 2008-04-05 v1.20
 ================
