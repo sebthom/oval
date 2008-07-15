@@ -13,8 +13,8 @@
 package net.sf.oval.collection;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,21 +36,21 @@ public class CollectionFactoryJDKImpl implements CollectionFactory
 
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap()
 	{
-		return new HashMap<KeyType, ValueType>();
+		return new LinkedHashMap<KeyType, ValueType>();
 	}
 
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity)
 	{
-		return new HashMap<KeyType, ValueType>(initialCapacity);
+		return new LinkedHashMap<KeyType, ValueType>(initialCapacity);
 	}
 
 	public <ValueType> Set<ValueType> createSet()
 	{
-		return new HashSet<ValueType>();
+		return new LinkedHashSet<ValueType>();
 	}
 
 	public <ValueType> Set<ValueType> createSet(final int initialCapacity)
 	{
-		return new HashSet<ValueType>(initialCapacity);
+		return new LinkedHashSet<ValueType>(initialCapacity);
 	}
 }
