@@ -616,6 +616,13 @@
 				<!-- JUnit Code Coverage report -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
+        		<configuration>
+          			<instrumentation>
+            			<excludes>
+              				<exclude>net/sf/oval/test/**/*.class</exclude>
+            			</excludes>
+          			</instrumentation>
+        		</configuration>
 			</plugin>
 
 			<plugin>
