@@ -26,6 +26,9 @@ public class ProfilesTest extends TestCase
 {
 	protected static class Person
 	{
+		@NotNull(/* profiles = { "default" }, */message = "NOTNULL")
+		public String city;
+
 		@NotNull(profiles = {"profile1"}, message = "NOTNULL1")
 		public String firstName;
 
@@ -67,7 +70,7 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 2);
+			assertEquals(2, violations.size());
 		}
 
 		// enable profile 1 + 2 + 3
@@ -86,7 +89,17 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 3);
+			assertEquals(3, violations.size());
+		}
+
+		// enable profile 1 + 2 + 3 + 4 + default
+		assertFalse(validator.isProfileEnabled("default"));
+		validator.enableProfile("default");
+		assertTrue(validator.isProfileEnabled("default"));
+		{
+			final Person p = new Person();
+			final List<ConstraintViolation> violations = validator.validate(p);
+			assertEquals(4, violations.size());
 		}
 	}
 
@@ -98,7 +111,7 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 3);
+			assertEquals(4, violations.size());
 		}
 
 		assertTrue(validator.isProfileEnabled("profile1"));
@@ -107,7 +120,7 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 2);
+			assertEquals(3, violations.size());
 		}
 
 		assertTrue(validator.isProfileEnabled("profile2"));
@@ -116,7 +129,7 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 2);
+			assertEquals(3, violations.size());
 		}
 
 		assertTrue(validator.isProfileEnabled("profile3"));
@@ -125,8 +138,9 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 1);
-			assertEquals(violations.get(0).getMessage(), "NOTNULL3");
+			assertEquals(2, violations.size());
+			assertEquals("NOTNULL", violations.get(0).getMessage());
+			assertEquals("NOTNULL3", violations.get(1).getMessage());
 		}
 
 		assertTrue(validator.isProfileEnabled("profile4"));
@@ -135,7 +149,16 @@ public class ProfilesTest extends TestCase
 		{
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
-			assertEquals(violations.size(), 0);
+			assertEquals(1, violations.size());
+		}
+
+		assertTrue(validator.isProfileEnabled("default"));
+		validator.disableProfile("default");
+		assertFalse(validator.isProfileEnabled("default"));
+		{
+			final Person p = new Person();
+			final List<ConstraintViolation> violations = validator.validate(p);
+			assertEquals(0, violations.size());
 		}
 	}
 }
