@@ -21,6 +21,7 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ReflectionException;
+import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -83,8 +84,12 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 
 		try
 		{
-			final Method method = validatedObject.getClass().getDeclaredMethod(methodName, parameterType);
-			method.setAccessible(true);
+			final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName,
+					parameterType);
+			if (!method.isAccessible())
+			{
+				method.setAccessible(true);
+			}
 			return ((Boolean) method.invoke(validatedObject, valueToValidate)).booleanValue();
 		}
 		catch (final Exception e)
