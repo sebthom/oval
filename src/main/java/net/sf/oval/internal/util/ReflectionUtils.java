@@ -216,6 +216,21 @@ public final class ReflectionUtils
 		}
 	}
 
+	/**
+	 * @return the method or null if the method does not exist
+	 */
+	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName,
+			final Class< ? >... parameterTypes) throws SecurityException
+	{
+		final Method m = getMethod(clazz, methodName, parameterTypes);
+		if (m != null) return m;
+
+		final Class< ? > superclazz = clazz.getSuperclass();
+		if (superclazz == null) return null;
+
+		return getMethodRecursive(superclazz, methodName, parameterTypes);
+	}
+
 	public static Method getSuperMethod(final Method method)
 	{
 		// static methods cannot be overridden

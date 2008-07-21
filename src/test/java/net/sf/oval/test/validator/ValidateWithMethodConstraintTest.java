@@ -24,18 +24,21 @@ import net.sf.oval.constraint.ValidateWithMethod;
  */
 public class ValidateWithMethodConstraintTest extends TestCase
 {
-	protected static class TestEntity
+	protected static class BaseEntity
 	{
-		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class, ignoreIfNull = false)
-		public String name;
-
-		protected boolean isNameValid(String name)
+		protected boolean isNameValid(final String name)
 		{
 			if (name == null) return false;
 			if (name.length() == 0) return false;
 			if (name.length() > 4) return false;
 			return true;
 		}
+	}
+
+	protected static class TestEntity extends BaseEntity
+	{
+		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class, ignoreIfNull = false)
+		public String name;
 	}
 
 	public void testCheckByMethod()
