@@ -50,6 +50,9 @@ public class ConstraintsViolatedAdapter implements ConstraintsViolatedListener
 		return violations;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void onConstraintsViolatedException(final ConstraintsViolatedException exception)
 	{
 		violationExceptions.add(exception);

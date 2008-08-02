@@ -34,8 +34,7 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 {
 	private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
-	private void determineParamterNames(final Class< ? > clazz) throws IllegalArgumentException,
-			IllegalAccessException
+	private void determineParamterNames(final Class< ? > clazz) throws IllegalArgumentException, IllegalAccessException
 	{
 		assert clazz != null;
 
@@ -47,17 +46,22 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 				// access the StaticPart object
 				field.setAccessible(true);
 				final JoinPoint.StaticPart staticPart = (JoinPoint.StaticPart) field.get(null);
-				if (staticPart == null) break;
+				if (staticPart == null)
+				{
+					break;
+				}
 
 				if (staticPart.getSignature() instanceof ConstructorSignature)
 				{
-					final ConstructorSignature sig = (ConstructorSignature) staticPart
-							.getSignature();
+					final ConstructorSignature sig = (ConstructorSignature) staticPart.getSignature();
 					final String[] parameterNames = sig.getParameterNames();
 
 					final Constructor< ? > constr = sig.getConstructor();
 
-					if (parameterNames.length > 0) parameterNamesCache.put(constr, parameterNames);
+					if (parameterNames.length > 0)
+					{
+						parameterNamesCache.put(constr, parameterNames);
+					}
 				}
 				else if (staticPart.getSignature() instanceof MethodSignature)
 				{
@@ -66,14 +70,19 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 
 					final Method method = sig.getMethod();
 
-					if (parameterNames.length > 0) parameterNamesCache.put(method, parameterNames);
+					if (parameterNames.length > 0)
+					{
+						parameterNamesCache.put(method, parameterNames);
+					}
 				}
 			}
 		}
 	}
 
-	public String[] getParameterNames(final Constructor< ? > constructor)
-			throws ReflectionException
+	/**
+	 * {@inheritDoc}
+	 */
+	public String[] getParameterNames(final Constructor< ? > constructor) throws ReflectionException
 	{
 		/*
 		 * intentionally the following code is not synchronized
@@ -88,13 +97,11 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 			}
 			catch (final IllegalArgumentException e)
 			{
-				throw new ReflectionException("Cannot detemine parameter names for constructor "
-						+ constructor, e);
+				throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
 			}
 			catch (final IllegalAccessException e)
 			{
-				throw new ReflectionException("Cannot detemine parameter names for constructor "
-						+ constructor, e);
+				throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
 			}
 		}
 
@@ -111,6 +118,9 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 		return parameterNames;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
 		/*
@@ -126,13 +136,11 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver
 			}
 			catch (final IllegalArgumentException e)
 			{
-				throw new ReflectionException("Cannot detemine parameter names for method "
-						+ method, e);
+				throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
 			}
 			catch (final IllegalAccessException e)
 			{
-				throw new ReflectionException("Cannot detemine parameter names for method "
-						+ method, e);
+				throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
 			}
 		}
 

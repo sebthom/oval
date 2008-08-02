@@ -25,31 +25,49 @@ import javolution.util.FastTable;
  */
 public class CollectionFactoryJavalutionImpl implements CollectionFactory
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ItemType> List<ItemType> createList()
 	{
 		return new FastTable<ItemType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ItemType> List<ItemType> createList(final int initialCapacity)
 	{
 		return new FastTable<ItemType>(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap()
 	{
 		return new FastMap<KeyType, ValueType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity)
 	{
 		return new FastMap<KeyType, ValueType>(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ItemType> Set<ItemType> createSet()
 	{
 		return new FastSet<ItemType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ItemType> Set<ItemType> createSet(final int initialCapacity)
 	{
 		return new FastSet<ItemType>(initialCapacity);

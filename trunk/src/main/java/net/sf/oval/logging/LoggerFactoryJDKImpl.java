@@ -17,6 +17,9 @@ package net.sf.oval.logging;
  */
 public class LoggerFactoryJDKImpl implements LoggerFactory
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	public Logger createLogger(final String name)
 	{
 		return new LoggerJDKImpl(name);

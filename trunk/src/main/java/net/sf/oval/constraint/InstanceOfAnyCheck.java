@@ -30,6 +30,9 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 
 	private Class< ? >[] types;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final InstanceOfAny constraintAnnotation)
 	{
@@ -37,6 +40,9 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 		setTypes(constraintAnnotation.value());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -65,6 +71,9 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 		return types;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

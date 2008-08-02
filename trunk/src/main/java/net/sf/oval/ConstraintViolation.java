@@ -160,6 +160,10 @@ public class ConstraintViolation implements Serializable
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+
 	@Override
 	public String toString()
 	{

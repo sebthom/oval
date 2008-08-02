@@ -30,6 +30,9 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	private double min = Double.MIN_VALUE;
 	private double max = Double.MAX_VALUE;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final Range constraintAnnotation)
 	{
@@ -46,6 +49,9 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 		return max;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -63,6 +69,9 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 		return min;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

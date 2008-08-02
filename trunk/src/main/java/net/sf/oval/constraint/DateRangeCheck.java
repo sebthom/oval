@@ -44,6 +44,9 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	private transient Long maxMillis;
 	private transient Long minMillis;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final DateRange constraintAnnotation)
 	{
@@ -136,6 +139,9 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		return maxMillis;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{

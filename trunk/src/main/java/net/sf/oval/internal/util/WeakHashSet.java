@@ -49,11 +49,17 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		map = new WeakHashMap<E, Object>(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean add(final E o)
 	{
 		return map.put(o, TRUE) == null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean addAll(final Collection< ? extends E> c)
 	{
 		int count = 0;
@@ -72,17 +78,25 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		map.clear();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean contains(final Object o)
 	{
 		return map.containsKey(o);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean containsAll(final Collection< ? > c)
 	{
 		return map.keySet().containsAll(c);
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(final Object o)
 	{
@@ -90,11 +104,16 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 
 		if (!(o instanceof Set)) return false;
 
-		if (((Set) o).size() != size()) return false;
+		@SuppressWarnings("unchecked")
+		final Set set = (Set) o;
+		if (set.size() != size()) return false;
 
-		return containsAll((Set) o);
+		return containsAll(set);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode()
 	{
@@ -109,11 +128,17 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		return hash;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isEmpty()
 	{
 		return map.isEmpty();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Iterator<E> iterator()
 	{
 		return map.keySet().iterator();
@@ -139,31 +164,49 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean remove(final Object o)
 	{
 		return map.remove(o) == TRUE;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean removeAll(final Collection< ? > c)
 	{
 		return map.keySet().removeAll(c);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean retainAll(final Collection< ? > c)
 	{
 		return map.keySet().retainAll(c);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int size()
 	{
 		return map.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object[] toArray()
 	{
 		return map.keySet().toArray();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T> T[] toArray(final T[] a)
 	{
 		return map.keySet().toArray(a);

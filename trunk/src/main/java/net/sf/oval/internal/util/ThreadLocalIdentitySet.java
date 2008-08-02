@@ -17,12 +17,18 @@ package net.sf.oval.internal.util;
  */
 public class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>>
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IdentitySet<T> get()
 	{
 		return super.get();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IdentitySet<T> initialValue()
 	{

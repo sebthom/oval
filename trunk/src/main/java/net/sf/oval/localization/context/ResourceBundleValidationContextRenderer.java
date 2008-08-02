@@ -50,6 +50,9 @@ public class ResourceBundleValidationContextRenderer implements OValContextRende
 
 	public final static ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String render(final OValContext ovalContext)
 	{
 		final String baseName;

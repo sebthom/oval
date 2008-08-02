@@ -30,6 +30,9 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	private int min;
 	private int max;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final Length constraintAnnotation)
 	{
@@ -46,6 +49,9 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 		return max;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -63,6 +69,9 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 		return min;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

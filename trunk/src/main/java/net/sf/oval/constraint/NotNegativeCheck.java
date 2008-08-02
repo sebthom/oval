@@ -23,17 +23,18 @@ public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 {
 	private static final long serialVersionUID = 1L;
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
 		if (valueToValidate instanceof Number)
 		{
 			if (valueToValidate instanceof Float || valueToValidate instanceof Double)
-			{
 				return ((Number) valueToValidate).doubleValue() >= 0;
-			}
 			return ((Number) valueToValidate).longValue() >= 0;
 		}
 

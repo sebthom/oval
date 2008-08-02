@@ -35,6 +35,9 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 {
 	private final static Log LOG = Log.getLog(ExceptionTranslatorJDKExceptionsImpl.class);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public RuntimeException translateException(final OValException ex)
 	{
 		// translate ConstraintsViolatedException based on the validation context

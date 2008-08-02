@@ -34,6 +34,9 @@ public class ClassContext extends OValContext
 		return clazz;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString()
 	{

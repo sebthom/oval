@@ -21,12 +21,18 @@ import java.util.Map;
  */
 public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<K, V> get()
 	{
 		return super.get();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<K, V> initialValue()
 	{

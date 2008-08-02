@@ -30,11 +30,17 @@ public abstract class AbstractCheckExclusion implements CheckExclusion
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String[] getProfiles()
 	{
 		return profiles;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setProfiles(final String... profiles)
 	{
 		this.profiles = profiles;

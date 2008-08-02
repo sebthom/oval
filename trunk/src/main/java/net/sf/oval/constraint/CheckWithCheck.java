@@ -39,6 +39,9 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	private boolean ignoreIfNull;
 	private SimpleCheck simpleCheck;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final CheckWith constraintAnnotation)
 	{
@@ -47,6 +50,9 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -72,6 +78,9 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		return ignoreIfNull;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator) throws ReflectionException
 	{

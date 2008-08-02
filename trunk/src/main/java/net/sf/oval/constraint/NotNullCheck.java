@@ -23,6 +23,9 @@ public class NotNullCheck extends AbstractAnnotationCheck<NotNull>
 {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

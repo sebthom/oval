@@ -33,6 +33,9 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 		setGuard(guard);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object construct(final ConstructorInvocation constructorInvocation) throws Throwable
 	{
 		final Constructor< ? > CONSTRUCTOR = constructorInvocation.getConstructor();
@@ -62,6 +65,9 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 		return guard;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object invoke(final MethodInvocation methodInvocation) throws Throwable
 	{
 		return guard.guardMethod(methodInvocation.getThis(), methodInvocation.getMethod(), methodInvocation
@@ -75,10 +81,7 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 					}
 					catch (final Throwable e)
 					{
-						if (e instanceof Exception)
-						{
-							throw (Exception) e;
-						}
+						if (e instanceof Exception) throw (Exception) e;
 						throw new RuntimeException(e);
 					}
 				}

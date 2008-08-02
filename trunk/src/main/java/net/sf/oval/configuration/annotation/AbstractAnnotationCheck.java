@@ -31,6 +31,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 
 	private final static Log LOG = Log.getLog(AbstractAnnotationCheck.class);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void configure(final ConstraintAnnotation constraintAnnotation)
 	{
 		final Class< ? > constraintClazz = constraintAnnotation.getClass();
@@ -47,7 +50,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		}
 		catch (final Exception e)
 		{
-			LOG.debug("Cannot determine constraint error message based on annotation {1}", constraintClazz.getName(), e);
+			LOG
+					.debug("Cannot determine constraint error message based on annotation {1}", constraintClazz
+							.getName(), e);
 			message = constraintClazz.getName() + ".violated";
 		}
 

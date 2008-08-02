@@ -26,6 +26,9 @@ public class NullableExclusion extends AbstractAnnotationCheckExclusion<Nullable
 {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isCheckExcluded(final Check check, final Object validatedObject, final Object valueToValidate,
 			final OValContext context, final Validator validator) throws OValException
 	{

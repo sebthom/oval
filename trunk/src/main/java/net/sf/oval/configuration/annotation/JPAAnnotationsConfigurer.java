@@ -64,6 +64,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return applyFieldConstraintsToConstructors;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		final ClassConfiguration config = new ClassConfiguration();
@@ -118,6 +121,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return config;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 	{
 		return null;

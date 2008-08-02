@@ -33,6 +33,9 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	private String lang;
 	private String expr;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final Assert constraintAnnotation)
 	{
@@ -57,6 +60,9 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		return lang;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -66,6 +72,9 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		return messageVariables;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator) throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
 	{

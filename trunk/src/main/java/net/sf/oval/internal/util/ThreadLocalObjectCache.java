@@ -29,12 +29,18 @@ public class ThreadLocalObjectCache<K, V> extends ThreadLocal<ObjectCache<K, V>>
 		this.maxElementsToKeep = maxElementsToKeep;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ObjectCache<K, V> get()
 	{
 		return super.get();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ObjectCache<K, V> initialValue()
 	{

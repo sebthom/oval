@@ -23,7 +23,7 @@ import net.sf.oval.internal.util.Assert;
  */
 public class LoggerJDKImpl implements Logger
 {
-	private final java.util.logging.Logger log;
+	private final java.util.logging.Logger jdkLogger;
 	private final String name;
 
 	/**
@@ -35,62 +35,95 @@ public class LoggerJDKImpl implements Logger
 		Assert.notNull("name", name);
 
 		this.name = name;
-		log = java.util.logging.Logger.getLogger(name);
+		jdkLogger = java.util.logging.Logger.getLogger(name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void debug(final String msg)
 	{
 		log(Level.FINE, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void debug(final String msg, final Throwable t)
 	{
 		log(Level.FINE, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void error(final String msg)
 	{
 		log(Level.SEVERE, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void error(final String msg, final Throwable t)
 	{
 		log(Level.SEVERE, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void info(final String msg)
 	{
 		log(Level.INFO, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void info(final String msg, final Throwable t)
 	{
 		log(Level.INFO, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isDebug()
 	{
-		return log.isLoggable(Level.FINE);
+		return jdkLogger.isLoggable(Level.FINE);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isError()
 	{
-		return log.isLoggable(Level.SEVERE);
+		return jdkLogger.isLoggable(Level.SEVERE);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isInfo()
 	{
-		return log.isLoggable(Level.INFO);
+		return jdkLogger.isLoggable(Level.INFO);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isTrace()
 	{
-		return log.isLoggable(Level.FINEST);
+		return jdkLogger.isLoggable(Level.FINEST);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isWarn()
 	{
-		return log.isLoggable(Level.WARNING);
+		return jdkLogger.isLoggable(Level.WARNING);
 	}
 
 	private void log(final Level level, final String msg, final Throwable t)
@@ -109,24 +142,36 @@ public class LoggerJDKImpl implements Logger
 		record.setSourceClassName(steArray[offset].getClassName());
 		record.setSourceMethodName(steArray[offset].getMethodName());
 
-		log.log(record);
+		jdkLogger.log(record);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void trace(final String msg)
 	{
 		log(Level.FINEST, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void trace(final String msg, final Throwable t)
 	{
 		log(Level.FINEST, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void warn(final String msg)
 	{
 		log(Level.WARNING, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void warn(final String msg, final Throwable t)
 	{
 		log(Level.WARNING, msg, t);

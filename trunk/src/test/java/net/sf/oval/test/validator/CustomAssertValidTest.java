@@ -63,7 +63,7 @@ public class CustomAssertValidTest extends TestCase
 		public Person contact;
 	}
 
-	protected class CustomAnnotationConfigurer extends AnnotationsConfigurer
+	protected static class CustomAnnotationConfigurer extends AnnotationsConfigurer
 	{
 		@SuppressWarnings("unchecked")
 		@Override
@@ -120,8 +120,8 @@ public class CustomAssertValidTest extends TestCase
 			assertValidCheck.setSeverity(constraintAnnotation.severity());
 		}
 
-		public boolean isSatisfied(final Object validatedObject, final Object value,
-				final OValContext context, final Validator validator)
+		public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context,
+				final Validator validator)
 		{
 			return true;
 		}
@@ -219,8 +219,8 @@ public class CustomAssertValidTest extends TestCase
 		assertEquals(2, validator.validate(registry).size());
 
 		registry.personsByCity.clear();
-		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1,
-				invalidPerson1, invalidPerson2, invalidPerson2}));
+		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1, invalidPerson1, invalidPerson2,
+				invalidPerson2}));
 		assertEquals(4, validator.validate(registry).size());
 
 		registry.personsByCity.clear();
@@ -235,8 +235,7 @@ public class CustomAssertValidTest extends TestCase
 		registry.addressClusters.add(new Address[10]);
 		assertEquals(0, validator.validate(registry).size());
 
-		registry.addressClusters.add(new Address[]{invalidAddress1, invalidAddress2,
-				invalidAddress1, invalidAddress2});
+		registry.addressClusters.add(new Address[]{invalidAddress1, invalidAddress2, invalidAddress1, invalidAddress2});
 		assertEquals(4, validator.validate(registry).size());
 
 		registry.addressClusters.clear();
