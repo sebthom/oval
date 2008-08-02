@@ -1297,8 +1297,7 @@ public class Guard extends Validator
 					messageVariables.put("expression", check.getExpression());
 					final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
-					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check.getSeverity(),
-							validatedObject, null, context));
+					violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
 				}
 			}
 		}
@@ -1370,8 +1369,7 @@ public class Guard extends Validator
 					messageVariables.put("expression", check.getExpression());
 					final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
-					violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check.getSeverity(),
-							validatedObject, null, context));
+					violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
 				}
 			}
 		}

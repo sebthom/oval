@@ -26,6 +26,7 @@
 + added configuration XSD as replacement for the DTD 
 * constraints declared without any profiles are associated with the "default" profile automatically
 - fixed bug [ 2023617 ] @ValidateWithMethod in superclasses do not work
++ ConstraintViolation now provides more details about the constraint (checkName, messageVariables, messageTemplate)
 
 2008-04-05 v1.20
 ================

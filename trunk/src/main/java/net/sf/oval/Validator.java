@@ -805,7 +805,9 @@ public class Validator
 		synchronized (constraintSetsById)
 		{
 			if (!overwrite && constraintSetsById.containsKey(constraintSet.getId()))
+			{
 				throw new ConstraintSetAlreadyDefinedException(constraintSet.getId());
+			}
 
 			constraintSetsById.put(constraintSet.getId(), constraintSet);
 		}
@@ -843,7 +845,10 @@ public class Validator
 	{
 		final List<ConstraintViolation> violations = validate(validatedObject);
 
-		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
+		if (violations.size() > 0)
+		{
+			throw translateException(new ConstraintsViolatedException(violations));
+		}
 	}
 
 	/**
@@ -863,7 +868,10 @@ public class Validator
 		final List<ConstraintViolation> violations = validateFieldValue(validatedObject, validatedField,
 				fieldValueToValidate);
 
-		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
+		if (violations.size() > 0)
+		{
+			throw translateException(new ConstraintsViolatedException(violations));
+		}
 	}
 
 	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
@@ -907,8 +915,7 @@ public class Validator
 		{
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check
 					.getMessageVariables());
-			violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check.getSeverity(),
-					validatedObject, valueToValidate, context));
+			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context));
 		}
 	}
 
@@ -918,7 +925,10 @@ public class Validator
 	{
 		final ConstraintSet cs = getConstraintSet(check.getId());
 
-		if (cs == null) throw new UndefinedConstraintSetException(check.getId());
+		if (cs == null)
+		{
+			throw new UndefinedConstraintSetException(check.getId());
+		}
 
 		final Collection<Check> referencedChecks = cs.getChecks();
 
@@ -991,8 +1001,10 @@ public class Validator
 		final Field field = ReflectionUtils.getFieldRecursive(targetClass, fieldName);
 
 		if (field == null)
+		{
 			throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <" + targetClass
 					+ "> or its super classes.");
+		}
 
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 		final Collection<Check> referencedChecks = cc.checksForFields.get(field);
@@ -1020,8 +1032,8 @@ public class Validator
 			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check
 					.getMessageVariables());
 
-			violations.add(new ConstraintViolation(check.getErrorCode(), errorMessage, check.getSeverity(),
-					validatedObject, valueToValidate, context, additionalViolations));
+			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context,
+					additionalViolations));
 		}
 
 		// if the value to validate is a collection also validate the collection items
@@ -1259,7 +1271,10 @@ public class Validator
 			el = _initializeDefaultEL(languageId);
 		}
 
-		if (el == null) throw new ExpressionLanguageNotAvailableException(languageId);
+		if (el == null)
+		{
+			throw new ExpressionLanguageNotAvailableException(languageId);
+		}
 
 		return el;
 	}

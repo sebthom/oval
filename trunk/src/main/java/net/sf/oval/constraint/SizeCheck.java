@@ -52,18 +52,6 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Integer.toString(max));
-		messageVariables.put("min", Integer.toString(min));
-		return messageVariables;
-	}
-
-	/**
 	 * @return the min
 	 */
 	public int getMin()
@@ -103,6 +91,7 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	public void setMax(final int max)
 	{
 		this.max = max;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -111,5 +100,18 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	public void setMin(final int min)
 	{
 		this.min = min;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		messageVariables.put("min", Integer.toString(min));
+		return messageVariables;
 	}
 }

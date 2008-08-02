@@ -15,6 +15,7 @@ package net.sf.oval;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.Log;
@@ -31,47 +32,48 @@ public class ConstraintViolation implements Serializable
 
 	private final static long serialVersionUID = 1L;
 
+	private final String checkName;
 	private final ConstraintViolation[] causes;
 	private final OValContext context;
 	private final String errorCode;
 	private final String message;
+	private final String messageTemplate;
+	private final Map<String, String> messageVariables;
 	private final int severity;
 
 	private transient Object validatedObject;
 	private transient Object invalidValue;
 
-	public ConstraintViolation(final String errorCode, final String message, final int severity,
-			final Object validatedObject, final Object invalidValue, final OValContext context)
+	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
+			final Object invalidValue, final OValContext context)
 	{
-		this.errorCode = errorCode;
-		this.message = message;
-		this.severity = severity;
-		this.validatedObject = validatedObject;
-		this.invalidValue = invalidValue;
-		this.context = context;
-		causes = null;
+		this(check, message, validatedObject, invalidValue, context, (ConstraintViolation) null);
 	}
 
-	public ConstraintViolation(final String errorCode, final String message, final int severity,
-			final Object validatedObject, final Object invalidValue, final OValContext context,
-			final ConstraintViolation... causes)
+	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
+			final Object invalidValue, final OValContext context, final ConstraintViolation... causes)
 	{
-		this.errorCode = errorCode;
+		this.checkName = check.getClass().getName();
+		this.errorCode = check.getErrorCode();
 		this.message = message;
-		this.severity = severity;
+		this.messageTemplate = check.getMessage();
+		this.messageVariables = check.getMessageVariables();
+		this.severity = check.getSeverity();
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
 		this.causes = causes;
 	}
 
-	public ConstraintViolation(final String errorCode, final String message, final int severity,
-			final Object validatedObject, final Object invalidValue, final OValContext context,
-			final List<ConstraintViolation> causes)
+	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
+			final Object invalidValue, final OValContext context, final List<ConstraintViolation> causes)
 	{
-		this.errorCode = errorCode;
+		this.checkName = check.getClass().getName();
+		this.errorCode = check.getErrorCode();
 		this.message = message;
-		this.severity = severity;
+		this.messageTemplate = check.getMessage();
+		this.messageVariables = check.getMessageVariables();
+		this.severity = check.getSeverity();
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
@@ -87,7 +89,16 @@ public class ConstraintViolation implements Serializable
 	}
 
 	/**
+	 * @return the fully qualified class name of the corresponding check
+	 */
+	public String getCheckName()
+	{
+		return checkName;
+	}
+
+	/**
 	 * @return Returns the context where the constraint violation occurred.
+	 * 
 	 * @see net.sf.oval.context.ClassContext
 	 * @see net.sf.oval.context.FieldContext
 	 * @see net.sf.oval.context.MethodEntryContext
@@ -117,11 +128,28 @@ public class ConstraintViolation implements Serializable
 	}
 
 	/**
-	 * @return the message
+	 * @return the localized and rendered message
 	 */
 	public String getMessage()
 	{
 		return message;
+	}
+
+	/**
+	 * @return the raw message specified for the constraint without variable resolution and localization
+	 */
+	public String getMessageTemplate()
+	{
+		return messageTemplate;
+	}
+
+	/**
+	 * Returns the message variables provided by the corresponding check.
+	 * @return an unmodifiable map holding the message variables provided by the corresponding check.
+	 */
+	public Map<String, String> getMessageVariables()
+	{
+		return messageVariables;
 	}
 
 	/**

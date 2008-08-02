@@ -37,26 +37,6 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 		setTypes(constraintAnnotation.value());
 	}
 
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		if (types.length == 1)
-		{
-			messageVariables.put("types", types[0].getName());
-		}
-		else
-		{
-			final String[] classNames = new String[types.length];
-			for (int i = 0, l = classNames.length; i < l; i++)
-			{
-				classNames[i] = types[i].getName();
-			}
-			messageVariables.put("types", StringUtils.implode(classNames, ","));
-		}
-		return messageVariables;
-	}
-
 	/**
 	 * @return the type
 	 */
@@ -83,5 +63,26 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	public void setTypes(final Class< ? >... types)
 	{
 		this.types = types;
+		requirekMessageVariablesUpdate();
+	}
+
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		if (types.length == 1)
+		{
+			messageVariables.put("types", types[0].getName());
+		}
+		else
+		{
+			final String[] classNames = new String[types.length];
+			for (int i = 0, l = classNames.length; i < l; i++)
+			{
+				classNames[i] = types[i].getName();
+			}
+			messageVariables.put("types", StringUtils.implode(classNames, ","));
+		}
+		return messageVariables;
 	}
 }

@@ -47,19 +47,6 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
-		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-		messageVariables.put("methodName", methodName);
-		messageVariables.put("parameterType", parameterType.getName());
-		return messageVariables;
-	}
-
-	/**
 	 * @return the methodName
 	 */
 	public String getMethodName()
@@ -114,6 +101,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	public void setIgnoreIfNull(final boolean ignoreIfNull)
 	{
 		this.ignoreIfNull = ignoreIfNull;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -122,6 +110,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	public void setMethodName(final String methodName)
 	{
 		this.methodName = methodName;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -130,5 +119,19 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	public void setParameterType(final Class< ? > parameterType)
 	{
 		this.parameterType = parameterType;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+		messageVariables.put("methodName", methodName);
+		messageVariables.put("parameterType", parameterType.getName());
+		return messageVariables;
 	}
 }

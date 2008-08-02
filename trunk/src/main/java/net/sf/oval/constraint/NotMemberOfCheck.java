@@ -69,18 +69,6 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("members", StringUtils.implode(members, ","));
-		return messageVariables;
-	}
-
-	/**
 	 * @return the ignoreCase
 	 */
 	public boolean isIgnoreCase()
@@ -107,6 +95,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	public void setIgnoreCase(final boolean ignoreCase)
 	{
 		this.ignoreCase = ignoreCase;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -117,6 +106,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		this.members = getCollectionFactory().createList();
 		this.members.addAll(members);
 		membersLowerCase = null;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -127,5 +117,18 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		this.members = getCollectionFactory().createList();
 		ArrayUtils.addAll(this.members, members);
 		membersLowerCase = null;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
+		messageVariables.put("members", StringUtils.implode(members, ","));
+		return messageVariables;
 	}
 }

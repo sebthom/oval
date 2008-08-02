@@ -12,20 +12,21 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
+import net.sf.oval.AbstractCheck;
+import net.sf.oval.Validator;
+import net.sf.oval.context.OValContext;
+import net.sf.oval.exception.OValException;
+
 /**
  * @author Sebastian Thomschke
  */
-public class PostCheck
+public class PostCheck extends AbstractCheck
 {
 	private static final long serialVersionUID = 1L;
 
 	private String expression;
-	private String errorCode;
-	private int severity;
-	private String message;
 	private String language;
 	private String old;
-	private String[] profiles;
 
 	public void configure(final Post constraintAnnotation)
 	{
@@ -36,14 +37,6 @@ public class PostCheck
 		setLanguage(constraintAnnotation.lang());
 		setOld(constraintAnnotation.old());
 		setProfiles(constraintAnnotation.profiles());
-	}
-
-	/**
-	 * @return the failureCode
-	 */
-	public String getErrorCode()
-	{
-		return errorCode;
 	}
 
 	/**
@@ -63,14 +56,6 @@ public class PostCheck
 	}
 
 	/**
-	 * @return the message
-	 */
-	public String getMessage()
-	{
-		return message;
-	}
-
-	/**
 	 * @return the old
 	 */
 	public String getOld()
@@ -79,27 +64,12 @@ public class PostCheck
 	}
 
 	/**
-	 * @return the profiles
+	 * {@inheritDoc}
 	 */
-	public String[] getProfiles()
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator) throws OValException
 	{
-		return profiles;
-	}
-
-	/**
-	 * @return the severity
-	 */
-	public int getSeverity()
-	{
-		return severity;
-	}
-
-	/**
-	 * @param failureCode the failureCode to set
-	 */
-	public void setErrorCode(final String failureCode)
-	{
-		errorCode = failureCode;
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -119,34 +89,10 @@ public class PostCheck
 	}
 
 	/**
-	 * @param message the message to set
-	 */
-	public void setMessage(final String message)
-	{
-		this.message = message;
-	}
-
-	/**
 	 * @param old the old to set
 	 */
 	public void setOld(final String old)
 	{
 		this.old = old;
-	}
-
-	/**
-	 * @param profiles the profiles to set
-	 */
-	public void setProfiles(final String[] profiles)
-	{
-		this.profiles = profiles;
-	}
-
-	/**
-	 * @param severity the severity to set
-	 */
-	public void setSeverity(final int severity)
-	{
-		this.severity = severity;
 	}
 }
