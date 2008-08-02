@@ -101,7 +101,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	public void setIgnoreIfNull(final boolean ignoreIfNull)
 	{
 		this.ignoreIfNull = ignoreIfNull;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	public void setMethodName(final String methodName)
 	{
 		this.methodName = methodName;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -119,14 +119,14 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	public void setParameterType(final Class< ? > parameterType)
 	{
 		this.parameterType = parameterType;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
 		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));

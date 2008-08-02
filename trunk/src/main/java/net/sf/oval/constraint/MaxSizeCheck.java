@@ -81,14 +81,14 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 	public void setMax(final int max)
 	{
 		this.max = max;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("max", Integer.toString(max));

@@ -80,7 +80,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public void setExpr(final String expression)
 	{
 		expr = expression;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -89,14 +89,14 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public void setLang(final String language)
 	{
 		lang = language;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("expression", expr);

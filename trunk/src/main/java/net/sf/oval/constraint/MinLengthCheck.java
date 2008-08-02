@@ -65,14 +65,14 @@ public class MinLengthCheck extends AbstractAnnotationCheck<MinLength>
 	public void setMin(final int min)
 	{
 		this.min = min;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("min", Integer.toString(min));

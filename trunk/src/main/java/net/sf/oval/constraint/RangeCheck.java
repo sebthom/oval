@@ -89,7 +89,7 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	public void setMax(final double max)
 	{
 		this.max = max;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -98,14 +98,14 @@ public class RangeCheck extends AbstractAnnotationCheck<Range>
 	public void setMin(final double min)
 	{
 		this.min = min;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("max", Double.toString(max));

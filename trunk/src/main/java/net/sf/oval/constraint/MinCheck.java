@@ -79,14 +79,14 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 	public void setMin(final double min)
 	{
 		this.min = min;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("min", Double.toString(min));

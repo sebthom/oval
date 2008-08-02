@@ -126,7 +126,7 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	public void setDeclaringClass(final Class< ? > declaringClass)
 	{
 		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	public void setFieldName(final String fieldName)
 	{
 		this.fieldName = fieldName;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -144,14 +144,14 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	public void setUseGetter(final boolean useGetter)
 	{
 		this.useGetter = useGetter;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("fieldName", fieldName);
