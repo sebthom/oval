@@ -28,9 +28,8 @@ public class AccessingFieldValueFailedException extends ReflectionException
 	public AccessingFieldValueFailedException(final String fieldName, final Object validatedObject,
 			final OValContext context, final Throwable cause)
 	{
-		super(MessageRenderer.renderMessage(
-				"net.sf.oval.exception.AccessingFieldValueFailedException.message",
-				new String[][]{{"fieldName", fieldName}}), cause);
+		super(MessageRenderer.renderMessage("net.sf.oval.exception.AccessingFieldValueFailedException.message",
+				"fieldName", fieldName), cause);
 		this.context = context;
 		this.validatedObject = validatedObject;
 	}

@@ -23,8 +23,7 @@ public class UndefinedConstraintSetException extends InvalidConfigurationExcepti
 
 	public UndefinedConstraintSetException(final String contraintSetId)
 	{
-		super(MessageRenderer.renderMessage(
-				"net.sf.oval.exception.UndefinedConstraintSetException.message",
-				new String[][]{{"contraintSetId", contraintSetId}}));
+		super(MessageRenderer.renderMessage("net.sf.oval.exception.UndefinedConstraintSetException.message",
+				"contraintSetId", contraintSetId));
 	}
 }

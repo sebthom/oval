@@ -36,7 +36,7 @@ public final class MessageRenderer
 		return message;
 	}
 
-	public static String renderMessage(final String messageKey, final String[][] messageValues)
+	public static String renderMessage(final String messageKey, final String messageValueName, final String messageValue)
 	{
 		String message = Validator.getMessageResolver().getMessage(messageKey);
 		if (message == null)
@@ -47,13 +47,8 @@ public final class MessageRenderer
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
 
-		if (messageValues != null && messageValues.length > 0)
-		{
-			for (final String[] entry : messageValues)
-			{
-				message = StringUtils.replaceAll(message, "{" + entry[0] + "}", entry[1]);
-			}
-		}
+		message = StringUtils.replaceAll(message, "{" + messageValueName + "}", messageValue);
+
 		return message;
 	}
 

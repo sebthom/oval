@@ -28,9 +28,8 @@ public class InvokingMethodFailedException extends ReflectionException
 	public InvokingMethodFailedException(final String methodName, final Object validatedObject,
 			final OValContext context, final Throwable cause)
 	{
-		super(MessageRenderer.renderMessage(
-				"net.sf.oval.exception.InvokingMethodFailedException.message", new String[][]{{
-						"methodName", methodName}}), cause);
+		super(MessageRenderer.renderMessage("net.sf.oval.exception.InvokingMethodFailedException.message",
+				"methodName", methodName), cause);
 		this.context = context;
 		this.validatedObject = validatedObject;
 	}

@@ -23,8 +23,7 @@ public class ExpressionLanguageNotAvailableException extends InvalidConfiguratio
 
 	public ExpressionLanguageNotAvailableException(final String languageId)
 	{
-		super(MessageRenderer.renderMessage(
-				"net.sf.oval.exception.ExpressionLanguageNotAvailableException.message",
-				new String[][]{{"languageId", languageId}}));
+		super(MessageRenderer.renderMessage("net.sf.oval.exception.ExpressionLanguageNotAvailableException.message",
+				"languageId", languageId));
 	}
 }

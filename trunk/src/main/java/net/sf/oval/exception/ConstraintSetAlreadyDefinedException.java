@@ -23,8 +23,7 @@ public class ConstraintSetAlreadyDefinedException extends InvalidConfigurationEx
 
 	public ConstraintSetAlreadyDefinedException(final String contraintSetId)
 	{
-		super(MessageRenderer.renderMessage(
-				"net.sf.oval.exception.ConstraintSetAlreadyDefinedException.message",
-				new String[][]{{"contraintSetId", contraintSetId}}));
+		super(MessageRenderer.renderMessage("net.sf.oval.exception.ConstraintSetAlreadyDefinedException.message",
+				"contraintSetId", contraintSetId));
 	}
 }
