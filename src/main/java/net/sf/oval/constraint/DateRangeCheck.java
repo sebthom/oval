@@ -269,7 +269,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	public void setFormat(final String format)
 	{
 		this.format = format;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -279,7 +279,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	{
 		this.max = max;
 		maxMillis = null;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -289,14 +289,14 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	{
 		this.min = min;
 		minMillis = null;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
 		messageVariables.put("min", min == null ? ".." : min);

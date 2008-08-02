@@ -95,7 +95,7 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 	public void setIgnoreCase(final boolean ignoreCase)
 	{
 		this.ignoreCase = ignoreCase;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 		this.members = getCollectionFactory().createList();
 		this.members.addAll(members);
 		membersLowerCase = null;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -117,14 +117,14 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 		this.members = getCollectionFactory().createList();
 		ArrayUtils.addAll(this.members, members);
 		membersLowerCase = null;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));

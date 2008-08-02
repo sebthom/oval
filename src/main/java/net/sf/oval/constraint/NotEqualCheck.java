@@ -86,7 +86,7 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	public void setIgnoreCase(final boolean ignoreCase)
 	{
 		this.ignoreCase = ignoreCase;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -95,14 +95,14 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	public void setTestString(final String testString)
 	{
 		this.testString = testString;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));

@@ -33,6 +33,11 @@ public abstract class AbstractCheck implements Check
 	private Map<String, String> messageVariables;
 	private Map<String, String> messageVariablesUnmodifiable;
 
+	protected Map<String, String> createMessageVariables()
+	{
+		return null;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,7 +97,7 @@ public abstract class AbstractCheck implements Check
 	{
 		if (!messageVariablesUpToDate)
 		{
-			messageVariables = updateMessageVariables();
+			messageVariables = createMessageVariables();
 			if (messageVariables == null)
 			{
 				messageVariablesUnmodifiable = null;
@@ -122,7 +127,11 @@ public abstract class AbstractCheck implements Check
 		return severity;
 	}
 
-	protected void requirekMessageVariablesUpdate()
+	/**
+	 * Calling this method indicates that the {@link #createMessageVariables()} method needs to be called before the message 
+	 * for the next violation of this check is rendered.
+	 */
+	protected void requireMessageVariablesRecreation()
 	{
 		messageVariablesUpToDate = false;
 	}
@@ -157,10 +166,5 @@ public abstract class AbstractCheck implements Check
 	public void setSeverity(final int severity)
 	{
 		this.severity = severity;
-	}
-
-	protected Map<String, String> updateMessageVariables()
-	{
-		return null;
 	}
 }

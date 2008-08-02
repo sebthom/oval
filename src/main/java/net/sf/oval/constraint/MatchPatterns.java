@@ -18,7 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
@@ -32,54 +31,13 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = MatchPatternCheck.class)
-public @interface MatchPattern
+@Constraint(checkWith = MatchPatternsCheck.class)
+public @interface MatchPatterns
 {
-	/**
-	 * error code passed to the ConstraintViolation object
-	 */
-	String errorCode() default "net.sf.oval.constraints.MatchPattern";
-
-	/**
-	 *  Match flags, a bit mask that may include
-	 *         Pattern.CASE_INSENSITIVE, Pattern.MULTILINE, Pattern.DOTALL,
-	 *         Pattern.UNICODE_CASE, Pattern.CANON_EQ
-	 *
-	 * @see java.util.regex.Pattern
-	 */
-	int[] flags() default 0;
-
 	/**
 	 * specifies if all of the declared patterns must match or if one is sufficient 
 	 */
 	boolean matchAll() default true;
 
-	/**
-	 * message to be used for the ContraintsViolatedException
-	 * 
-	 * @see ConstraintViolation
-	 */
-	String message() default "net.sf.oval.constraints.MatchPattern.violated";
-
-	/**
-	 * The regular expression(s) to match against
-	 * <br><br>
-	 * Examples:<br>
-	 * decimal number: "^-{0,1}(\\d*|(\\d{1,3}([,]\\d{3})*))[.]?\\d*$"<br>
-	 * numbers only: "^\\d*$"<br>
-	 * e-mail address: "^([a-z0-9]{1,}[\\.\\_\\-]?[a-z0-9]{1,})\\@([a-z0-9]{2,}\\.)([a-z]{2,2}|org|net|com|gov|edu|int|info|biz|museum)$"<br>
-	 * 
-	 * @see java.util.regex.Pattern
-	 */
-	String[] pattern();
-
-	/**
-	 * The associated constraint profiles.
-	 */
-	String[] profiles() default {};
-
-	/**
-	 * severity passed to the ConstraintViolation object
-	 */
-	int severity() default 0;
+	MatchPattern[] patterns();
 }

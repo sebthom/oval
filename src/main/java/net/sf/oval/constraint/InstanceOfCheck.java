@@ -63,11 +63,11 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	public void setTypes(final Class< ? >... types)
 	{
 		this.types = types;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		if (types.length == 1)

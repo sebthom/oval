@@ -79,7 +79,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	public void setMax(final double max)
 	{
 		this.max = max;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	 */
 
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("max", Double.toString(max));

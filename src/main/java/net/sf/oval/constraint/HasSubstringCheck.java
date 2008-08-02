@@ -87,7 +87,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	public void setIgnoreCase(final boolean ignoreCase)
 	{
 		this.ignoreCase = ignoreCase;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -96,14 +96,14 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	public void setSubstring(final String substring)
 	{
 		this.substring = substring;
-		requirekMessageVariablesUpdate();
+		requireMessageVariablesRecreation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> updateMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
