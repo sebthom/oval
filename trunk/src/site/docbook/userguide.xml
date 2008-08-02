@@ -1681,6 +1681,24 @@ v.validate(p);
     referencing OVal:</para>
 
     <itemizedlist>
+	   <listitem>
+        <para>Pre and post condition validation with OVal as intruments of software architecture (2008)</para>
+
+        <para><ulink
+        url="http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/">
+        http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/
+        </ulink></para>
+      </listitem>
+	  
+	   <listitem>
+        <para>OVal: The simple validation framework for Java (2008)</para>
+
+        <para><ulink
+        url="http://takezoe.blogspot.com/2008/03/oval-simple-validation-framework-for.html">
+        http://takezoe.blogspot.com/2008/03/oval-simple-validation-framework-for.html
+        </ulink></para>
+      </listitem>
+	
       <listitem>
         <para>Validación Java: OVal, una joya escondida (2007)</para>
 
@@ -1690,6 +1708,15 @@ v.validate(p);
         </ulink></para>
       </listitem>
 
+	  <listitem>
+        <para>Die Pro-Pix Homepage - Design by Contract (2007)</para>
+
+        <para><ulink
+        url="http://pro-pix.de/joomla/index.php?option=com_content&amp;task=view&amp;id=39&amp;Itemid=1">
+        http://pro-pix.de/joomla/index.php?option=com_content&amp;task=view&amp;id=39&amp;Itemid=1
+        </ulink></para>
+      </listitem>
+	  
       <listitem>
         <para>Nice library for constraint checking (2007)</para>
 
@@ -1709,8 +1736,7 @@ v.validate(p);
       </listitem>
 
       <listitem>
-        <para>In pursuit of code quality: Defensive programming with AOP
-        (2007)</para>
+        <para>In pursuit of code quality: Defensive programming with AOP (2007)</para>
 
         <para><ulink
         url="http://www-128.ibm.com/developerworks/java/library/j-cq01307/">
@@ -1760,22 +1786,43 @@ v.validate(p);
       <listitem>
         <para>Cayenne annotations</para>
 
-        <para><ulink url="http://sourceforge.net/projects/cayannotations/">
-        http://sourceforge.net/projects/cayannotations/ </ulink></para>
+        <para><ulink url="http://sourceforge.net/projects/cayannotations/">http://sourceforge.net/projects/cayannotations/ </ulink></para>
       </listitem>
 
       <listitem>
         <para>jsfatwork</para>
 
-        <para><ulink
-        url="http://code.google.com/p/jsfatwork/">http://code.google.com/p/jsfatwork/</ulink></para>
+        <para><ulink url="http://code.google.com/p/jsfatwork/">http://code.google.com/p/jsfatwork/</ulink></para>
       </listitem>
 
+	  <listitem>
+        <para>mtn4java</para>
+
+        <para><ulink url="http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/">http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/</ulink></para>
+      </listitem>
+  
       <listitem>
         <para>Polyforms</para>
 
-        <para><ulink
-        url="http://code.google.com/p/polyforms/">http://code.google.com/p/polyforms/</ulink></para>
+        <para><ulink url="http://code.google.com/p/polyforms/">http://code.google.com/p/polyforms/</ulink></para>
+      </listitem>
+	
+      <listitem>
+        <para>rsser</para>
+
+        <para><ulink url="http://code.google.com/p/rsser/">http://code.google.com/p/rsser/</ulink></para>
+      </listitem>
+	  
+      <listitem>
+        <para>saetc</para>
+
+        <para><ulink url="http://code.google.com/p/saetc/">http://code.google.com/p/saetc/</ulink></para>
+      </listitem>
+	  
+      <listitem>
+        <para>ultimate-roundtrip</para>
+
+        <para><ulink url="http://code.google.com/p/ultimate-roundtrip/">http://code.google.com/p/ultimate-roundtrip/</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
