@@ -43,7 +43,7 @@ public class AssertJavascriptTest extends TestCase
 
 		final Person person = new Person();
 
-		final boolean assertsOk[] = {true};
+		final boolean[] failed = {false};
 		final Thread thread1 = new Thread(new Runnable()
 			{
 				public void run()
@@ -53,7 +53,7 @@ public class AssertJavascriptTest extends TestCase
 						// test not null
 						if (validator.validate(person).size() != 4)
 						{
-							assertsOk[0] = false;
+							failed[0] = true;
 						}
 
 						try
@@ -76,7 +76,7 @@ public class AssertJavascriptTest extends TestCase
 						// test not null
 						if (validator.validate(person).size() != 4)
 						{
-							assertsOk[0] = false;
+							failed[0] = true;
 						}
 
 						try
@@ -94,7 +94,7 @@ public class AssertJavascriptTest extends TestCase
 		thread2.start();
 		thread1.join();
 		thread2.join();
-		assertTrue(assertsOk[0]);
+		assertFalse(failed[0]);
 	}
 
 	public void testJavaScriptExpression()

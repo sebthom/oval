@@ -56,33 +56,43 @@ public class ConcurrencyTest extends TestCase
 
 		final TestEntity1 sharedEntity = new TestEntity1();
 
+		final boolean[] failed = {false};
+
 		final Thread thread1 = new Thread(new Runnable()
 			{
 				public void run()
 				{
-					final TestEntity1 entity = new TestEntity1();
-
-					for (int i = 0; i < 100; i++)
+					try
 					{
-						Assert.assertEquals(1, validator.validate(sharedEntity).size());
+						final TestEntity1 entity = new TestEntity1();
 
-						entity.name = null;
-						Assert.assertEquals(1, validator.validate(entity).size());
-
-						entity.name = "1234";
-						Assert.assertEquals(0, validator.validate(entity).size());
-
-						entity.name = "123456";
-						Assert.assertEquals(1, validator.validate(entity).size());
-
-						try
+						for (int i = 0; i < 100; i++)
 						{
-							Thread.sleep(5);
+							Assert.assertEquals(1, validator.validate(sharedEntity).size());
+
+							entity.name = null;
+							Assert.assertEquals(1, validator.validate(entity).size());
+
+							entity.name = "1234";
+							Assert.assertEquals(0, validator.validate(entity).size());
+
+							entity.name = "123456";
+							Assert.assertEquals(1, validator.validate(entity).size());
+
+							try
+							{
+								Thread.sleep(5);
+							}
+							catch (final InterruptedException e)
+							{
+								Thread.currentThread().interrupt();
+							}
 						}
-						catch (InterruptedException e)
-						{
-							Thread.currentThread().interrupt();
-						}
+					}
+					catch (final Exception ex)
+					{
+						ex.printStackTrace();
+						failed[0] = true;
 					}
 				}
 			});
@@ -90,35 +100,44 @@ public class ConcurrencyTest extends TestCase
 			{
 				public void run()
 				{
-					final TestEntity2 entity = new TestEntity2();
-
-					for (int i = 0; i < 100; i++)
+					try
 					{
-						Assert.assertEquals(1, validator.validate(sharedEntity).size());
+						final TestEntity2 entity = new TestEntity2();
 
-						entity.name = null;
-						Assert.assertEquals(1, validator.validate(entity).size());
-
-						entity.name = "1234";
-						Assert.assertEquals(0, validator.validate(entity).size());
-
-						entity.name = "123456";
-						Assert.assertEquals(1, validator.validate(entity).size());
-
-						try
+						for (int i = 0; i < 100; i++)
 						{
-							Thread.sleep(5);
+							Assert.assertEquals(1, validator.validate(sharedEntity).size());
+
+							entity.name = null;
+							Assert.assertEquals(1, validator.validate(entity).size());
+
+							entity.name = "1234";
+							Assert.assertEquals(0, validator.validate(entity).size());
+
+							entity.name = "123456";
+							Assert.assertEquals(1, validator.validate(entity).size());
+
+							try
+							{
+								Thread.sleep(5);
+							}
+							catch (final InterruptedException e)
+							{
+								Thread.currentThread().interrupt();
+							}
 						}
-						catch (InterruptedException e)
-						{
-							Thread.currentThread().interrupt();
-						}
+					}
+					catch (final Exception ex)
+					{
+						ex.printStackTrace();
+						failed[0] = true;
 					}
 				}
 			});
-		thread1.run();
-		thread2.run();
+		thread1.start();
+		thread2.start();
 		thread1.join();
 		thread2.join();
+		assertFalse(failed[0]);
 	}
 }
