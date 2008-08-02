@@ -44,6 +44,8 @@ public class ClassChecks
 {
 	private static final Log LOG = Log.getLog(ClassChecks.class);
 
+	private final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = " Class does not implement IsGuarded interface. This is an indicator, that constraints guarding is possibly not activated for this class.";
+
 	/**
 	 * compound constraints / object level invariants
 	 */
@@ -105,8 +107,6 @@ public class ClassChecks
 	 */
 	public final Set<Method> constrainedMethods = new LinkedSet<Method>();
 
-	public final boolean isGuarded;
-
 	public boolean isCheckInvariants;
 
 	/**
@@ -114,22 +114,16 @@ public class ClassChecks
 	 * 
 	 * @param clazz
 	 */
-	@SuppressWarnings("unchecked")
-	public ClassChecks(final Class clazz)
+	public ClassChecks(final Class< ? > clazz)
 	{
 		LOG.debug("Initializing constraints configuration for class {1}", clazz);
 
 		this.clazz = clazz;
-		isGuarded = IsGuarded.class.isAssignableFrom(clazz);
 	}
 
 	private void _addConstructorParameterCheckExclusions(final Constructor< ? > constructor, final int parameterIndex,
 			final Object exclusions) throws InvalidConfigurationException
 	{
-		if (!isGuarded)
-			throw new InvalidConfigurationException("Cannot apply constructor parameter constraints to constructor "
-					+ constructor + ". Constraints guarding is not activated for this class.");
-
 		final int paramCount = constructor.getParameterTypes().length;
 
 		if (parameterIndex < 0 || parameterIndex >= paramCount)
@@ -171,9 +165,12 @@ public class ClassChecks
 	private void _addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex,
 			final Object checks) throws InvalidConfigurationException
 	{
-		if (!isGuarded)
-			throw new InvalidConfigurationException("Cannot apply constructor parameter constraints to constructor "
-					+ constructor + ". Constraints guarding is not activated for this class.");
+		if (LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz))
+		{
+			LOG
+					.debug("Constructor parameter constraints may not be validated."
+							+ GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
+		}
 
 		final int paramCount = constructor.getParameterTypes().length;
 
@@ -247,10 +244,6 @@ public class ClassChecks
 	private void _addMethodParameterCheckExclusions(final Method method, final int parameterIndex,
 			final Object exclusions) throws InvalidConfigurationException
 	{
-		if (!isGuarded)
-			throw new InvalidConfigurationException("Cannot apply method parameter constraints to class "
-					+ clazz.getName() + ". Constraints guarding is not activated for this class.");
-
 		final int paramCount = method.getParameterTypes().length;
 
 		if (parameterIndex < 0 || parameterIndex >= paramCount)
@@ -291,9 +284,10 @@ public class ClassChecks
 	private void _addMethodParameterChecks(final Method method, final int parameterIndex, final Object checks)
 			throws InvalidConfigurationException
 	{
-		if (!isGuarded)
-			throw new InvalidConfigurationException("Cannot apply method parameter constraints to class "
-					+ clazz.getName() + ". Constraints guarding is not activated for this class.");
+		if (LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz))
+		{
+			LOG.warn("Method parameter constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
+		}
 
 		final int paramCount = method.getParameterTypes().length;
 
@@ -335,9 +329,10 @@ public class ClassChecks
 	@SuppressWarnings("unchecked")
 	private void _addMethodPostChecks(final Method method, final Object checks) throws InvalidConfigurationException
 	{
-		if (!isGuarded)
-			throw new InvalidConfigurationException("Cannot apply pre condition for method " + method
-					+ ". Constraints guarding is not activated for this class.");
+		if (LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz))
+		{
+			LOG.warn("Method post-conditions may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
+		}
 
 		synchronized (checksForMethodsPostExcecution)
 		{
@@ -362,9 +357,10 @@ public class ClassChecks
 	@SuppressWarnings("unchecked")
 	private void _addMethodPreChecks(final Method method, final Object checks) throws InvalidConfigurationException
 	{
-		if (!isGuarded)
-			throw new InvalidConfigurationException("Cannot apply pre condition for method " + method
-					+ ". Constraints guarding is not activated for this class.");
+		if (LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz))
+		{
+			LOG.warn("Method pre-conditions may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
+		}
 
 		synchronized (checksForMethodsPreExecution)
 		{
@@ -401,18 +397,17 @@ public class ClassChecks
 
 		final boolean hasParameters = method.getParameterTypes().length > 0;
 
-		if (!isGuarded && hasParameters)
-			throw new InvalidConfigurationException(
-					"Cannot apply method return value constraints for parameterized method " + method
-							+ ". Constraints guarding is not activated for this class.");
+		if (LOG.isDebug() && hasParameters && !IsGuarded.class.isAssignableFrom(clazz))
+		{
+			LOG.warn("Method return value constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
+		}
 
 		final boolean isInvariant2 = isInvariant == null ? constrainedMethods.contains(method) : isInvariant;
 
-		if (!isGuarded && !isInvariant2)
-			throw new InvalidConfigurationException(
-					"Cannot apply method return value constraints for method "
-							+ method
-							+ ". The method needs to be marked as being invariant (@IsInvariant) since constraints guarding is not activated for this class.");
+		if (LOG.isDebug() && !isInvariant2 && !IsGuarded.class.isAssignableFrom(clazz))
+		{
+			LOG.warn("Method return value constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
+		}
 
 		synchronized (checksForMethodReturnValues)
 		{

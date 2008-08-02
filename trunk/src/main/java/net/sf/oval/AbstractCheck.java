@@ -92,19 +92,16 @@ public abstract class AbstractCheck implements Check
 	{
 		if (!messageVariablesUpToDate)
 		{
-			synchronized (this)
+			messageVariables = updateMessageVariables();
+			if (messageVariables == null)
 			{
-				messageVariables = updateMessageVariables();
-				if (messageVariables == null)
-				{
-					messageVariablesUnmodifiable = null;
-				}
-				else
-				{
-					messageVariablesUnmodifiable = Collections.unmodifiableMap(messageVariables);
-				}
-				messageVariablesUpToDate = true;
+				messageVariablesUnmodifiable = null;
 			}
+			else
+			{
+				messageVariablesUnmodifiable = Collections.unmodifiableMap(messageVariables);
+			}
+			messageVariablesUpToDate = true;
 		}
 		return messageVariablesUnmodifiable;
 	}

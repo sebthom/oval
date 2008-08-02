@@ -16,20 +16,22 @@ import junit.framework.TestCase;
 import net.sf.oval.constraint.MaxLength;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
-import net.sf.oval.guard.IsGuarded;
+import net.sf.oval.guard.SuppressOValWarnings;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
 * @author Sebastian Thomschke
 */
+
 public class SpringAOPAllianceTest extends TestCase
 {
 	/**
 	 * class based service
 	 */
-	public static class TestCGLIBProxyService implements IsGuarded
+	public static class TestCGLIBProxyService
 	{
+		@SuppressOValWarnings
 		@MaxLength(value = 5, message = "MAX_LENGTH")
 		public String getSomething(@NotNull(message = "NOT_NULL") final String input)
 		{
@@ -37,7 +39,7 @@ public class SpringAOPAllianceTest extends TestCase
 		}
 	}
 
-	public static interface TestJDKProxyService extends IsGuarded
+	public static interface TestJDKProxyService
 	{
 		@MaxLength(value = 5, message = "MAX_LENGTH")
 		String getSomething(@NotNull(message = "NOT_NULL") final String input);
