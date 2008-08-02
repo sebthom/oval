@@ -28,8 +28,10 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 {
 	private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
-	public String[] getParameterNames(final Constructor< ? > constructor)
-			throws ReflectionException
+	/**
+	 * {@inheritDoc}
+	 */
+	public String[] getParameterNames(final Constructor< ? > constructor) throws ReflectionException
 	{
 		/*
 		 * intentionally the following code is not synchronized
@@ -48,6 +50,9 @@ public class ParameterNameResolverEnumerationImpl implements ParameterNameResolv
 		return parameterNames;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String[] getParameterNames(final Method method) throws ReflectionException
 	{
 		/*

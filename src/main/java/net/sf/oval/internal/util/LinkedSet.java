@@ -45,11 +45,17 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		list = getCollectionFactory().createList(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean add(final E e)
 	{
 		return list.add(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void add(final int index, final E e)
 	{
 		if (!list.contains(e))
@@ -58,6 +64,9 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean addAll(final Collection< ? extends E> c)
 	{
 		boolean itemAdded = false;
@@ -72,6 +81,9 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		return itemAdded;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean addAll(final int index, final Collection< ? extends E> c)
 	{
 		final List<E> tmp = getCollectionFactory().createList(c.size());
@@ -85,30 +97,45 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		return list.addAll(index, tmp);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void clear()
 	{
 		list.clear();
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException
 	{
+		@SuppressWarnings("unchecked")
 		final LinkedSet<E> os = (LinkedSet<E>) super.clone();
 		os.list.addAll(list);
 		return os;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean contains(final Object o)
 	{
 		return list.contains(o);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean containsAll(final Collection< ? > c)
 	{
 		return list.containsAll(c);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -125,11 +152,17 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public E get(final int index)
 	{
 		return list.get(index);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode()
 	{
@@ -139,56 +172,89 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int indexOf(final Object o)
 	{
 		return list.indexOf(o);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isEmpty()
 	{
 		return list.isEmpty();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Iterator<E> iterator()
 	{
 		return list.iterator();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int lastIndexOf(final Object o)
 	{
 		return list.lastIndexOf(o);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ListIterator<E> listIterator()
 	{
 		return list.listIterator();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ListIterator<E> listIterator(final int index)
 	{
 		return list.listIterator(index);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public E remove(final int index)
 	{
 		return list.remove(index);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean remove(final Object o)
 	{
 		return list.remove(o);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean removeAll(final Collection< ? > c)
 	{
 		return list.removeAll(c);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean retainAll(final Collection< ? > c)
 	{
 		return list.retainAll(c);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public E set(final int index, final E element)
 	{
 		final int elementIndex = list.indexOf(element);
@@ -207,26 +273,41 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		return list.set(index - 1, element);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int size()
 	{
 		return list.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<E> subList(final int fromIndex, final int toIndex)
 	{
 		return list.subList(fromIndex, toIndex);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object[] toArray()
 	{
 		return list.toArray();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T> T[] toArray(final T[] a)
 	{
 		return list.toArray(a);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString()
 	{

@@ -31,6 +31,9 @@ public abstract class AbstractAnnotationCheckExclusion<ExclusionAnnotation exten
 
 	private final static Log LOG = Log.getLog(AbstractAnnotationCheckExclusion.class);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void configure(final ExclusionAnnotation exclusionAnnotation)
 	{
 		final Class< ? > exclusionClazz = exclusionAnnotation.getClass();

@@ -24,7 +24,7 @@ public class LoggerL4JImpl implements Logger
 {
 	private final static String WRAPPER = "net.sf.oval.logging";
 
-	private final org.apache.log4j.Logger log;
+	private final org.apache.log4j.Logger log4jLogger;
 
 	/**
 	 * @param name the name of the logger
@@ -33,81 +33,126 @@ public class LoggerL4JImpl implements Logger
 	public LoggerL4JImpl(final String name) throws IllegalArgumentException
 	{
 		Assert.notNull("name", name);
-		log = org.apache.log4j.Logger.getLogger(name);
+		log4jLogger = org.apache.log4j.Logger.getLogger(name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void debug(final String msg)
 	{
-		log.log(WRAPPER, Level.DEBUG, msg, null);
+		log4jLogger.log(WRAPPER, Level.DEBUG, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void debug(final String msg, final Throwable t)
 	{
-		log.log(WRAPPER, Level.DEBUG, msg, t);
+		log4jLogger.log(WRAPPER, Level.DEBUG, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void error(final String msg)
 	{
-		log.log(WRAPPER, Level.ERROR, msg, null);
+		log4jLogger.log(WRAPPER, Level.ERROR, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void error(final String msg, final Throwable t)
 	{
-		log.log(WRAPPER, Level.ERROR, msg, t);
+		log4jLogger.log(WRAPPER, Level.ERROR, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void info(final String msg)
 	{
-		log.log(WRAPPER, Level.INFO, msg, null);
+		log4jLogger.log(WRAPPER, Level.INFO, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void info(final String msg, final Throwable t)
 	{
-		log.log(WRAPPER, Level.INFO, msg, t);
+		log4jLogger.log(WRAPPER, Level.INFO, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isDebug()
 	{
-		return log.isDebugEnabled();
+		return log4jLogger.isDebugEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isError()
 	{
-		return log.isEnabledFor(Level.ERROR);
+		return log4jLogger.isEnabledFor(Level.ERROR);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isInfo()
 	{
-		return log.isInfoEnabled();
+		return log4jLogger.isInfoEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isTrace()
 	{
-		return log.isTraceEnabled();
+		return log4jLogger.isTraceEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isWarn()
 	{
-		return log.isEnabledFor(Level.WARN);
+		return log4jLogger.isEnabledFor(Level.WARN);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void trace(final String msg)
 	{
-		log.log(WRAPPER, Level.TRACE, msg, null);
+		log4jLogger.log(WRAPPER, Level.TRACE, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void trace(final String msg, final Throwable t)
 	{
-		log.log(WRAPPER, Level.TRACE, msg, t);
+		log4jLogger.log(WRAPPER, Level.TRACE, msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void warn(final String msg)
 	{
-		log.log(WRAPPER, Level.WARN, msg, null);
+		log4jLogger.log(WRAPPER, Level.WARN, msg, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void warn(final String msg, final Throwable t)
 	{
-		log.log(WRAPPER, Level.WARN, msg, t);
+		log4jLogger.log(WRAPPER, Level.WARN, msg, t);
 	}
 }

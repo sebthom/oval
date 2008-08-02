@@ -266,6 +266,9 @@ public class AnnotationsConfigurer implements Configurer
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		final ClassConfiguration classCfg = new ClassConfiguration();
@@ -286,6 +289,9 @@ public class AnnotationsConfigurer implements Configurer
 		return classCfg;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 	{
 		return null;

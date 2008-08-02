@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoggerJCLImpl implements Logger
 {
-	private final Log log;
+	private final Log jclLoggger;
 
 	/**
 	 * @param name the name of the logger
@@ -33,81 +33,126 @@ public class LoggerJCLImpl implements Logger
 	{
 		Assert.notNull("name", name);
 
-		log = LogFactory.getLog(name);
+		jclLoggger = LogFactory.getLog(name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void debug(final String msg)
 	{
-		log.debug(msg);
+		jclLoggger.debug(msg);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void debug(final String msg, final Throwable t)
 	{
-		log.debug(msg, t);
+		jclLoggger.debug(msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void error(final String msg)
 	{
-		log.error(msg);
+		jclLoggger.error(msg);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void error(final String msg, final Throwable t)
 	{
-		log.error(msg, t);
+		jclLoggger.error(msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void info(final String msg)
 	{
-		log.info(msg);
+		jclLoggger.info(msg);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void info(final String msg, final Throwable t)
 	{
-		log.info(msg, t);
+		jclLoggger.info(msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isDebug()
 	{
-		return log.isDebugEnabled();
+		return jclLoggger.isDebugEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isError()
 	{
-		return log.isErrorEnabled();
+		return jclLoggger.isErrorEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isInfo()
 	{
-		return log.isInfoEnabled();
+		return jclLoggger.isInfoEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isTrace()
 	{
-		return log.isTraceEnabled();
+		return jclLoggger.isTraceEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isWarn()
 	{
-		return log.isWarnEnabled();
+		return jclLoggger.isWarnEnabled();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void trace(final String msg)
 	{
-		log.trace(msg);
+		jclLoggger.trace(msg);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void trace(final String msg, final Throwable t)
 	{
-		log.trace(msg, t);
+		jclLoggger.trace(msg, t);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void warn(final String msg)
 	{
-		log.warn(msg);
+		jclLoggger.warn(msg);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void warn(final String msg, final Throwable t)
 	{
-		log.warn(msg, t);
+		jclLoggger.warn(msg, t);
 	}
 }

@@ -31,6 +31,9 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	private String testString;
 	private transient String testStringLowerCase;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final NotEqual constraintAnnotation)
 	{
@@ -39,6 +42,9 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 		setTestString(constraintAnnotation.value());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -73,6 +79,9 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 		return ignoreCase;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

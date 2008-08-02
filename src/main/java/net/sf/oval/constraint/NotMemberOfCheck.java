@@ -34,6 +34,9 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	private List<String> members;
 	private transient List<String> membersLowerCase;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final NotMemberOf constraintAnnotation)
 	{
@@ -65,6 +68,9 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		return membersLowerCase;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -82,6 +88,9 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		return ignoreCase;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

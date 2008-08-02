@@ -34,6 +34,9 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	private String methodName;
 	private Class< ? > parameterType;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final ValidateWithMethod constraintAnnotation)
 	{
@@ -43,6 +46,9 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -77,6 +83,9 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 		return ignoreIfNull;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator) throws ReflectionException
 	{

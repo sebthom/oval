@@ -107,6 +107,9 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final AssertURL constraintAnnotation)
 	{
@@ -135,6 +138,9 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		return connect;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

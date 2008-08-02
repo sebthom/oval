@@ -29,6 +29,9 @@ public class POJOConfigurer implements Configurer, Serializable
 	protected Set<ClassConfiguration> classConfigurations;
 	protected Set<ConstraintSetConfiguration> constraintSetConfigurations;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		if (classConfigurations != null)
@@ -49,6 +52,9 @@ public class POJOConfigurer implements Configurer, Serializable
 		return classConfigurations;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 	{
 		if (constraintSetConfigurations == null) return null;

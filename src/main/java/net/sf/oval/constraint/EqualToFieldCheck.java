@@ -40,6 +40,9 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 
 	private Class< ? > declaringClass;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final EqualToField constraintAnnotation)
 	{
@@ -65,6 +68,9 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 		return fieldName;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -76,6 +82,9 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 		return messageVariables;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{
@@ -88,10 +97,8 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 		{
 			final Method getter = ReflectionUtils.getGetterRecursive(clazz, fieldName);
 			if (getter == null)
-			{
 				throw new MethodNotFoundException("Getter for field <" + fieldName + "> not found in class <" + clazz
 						+ "> or it's super classes.");
-			}
 
 			try
 			{
@@ -108,10 +115,8 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 			final Field field = ReflectionUtils.getFieldRecursive(clazz, fieldName);
 
 			if (field == null)
-			{
 				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <" + clazz
 						+ "> or it's super classes.");
-			}
 
 			valueToCompare = ReflectionUtils.getFieldValue(field, validatedObject);
 		}

@@ -63,6 +63,9 @@ public class ResourceBundleMessageResolver implements MessageResolver
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getMessage(final String key)
 	{
 		for (final ResourceBundle bundle : messageBundles)

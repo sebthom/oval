@@ -25,31 +25,49 @@ import java.util.Set;
  */
 public class CollectionFactoryTroveImpl implements CollectionFactory
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ValueType> List<ValueType> createList()
 	{
 		return new ArrayList<ValueType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ValueType> List<ValueType> createList(final int initialCapacity)
 	{
 		return new ArrayList<ValueType>(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap()
 	{
 		return new THashMap<KeyType, ValueType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity)
 	{
 		return new THashMap<KeyType, ValueType>(initialCapacity);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ValueType> Set<ValueType> createSet()
 	{
 		return new THashSet<ValueType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <ValueType> Set<ValueType> createSet(final int initialCapacity)
 	{
 		return new THashSet<ValueType>(initialCapacity);

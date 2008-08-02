@@ -21,12 +21,18 @@ import java.util.List;
  */
 public class ThreadLocalList<T> extends ThreadLocal<List<T>>
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<T> get()
 	{
 		return super.get();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<T> initialValue()
 	{

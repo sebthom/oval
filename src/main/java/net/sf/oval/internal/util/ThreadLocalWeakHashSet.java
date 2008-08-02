@@ -17,12 +17,18 @@ package net.sf.oval.internal.util;
  */
 public class ThreadLocalWeakHashSet<T> extends ThreadLocal<WeakHashSet<T>>
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public WeakHashSet<T> get()
 	{
 		return super.get();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public WeakHashSet<T> initialValue()
 	{

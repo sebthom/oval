@@ -27,6 +27,9 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 
 	private Class< ? > declaringClass;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final AssertFieldConstraints constraintAnnotation)
 	{
@@ -43,6 +46,9 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 		return declaringClass;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getErrorCode() throws UnsupportedOperationException
 	{
@@ -57,12 +63,18 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 		return fieldName;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getMessage() throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getSeverity() throws UnsupportedOperationException
 	{
@@ -73,9 +85,8 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
 	 */
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
-			throws UnsupportedOperationException
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -88,6 +99,9 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setErrorCode(final String errorCode) throws UnsupportedOperationException
 	{
@@ -102,12 +116,18 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 		this.fieldName = fieldName;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setMessage(final String message) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setSeverity(final int severity) throws UnsupportedOperationException
 	{

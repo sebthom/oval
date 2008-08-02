@@ -23,8 +23,11 @@ public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
 {
 	private static final long serialVersionUID = 1L;
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 

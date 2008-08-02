@@ -28,32 +28,28 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 {
 	private static final long serialVersionUID = 1L;
 
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-			final OValContext context, final Validator validator)
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final Validator validator)
 	{
 		if (valueToValidate == null) return true;
 
 		// check if the value is a Date
-		if (valueToValidate instanceof Date)
-		{
-			// return ((Date) value).after(new Date());
+		if (valueToValidate instanceof Date) // return ((Date) value).after(new Date());
 			return ((Date) valueToValidate).getTime() > System.currentTimeMillis();
-		}
 
 		// check if the value is a Calendar
-		if (valueToValidate instanceof Calendar)
-		{
-			// return ((Calendar) value).getTime().after(new Date());
+		if (valueToValidate instanceof Calendar) // return ((Calendar) value).getTime().after(new Date());
 			return ((Calendar) valueToValidate).getTime().getTime() > System.currentTimeMillis();
-		}
 
 		// see if we can extract a date based on the object's String representation
 		final String stringValue = valueToValidate.toString();
 		try
 		{
 			// return DateFormat.getDateTimeInstance().parse(stringValue).after(new Date());
-			return DateFormat.getDateTimeInstance().parse(stringValue).getTime() > System
-					.currentTimeMillis();
+			return DateFormat.getDateTimeInstance().parse(stringValue).getTime() > System.currentTimeMillis();
 		}
 		catch (final ParseException ex)
 		{

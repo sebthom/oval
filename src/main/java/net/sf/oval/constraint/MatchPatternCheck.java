@@ -34,6 +34,9 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	private final List<Pattern> patterns = getCollectionFactory().createList(2);
 	private boolean matchAll = true;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final MatchPattern constraintAnnotation)
 	{
@@ -55,6 +58,9 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -82,6 +88,9 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 		return matchAll;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

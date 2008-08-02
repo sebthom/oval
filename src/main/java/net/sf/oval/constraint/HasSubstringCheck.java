@@ -32,6 +32,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	private String substring;
 	private transient String substringLowerCase;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final HasSubstring constraintAnnotation)
 	{
@@ -40,6 +43,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 		setSubstring(constraintAnnotation.value());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -74,6 +80,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 		return ignoreCase;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

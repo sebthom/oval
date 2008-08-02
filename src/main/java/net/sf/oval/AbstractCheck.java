@@ -22,12 +22,15 @@ import java.util.Map;
 public abstract class AbstractCheck implements Check
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	protected String errorCode;
 	protected String message;
 	protected int severity;
 	protected String[] profiles;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getErrorCode()
 	{
 		/*
@@ -38,13 +41,20 @@ public abstract class AbstractCheck implements Check
 		{
 			final String className = getClass().getName();
 			if (className.endsWith("Check"))
+			{
 				errorCode = className.substring(0, getClass().getName().length() - 5);
+			}
 			else
+			{
 				errorCode = className;
+			}
 		}
 		return errorCode;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getMessage()
 	{
 		/*
@@ -55,43 +65,68 @@ public abstract class AbstractCheck implements Check
 		{
 			final String className = getClass().getName();
 			if (className.endsWith("Check"))
+			{
 				message = className.substring(0, getClass().getName().length() - 5) + ".violated";
+			}
 			else
+			{
 				message = className + ".violated";
+			}
 		}
 		return message;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Map<String, String> getMessageVariables()
 	{
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String[] getProfiles()
 	{
 		return profiles;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getSeverity()
 	{
 		return severity;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setErrorCode(final String failureCode)
 	{
 		errorCode = failureCode;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setMessage(final String message)
 	{
 		this.message = message;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setProfiles(final String... profiles)
 	{
 		this.profiles = profiles;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setSeverity(final int severity)
 	{
 		this.severity = severity;

@@ -31,6 +31,9 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 
 	private int min;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final MinSize constraintAnnotation)
 	{
@@ -38,6 +41,9 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 		setMin(constraintAnnotation.value());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -54,6 +60,9 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 		return min;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

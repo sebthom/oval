@@ -29,6 +29,9 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 
 	private double max;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configure(final Max constraintAnnotation)
 	{
@@ -44,6 +47,10 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 		return max;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+
 	@Override
 	public Map<String, String> getMessageVariables()
 	{
@@ -52,6 +59,9 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 		return messageVariables;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{

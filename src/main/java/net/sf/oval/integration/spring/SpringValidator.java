@@ -42,6 +42,9 @@ public class SpringValidator implements org.springframework.validation.Validator
 		this.validator = validator;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void afterPropertiesSet() throws Exception
 	{
 		Assert.notNull(validator, "Property [validator] must be set");
@@ -63,12 +66,18 @@ public class SpringValidator implements org.springframework.validation.Validator
 		this.validator = validator;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz)
 	{
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void validate(final Object objectToValidate, final Errors errors)
 	{
 		try
