@@ -71,20 +71,6 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("fieldName", fieldName);
-		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
-				: declaringClass.getName());
-		messageVariables.put("useGetter", Boolean.toString(useGetter));
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{
@@ -97,8 +83,10 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 		{
 			final Method getter = ReflectionUtils.getGetterRecursive(clazz, fieldName);
 			if (getter == null)
+			{
 				throw new MethodNotFoundException("Getter for field <" + fieldName + "> not found in class <" + clazz
 						+ "> or it's super classes.");
+			}
 
 			try
 			{
@@ -115,8 +103,10 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 			final Field field = ReflectionUtils.getFieldRecursive(clazz, fieldName);
 
 			if (field == null)
+			{
 				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <" + clazz
 						+ "> or it's super classes.");
+			}
 
 			valueToCompare = ReflectionUtils.getFieldValue(field, validatedObject);
 		}
@@ -140,6 +130,7 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	public void setDeclaringClass(final Class< ? > declaringClass)
 	{
 		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -148,6 +139,7 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	public void setFieldName(final String fieldName)
 	{
 		this.fieldName = fieldName;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -156,5 +148,20 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	public void setUseGetter(final boolean useGetter)
 	{
 		this.useGetter = useGetter;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("fieldName", fieldName);
+		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
+				: declaringClass.getName());
+		messageVariables.put("useGetter", Boolean.toString(useGetter));
+		return messageVariables;
 	}
 }

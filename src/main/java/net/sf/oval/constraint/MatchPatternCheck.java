@@ -59,17 +59,6 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
-		return messageVariables;
-	}
-
-	/**
 	 * @return the pattern
 	 */
 	public Pattern[] getPatterns()
@@ -118,6 +107,7 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	public void setMatchAll(final boolean matchAll)
 	{
 		this.matchAll = matchAll;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -130,6 +120,7 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 			patterns.clear();
 			patterns.add(pattern);
 		}
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -142,6 +133,7 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 			patterns.clear();
 			patterns.add(Pattern.compile(pattern, flags));
 		}
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -154,6 +146,7 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 			this.patterns.clear();
 			this.patterns.addAll(patterns);
 		}
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -166,5 +159,17 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 			this.patterns.clear();
 			ArrayUtils.addAll(this.patterns, patterns);
 		}
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
+		return messageVariables;
 	}
 }

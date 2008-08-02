@@ -50,17 +50,6 @@ public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Integer.toString(max));
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{
@@ -76,5 +65,17 @@ public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength>
 	public void setMax(final int max)
 	{
 		this.max = max;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		return messageVariables;
 	}
 }

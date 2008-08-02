@@ -71,20 +71,6 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("fieldName", fieldName);
-		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
-				: declaringClass.getName());
-		messageVariables.put("useGetter", Boolean.toString(useGetter));
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{
@@ -140,6 +126,7 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	public void setDeclaringClass(final Class< ? > declaringClass)
 	{
 		this.declaringClass = declaringClass == Void.class ? null : declaringClass;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -148,6 +135,7 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	public void setFieldName(final String fieldName)
 	{
 		this.fieldName = fieldName;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -156,5 +144,20 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	public void setUseGetter(final boolean useGetter)
 	{
 		this.useGetter = useGetter;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("fieldName", fieldName);
+		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
+				: declaringClass.getName());
+		messageVariables.put("useGetter", Boolean.toString(useGetter));
+		return messageVariables;
 	}
 }

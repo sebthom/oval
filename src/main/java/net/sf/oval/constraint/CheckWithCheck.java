@@ -51,18 +51,6 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
-		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
-		return messageVariables;
-	}
-
-	/**
 	 * @return the simpleCheck
 	 */
 	public SimpleCheck getSimpleCheck()
@@ -95,6 +83,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	public void setIgnoreIfNull(final boolean ignoreIfNull)
 	{
 		this.ignoreIfNull = ignoreIfNull;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -117,6 +106,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		{
 			throw new ReflectionException("Cannot instantiate an object of type  " + simpleCheckType.getName(), ex);
 		}
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -128,5 +118,18 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		Assert.notNull("simpleCheck", simpleCheck);
 
 		this.simpleCheck = simpleCheck;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
+		return messageVariables;
 	}
 }

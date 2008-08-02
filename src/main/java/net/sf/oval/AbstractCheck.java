@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -27,6 +28,10 @@ public abstract class AbstractCheck implements Check
 	protected String message;
 	protected int severity;
 	protected String[] profiles;
+
+	private boolean messageVariablesUpToDate = true;
+	private Map<String, String> messageVariables;
+	private Map<String, String> messageVariablesUnmodifiable;
 
 	/**
 	 * {@inheritDoc}
@@ -77,11 +82,31 @@ public abstract class AbstractCheck implements Check
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * values that are used to fill place holders when rendering the error message.
+	 * A key "min" with a value "4" will replace the place holder {min} in an error message
+	 * like "Value cannot be smaller than {min}" with the string "4".
+	 * 
+	 * @return an unmodifiable map
 	 */
-	public Map<String, String> getMessageVariables()
+	public final Map<String, String> getMessageVariables()
 	{
-		return null;
+		if (!messageVariablesUpToDate)
+		{
+			synchronized (this)
+			{
+				messageVariables = updateMessageVariables();
+				if (messageVariables == null)
+				{
+					messageVariablesUnmodifiable = null;
+				}
+				else
+				{
+					messageVariablesUnmodifiable = Collections.unmodifiableMap(messageVariables);
+				}
+				messageVariablesUpToDate = true;
+			}
+		}
+		return messageVariablesUnmodifiable;
 	}
 
 	/**
@@ -98,6 +123,11 @@ public abstract class AbstractCheck implements Check
 	public int getSeverity()
 	{
 		return severity;
+	}
+
+	protected void requirekMessageVariablesUpdate()
+	{
+		messageVariablesUpToDate = false;
 	}
 
 	/**
@@ -130,5 +160,10 @@ public abstract class AbstractCheck implements Check
 	public void setSeverity(final int severity)
 	{
 		this.severity = severity;
+	}
+
+	protected Map<String, String> updateMessageVariables()
+	{
+		return null;
 	}
 }

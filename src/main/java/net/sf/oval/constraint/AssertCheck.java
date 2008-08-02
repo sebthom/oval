@@ -63,18 +63,6 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("expression", expr);
-		messageVariables.put("language", lang);
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator) throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException
 	{
@@ -92,6 +80,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public void setExpr(final String expression)
 	{
 		expr = expression;
+		requirekMessageVariablesUpdate();
 	}
 
 	/**
@@ -100,6 +89,19 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	public void setLang(final String language)
 	{
 		lang = language;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("expression", expr);
+		messageVariables.put("language", lang);
+		return messageVariables;
 	}
 
 }

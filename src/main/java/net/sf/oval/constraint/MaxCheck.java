@@ -50,18 +50,6 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	/**
 	 * {@inheritDoc}
 	 */
-
-	@Override
-	public Map<String, String> getMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Double.toString(max));
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator)
 	{
@@ -91,5 +79,18 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	public void setMax(final double max)
 	{
 		this.max = max;
+		requirekMessageVariablesUpdate();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+
+	@Override
+	public Map<String, String> updateMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Double.toString(max));
+		return messageVariables;
 	}
 }
