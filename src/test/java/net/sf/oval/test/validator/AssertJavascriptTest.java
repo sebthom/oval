@@ -24,7 +24,7 @@ import net.sf.oval.constraint.Assert;
  */
 public class AssertJavascriptTest extends TestCase
 {
-	@net.sf.oval.constraint.Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "javascript", errorCode = "C0")
+	@Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "javascript", errorCode = "C0")
 	public static class Person
 	{
 		@Assert(expr = "_value!=null", lang = "javascript", errorCode = "C1")
@@ -43,6 +43,7 @@ public class AssertJavascriptTest extends TestCase
 
 		final Person person = new Person();
 
+		final boolean assertsOk[] = {true};
 		final Thread thread1 = new Thread(new Runnable()
 			{
 				public void run()
@@ -50,13 +51,16 @@ public class AssertJavascriptTest extends TestCase
 					for (int i = 0; i < 500; i++)
 					{
 						// test not null
-						assertTrue(validator.validate(person).size() == 4);
+						if (validator.validate(person).size() != 4)
+						{
+							assertsOk[0] = false;
+						}
 
 						try
 						{
 							Thread.sleep(2);
 						}
-						catch (InterruptedException e)
+						catch (final InterruptedException e)
 						{
 							Thread.currentThread().interrupt();
 						}
@@ -70,23 +74,27 @@ public class AssertJavascriptTest extends TestCase
 					for (int i = 0; i < 500; i++)
 					{
 						// test not null
-						assertTrue(validator.validate(person).size() == 4);
+						if (validator.validate(person).size() != 4)
+						{
+							assertsOk[0] = false;
+						}
 
 						try
 						{
 							Thread.sleep(2);
 						}
-						catch (InterruptedException e)
+						catch (final InterruptedException e)
 						{
 							Thread.currentThread().interrupt();
 						}
 					}
 				}
 			});
-		thread1.run();
-		thread2.run();
+		thread1.start();
+		thread2.start();
 		thread1.join();
 		thread2.join();
+		assertTrue(assertsOk[0]);
 	}
 
 	public void testJavaScriptExpression()
