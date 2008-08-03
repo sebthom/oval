@@ -21,15 +21,6 @@ public class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IdentitySet<T> get()
-	{
-		return super.get();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public IdentitySet<T> initialValue()
 	{
 		return new IdentitySet<T>();

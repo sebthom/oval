@@ -68,16 +68,13 @@ public class ObjectCache<K, V>
 			{
 				map.remove(key);
 			}
-			else if (objectsToKeepCount > 0)
+			else if (objectsToKeepCount > 0 && value != objectsLastAccessed.getFirst())
 			{
-				if (value != objectsLastAccessed.getFirst())
+				objectsLastAccessed.remove(value);
+				objectsLastAccessed.addFirst(value);
+				if (objectsLastAccessed.size() > objectsToKeepCount)
 				{
-					objectsLastAccessed.remove(value);
-					objectsLastAccessed.addFirst(value);
-					if (objectsLastAccessed.size() > objectsToKeepCount)
-					{
-						objectsLastAccessed.removeLast();
-					}
+					objectsLastAccessed.removeLast();
 				}
 			}
 			return softReference.get();

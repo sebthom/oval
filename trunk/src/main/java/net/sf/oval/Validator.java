@@ -264,53 +264,43 @@ public class Validator
 	private ExpressionLanguage _initializeDefaultEL(final String languageId)
 	{
 		// JavaScript support
-		if ("javascript".equals(languageId) || "js".equals(languageId))
+		if (("javascript".equals(languageId) || "js".equals(languageId))
+				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
 		{
-			if (ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
-			{
-				final ExpressionLanguage el = new ExpressionLanguageJavaScriptImpl();
-				addExpressionLanguage("javascript", el);
-				addExpressionLanguage("js", el);
-				return el;
-			}
+			final ExpressionLanguage el = new ExpressionLanguageJavaScriptImpl();
+			addExpressionLanguage("javascript", el);
+			addExpressionLanguage("js", el);
+			return el;
 		}
 
 		// Groovy support
-		else if ("groovy".equals(languageId))
+		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
 		{
-			if (ReflectionUtils.isClassPresent("groovy.lang.Binding"))
-			{
-				final ExpressionLanguage el = new ExpressionLanguageGroovyImpl();
-				addExpressionLanguage("groovy", el);
-				return el;
-			}
+			final ExpressionLanguage el = new ExpressionLanguageGroovyImpl();
+			addExpressionLanguage("groovy", el);
+			return el;
 		}
 
 		// BeanShell support
-		else if ("beanshell".equals(languageId) || "bsh".equals(languageId))
+		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
+				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
 		{
-			if (ReflectionUtils.isClassPresent("bsh.Interpreter"))
-			{
-				final ExpressionLanguage el = new ExpressionLanguageBeanShellImpl();
-				addExpressionLanguage("bsh", el);
-				addExpressionLanguage("beanshell", el);
-				return el;
-			}
+			final ExpressionLanguage el = new ExpressionLanguageBeanShellImpl();
+			addExpressionLanguage("bsh", el);
+			addExpressionLanguage("beanshell", el);
+			return el;
 		}
 
 		// OGNL support
-		else if ("ognl".equals(languageId))
+		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
 		{
-			if (ReflectionUtils.isClassPresent("ognl.Ognl"))
-			{
-				final ExpressionLanguage el = new ExpressionLanguageOGNLImpl();
-				addExpressionLanguage("ognl", el);
-				return el;
-			}
+			final ExpressionLanguage el = new ExpressionLanguageOGNLImpl();
+			addExpressionLanguage("ognl", el);
+			return el;
 		}
 
 		// MVEL support
-		else if ("mvel".equals(languageId)) if (ReflectionUtils.isClassPresent("org.mvel.MVEL"))
+		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel.MVEL"))
 		{
 			final ExpressionLanguage el = new ExpressionLanguageMVELImpl();
 			addExpressionLanguage("mvel", el);
@@ -318,17 +308,17 @@ public class Validator
 		}
 
 		// JRuby support
-		if ("jruby".equals(languageId) || "ruby".equals(languageId))
-			if (ReflectionUtils.isClassPresent("org.jruby.Ruby"))
-			{
-				final ExpressionLanguage el = new ExpressionLanguageJRubyImpl();
-				addExpressionLanguage("ruby", el);
-				addExpressionLanguage("jruby", el);
-				return el;
-			}
+		if (("jruby".equals(languageId) || "ruby".equals(languageId))
+				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
+		{
+			final ExpressionLanguage el = new ExpressionLanguageJRubyImpl();
+			addExpressionLanguage("ruby", el);
+			addExpressionLanguage("jruby", el);
+			return el;
+		}
 
 		// JEXL jexl
-		if ("jexl".equals(languageId)) if (ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
+		if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
 		{
 			final ExpressionLanguage el = new ExpressionLanguageJEXLImpl();
 			addExpressionLanguage("jexl", el);
