@@ -154,7 +154,7 @@ public final class ReflectionUtils
 		}
 		catch (final NoSuchMethodException e)
 		{
-			//
+			// ignore
 		}
 		try
 		{
