@@ -175,6 +175,7 @@ public class Validator
 	 */
 	public static void setContextRenderer(final OValContextRenderer contextRenderer)
 	{
+		Assert.notNull("contextRenderer", contextRenderer);
 		Validator.contextRenderer = contextRenderer;
 	}
 
@@ -183,6 +184,7 @@ public class Validator
 	 */
 	public static void setLoggerFactory(final LoggerFactory loggerFactory)
 	{
+		Assert.notNull("loggerFactory", loggerFactory);
 		Log.setLoggerFactory(loggerFactory);
 	}
 
@@ -192,6 +194,7 @@ public class Validator
 	 */
 	public static void setMessageResolver(final MessageResolver messageResolver) throws IllegalArgumentException
 	{
+		Assert.notNull("messageResolver", messageResolver);
 		Validator.messageResolver = messageResolver;
 	}
 
@@ -805,9 +808,7 @@ public class Validator
 		synchronized (constraintSetsById)
 		{
 			if (!overwrite && constraintSetsById.containsKey(constraintSet.getId()))
-			{
 				throw new ConstraintSetAlreadyDefinedException(constraintSet.getId());
-			}
 
 			constraintSetsById.put(constraintSet.getId(), constraintSet);
 		}
@@ -845,10 +846,7 @@ public class Validator
 	{
 		final List<ConstraintViolation> violations = validate(validatedObject);
 
-		if (violations.size() > 0)
-		{
-			throw translateException(new ConstraintsViolatedException(violations));
-		}
+		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
 	}
 
 	/**
@@ -868,10 +866,7 @@ public class Validator
 		final List<ConstraintViolation> violations = validateFieldValue(validatedObject, validatedField,
 				fieldValueToValidate);
 
-		if (violations.size() > 0)
-		{
-			throw translateException(new ConstraintsViolatedException(violations));
-		}
+		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
 	}
 
 	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
@@ -925,10 +920,7 @@ public class Validator
 	{
 		final ConstraintSet cs = getConstraintSet(check.getId());
 
-		if (cs == null)
-		{
-			throw new UndefinedConstraintSetException(check.getId());
-		}
+		if (cs == null) throw new UndefinedConstraintSetException(check.getId());
 
 		final Collection<Check> referencedChecks = cs.getChecks();
 
@@ -1001,10 +993,8 @@ public class Validator
 		final Field field = ReflectionUtils.getFieldRecursive(targetClass, fieldName);
 
 		if (field == null)
-		{
 			throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <" + targetClass
 					+ "> or its super classes.");
-		}
 
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 		final Collection<Check> referencedChecks = cc.checksForFields.get(field);
@@ -1222,6 +1212,7 @@ public class Validator
 
 	public ConstraintSet getConstraintSet(final String constraintSetId) throws InvalidConfigurationException
 	{
+		Assert.notNull("constraintSetsById", constraintSetsById);
 		synchronized (constraintSetsById)
 		{
 			ConstraintSet cs = constraintSetsById.get(constraintSetId);
@@ -1271,10 +1262,7 @@ public class Validator
 			el = _initializeDefaultEL(languageId);
 		}
 
-		if (el == null)
-		{
-			throw new ExpressionLanguageNotAvailableException(languageId);
-		}
+		if (el == null) throw new ExpressionLanguageNotAvailableException(languageId);
 
 		return el;
 	}
@@ -1304,6 +1292,7 @@ public class Validator
 	 */
 	protected boolean isCurrentlyValidated(final Object object)
 	{
+		Assert.notNull("object", object);
 		return currentlyValidatedObjects.get().contains(object);
 	}
 
@@ -1315,6 +1304,7 @@ public class Validator
 	 */
 	public boolean isProfileEnabled(final String profileId)
 	{
+		Assert.notNull("profileId", profileId);
 		if (isProfilesFeatureUsed)
 		{
 			if (isAllProfilesEnabledByDefault) return !disabledProfiles.contains(profileId);
