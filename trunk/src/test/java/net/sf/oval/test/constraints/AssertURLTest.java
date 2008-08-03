@@ -22,8 +22,7 @@ import net.sf.oval.constraint.AssertURLCheck.URIScheme;
  */
 public class AssertURLTest extends AbstractContraintsTest
 {
-	private static final URIScheme[] permittedSchemes = {URIScheme.FTP, URIScheme.HTTP,
-			URIScheme.HTTPS};
+	private static final URIScheme[] permittedSchemes = {URIScheme.FTP, URIScheme.HTTP, URIScheme.HTTPS};
 
 	public void testAssertURL()
 	{
@@ -40,8 +39,7 @@ public class AssertURLTest extends AbstractContraintsTest
 		for (int n = 0; n < AssertURLTest.permittedSchemes.length; n++)
 		{
 			Assert.assertEquals(AssertURLTest.permittedSchemes[n], actualPermittedSchemes[n]);
-			Assert.assertEquals(AssertURLTest.permittedSchemes[n].toString(),
-					actualPermittedSchemes[n].getScheme());
+			Assert.assertEquals(AssertURLTest.permittedSchemes[n].toString(), actualPermittedSchemes[n].getScheme());
 		}
 
 		Assert.assertFalse(check.isConnect());
@@ -56,8 +54,7 @@ public class AssertURLTest extends AbstractContraintsTest
 		Assert.assertTrue(check.isSatisfied(this, "http://www.google.com", null, validator));
 		Assert.assertTrue(check.isSatisfied(this, "https://www.google.com", null, validator));
 		Assert.assertTrue(check.isSatisfied(this, "httPs://www.google.com", null, validator));
-		Assert.assertTrue(check.isSatisfied(this, "ftp://ftp.is.co.za/rfc/rfc1808.txt", null,
-				validator));
+		Assert.assertTrue(check.isSatisfied(this, "ftp://ftp.is.co.za/rfc/rfc1808.txt", null, validator));
 		Assert.assertFalse(check.isSatisfied(this, "ptth://www.google.com", null, validator));
 		Assert.assertFalse(check.isSatisfied(this, "http://www.g[oogle.com", null, validator));
 
@@ -67,16 +64,12 @@ public class AssertURLTest extends AbstractContraintsTest
 		Assert.assertFalse(check.isSatisfied(this, "https", null, validator));
 		Assert.assertFalse(check.isSatisfied(this, "ftp", null, validator));
 		Assert.assertTrue(check.isSatisfied(this, "http://www.google.com", null, validator));
-		Assert.assertTrue(check.isSatisfied(this, "https://www.365online.com/banking.htm", null,
+		Assert.assertTrue(check.isSatisfied(this, "https://www.verisign.com/site-map/index.html", null, validator));
+		Assert.assertFalse(check.isSatisfied(this, "http://www.cfhsdagfhas6sa.com", null, validator));
+		Assert.assertFalse(check.isSatisfied(this, "http://www.checkupdown.com/accounts/grpb/B1394343/", null,
 				validator));
-		Assert.assertFalse(check
-				.isSatisfied(this, "http://www.cfhsdagfhas6sa.com", null, validator));
-		Assert.assertFalse(check.isSatisfied(this,
-				"http://www.checkupdown.com/accounts/grpb/B1394343/", null, validator));
-		Assert.assertTrue(check.isSatisfied(this, "ftp://ftp.is.co.za/rfc/rfc1808.txt", null,
-				validator));
-		Assert.assertFalse(check.isSatisfied(this, "ftp://ftp.is.co.za/rff/rfc1808.txt", null,
-				validator));
+		Assert.assertTrue(check.isSatisfied(this, "ftp://ftp.is.co.za/rfc/rfc1808.txt", null, validator));
+		Assert.assertFalse(check.isSatisfied(this, "ftp://ftp.is.co.za/rff/rfc1808.txt", null, validator));
 
 		check.setPermittedURISchemes(null);
 	}
