@@ -249,7 +249,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<plugins>
+      	<plugins>
 			<!--
 				********************************************************************************** phase: validate
 				**********************************************************************************
@@ -628,6 +628,16 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+			    <artifactId>maven-pmd-plugin</artifactId>
+			    <configuration>
+          			<linkXref>true</linkXref>
+          			<sourceEncoding>utf-8</sourceEncoding>
+          			<minimumTokens>100</minimumTokens>
+          			<targetJdk>1.5</targetJdk>
+        		</configuration>
 			</plugin>
 
 			<!-- seems to be broken currently http://jira.codehaus.org/browse/MCLIRR-12
