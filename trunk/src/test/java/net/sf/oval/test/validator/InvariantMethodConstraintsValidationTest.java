@@ -20,8 +20,6 @@ import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.IsInvariant;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.NotNull;
-import net.sf.oval.exception.InvalidConfigurationException;
-import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.guard.SuppressOValWarnings;
 
 /**
@@ -45,11 +43,10 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 	public static class TestEntityInvalidConfig extends TestEntity
 	{
 		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 5" warning by the ApiUsageAuditor
+		 * the @NotNull annotation should lead to a "OVal API usage violation 7" warning by the ApiUsageAuditor
 		 * because class is not guarded
 		 */
-		public TestEntityInvalidConfig(@NotNull
-		final String defaultValue)
+		public TestEntityInvalidConfig(@NotNull final String defaultValue)
 		{
 		//
 		}
@@ -68,8 +65,7 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 		 * the @NotNull annotation should lead to a "OVal API usage violation 5" warning by the ApiUsageAuditor
 		 * because class is not guarded
 		 */
-		public String doSomething(final String value, @NotNull
-		final String defaultValue)
+		public String doSomething(final String value, @NotNull final String defaultValue)
 		{
 			return null;
 		}
@@ -110,20 +106,6 @@ public class InvariantMethodConstraintsValidationTest extends TestCase
 			violations = validator.validate(t);
 			assertTrue(violations.size() == 1);
 			assertTrue(violations.get(0).getMessage().equals("LENGTH"));
-		}
-
-		// Invalid Config Exception test
-		{
-			try
-			{
-				final TestEntityInvalidConfig t = new TestEntityInvalidConfig(null);
-				validator.validate(t);
-				fail();
-			}
-			catch (final ValidationFailedException e)
-			{
-				assert e.getCause() instanceof InvalidConfigurationException;
-			}
 		}
 	}
 }
