@@ -1,0 +1,39 @@
+<!DOCTYPE FindBugsFilter SYSTEM "findbugs-filter.dtd">
+<FindBugsFilter>
+	<Match>
+		<Or>
+			<Class name="net.sf.oval.AbstractCheck" />
+			<Class name="net.sf.oval.AbstractCheckExclusion" />
+			<Class name="net.sf.oval.ConstraintViolation" />
+			<Class name="net.sf.oval.constraint.InstanceOfAnyCheck" />
+			<Class name="net.sf.oval.constraint.InstanceOfCheck" />
+			<Class name="net.sf.oval.exception.ConstraintsViolatedException" />
+			<Class name="net.sf.oval.internal.util.SerializableConstructor" />
+			<Class name="net.sf.oval.internal.util.SerializableMethod" />
+		</Or>
+		<Bug code="EI,EI2" />
+	</Match>
+	<Match>
+		<Or>
+			<Package name="net.sf.oval.test.constraints" />
+			<Package name="net.sf.oval.test.guard" />
+			<Package name="net.sf.oval.test.validator" />
+		</Or>
+		<Bug
+			pattern="MF_CLASS_MASKS_FIELD,HE_EQUALS_USE_HASHCODE,ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD,UUF_UNUSED_FIELD,HE_HASHCODE_USE_OBJECT_EQUALS,URF_UNREAD_FIELD,SIC_INNER_SHOULD_BE_STATIC_ANON" />
+	</Match>
+	<Match>
+		<Package name="net.sf.oval.constraint" />
+		<Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+	</Match>
+	<Match>
+		<!-- AspectJ code -->
+		<Method name="~^init\$_aroundBody\d+\$advice.*$" />
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+	</Match>
+	 
+     <!-- Match all XYZ violations. -->
+	<Match>
+		<Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" />
+	</Match>
+</FindBugsFilter>
