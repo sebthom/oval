@@ -44,7 +44,7 @@ public class ClassChecks
 {
 	private static final Log LOG = Log.getLog(ClassChecks.class);
 
-	private final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = " Class does not implement IsGuarded interface. This is an indicator, that constraints guarding is possibly not activated for this class.";
+	private static final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = " Class does not implement IsGuarded interface. This is an indicator, that constraints guarding is possibly not activated for this class.";
 
 	/**
 	 * compound constraints / object level invariants
@@ -127,8 +127,10 @@ public class ClassChecks
 		final int paramCount = constructor.getParameterTypes().length;
 
 		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		{
 			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
 					+ (paramCount - 1) + ")");
+		}
 
 		synchronized (checksForConstructorParameters)
 		{
@@ -175,8 +177,10 @@ public class ClassChecks
 		final int paramCount = constructor.getParameterTypes().length;
 
 		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		{
 			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
 					+ (paramCount - 1) + ")");
+		}
 
 		synchronized (checksForConstructorParameters)
 		{
@@ -247,8 +251,10 @@ public class ClassChecks
 		final int paramCount = method.getParameterTypes().length;
 
 		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		{
 			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
 					+ (paramCount - 1) + ")");
+		}
 
 		synchronized (checksForMethodParameters)
 		{
@@ -292,8 +298,10 @@ public class ClassChecks
 		final int paramCount = method.getParameterTypes().length;
 
 		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		{
 			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
 					+ (paramCount - 1) + ")");
+		}
 
 		synchronized (checksForMethodParameters)
 		{
@@ -388,12 +396,16 @@ public class ClassChecks
 	{
 		// ensure the method has a return type
 		if (method.getReturnType() == Void.TYPE)
+		{
 			throw new InvalidConfigurationException("Adding return value constraints for method " + method
 					+ " is not possible. The method is declared as void and does not return any values.");
+		}
 
 		if (ReflectionUtils.isVoidMethod(method))
+		{
 			throw new InvalidConfigurationException("Cannot apply method return value constraints for void method "
 					+ method);
+		}
 
 		final boolean hasParameters = method.getParameterTypes().length > 0;
 
@@ -904,7 +916,9 @@ public class ClassChecks
 			final CheckExclusion... exclusions)
 	{
 		if (parameterIndex < 0 || parameterIndex > method.getParameterTypes().length)
+		{
 			throw new InvalidConfigurationException("ParameterIndex is out of range");
+		}
 
 		synchronized (checksForMethodParameters)
 		{
@@ -932,7 +946,9 @@ public class ClassChecks
 			throws InvalidConfigurationException
 	{
 		if (parameterIndex < 0 || parameterIndex > method.getParameterTypes().length)
+		{
 			throw new InvalidConfigurationException("ParameterIndex is out of range");
+		}
 
 		synchronized (checksForMethodParameters)
 		{

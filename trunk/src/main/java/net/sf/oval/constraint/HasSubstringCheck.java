@@ -14,6 +14,7 @@ package net.sf.oval.constraint;
 
 import static net.sf.oval.Validator.getCollectionFactory;
 
+import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -44,6 +45,18 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
+		messageVariables.put("substring", substring);
+		return messageVariables;
+	}
+
+	/**
 	 * @return the substring
 	 */
 	public String getSubstring()
@@ -55,7 +68,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	{
 		if (substringLowerCase == null && substring != null)
 		{
-			substringLowerCase = substring.toLowerCase();
+			substringLowerCase = substring.toLowerCase(Locale.getDefault());
 		}
 		return substringLowerCase;
 	}
@@ -76,7 +89,8 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	{
 		if (valueToValidate == null) return true;
 
-		if (ignoreCase) return valueToValidate.toString().toLowerCase().indexOf(getSubstringLowerCase()) > -1;
+		if (ignoreCase)
+			return valueToValidate.toString().toLowerCase(Locale.getDefault()).indexOf(getSubstringLowerCase()) > -1;
 
 		return valueToValidate.toString().indexOf(substring) > -1;
 	}
@@ -97,17 +111,5 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	{
 		this.substring = substring;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("substring", substring);
-		return messageVariables;
 	}
 }

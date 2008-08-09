@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.Locale;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -163,7 +164,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			}
 
 			// Check whether the URI scheme is supported
-			if (!isURISchemeValid(scheme.toLowerCase())) return false;
+			if (!isURISchemeValid(scheme.toLowerCase(Locale.getDefault()))) return false;
 
 			// If the connect flag is true then attempt to connect to the URL
 			if (connect) return canConnect(URIString);

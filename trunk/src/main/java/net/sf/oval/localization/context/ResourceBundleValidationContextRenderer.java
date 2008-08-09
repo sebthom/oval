@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.localization.context;
 
+import java.util.Enumeration;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -49,6 +50,15 @@ public class ResourceBundleValidationContextRenderer implements OValContextRende
 	private final static Log LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
 
 	public final static ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
+
+	private boolean containsKey(final ResourceBundle bundle, final String key)
+	{
+		for (final Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();)
+		{
+			if (en.nextElement().equals(key)) return true;
+		}
+		return false;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -106,7 +116,7 @@ public class ResourceBundleValidationContextRenderer implements OValContextRende
 		try
 		{
 			final ResourceBundle bundle = ResourceBundle.getBundle(baseName);
-			if (bundle.containsKey(key)) return bundle.getString(key);
+			if (containsKey(bundle, key)) return bundle.getString(key);
 			LOG.debug("Key {1} not found in bundle {2}", key, baseName);
 		}
 		catch (final MissingResourceException ex)

@@ -204,7 +204,7 @@ public class ConstraintViolation implements Serializable
 	 * @param out
 	 * @throws IOException
 	 */
-	private synchronized void writeObject(final java.io.ObjectOutputStream out) throws IOException
+	private void writeObject(final java.io.ObjectOutputStream out) throws IOException
 	{
 		out.defaultWriteObject();
 		if (validatedObject instanceof Serializable)

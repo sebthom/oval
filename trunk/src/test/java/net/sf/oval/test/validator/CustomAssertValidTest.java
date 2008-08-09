@@ -104,7 +104,7 @@ public class CustomAssertValidTest extends TestCase
 		int severity() default 0;
 	}
 
-	public class CustomAssertValidCheck extends AbstractAnnotationCheck<CustomAssertValid>
+	public static class CustomAssertValidCheck extends AbstractAnnotationCheck<CustomAssertValid>
 	{
 		private static final long serialVersionUID = 1L;
 

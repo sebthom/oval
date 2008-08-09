@@ -91,6 +91,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
  * XStream (http://xstream.codehaus.org/) based XML configuration class.
@@ -166,6 +167,21 @@ public class XMLConfigurer implements Configurer
 		}
 	}
 
+	protected final static class ListConverter extends CollectionConverter
+	{
+		public ListConverter(final Mapper mapper)
+		{
+			super(mapper);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean canConvert(final Class type)
+		{
+			return List.class.isAssignableFrom(type);
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
@@ -193,15 +209,7 @@ public class XMLConfigurer implements Configurer
 
 	protected final void configureXStream()
 	{
-		xStream.registerConverter(new CollectionConverter(xStream.getMapper())
-			{
-				@SuppressWarnings("unchecked")
-				@Override
-				public boolean canConvert(final Class type)
-				{
-					return List.class.isAssignableFrom(type);
-				}
-			});
+		xStream.registerConverter(new ListConverter(xStream.getMapper()));
 		xStream.registerConverter(new AssertCheckConverter());
 
 		xStream.useAttributeFor(Class.class);

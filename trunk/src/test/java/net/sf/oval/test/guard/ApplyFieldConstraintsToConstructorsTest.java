@@ -27,7 +27,7 @@ import net.sf.oval.guard.Guarded;
 public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 {
 	@Guarded(applyFieldConstraintsToConstructors = true, checkInvariants = false)
-	private class Person
+	private static class Person
 	{
 		@SuppressWarnings("unused")
 		@AssertTrue(message = "ASSERT_TRUE")
@@ -48,8 +48,7 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 		@MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
 		private String zipCode = "1";
 
-		public Person(final boolean isValid, final String firstName, final String lastName,
-				final String zipCode)
+		public Person(final boolean isValid, final String firstName, final String lastName, final String zipCode)
 		{
 			super();
 			this.isValid = isValid;

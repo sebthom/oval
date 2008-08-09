@@ -26,14 +26,12 @@ public class AssertURLTest extends AbstractContraintsTest
 
 	public void testAssertURL()
 	{
-		URIScheme[] actualPermittedSchemes = null;
-
 		final AssertURLCheck check = new AssertURLCheck();
 		super.testCheck(check);
 		Assert.assertNull(check.getPermittedURISchemes());
 
 		check.setPermittedURISchemes(AssertURLTest.permittedSchemes);
-		actualPermittedSchemes = check.getPermittedURISchemes();
+		final URIScheme[] actualPermittedSchemes = check.getPermittedURISchemes();
 		Assert.assertNotNull(actualPermittedSchemes);
 		Assert.assertEquals(AssertURLTest.permittedSchemes.length, actualPermittedSchemes.length);
 		for (int n = 0; n < AssertURLTest.permittedSchemes.length; n++)

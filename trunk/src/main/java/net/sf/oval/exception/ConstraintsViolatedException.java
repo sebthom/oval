@@ -34,7 +34,7 @@ public class ConstraintsViolatedException extends OValException
 	 */
 	public ConstraintsViolatedException(final ConstraintViolation... constraintViolations)
 	{
-		// the message of the first occuring constraint violation will be used
+		// the message of the first occurring constraint violation will be used
 		super(constraintViolations[0].getMessage());
 
 		this.constraintViolations = constraintViolations;
@@ -45,15 +45,14 @@ public class ConstraintsViolatedException extends OValException
 	 */
 	public ConstraintsViolatedException(final List<ConstraintViolation> constraintViolations)
 	{
-		// the message of the first occuring constraint violation will be used
+		// the message of the first occurring constraint violation will be used
 		super(constraintViolations.get(0).getMessage());
 
-		this.constraintViolations = constraintViolations
-				.toArray(new ConstraintViolation[constraintViolations.size()]);
+		this.constraintViolations = constraintViolations.toArray(new ConstraintViolation[constraintViolations.size()]);
 	}
 
 	/**
-	 * @return the id of the thread in which the violations occured
+	 * @return the id of the thread in which the violations occurred
 	 */
 	public long getCausingThreadId()
 	{
