@@ -47,42 +47,49 @@ import net.sf.oval.guard.PreValidateThis;
  */
 public class AnnotationsConfigurer implements Configurer
 {
+	private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations,
+			final Class< ? >[] parameterTypes)
+	{
+		final List<ParameterConfiguration> paramCfg = getCollectionFactory().createList(2);
+
+		// loop over all parameters of the current constructor
+		for (int i = 0; i < paramAnnotations.length; i++)
+		{
+			final List<Check> paramChecks = getCollectionFactory().createList(2);
+			final List<CheckExclusion> paramCheckExclusions = getCollectionFactory().createList(2);
+
+			// loop over all annotations of the current constructor parameter
+			for (final Annotation annotation : paramAnnotations[i])
+			{
+				// check if the current annotation is a constraint annotation
+				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
+					paramChecks.add(initializeCheck(annotation));
+				}
+
+				// check if the current annotation is a exclusion annotation
+				else if (annotation.annotationType().isAnnotationPresent(Exclusion.class))
+				{
+					paramCheckExclusions.add(initializeExclusion(annotation));
+				}
+			}
+
+			final ParameterConfiguration pc = new ParameterConfiguration();
+			paramCfg.add(pc);
+			pc.type = parameterTypes[i];
+			pc.checks = paramChecks.size() == 0 ? null : paramChecks;
+			pc.checkExclusions = paramCheckExclusions.size() == 0 ? null : paramCheckExclusions;
+		}
+		return paramCfg;
+	}
+
 	protected void configureConstructorParameterChecks(final ClassConfiguration classCfg)
 	{
 		for (final Constructor< ? > ctor : classCfg.type.getDeclaredConstructors())
 		{
-			final List<ParameterConfiguration> paramCfg = getCollectionFactory().createList(2);
+			final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(),
+					ctor.getParameterTypes());
 
-			final Annotation[][] paramAnnotations = ctor.getParameterAnnotations();
-
-			// loop over all parameters of the current constructor
-			for (int i = 0; i < paramAnnotations.length; i++)
-			{
-				final List<Check> paramChecks = getCollectionFactory().createList(2);
-				final List<CheckExclusion> paramCheckExclusions = getCollectionFactory().createList(2);
-
-				// loop over all annotations of the current constructor parameter
-				for (final Annotation annotation : paramAnnotations[i])
-				{
-					// check if the current annotation is a constraint annotation
-					if (annotation.annotationType().isAnnotationPresent(Constraint.class))
-					{
-						paramChecks.add(initializeCheck(annotation));
-					}
-
-					// check if the current annotation is a exclusion annotation
-					else if (annotation.annotationType().isAnnotationPresent(Exclusion.class))
-					{
-						paramCheckExclusions.add(initializeExclusion(annotation));
-					}
-				}
-
-				final ParameterConfiguration pc = new ParameterConfiguration();
-				paramCfg.add(pc);
-				pc.type = ctor.getParameterTypes()[i];
-				pc.checks = paramChecks.size() == 0 ? null : paramChecks;
-				pc.checkExclusions = paramCheckExclusions.size() == 0 ? null : paramCheckExclusions;
-			}
 			final boolean postValidateThis = ctor.isAnnotationPresent(PostValidateThis.class);
 
 			if (paramCfg.size() > 0 | postValidateThis)
@@ -180,38 +187,8 @@ public class AnnotationsConfigurer implements Configurer
 			/*
 			 * determine parameter checks
 			 */
-			final List<ParameterConfiguration> paramCfg = getCollectionFactory().createList(2);
-
-			final Annotation[][] paramAnnotations = method.getParameterAnnotations();
-
-			// loop over all parameters of the current method
-			for (int i = 0; i < paramAnnotations.length; i++)
-			{
-				final List<Check> paramChecks = getCollectionFactory().createList(2);
-				final List<CheckExclusion> paramCheckExclusions = getCollectionFactory().createList(2);
-
-				// loop over all annotations of the current method parameter
-				for (final Annotation annotation : paramAnnotations[i])
-				{
-					// check if the current annotation is a constraint annotation
-					if (annotation.annotationType().isAnnotationPresent(Constraint.class))
-					{
-						paramChecks.add(initializeCheck(annotation));
-					}
-
-					// check if the current annotation is a exclusion annotation
-					else if (annotation.annotationType().isAnnotationPresent(Exclusion.class))
-					{
-						paramCheckExclusions.add(initializeExclusion(annotation));
-					}
-				}
-
-				final ParameterConfiguration pc = new ParameterConfiguration();
-				paramCfg.add(pc);
-				pc.type = method.getParameterTypes()[i];
-				pc.checks = paramChecks.size() == 0 ? null : paramChecks;
-				pc.checkExclusions = paramCheckExclusions.size() == 0 ? null : paramCheckExclusions;
-			}
+			final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(method
+					.getParameterAnnotations(), method.getParameterTypes());
 
 			// check if anything has been configured for this method at all
 			if (paramCfg.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0 || postChecks.size() > 0
