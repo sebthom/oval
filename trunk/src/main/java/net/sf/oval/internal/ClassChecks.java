@@ -124,43 +124,18 @@ public class ClassChecks
 	private void _addConstructorParameterCheckExclusions(final Constructor< ? > constructor, final int parameterIndex,
 			final Object exclusions) throws InvalidConfigurationException
 	{
-		final int paramCount = constructor.getParameterTypes().length;
+		final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor,
+				parameterIndex);
 
-		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		if (exclusions instanceof Collection)
 		{
-			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
-					+ (paramCount - 1) + ")");
+			@SuppressWarnings("unchecked")
+			final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
+			checksOfConstructorParameter.checkExclusions.addAll(exclusionsColl);
 		}
-
-		synchronized (checksForConstructorParameters)
+		else
 		{
-			// retrieve the currently registered checks for all parameters of the specified constructor
-			Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters
-					.get(constructor);
-			if (checksOfConstructorByParameter == null)
-			{
-				checksOfConstructorByParameter = getCollectionFactory().createMap(paramCount);
-				checksForConstructorParameters.put(constructor, checksOfConstructorByParameter);
-			}
-
-			// retrieve the checks for the specified parameter
-			ParameterChecks checksOfConstructorParameter = checksOfConstructorByParameter.get(parameterIndex);
-			if (checksOfConstructorParameter == null)
-			{
-				checksOfConstructorParameter = new ParameterChecks();
-				checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
-			}
-
-			if (exclusions instanceof Collection)
-			{
-				@SuppressWarnings("unchecked")
-				final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
-				checksOfConstructorParameter.checkExclusions.addAll(exclusionsColl);
-			}
-			else
-			{
-				ArrayUtils.addAll(checksOfConstructorParameter.checkExclusions, (CheckExclusion[]) exclusions);
-			}
+			ArrayUtils.addAll(checksOfConstructorParameter.checkExclusions, (CheckExclusion[]) exclusions);
 		}
 	}
 
@@ -174,43 +149,18 @@ public class ClassChecks
 							+ GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
 		}
 
-		final int paramCount = constructor.getParameterTypes().length;
+		final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor,
+				parameterIndex);
 
-		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		if (checks instanceof Collection)
 		{
-			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
-					+ (paramCount - 1) + ")");
+			@SuppressWarnings("unchecked")
+			final Collection<Check> checksColl = (Collection<Check>) checks;
+			checksOfConstructorParameter.checks.addAll(checksColl);
 		}
-
-		synchronized (checksForConstructorParameters)
+		else
 		{
-			// retrieve the currently registered checks for all parameters of the specified constructor
-			Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters
-					.get(constructor);
-			if (checksOfConstructorByParameter == null)
-			{
-				checksOfConstructorByParameter = getCollectionFactory().createMap(paramCount);
-				checksForConstructorParameters.put(constructor, checksOfConstructorByParameter);
-			}
-
-			// retrieve the checks for the specified parameter
-			ParameterChecks checksOfConstructorParameter = checksOfConstructorByParameter.get(parameterIndex);
-			if (checksOfConstructorParameter == null)
-			{
-				checksOfConstructorParameter = new ParameterChecks();
-				checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
-			}
-
-			if (checks instanceof Collection)
-			{
-				@SuppressWarnings("unchecked")
-				final Collection<Check> checksColl = (Collection<Check>) checks;
-				checksOfConstructorParameter.checks.addAll(checksColl);
-			}
-			else
-			{
-				ArrayUtils.addAll(checksOfConstructorParameter.checks, (Check[]) checks);
-			}
+			ArrayUtils.addAll(checksOfConstructorParameter.checks, (Check[]) checks);
 		}
 	}
 
@@ -248,42 +198,17 @@ public class ClassChecks
 	private void _addMethodParameterCheckExclusions(final Method method, final int parameterIndex,
 			final Object exclusions) throws InvalidConfigurationException
 	{
-		final int paramCount = method.getParameterTypes().length;
+		final ParameterChecks checksOfMethodParameter = _getChecksOfMethodParameter(method, parameterIndex);
 
-		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		if (exclusions instanceof Collection)
 		{
-			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
-					+ (paramCount - 1) + ")");
+			@SuppressWarnings("unchecked")
+			final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
+			checksOfMethodParameter.checkExclusions.addAll(exclusionsColl);
 		}
-
-		synchronized (checksForMethodParameters)
+		else
 		{
-			// retrieve the currently registered checks for all parameters of the specified method
-			Map<Integer, ParameterChecks> checksOfMethodByParameter = checksForMethodParameters.get(method);
-			if (checksOfMethodByParameter == null)
-			{
-				checksOfMethodByParameter = getCollectionFactory().createMap(paramCount);
-				checksForMethodParameters.put(method, checksOfMethodByParameter);
-			}
-
-			// retrieve the checks for the specified parameter
-			ParameterChecks checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
-			if (checksOfMethodParameter == null)
-			{
-				checksOfMethodParameter = new ParameterChecks();
-				checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
-			}
-
-			if (exclusions instanceof Collection)
-			{
-				@SuppressWarnings("unchecked")
-				final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
-				checksOfMethodParameter.checkExclusions.addAll(exclusionsColl);
-			}
-			else
-			{
-				ArrayUtils.addAll(checksOfMethodParameter.checkExclusions, (CheckExclusion[]) exclusions);
-			}
+			ArrayUtils.addAll(checksOfMethodParameter.checkExclusions, (CheckExclusion[]) exclusions);
 		}
 	}
 
@@ -295,42 +220,17 @@ public class ClassChecks
 			LOG.warn("Method parameter constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
 		}
 
-		final int paramCount = method.getParameterTypes().length;
+		final ParameterChecks checksOfMethodParameter = _getChecksOfMethodParameter(method, parameterIndex);
 
-		if (parameterIndex < 0 || parameterIndex >= paramCount)
+		if (checks instanceof Collection)
 		{
-			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
-					+ (paramCount - 1) + ")");
+			@SuppressWarnings("unchecked")
+			final Collection<Check> checksColl = (Collection<Check>) checks;
+			checksOfMethodParameter.checks.addAll(checksColl);
 		}
-
-		synchronized (checksForMethodParameters)
+		else
 		{
-			// retrieve the currently registered checks for all parameters of the specified method
-			Map<Integer, ParameterChecks> checksOfMethodByParameter = checksForMethodParameters.get(method);
-			if (checksOfMethodByParameter == null)
-			{
-				checksOfMethodByParameter = getCollectionFactory().createMap(paramCount);
-				checksForMethodParameters.put(method, checksOfMethodByParameter);
-			}
-
-			// retrieve the checks for the specified parameter
-			ParameterChecks checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
-			if (checksOfMethodParameter == null)
-			{
-				checksOfMethodParameter = new ParameterChecks();
-				checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
-			}
-
-			if (checks instanceof Collection)
-			{
-				@SuppressWarnings("unchecked")
-				final Collection<Check> checksColl = (Collection<Check>) checks;
-				checksOfMethodParameter.checks.addAll(checksColl);
-			}
-			else
-			{
-				ArrayUtils.addAll(checksOfMethodParameter.checks, (Check[]) checks);
-			}
+			ArrayUtils.addAll(checksOfMethodParameter.checks, (Check[]) checks);
 		}
 	}
 
@@ -396,16 +296,12 @@ public class ClassChecks
 	{
 		// ensure the method has a return type
 		if (method.getReturnType() == Void.TYPE)
-		{
 			throw new InvalidConfigurationException("Adding return value constraints for method " + method
 					+ " is not possible. The method is declared as void and does not return any values.");
-		}
 
 		if (ReflectionUtils.isVoidMethod(method))
-		{
 			throw new InvalidConfigurationException("Cannot apply method return value constraints for void method "
 					+ method);
-		}
 
 		final boolean hasParameters = method.getParameterTypes().length > 0;
 
@@ -461,6 +357,68 @@ public class ClassChecks
 			{
 				ArrayUtils.addAll(methodChecks, (Check[]) checks);
 			}
+		}
+	}
+
+	private ParameterChecks _getChecksOfConstructorParameter(final Constructor< ? > constructor,
+			final int parameterIndex)
+	{
+		final int paramCount = constructor.getParameterTypes().length;
+
+		if (parameterIndex < 0 || parameterIndex >= paramCount)
+			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
+					+ (paramCount - 1) + ")");
+
+		synchronized (checksForConstructorParameters)
+		{
+			// retrieve the currently registered checks for all parameters of the specified constructor
+			Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters
+					.get(constructor);
+			if (checksOfConstructorByParameter == null)
+			{
+				checksOfConstructorByParameter = getCollectionFactory().createMap(paramCount);
+				checksForConstructorParameters.put(constructor, checksOfConstructorByParameter);
+			}
+
+			// retrieve the checks for the specified parameter
+			ParameterChecks checksOfConstructorParameter = checksOfConstructorByParameter.get(parameterIndex);
+			if (checksOfConstructorParameter == null)
+			{
+				checksOfConstructorParameter = new ParameterChecks();
+				checksOfConstructorByParameter.put(parameterIndex, checksOfConstructorParameter);
+			}
+
+			return checksOfConstructorParameter;
+		}
+	}
+
+	private ParameterChecks _getChecksOfMethodParameter(final Method method, final int parameterIndex)
+	{
+		final int paramCount = method.getParameterTypes().length;
+
+		if (parameterIndex < 0 || parameterIndex >= paramCount)
+			throw new InvalidConfigurationException("ParameterIndex " + parameterIndex + " is out of range (0-"
+					+ (paramCount - 1) + ")");
+
+		synchronized (checksForMethodParameters)
+		{
+			// retrieve the currently registered checks for all parameters of the specified method
+			Map<Integer, ParameterChecks> checksOfMethodByParameter = checksForMethodParameters.get(method);
+			if (checksOfMethodByParameter == null)
+			{
+				checksOfMethodByParameter = getCollectionFactory().createMap(paramCount);
+				checksForMethodParameters.put(method, checksOfMethodByParameter);
+			}
+
+			// retrieve the checks for the specified parameter
+			ParameterChecks checksOfMethodParameter = checksOfMethodByParameter.get(parameterIndex);
+			if (checksOfMethodParameter == null)
+			{
+				checksOfMethodParameter = new ParameterChecks();
+				checksOfMethodByParameter.put(parameterIndex, checksOfMethodParameter);
+			}
+
+			return checksOfMethodParameter;
 		}
 	}
 
@@ -916,9 +874,7 @@ public class ClassChecks
 			final CheckExclusion... exclusions)
 	{
 		if (parameterIndex < 0 || parameterIndex > method.getParameterTypes().length)
-		{
 			throw new InvalidConfigurationException("ParameterIndex is out of range");
-		}
 
 		synchronized (checksForMethodParameters)
 		{
@@ -946,9 +902,7 @@ public class ClassChecks
 			throws InvalidConfigurationException
 	{
 		if (parameterIndex < 0 || parameterIndex > method.getParameterTypes().length)
-		{
 			throw new InvalidConfigurationException("ParameterIndex is out of range");
-		}
 
 		synchronized (checksForMethodParameters)
 		{

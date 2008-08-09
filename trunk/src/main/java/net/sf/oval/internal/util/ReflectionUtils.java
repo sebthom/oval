@@ -406,6 +406,6 @@ public final class ReflectionUtils
 
 	private ReflectionUtils()
 	{
-	// do nothing
+		super();
 	}
 }
