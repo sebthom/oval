@@ -324,7 +324,11 @@
 			<!-- phase: generate-resources -->
 			<!-- ********************************************************************************** -->
 			<plugin>
-				<!-- better docbook support -->
+				<!-- 
+					better docbook support 
+					see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin
+					manual: mvn docbkx:generate-html
+				-->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
 				<executions>
