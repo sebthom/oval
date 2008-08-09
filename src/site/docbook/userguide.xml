@@ -1203,7 +1203,7 @@ private void applyInputValues(Person person, PersonInputForm inputForm)
 
         <programlisting>public class UpperCaseCheck extends AbstractAnnotationCheck&lt;UpperCase&gt;
 {
-  public boolean isSatisfied(Object validatable, Object value)
+  public boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator)
   {
     if (value == null) return true;
 
@@ -1297,11 +1297,11 @@ public @interface UpperCase
         <para>If required, you can introduce additional variables - e.g. which
         reflect additional configuration properties of your constraint such as
         {max}, {min}, {size} - by overriding the
-        <command>getMessageVariables</command> method of your custom check
+        <command>createMessageVariables</command> method of your custom check
         class:</para>
 
         <programlisting>@Override
-public Map&lt;String, String&gt; getMessageVariables()
+public Map&lt;String, String&gt; createMessageVariables()
 {
   Map&lt;String, String&gt; messageVariables = new HashMap&lt;String, String&gt;(2)
   messageVariables.put("max", Integer.toString(max));
@@ -1317,16 +1317,17 @@ public Map&lt;String, String&gt; getMessageVariables()
       <listitem>
         <para>Register your message bundle with OVal:</para>
 
-        <programlisting>net.sf.oval.MessageResolverImpl mr = (net.sf.oval.MessageResolverImpl) Validator.getMessageResolver();
-mr.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
+        <programlisting>ResourceBundleMessageResolver resolver = (ResourceBundleMessageResolver) Validator.getMessageResolver();
+resolver.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
 </programlisting>
 
         <para>If you would like to store your message strings other than in
         message bundles (e.g. in a database): Either implement the
         <command>MessageResolver</command> interface or extend the
-        <command>MessageResolverImpl</command> and then configure OVal using
-        the static <command>Validator.setMessageResolver(...)</command> method
-        to use an instance of your custom message resolver instead.</para>
+        <command>ResourceBundleMessageResolver</command> and then configure
+        OVal using the static
+        <command>Validator.setMessageResolver(...)</command> method to use an
+        instance of your custom message resolver instead.</para>
       </listitem>
     </orderedlist>
   </section>
@@ -1399,7 +1400,7 @@ mr.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
   @CheckWith(DayCheck.class)
   private int day;
 
-  private static class DayCheck implements SimpleCheck
+  private static class DayCheck implements CheckWithCheck.SimpleCheck
   {
     public boolean isSatisfied(Object validatedObject, Object value)
     {
@@ -1507,13 +1508,15 @@ Guard guard = new Guard(xmlConfigurer);
 
       <para>You may come across the requirement to turn on or off the checking
       of certain constraints across your domain model, e.g. based on some
-      configuration settings of the application instance. OVal helps you to
+      global configuration settings of the application. OVal helps you to
       implement this by introducing constraint profiles. For each declared
       constraint you can specify an infinite number of profiles this
       constraint belongs to. During runtime you then can enable or disable all
       constraints associated with a given profile by using the
       <command>disableProfile</command> , and <command>enableProfile</command>
-      methods of the <command>Validator</command> instance.</para>
+      methods of the <command>Validator</command> instance. Constraints not
+      having any profiles declared are automatically assigned a profile named
+      <command>default</command>.</para>
 
       <programlisting>public class Person
 {
@@ -1575,24 +1578,56 @@ v.validate(p);
       using the <command>Validator.addExpressionLanguage(languageId,
       expressionLanguage)</command> method. Then you can use the specified
       languageId with expression language aware constraint annotations such as
-      @Assert, @Pre, or @Post and start expressing constraints in the new
+      <command>@Assert</command>, <command>@Pre</command>, or
+      <command>@Post</command> and start expressing constraints in the new
       expression language.</para>
     </section>
 
     <section>
       <title>Spring integration</title>
-	  
-	  <section>
-          <title>Spring Validation</title>
-          <para>The class <command>net.sf.oval.integration.spring.SpringValidator</command> OVal 
-		  provides an implementation of Spring's <command>org.springframework.validation.Validator</command> interface and
-		  thus can be used for <ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/validation.html">Spring Validation</ulink>.
-		  </para>
-	  </section>
 
-	  <section>
-          <title>Guarding Spring Beans using Spring AOP</title>
-          <para></para>
+      <section>
+        <title>Spring Validation</title>
+
+        <para>The class
+        <command>net.sf.oval.integration.spring.SpringValidator</command> OVal
+        provides an implementation of Spring's
+        <command>org.springframework.validation.Validator</command> interface
+        and thus can be used for <ulink
+        url="http://static.springframework.org/spring/docs/2.5.x/reference/validation.html">Spring
+        Validation</ulink>.</para>
+      </section>
+
+      <section>
+        <title>Guarding Spring managed beans using Spring AOP</title>
+
+        <para>It is possible to use OVal's programming by contract feature
+        with AOP solutions other than AspectJ. Spring for example uses the AOP
+        Alliance API in conjunction with JDK or CGLib proxies to provide
+        certain features of AOP to Spring managed beans.</para>
+
+        <para>With the class
+        <command>net.sf.oval.guard.GuardInterceptor</command> we provide an
+        AOP Alliance implementation of the Guard aspect that enables you to
+        use OVal's guarding feature in conjunction with Spring managed beans
+        without the need for AspectJ.</para>
+
+        <para>Here is an example how to configure the guarding of the methods
+        of a Spring managed service. This configuration requires CGLIB to be
+        on the classpath.</para>
+
+        <programlisting language="xml">&lt;beans&gt;
+  &lt;bean id="myService" class="MyServiceImpl" /&gt;
+
+  &lt;bean id="ovalGuardInterceptor" class="net.sf.oval.guard.GuardInterceptor" /&gt;
+
+  &lt;bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"&gt;
+    &lt;property name="proxyTargetClass" value="true" /&gt;
+    &lt;property name="beanNames" value="*Service" /&gt;
+    &lt;property name="interceptorNames"&gt;&lt;list&gt;&lt;value&gt;ovalGuardInterceptor&lt;/value&gt;&lt;/list&gt;&lt;/property&gt;
+  &lt;/bean&gt;
+&lt;/beans&gt;
+</programlisting>
       </section>
     </section>
   </section>
@@ -1682,16 +1717,17 @@ v.validate(p);
     referencing OVal:</para>
 
     <itemizedlist>
-	   <listitem>
-        <para>Pre and post condition validation with OVal as intruments of software architecture (2008)</para>
+      <listitem>
+        <para>Pre and post condition validation with OVal as intruments of
+        software architecture (2008)</para>
 
         <para><ulink
         url="http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/">
         http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/
         </ulink></para>
       </listitem>
-	  
-	   <listitem>
+
+      <listitem>
         <para>OVal: The simple validation framework for Java (2008)</para>
 
         <para><ulink
@@ -1699,7 +1735,7 @@ v.validate(p);
         http://takezoe.blogspot.com/2008/03/oval-simple-validation-framework-for.html
         </ulink></para>
       </listitem>
-	
+
       <listitem>
         <para>Validación Java: OVal, una joya escondida (2007)</para>
 
@@ -1709,7 +1745,7 @@ v.validate(p);
         </ulink></para>
       </listitem>
 
-	  <listitem>
+      <listitem>
         <para>Die Pro-Pix Homepage - Design by Contract (2007)</para>
 
         <para><ulink
@@ -1717,7 +1753,7 @@ v.validate(p);
         http://pro-pix.de/joomla/index.php?option=com_content&amp;task=view&amp;id=39&amp;Itemid=1
         </ulink></para>
       </listitem>
-	  
+
       <listitem>
         <para>Nice library for constraint checking (2007)</para>
 
@@ -1737,7 +1773,8 @@ v.validate(p);
       </listitem>
 
       <listitem>
-        <para>In pursuit of code quality: Defensive programming with AOP (2007)</para>
+        <para>In pursuit of code quality: Defensive programming with AOP
+        (2007)</para>
 
         <para><ulink
         url="http://www-128.ibm.com/developerworks/java/library/j-cq01307/">
@@ -1787,43 +1824,51 @@ v.validate(p);
       <listitem>
         <para>Cayenne annotations</para>
 
-        <para><ulink url="http://sourceforge.net/projects/cayannotations/">http://sourceforge.net/projects/cayannotations/ </ulink></para>
+        <para><ulink
+        url="http://sourceforge.net/projects/cayannotations/">http://sourceforge.net/projects/cayannotations/
+        </ulink></para>
       </listitem>
 
       <listitem>
         <para>jsfatwork</para>
 
-        <para><ulink url="http://code.google.com/p/jsfatwork/">http://code.google.com/p/jsfatwork/</ulink></para>
+        <para><ulink
+        url="http://code.google.com/p/jsfatwork/">http://code.google.com/p/jsfatwork/</ulink></para>
       </listitem>
 
-	  <listitem>
+      <listitem>
         <para>mtn4java</para>
 
-        <para><ulink url="http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/">http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/</ulink></para>
+        <para><ulink
+        url="http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/">http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/</ulink></para>
       </listitem>
-  
+
       <listitem>
         <para>Polyforms</para>
 
-        <para><ulink url="http://code.google.com/p/polyforms/">http://code.google.com/p/polyforms/</ulink></para>
+        <para><ulink
+        url="http://code.google.com/p/polyforms/">http://code.google.com/p/polyforms/</ulink></para>
       </listitem>
-	
+
       <listitem>
         <para>rsser</para>
 
-        <para><ulink url="http://code.google.com/p/rsser/">http://code.google.com/p/rsser/</ulink></para>
+        <para><ulink
+        url="http://code.google.com/p/rsser/">http://code.google.com/p/rsser/</ulink></para>
       </listitem>
-	  
+
       <listitem>
         <para>saetc</para>
 
-        <para><ulink url="http://code.google.com/p/saetc/">http://code.google.com/p/saetc/</ulink></para>
+        <para><ulink
+        url="http://code.google.com/p/saetc/">http://code.google.com/p/saetc/</ulink></para>
       </listitem>
-	  
+
       <listitem>
         <para>ultimate-roundtrip</para>
 
-        <para><ulink url="http://code.google.com/p/ultimate-roundtrip/">http://code.google.com/p/ultimate-roundtrip/</ulink></para>
+        <para><ulink
+        url="http://code.google.com/p/ultimate-roundtrip/">http://code.google.com/p/ultimate-roundtrip/</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
