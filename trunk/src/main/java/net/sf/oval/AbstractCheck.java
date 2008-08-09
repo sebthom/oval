@@ -87,9 +87,11 @@ public abstract class AbstractCheck implements Check
 	}
 
 	/**
-	 * values that are used to fill place holders when rendering the error message.
+	 * Values that are used to fill place holders when rendering the error message.
 	 * A key "min" with a value "4" will replace the place holder {min} in an error message
 	 * like "Value cannot be smaller than {min}" with the string "4".
+	 * 
+	 * <b>Note:</b> Override {@link #createMessageVariables()} to create and fill the map
 	 * 
 	 * @return an unmodifiable map
 	 */
