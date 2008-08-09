@@ -69,6 +69,12 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Codehaus repository</id>
+			<url>http://repository.codehaus.org/</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<distributionManagement>
 		<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963</downloadUrl>
 		<repository>
@@ -88,6 +94,9 @@
 		<system>sourceforge</system>
 		<url>http://sourceforge.net/tracker/?group_id=145963</url>
 	</issueManagement>
+	<properties>
+		<version.java>1.5</version.java>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -122,7 +131,7 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -158,7 +167,7 @@
 		<dependency>
 			<groupId>org.jruby</groupId>
 			<artifactId>jruby</artifactId>
-			<version>1.1.2</version>
+			<version>1.1.3</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -225,7 +234,7 @@
 		<dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel</artifactId>
-			<version>1.3.4-java1.5</version>
+			<version>1.3.11-java${version.java}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -249,11 +258,10 @@
 		</dependency>
 	</dependencies>
 	<build>
-      	<plugins>
-			<!--
-				********************************************************************************** phase: validate
-				**********************************************************************************
-			-->
+		<plugins>
+			<!-- ********************************************************************************** -->
+			<!-- phase: validate -->
+			<!-- ********************************************************************************** -->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -282,17 +290,16 @@
 									<version>2.0.9</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>1.5</version>
+									<version>${version.java}</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<!--
-				********************************************************************************** phase: generate-sources
-				**********************************************************************************
-			-->
+			<!-- ********************************************************************************** -->
+			<!-- phase: generate-sources -->
+			<!-- ********************************************************************************** -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.1</version>
@@ -313,10 +320,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
-				********************************************************************************** phase: generate-resources
-				**********************************************************************************
-			-->
+			<!-- ********************************************************************************** -->
+			<!-- phase: generate-resources -->
+			<!-- ********************************************************************************** -->
 			<plugin>
 				<!-- better docbook support -->
 				<groupId>com.agilejava.docbkx</groupId>
@@ -396,15 +402,14 @@
 					<encoding>UTF8</encoding>
 				</configuration>
 			</plugin>
-			<!--
-				********************************************************************************** phase: compile
-				**********************************************************************************
-			-->
+			<!-- ********************************************************************************** -->
+			<!-- phase: compile -->
+			<!-- ********************************************************************************** -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -419,8 +424,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<complianceLevel>1.5</complianceLevel>
-					<source>1.5</source>
+					<complianceLevel>${version.java}</complianceLevel>
+					<source>${version.java}</source>
 					<testAspectDirectory>${basedir}/src/test/java</testAspectDirectory>
 					<aspectDirectory>${basedir}/src/main/java</aspectDirectory>
 				</configuration>
@@ -428,25 +433,24 @@
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjrt</artifactId>
-						<version>1.6.0</version>
+						<version>1.6.1</version>
 					</dependency>
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjtools</artifactId>
-						<version>1.6.0</version>
+						<version>1.6.1</version>
 					</dependency>
 				</dependencies>
 			</plugin>
-			<!--
-				********************************************************************************** phase: package
-				**********************************************************************************
-			-->
+			<!-- ********************************************************************************** -->
+			<!-- phase: package -->
+			<!-- ********************************************************************************** -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile>-->
 					<archive>
-						<manifestFile>src/main/java/META-INF/MANIFEST.MF</manifestFile>
+						<manifestFile>${basedir}/src/main/java/META-INF/MANIFEST.MF</manifestFile>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<Bundle-Version>${pom.version}</Bundle-Version>
@@ -531,7 +535,7 @@
 					<downloadSources>true</downloadSources>
 					<classpathContainers>
 						<classpathContainer>
-							org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5 
+							org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${version.java} 
 						</classpathContainer>
 					</classpathContainers>
 					<additionalProjectnatures>
@@ -570,9 +574,9 @@
 					<stylesheet>maven</stylesheet>
 					<linksource>true</linksource>
 					<links>
-						<link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+						<link>http://java.sun.com/j2se/${version.java}.0/docs/api/</link>
 					</links>
-					<source>1.5</source>
+					<source>${version.java}</source>
 					<destDir>api</destDir>
 				</configuration>
 				<reportSets>
@@ -631,14 +635,37 @@
 			</plugin>
 
 			<plugin>
+				<!-- This plugin produces a nicely formatted metrics report based on your project -->
 			    <artifactId>maven-pmd-plugin</artifactId>
 			    <configuration>
           			<linkXref>true</linkXref>
           			<sourceEncoding>utf-8</sourceEncoding>
           			<minimumTokens>100</minimumTokens>
-          			<targetJdk>1.5</targetJdk>
+          			<targetJdk>${version.java}</targetJdk>
         		</configuration>
 			</plugin>
+			
+			<plugin>
+				<!-- FindBugs looks for bugs in Java programs -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<excludeFilterFile>${basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
+					<xmlOutput>true</xmlOutput>
+					<effort>Max</effort>
+				</configuration>
+			</plugin>
+
+      		<plugin>
+        		<artifactId>maven-checkstyle-plugin</artifactId>
+	      	</plugin>
+
+      		<plugin>
+      			<!-- The basic purpose of "Maven Dashboard Report Plugin" is to centralize and share all quality informations generated by other Maven report plugins as -->
+        		<groupId>org.codehaus.mojo</groupId>
+        		<artifactId>dashboard-maven-plugin</artifactId>
+      		</plugin>
+
 
 			<!-- seems to be broken currently http://jira.codehaus.org/browse/MCLIRR-12
 				<plugin>

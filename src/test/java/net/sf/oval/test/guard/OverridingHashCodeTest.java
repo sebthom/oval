@@ -24,7 +24,7 @@ import net.sf.oval.guard.Guarded;
 public class OverridingHashCodeTest extends TestCase
 {
 	@Guarded
-	public class Entity
+	public static class Entity
 	{
 		@Override
 		public int hashCode()
@@ -32,8 +32,7 @@ public class OverridingHashCodeTest extends TestCase
 			return super.hashCode();
 		}
 
-		public void setFoo(@NotNull
-		final String s)
+		public void setFoo(@NotNull final String s)
 		{
 		//
 		}

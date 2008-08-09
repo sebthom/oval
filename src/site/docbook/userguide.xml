@@ -1592,6 +1592,7 @@ v.validate(p);
 
 	  <section>
           <title>Guarding Spring Beans using Spring AOP</title>
+          <para></para>
       </section>
     </section>
   </section>

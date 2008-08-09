@@ -32,7 +32,7 @@ import net.sf.oval.guard.Guarded;
 public class ApplyFieldConstraintsToParametersTest extends TestCase
 {
 	@Guarded
-	protected class Person
+	protected static class Person
 	{
 		@NotNull(message = "NOT_NULL")
 		private String firstName = "";
@@ -69,32 +69,27 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			return isValid;
 		}
 
-		public void setDummyFirstName(@AssertFieldConstraints(value = "firstName")
-		final String dummyFirstName)
+		public void setDummyFirstName(@AssertFieldConstraints(value = "firstName") final String dummyFirstName)
 		{
 		// doing interesting stuff here
 		}
 
-		public void setFirstName(@AssertFieldConstraints
-		final String firstName)
+		public void setFirstName(@AssertFieldConstraints final String firstName)
 		{
 			this.firstName = firstName;
 		}
 
-		public void setLastName(@AssertFieldConstraints
-		final String lastName)
+		public void setLastName(@AssertFieldConstraints final String lastName)
 		{
 			this.lastName = lastName;
 		}
 
-		public void setValid(@AssertFieldConstraints
-		final boolean isValid)
+		public void setValid(@AssertFieldConstraints final boolean isValid)
 		{
 			this.isValid = isValid;
 		}
 
-		public void setZipCode(@AssertFieldConstraints
-		final String zipCode)
+		public void setZipCode(@AssertFieldConstraints final String zipCode)
 		{
 			this.zipCode = zipCode;
 		}
@@ -164,8 +159,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 		}
 		{
-			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class< ? >[]{String.class});
+			final Method setter = p.getClass().getMethod("setZipCode2", new Class< ? >[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			guard.addChecks(setter, 0, check);
 			p.setZipCode2("dffd34");
@@ -176,8 +170,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			guard.removeChecks(setter, 0, check);
 		}
 		{
-			final Method setter = p.getClass().getMethod("setZipCode2",
-					new Class< ? >[]{String.class});
+			final Method setter = p.getClass().getMethod("setZipCode2", new Class< ? >[]{String.class});
 			final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
 			check.setFieldName("firstName");
 			guard.addChecks(setter, 0, check);

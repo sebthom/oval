@@ -23,7 +23,7 @@ import net.sf.oval.guard.Guarded;
 public class OverridingEqualsTest extends TestCase
 {
 	@Guarded
-	public class Entity
+	public static class Entity
 	{
 		protected int foo;
 

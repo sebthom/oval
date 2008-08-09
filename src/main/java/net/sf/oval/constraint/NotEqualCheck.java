@@ -14,6 +14,7 @@ package net.sf.oval.constraint;
 
 import static net.sf.oval.Validator.getCollectionFactory;
 
+import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -43,6 +44,18 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
+		messageVariables.put("testString", testString);
+		return messageVariables;
+	}
+
+	/**
 	 * @return the testString
 	 */
 	public String getTestString()
@@ -54,7 +67,7 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	{
 		if (testStringLowerCase == null && testString != null)
 		{
-			testStringLowerCase = testString.toLowerCase();
+			testStringLowerCase = testString.toLowerCase(Locale.getDefault());
 		}
 		return testStringLowerCase;
 	}
@@ -75,7 +88,8 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	{
 		if (valueToValidate == null) return true;
 
-		if (ignoreCase) return !valueToValidate.toString().toLowerCase().equals(getTestStringLowerCase());
+		if (ignoreCase)
+			return !valueToValidate.toString().toLowerCase(Locale.getDefault()).equals(getTestStringLowerCase());
 
 		return !valueToValidate.toString().equals(testString);
 	}
@@ -96,17 +110,5 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	{
 		this.testString = testString;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("testString", testString);
-		return messageVariables;
 	}
 }

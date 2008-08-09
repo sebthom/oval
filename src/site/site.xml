@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
+<!DOCTYPE project SYSTEM "../misc/maven-site.dtd">
+<!--  
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="http://maven.apache.org/maven-1.x/plugins/xdoc/maven-navigation.xsd"
+	xsi:noNamespaceSchemaLocation="http://maven.apache.org/maven-1.x/plugins/xdoc/maven-navigation.xsd/maven-navigation.xsd"
 	name="OVal - the object validation framework for Java&#8482; 5 or later">
+-->
+
+<project name="OVal - the object validation framework for Java&#8482; 5 or later">
 
 	<publishDate position="left" format="yyyy-MM-dd" />
 	<version position="left" />

@@ -15,6 +15,7 @@ package net.sf.oval.constraint;
 import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -46,6 +47,18 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
+		messageVariables.put("members", StringUtils.implode(members, ","));
+		return messageVariables;
+	}
+
+	/**
 	 * @return the members
 	 */
 	public List<String> getMembers()
@@ -62,7 +75,7 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 			membersLowerCase = getCollectionFactory().createList(members.size());
 			for (final String val : members)
 			{
-				membersLowerCase.add(val.toLowerCase());
+				membersLowerCase.add(val.toLowerCase(Locale.getDefault()));
 			}
 		}
 		return membersLowerCase;
@@ -84,7 +97,8 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 	{
 		if (valueToValidate == null) return true;
 
-		if (ignoreCase) return getMembersLowerCase().contains(valueToValidate.toString().toLowerCase());
+		if (ignoreCase)
+			return getMembersLowerCase().contains(valueToValidate.toString().toLowerCase(Locale.getDefault()));
 
 		return members.contains(valueToValidate.toString());
 	}
@@ -118,17 +132,5 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 		ArrayUtils.addAll(this.members, members);
 		membersLowerCase = null;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("members", StringUtils.implode(members, ","));
-		return messageVariables;
 	}
 }

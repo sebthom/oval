@@ -25,7 +25,7 @@ import net.sf.oval.exception.ConstraintsViolatedException;
  */
 public class ValidatorAssertTest extends TestCase
 {
-	protected class TestEntity
+	protected static class TestEntity
 	{
 		@NotNull(message = "NOT_NULL")
 		public String name;

@@ -28,7 +28,7 @@ public class ConcurrencyTest extends TestCase
 	{
 		@NotNull
 		@MaxLength(5)
-		protected String name;
+		public String name;
 
 		public String getName()
 		{
@@ -89,7 +89,7 @@ public class ConcurrencyTest extends TestCase
 							}
 						}
 					}
-					catch (final Exception ex)
+					catch (final RuntimeException ex)
 					{
 						ex.printStackTrace();
 						failed[0] = true;
@@ -127,7 +127,7 @@ public class ConcurrencyTest extends TestCase
 							}
 						}
 					}
-					catch (final Exception ex)
+					catch (final RuntimeException ex)
 					{
 						ex.printStackTrace();
 						failed[0] = true;

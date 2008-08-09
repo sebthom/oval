@@ -26,7 +26,7 @@ import net.sf.oval.guard.Guarded;
 public class CustomConstraintMessageTest extends TestCase
 {
 	@Guarded(applyFieldConstraintsToSetters = true)
-	protected class TestEntity
+	protected static class TestEntity
 	{
 		@Range(min = 2, max = 4, message = "An amount of {invalidValue} in not in the allowed range ({min}-{max})")
 		private int amount = 2;
@@ -92,8 +92,10 @@ public class CustomConstraintMessageTest extends TestCase
 			assertEquals(1, violations.length);
 
 			if (!CUSTOM_ERROR_MESSAGE.equals(violations[0].getMessage()))
+			{
 				fail("The returned error message <" + violations[0].getMessage()
 						+ "> does not equal the specified custom error message <" + CUSTOM_ERROR_MESSAGE + ">");
+			}
 		}
 
 		try
@@ -108,8 +110,10 @@ public class CustomConstraintMessageTest extends TestCase
 			assertEquals(1, violations.length);
 
 			if (!EXPECTED_RANGE_MESSAGE.equals(violations[0].getMessage()))
+			{
 				fail("The returned error message <" + violations[0].getMessage()
 						+ "> does not equal the specified custom error message <" + EXPECTED_RANGE_MESSAGE + ">");
+			}
 		}
 	}
 }

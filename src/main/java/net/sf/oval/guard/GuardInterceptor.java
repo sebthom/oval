@@ -17,6 +17,32 @@ import org.aopalliance.intercept.MethodInvocation;
  */
 public class GuardInterceptor implements MethodInterceptor, ConstructorInterceptor
 {
+	protected final static class MethodInvocable implements Invocable
+	{
+		private final MethodInvocation methodInvocation;
+
+		protected MethodInvocable(final MethodInvocation methodInvocation)
+		{
+			this.methodInvocation = methodInvocation;
+		}
+
+		public Object invoke() throws Exception
+		{
+			try
+			{
+				return methodInvocation.proceed();
+			}
+			catch (final Throwable e)
+			{
+				if (e instanceof Exception)
+				{
+					throw (Exception) e;
+				}
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	private final static Log LOG = Log.getLog(GuardInterceptor.class);
 
 	private Guard guard;
@@ -71,21 +97,7 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 	public Object invoke(final MethodInvocation methodInvocation) throws Throwable
 	{
 		return guard.guardMethod(methodInvocation.getThis(), methodInvocation.getMethod(), methodInvocation
-				.getArguments(), new Invocable()
-			{
-				public Object invoke() throws Exception
-				{
-					try
-					{
-						return methodInvocation.proceed();
-					}
-					catch (final Throwable e)
-					{
-						if (e instanceof Exception) throw (Exception) e;
-						throw new RuntimeException(e);
-					}
-				}
-			});
+				.getArguments(), new MethodInvocable(methodInvocation));
 	}
 
 	public void setGuard(final Guard guard)
