@@ -32,6 +32,7 @@ import net.sf.oval.context.MethodEntryContext;
 import net.sf.oval.context.MethodExitContext;
 import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.context.MethodReturnValueContext;
+import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.exception.OValException;
@@ -1113,32 +1114,7 @@ public class Guard extends Validator
 					final ConstructorParameterContext context = new ConstructorParameterContext(constructor, i,
 							parameterNames[i]);
 
-					// determine the active exclusions based on the active profiles
-					final List<CheckExclusion> activeExclusions = checks.hasExclusions()
-							? _getActiveExclusions(checks.checkExclusions) : null;
-
-					// check the constraints
-					for (final Check check : checks.checks)
-					{
-						boolean skip = false;
-
-						if (activeExclusions != null)
-						{
-							for (final CheckExclusion exclusion : activeExclusions)
-							{
-								if (exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
-								{
-									// skip if this check should be excluded
-									skip = true;
-									continue;
-								}
-							}
-						}
-						if (!skip)
-						{
-							checkConstraint(violations, check, validatedObject, valueToValidate, context);
-						}
-					}
+					validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
 				}
 			}
 			return violations.size() == 0 ? null : violations;
@@ -1199,33 +1175,7 @@ public class Guard extends Validator
 						final Object valueToValidate = args[i];
 						final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
 
-						// determine the active exclusions based on the active profiles
-						final List<CheckExclusion> activeExclusions = checks.hasExclusions()
-								? _getActiveExclusions(checks.checkExclusions) : null;
-
-						// check the constraints
-						for (final Check check : checks.checks)
-						{
-							boolean skip = false;
-
-							if (activeExclusions != null)
-							{
-								for (final CheckExclusion exclusion : activeExclusions)
-								{
-									if (exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context,
-											this))
-									{
-										// skip if this check should be excluded
-										skip = true;
-										continue;
-									}
-								}
-							}
-							if (!skip)
-							{
-								checkConstraint(violations, check, validatedObject, valueToValidate, context);
-							}
-						}
+						validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
 					}
 				}
 			}
@@ -1429,6 +1379,37 @@ public class Guard extends Validator
 		finally
 		{
 			currentlyCheckingMethodReturnValues.get().remove(key);
+		}
+	}
+
+	private void validateParameterChecks(final ParameterChecks checks, final Object validatedObject,
+			final Object valueToValidate, final OValContext context, final List<ConstraintViolation> violations)
+	{
+		// determine the active exclusions based on the active profiles
+		final List<CheckExclusion> activeExclusions = checks.hasExclusions()
+				? _getActiveExclusions(checks.checkExclusions) : null;
+
+		// check the constraints
+		for (final Check check : checks.checks)
+		{
+			boolean skip = false;
+
+			if (activeExclusions != null)
+			{
+				for (final CheckExclusion exclusion : activeExclusions)
+				{
+					if (exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
+					{
+						// skip if this check should be excluded
+						skip = true;
+						continue;
+					}
+				}
+			}
+			if (!skip)
+			{
+				checkConstraint(violations, check, validatedObject, valueToValidate, context);
+			}
 		}
 	}
 }
