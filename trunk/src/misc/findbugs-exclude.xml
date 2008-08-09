@@ -1,4 +1,7 @@
-<!DOCTYPE FindBugsFilter SYSTEM "findbugs-filter.dtd">
+<!-- this fails with the findbugs plugin <!DOCTYPE FindBugsFilter SYSTEM "findbugs-filter.dtd"> -->
+
+<!DOCTYPE FindBugsFilter PUBLIC "-//FindBugs/FindBugs Filter Configuration DTD 1.0//EN" "http://oval.sourceforge.net/misc/findbugs-filter.dtd">
+
 <FindBugsFilter>
 	<Match>
 		<Or>
