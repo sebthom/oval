@@ -15,7 +15,6 @@ package net.sf.oval.configuration;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.exception.InvalidConfigurationException;
-import net.sf.oval.exception.OValException;
 
 /**
  * @author Sebastian Thomschke
@@ -30,7 +29,7 @@ public interface Configurer
 	 * 
 	 * @param clazz
 	 * @return The constraint configurations for the given class.
-	 * @throws OValException
+	 * @throws InvalidConfigurationException
 	 */
 	ClassConfiguration getClassConfiguration(Class< ? > clazz) throws InvalidConfigurationException;
 
@@ -39,7 +38,7 @@ public interface Configurer
 	 * given Id.
 	 * @param constraintSetId
 	 * @return The constraint configuration for the constraint set with the given Id.
-	 * @throws OValException
+	 * @throws InvalidConfigurationException
 	 */
 	ConstraintSetConfiguration getConstraintSetConfiguration(String constraintSetId)
 			throws InvalidConfigurationException;
