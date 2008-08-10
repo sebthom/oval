@@ -46,6 +46,7 @@
 			<item name="Dependencies" href="dependencies.html" />
 			<item name="Roadmap" href="roadmap.html" />
 			<item name="Code Metrics" href="dashboard-report.html" />
+			<item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=145963" />
 		</menu>
 
 		<menu ref="reports" />
