@@ -1,0 +1,54 @@
+<!-- 
+
+<!DOCTYPE project SYSTEM "maven-site.dtd">
+
+-->
+
+<!-- generated with http://www.hitsw.com/xml_utilites/ -->
+
+<!ELEMENT bannerLeft ( name, src, href ) >
+
+<!ELEMENT body ( head, links, breadcrumbs?, menu+ ) >
+
+<!ELEMENT breadcrumbs ( item ) >
+
+<!ELEMENT head ( link ) >
+
+<!ELEMENT href ( #PCDATA ) >
+
+<!ELEMENT item EMPTY >
+<!ATTLIST item href CDATA #REQUIRED >
+<!ATTLIST item mce_href NMTOKEN #IMPLIED >
+<!ATTLIST item name CDATA #REQUIRED >
+
+<!ELEMENT link EMPTY >
+<!ATTLIST link href CDATA #REQUIRED >
+<!ATTLIST link rel CDATA #REQUIRED >
+<!ATTLIST link type CDATA #REQUIRED >
+
+<!ELEMENT links ( item ) >
+
+<!ELEMENT logo EMPTY >
+<!ATTLIST logo href CDATA #REQUIRED >
+<!ATTLIST logo img CDATA #REQUIRED >
+<!ATTLIST logo name NMTOKEN #REQUIRED >
+
+<!ELEMENT menu ( item* ) >
+<!ATTLIST menu name CDATA #IMPLIED >
+<!ATTLIST menu ref NMTOKEN #IMPLIED >
+
+<!ELEMENT name ( #PCDATA ) >
+
+<!ELEMENT poweredBy ( logo ) >
+
+<!ELEMENT project ( publishDate, version, bannerLeft, body, poweredBy ) >
+<!ATTLIST project name CDATA #REQUIRED >
+
+<!ELEMENT publishDate EMPTY >
+<!ATTLIST publishDate format NMTOKEN #REQUIRED >
+<!ATTLIST publishDate position NMTOKEN #REQUIRED >
+
+<!ELEMENT src ( #PCDATA ) >
+
+<!ELEMENT version EMPTY >
+<!ATTLIST version position NMTOKEN #REQUIRED >
