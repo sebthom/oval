@@ -39,6 +39,7 @@
 
 		<menu name="${project.name} ${project.version}">
 			<item name="About" href="index.html" />
+			<item name="New and Noteworthy" href="new_and_noteworthy.html" />
 			<item name="License" href="license.html" />
 			<item name="User Guide" href="userguide.html" />
 			<item name="API (JavaDoc)" href="api/index.html" />
