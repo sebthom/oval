@@ -42,8 +42,7 @@ public class ParameterConstraintsTest extends TestCase
 		 * 
 		 * @param name
 		 */
-		public TestEntity(@NotNull(message = "NOT_NULL")
-		final String name)
+		public TestEntity(@NotNull(message = "NOT_NULL") final String name)
 		{
 			this.name = name;
 		}
@@ -59,9 +58,7 @@ public class ParameterConstraintsTest extends TestCase
 			this.name = name;
 		}
 
-		public void setName(@NotNull(message = "NOT_NULL")
-		@Length(max = 4, message = "LENGTH")
-		final String name)
+		public void setName(@NotNull(message = "NOT_NULL") @Length(max = 4, message = "LENGTH") final String name)
 		{
 			this.name = name;
 		}
@@ -152,7 +149,7 @@ public class ParameterConstraintsTest extends TestCase
 
 		final TestEntity entity = new TestEntity("");
 
-		guard.setInProbeMode(entity, true);
+		guard.enableProbeMode(entity);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		guard.addListener(va, entity);

@@ -125,7 +125,7 @@ public class PrePostValidateThisTest extends TestCase
 	{
 		final TestEntity t = new TestEntity();
 
-		TestGuardAspect.aspectOf().getGuard().setInProbeMode(t, true);
+		TestGuardAspect.aspectOf().getGuard().enableProbeMode(t);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		TestGuardAspect.aspectOf().getGuard().addListener(va, t);

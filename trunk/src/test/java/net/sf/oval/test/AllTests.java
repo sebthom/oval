@@ -84,6 +84,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.PrePostValidateThisTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ProbeModeTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.StaticMethodsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.XMLConfigurationTest.class);
 	}
