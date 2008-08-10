@@ -1108,7 +1108,7 @@ public class Person
 ...
 
 /* *****************************************************
- * later in the model layer
+ * later in the business layer
  * *****************************************************/
 public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolatedException
 {
@@ -1117,39 +1117,32 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
   Guard guard = MyGuardAspect.aspectOf().getGuard();
 
   // enable the probe mode in the current thread for the person object
-  guard.setInProbeMode(person, true);
-  ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
-  guard.addListener(listener, p);
+  guard.enableProbeMode(person);
 
   // simulate applying the values to the person bean
-  applyInputValues(person, inputForm);
+  person.setName(inputForm.getName());
+  person.setAge(inputForm.getAge());
+  person.setZipCode(inputForm.getZipCode());
 
   // disable the probe mode in the current thread for the person object
-  guard.setInProbeMode(person, false);
-  guard.removeListener(listener, person);
+  ProbeModeListener result = guard.disableProbeMode(person);
 
   // check if any constraint violations occured
-  if(listener.getConstraintViolations().size() &gt; 0)
+  if(result.getConstraintViolations().size() &gt; 0)
   {
-     // throw a ConstraintsViolatedException that contains the collected constraint violations
-     throw new ConstraintsViolatedException(listener.getConstraintViolations());
-   }
+     // report the collected constraint violations to the UI layer
+     throw new ConstraintsViolatedException(result.getConstraintViolations());
+  }
   else
-   {
-    // really apply the values to the person bean
-    applyInputValues(person, inputForm);
+  {
+    // apply the values to the person bean
+    result.commit();
+
     dao.save(person);
     return person;
   }
 }
 
-private void applyInputValues(Person person, PersonInputForm inputForm)
-{
-  person.setName(inputForm.getName());
-  person.setAge(inputForm.getAge());
-  person.setZipCode(inputForm.getZipCode());
-  ...
-}
 </programlisting>
     </section>
 
