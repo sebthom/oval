@@ -58,7 +58,7 @@ import net.sf.oval.internal.util.ThreadLocalWeakHashSet;
  */
 public class Guard extends Validator
 {
-	private static final Log  LOG = Log.getLog(Guard.class);
+	private static final Log LOG = Log.getLog(Guard.class);
 
 	/**
 	 * string based on validated object hashcode + method hashcode for currently validated method return values
@@ -138,6 +138,37 @@ public class Guard extends Validator
 			}
 		}
 		return activeExclusions.size() == 0 ? null : activeExclusions;
+	}
+
+	private void _validateParameterChecks(final ParameterChecks checks, final Object validatedObject,
+			final Object valueToValidate, final OValContext context, final List<ConstraintViolation> violations)
+	{
+		// determine the active exclusions based on the active profiles
+		final List<CheckExclusion> activeExclusions = checks.hasExclusions()
+				? _getActiveExclusions(checks.checkExclusions) : null;
+
+		// check the constraints
+		for (final Check check : checks.checks)
+		{
+			boolean skip = false;
+
+			if (activeExclusions != null)
+			{
+				for (final CheckExclusion exclusion : activeExclusions)
+				{
+					if (exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
+					{
+						// skip if this check should be excluded
+						skip = true;
+						continue;
+					}
+				}
+			}
+			if (!skip)
+			{
+				checkConstraint(violations, check, validatedObject, valueToValidate, context);
+			}
+		}
 	}
 
 	/**
@@ -1114,7 +1145,7 @@ public class Guard extends Validator
 					final ConstructorParameterContext context = new ConstructorParameterContext(constructor, i,
 							parameterNames[i]);
 
-					validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
+					_validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
 				}
 			}
 			return violations.size() == 0 ? null : violations;
@@ -1126,6 +1157,9 @@ public class Guard extends Validator
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations)
 			throws IllegalArgumentException, ValidationFailedException
@@ -1175,7 +1209,7 @@ public class Guard extends Validator
 						final Object valueToValidate = args[i];
 						final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
 
-						validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
+						_validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
 					}
 				}
 			}
@@ -1379,37 +1413,6 @@ public class Guard extends Validator
 		finally
 		{
 			currentlyCheckingMethodReturnValues.get().remove(key);
-		}
-	}
-
-	private void validateParameterChecks(final ParameterChecks checks, final Object validatedObject,
-			final Object valueToValidate, final OValContext context, final List<ConstraintViolation> violations)
-	{
-		// determine the active exclusions based on the active profiles
-		final List<CheckExclusion> activeExclusions = checks.hasExclusions()
-				? _getActiveExclusions(checks.checkExclusions) : null;
-
-		// check the constraints
-		for (final Check check : checks.checks)
-		{
-			boolean skip = false;
-
-			if (activeExclusions != null)
-			{
-				for (final CheckExclusion exclusion : activeExclusions)
-				{
-					if (exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
-					{
-						// skip if this check should be excluded
-						skip = true;
-						continue;
-					}
-				}
-			}
-			if (!skip)
-			{
-				checkConstraint(violations, check, validatedObject, valueToValidate, context);
-			}
 		}
 	}
 }
