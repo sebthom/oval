@@ -37,6 +37,44 @@ public class AssertJavascriptTest extends TestCase
 		public String zipCode;
 	}
 
+	private static class TestRunner implements Runnable
+	{
+		private final boolean[] failed;
+		private final Validator validator;
+		private final Person person;
+
+		public TestRunner(final Validator validator, final Person person, final boolean[] failed)
+		{
+			this.validator = validator;
+			this.person = person;
+			this.failed = failed;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void run()
+		{
+			for (int i = 0; i < 500; i++)
+			{
+				// test not null
+				if (validator.validate(person).size() != 4)
+				{
+					failed[0] = true;
+				}
+
+				try
+				{
+					Thread.sleep(2);
+				}
+				catch (final InterruptedException e)
+				{
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
+	}
+
 	public void testConcurrency() throws InterruptedException
 	{
 		final Validator validator = new Validator();
@@ -44,52 +82,8 @@ public class AssertJavascriptTest extends TestCase
 		final Person person = new Person();
 
 		final boolean[] failed = {false};
-		final Thread thread1 = new Thread(new Runnable()
-			{
-				public void run()
-				{
-					for (int i = 0; i < 500; i++)
-					{
-						// test not null
-						if (validator.validate(person).size() != 4)
-						{
-							failed[0] = true;
-						}
-
-						try
-						{
-							Thread.sleep(2);
-						}
-						catch (final InterruptedException e)
-						{
-							Thread.currentThread().interrupt();
-						}
-					}
-				}
-			});
-		final Thread thread2 = new Thread(new Runnable()
-			{
-				public void run()
-				{
-					for (int i = 0; i < 500; i++)
-					{
-						// test not null
-						if (validator.validate(person).size() != 4)
-						{
-							failed[0] = true;
-						}
-
-						try
-						{
-							Thread.sleep(2);
-						}
-						catch (final InterruptedException e)
-						{
-							Thread.currentThread().interrupt();
-						}
-					}
-				}
-			});
+		final Thread thread1 = new Thread(new TestRunner(validator, person, failed));
+		final Thread thread2 = new Thread(new TestRunner(validator, person, failed));
 		thread1.start();
 		thread2.start();
 		thread1.join();
