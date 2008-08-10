@@ -29,7 +29,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 {
 	private static final long serialVersionUID = 1L;
 
-	private final static Log LOG = Log.getLog(AbstractAnnotationCheck.class);
+	private static final Log LOG = Log.getLog(AbstractAnnotationCheck.class);
 
 	/**
 	 * {@inheritDoc}

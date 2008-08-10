@@ -26,7 +26,7 @@ import net.sf.oval.internal.Log;
  */
 public class SerializableField implements Serializable
 {
-	private final static Log LOG = Log.getLog(SerializableField.class);
+	private static final Log  LOG = Log.getLog(SerializableField.class);
 
 	private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
 

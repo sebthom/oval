@@ -52,7 +52,7 @@ public abstract class AbstractCheck implements Check
 			final String className = getClass().getName();
 			if (className.endsWith("Check"))
 			{
-				errorCode = className.substring(0, getClass().getName().length() - 5);
+				errorCode = className.substring(0, getClass().getName().length() - "Check".length());
 			}
 			else
 			{
@@ -76,7 +76,7 @@ public abstract class AbstractCheck implements Check
 			final String className = getClass().getName();
 			if (className.endsWith("Check"))
 			{
-				message = className.substring(0, getClass().getName().length() - 5) + ".violated";
+				message = className.substring(0, getClass().getName().length() - "Check".length()) + ".violated";
 			}
 			else
 			{

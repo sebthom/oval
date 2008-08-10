@@ -22,7 +22,7 @@ import org.apache.log4j.Level;
  */
 public class LoggerL4JImpl implements Logger
 {
-	private final static String WRAPPER = "net.sf.oval.logging";
+	private static final String WRAPPER = "net.sf.oval.logging";
 
 	private final org.apache.log4j.Logger log4jLogger;
 

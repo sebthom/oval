@@ -46,6 +46,7 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	/**
 	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
+	 *  @throws UnsupportedOperationException always thrown if this method is invoked
 	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final Validator validator) throws UnsupportedOperationException

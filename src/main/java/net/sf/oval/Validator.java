@@ -98,7 +98,7 @@ import net.sf.oval.logging.LoggerFactory;
  */
 public class Validator
 {
-	private final static Log LOG = Log.getLog(Validator.class);
+	private static final Log LOG = Log.getLog(Validator.class);
 
 	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
 	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
@@ -239,10 +239,7 @@ public class Validator
 	 */
 	public Validator(final Collection<Configurer> configurers)
 	{
-		if (configurers != null)
-		{
-			this.configurers.addAll(configurers);
-		}
+		if (configurers != null) this.configurers.addAll(configurers);
 	}
 
 	/**
@@ -252,13 +249,20 @@ public class Validator
 	 */
 	public Validator(final Configurer... configurers)
 	{
-		if (configurers != null)
-		{
-			for (final Configurer configurer : configurers)
-			{
-				this.configurers.add(configurer);
-			}
-		}
+		if (configurers != null) for (final Configurer configurer : configurers)
+			this.configurers.add(configurer);
+	}
+
+	private ExpressionLanguage _addExpressionLanguage(final String languageId,
+			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
+	{
+		Assert.notNull("languageId", languageId);
+		Assert.notNull("expressionLanguage", expressionLanguage);
+
+		LOG.info("Expression language '{1}' registered: {2}", languageId, expressionLanguage);
+
+		expressionLanguages.put(languageId, expressionLanguage);
+		return expressionLanguage;
 	}
 
 	private ExpressionLanguage _initializeDefaultEL(final String languageId)
@@ -266,70 +270,41 @@ public class Validator
 		// JavaScript support
 		if (("javascript".equals(languageId) || "js".equals(languageId))
 				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageJavaScriptImpl();
-			addExpressionLanguage("javascript", el);
-			addExpressionLanguage("js", el);
-			return el;
-		}
+			return _addExpressionLanguage("js", _addExpressionLanguage("javascript",
+					new ExpressionLanguageJavaScriptImpl()));
 
 		// Groovy support
 		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageGroovyImpl();
-			addExpressionLanguage("groovy", el);
-			return el;
-		}
+			return _addExpressionLanguage("groovy", new ExpressionLanguageGroovyImpl());
 
 		// BeanShell support
 		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
 				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageBeanShellImpl();
-			addExpressionLanguage("bsh", el);
-			addExpressionLanguage("beanshell", el);
-			return el;
-		}
+			return _addExpressionLanguage("beanshell", _addExpressionLanguage("bsh",
+					new ExpressionLanguageBeanShellImpl()));
 
 		// OGNL support
 		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageOGNLImpl();
-			addExpressionLanguage("ognl", el);
-			return el;
-		}
+			return _addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
 
 		// MVEL support
 		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel.MVEL"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageMVELImpl();
-			addExpressionLanguage("mvel", el);
-			return el;
-		}
+			return _addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
 
 		// JRuby support
 		if (("jruby".equals(languageId) || "ruby".equals(languageId))
 				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageJRubyImpl();
-			addExpressionLanguage("ruby", el);
-			addExpressionLanguage("jruby", el);
-			return el;
-		}
+			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
-		// JEXL jexl
+		// JEXL support
 		if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
-		{
-			final ExpressionLanguage el = new ExpressionLanguageJEXLImpl();
-			addExpressionLanguage("jexl", el);
-			return el;
-		}
+			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
 		return null;
 	}
 
 	/**
-	 * validate validatedObject based on the constraints of the given clazz 
+	 * validate validatedObject based on the constraints of the given class 
 	 */
 	private void _validateObjectInvariants(final Object validatedObject, final Class< ? > clazz,
 			final List<ConstraintViolation> violations) throws ValidationFailedException
@@ -464,15 +439,9 @@ public class Validator
 	@SuppressWarnings("unchecked")
 	protected void addChecks(final ClassChecks cc, final ClassConfiguration classCfg) throws OValException
 	{
-		if (TRUE.equals(classCfg.overwrite))
-		{
-			cc.clear();
-		}
+		if (TRUE.equals(classCfg.overwrite)) cc.clear();
 
-		if (classCfg.checkInvariants != null)
-		{
-			cc.isCheckInvariants = classCfg.checkInvariants;
-		}
+		if (classCfg.checkInvariants != null) cc.isCheckInvariants = classCfg.checkInvariants;
 
 		// cache the result for better performance
 		final boolean applyFieldConstraintsToConstructors = TRUE.equals(classCfg.applyFieldConstraintsToConstructors);
@@ -488,10 +457,8 @@ public class Validator
 			if (classCfg.objectConfiguration != null)
 			{
 				final ObjectConfiguration objectCfg = classCfg.objectConfiguration;
-				if (TRUE.equals(objectCfg.overwrite))
-				{
-					cc.clearObjectChecks();
-				}
+
+				if (TRUE.equals(objectCfg.overwrite)) cc.clearObjectChecks();
 
 				cc.addObjectChecks(objectCfg.checks);
 			}
@@ -500,35 +467,24 @@ public class Validator
 			 * apply field checks
 			 * ******************************/
 			if (classCfg.fieldConfigurations != null)
-			{
 				for (final FieldConfiguration fieldCfg : classCfg.fieldConfigurations)
 				{
 					final Field field = classCfg.type.getDeclaredField(fieldCfg.name);
 
-					if (TRUE.equals(fieldCfg.overwrite))
-					{
-						cc.clearFieldChecks(field);
-					}
+					if (TRUE.equals(fieldCfg.overwrite)) cc.clearFieldChecks(field);
 
 					if (fieldCfg.checks != null && fieldCfg.checks.size() > 0)
-					{
 						cc.addFieldChecks(field, fieldCfg.checks);
-					}
 				}
-			}
 
 			/* ******************************
 			 * apply constructor parameter checks
 			 * ******************************/
 			if (classCfg.constructorConfigurations != null)
-			{
 				for (final ConstructorConfiguration ctorCfg : classCfg.constructorConfigurations)
 				{
 					// ignore constructors without parameters
-					if (ctorCfg.parameterConfigurations == null)
-					{
-						continue;
-					}
+					if (ctorCfg.parameterConfigurations == null) continue;
 
 					final Class< ? >[] paramTypes = new Class[ctorCfg.parameterConfigurations.size()];
 
@@ -539,15 +495,9 @@ public class Validator
 
 					final Constructor ctor = classCfg.type.getDeclaredConstructor(paramTypes);
 
-					if (TRUE.equals(ctorCfg.overwrite))
-					{
-						cc.clearConstructorChecks(ctor);
-					}
+					if (TRUE.equals(ctorCfg.overwrite)) cc.clearConstructorChecks(ctor);
 
-					if (TRUE.equals(ctorCfg.postCheckInvariants))
-					{
-						cc.methodsWithCheckInvariantsPost.add(ctor);
-					}
+					if (TRUE.equals(ctorCfg.postCheckInvariants)) cc.methodsWithCheckInvariantsPost.add(ctor);
 
 					final String[] paramNames = parameterNameResolver.getParameterNames(ctor);
 
@@ -555,25 +505,14 @@ public class Validator
 					{
 						final ParameterConfiguration paramCfg = ctorCfg.parameterConfigurations.get(i);
 
-						if (TRUE.equals(paramCfg.overwrite))
-						{
-							cc.clearConstructorParameterChecks(ctor, i);
-						}
+						if (TRUE.equals(paramCfg.overwrite)) cc.clearConstructorParameterChecks(ctor, i);
 
-						if (paramCfg.hasChecks())
-						{
-							cc.addConstructorParameterChecks(ctor, i, paramCfg.checks);
-						}
+						if (paramCfg.hasChecks()) cc.addConstructorParameterChecks(ctor, i, paramCfg.checks);
 
 						if (paramCfg.hasCheckExclusions())
-						{
 							cc.addConstructorParameterCheckExclusions(ctor, i, paramCfg.checkExclusions);
-						}
 
-						if (assertParametersNotNull)
-						{
-							cc.addConstructorParameterChecks(ctor, i, sharedNotNullCheck);
-						}
+						if (assertParametersNotNull) cc.addConstructorParameterChecks(ctor, i, sharedNotNullCheck);
 
 						/* *******************
 						 * applying field constraints to the single parameter of setter methods 
@@ -592,13 +531,11 @@ public class Validator
 						}
 					}
 				}
-			}
 
 			/* ******************************
 			 * apply method parameter and return value checks and pre/post conditions
 			 * ******************************/
 			if (classCfg.methodConfigurations != null)
-			{
 				for (final MethodConfiguration methodCfg : classCfg.methodConfigurations)
 				{
 					/* ******************************
@@ -607,9 +544,7 @@ public class Validator
 					final Method method;
 
 					if (methodCfg.parameterConfigurations == null || methodCfg.parameterConfigurations.size() == 0)
-					{
 						method = classCfg.type.getDeclaredMethod(methodCfg.name);
-					}
 					else
 					{
 						final Class< ? >[] paramTypes = new Class[methodCfg.parameterConfigurations.size()];
@@ -622,10 +557,7 @@ public class Validator
 						method = classCfg.type.getDeclaredMethod(methodCfg.name, paramTypes);
 					}
 
-					if (TRUE.equals(methodCfg.overwrite))
-					{
-						cc.clearMethodChecks(method);
-					}
+					if (TRUE.equals(methodCfg.overwrite)) cc.clearMethodChecks(method);
 
 					/* ******************************
 					 * applying field constraints to the single parameter of setter methods 
@@ -647,32 +579,19 @@ public class Validator
 					 * configure parameter constraints
 					 * ******************************/
 					if (methodCfg.parameterConfigurations != null && methodCfg.parameterConfigurations.size() > 0)
-					{
 						for (int i = 0, l = methodCfg.parameterConfigurations.size(); i < l; i++)
 						{
 							final ParameterConfiguration paramCfg = methodCfg.parameterConfigurations.get(i);
 
-							if (TRUE.equals(paramCfg.overwrite))
-							{
-								cc.clearMethodParameterChecks(method, i);
-							}
+							if (TRUE.equals(paramCfg.overwrite)) cc.clearMethodParameterChecks(method, i);
 
-							if (paramCfg.hasChecks())
-							{
-								cc.addMethodParameterChecks(method, i, paramCfg.checks);
-							}
+							if (paramCfg.hasChecks()) cc.addMethodParameterChecks(method, i, paramCfg.checks);
 
 							if (paramCfg.hasCheckExclusions())
-							{
 								cc.addMethodParameterCheckExclusions(method, i, paramCfg.checkExclusions);
-							}
 
-							if (assertParametersNotNull)
-							{
-								cc.addMethodParameterChecks(method, i, sharedNotNullCheck);
-							}
+							if (assertParametersNotNull) cc.addMethodParameterChecks(method, i, sharedNotNullCheck);
 						}
-					}
 
 					/* ******************************
 					 * configure return value constraints
@@ -680,22 +599,15 @@ public class Validator
 					if (methodCfg.returnValueConfiguration != null)
 					{
 						if (TRUE.equals(methodCfg.returnValueConfiguration.overwrite))
-						{
 							cc.clearMethodReturnValueChecks(method);
-						}
 
 						if (methodCfg.returnValueConfiguration.checks != null
 								&& methodCfg.returnValueConfiguration.checks.size() > 0)
-						{
 							cc.addMethodReturnValueChecks(method, methodCfg.isInvariant,
 									methodCfg.returnValueConfiguration.checks);
-						}
 					}
 
-					if (TRUE.equals(methodCfg.preCheckInvariants))
-					{
-						cc.methodsWithCheckInvariantsPre.add(method);
-					}
+					if (TRUE.equals(methodCfg.preCheckInvariants)) cc.methodsWithCheckInvariantsPre.add(method);
 
 					/*
 					 * configure pre conditions
@@ -703,21 +615,14 @@ public class Validator
 					if (methodCfg.preExecutionConfiguration != null)
 					{
 						if (TRUE.equals(methodCfg.preExecutionConfiguration.overwrite))
-						{
 							cc.clearMethodPreChecks(method);
-						}
 
 						if (methodCfg.preExecutionConfiguration.checks != null
 								&& methodCfg.preExecutionConfiguration.checks.size() > 0)
-						{
 							cc.addMethodPreChecks(method, methodCfg.preExecutionConfiguration.checks);
-						}
 					}
 
-					if (TRUE.equals(methodCfg.postCheckInvariants))
-					{
-						cc.methodsWithCheckInvariantsPost.add(method);
-					}
+					if (TRUE.equals(methodCfg.postCheckInvariants)) cc.methodsWithCheckInvariantsPost.add(method);
 
 					/*
 					 * configure post conditions
@@ -725,18 +630,13 @@ public class Validator
 					if (methodCfg.postExecutionConfiguration != null)
 					{
 						if (TRUE.equals(methodCfg.postExecutionConfiguration.overwrite))
-						{
 							cc.clearMethodPostChecks(method);
-						}
 
 						if (methodCfg.postExecutionConfiguration.checks != null
 								&& methodCfg.postExecutionConfiguration.checks.size() > 0)
-						{
 							cc.addMethodPostChecks(method, methodCfg.postExecutionConfiguration.checks);
-						}
 					}
 				}
-			}
 		}
 		catch (final NoSuchMethodException ex)
 		{
@@ -785,8 +685,11 @@ public class Validator
 	 * 
 	 * @param constraintSet cannot be null
 	 * @param overwrite
-	 * @throws ConstraintSetAlreadyDefinedException if <code>overwrite == false</code> and a constraint set with the given id exists already 
-	 * @throws IllegalArgumentException if <code>constraintSet == null</code> or <code>constraintSet.id == null</code> or <code>constraintSet.id.length == 0</code>
+	 * @throws ConstraintSetAlreadyDefinedException if <code>overwrite == false</code> and
+	 * 												a constraint set with the given id exists already 
+	 * @throws IllegalArgumentException if <code>constraintSet == null</code> 
+	 * 									or <code>constraintSet.id == null</code> 
+	 * 									or <code>constraintSet.id.length == 0</code>
 	 * @throws IllegalArgumentException if <code>constraintSet.id == null</code>
 	 */
 	public void addConstraintSet(final ConstraintSet constraintSet, final boolean overwrite)
@@ -813,12 +716,7 @@ public class Validator
 	public void addExpressionLanguage(final String languageId, final ExpressionLanguage expressionLanguage)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("languageId", languageId);
-		Assert.notNull("expressionLanguage", expressionLanguage);
-
-		LOG.info("Expression language '{1}' registered: {2}", languageId, expressionLanguage);
-
-		expressionLanguages.put(languageId, expressionLanguage);
+		_addExpressionLanguage(languageId, expressionLanguage);
 	}
 
 	/**
@@ -915,12 +813,8 @@ public class Validator
 		final Collection<Check> referencedChecks = cs.getChecks();
 
 		if (referencedChecks != null && referencedChecks.size() > 0)
-		{
 			for (final Check referencedCheck : referencedChecks)
-			{
 				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context);
-			}
-		}
 	}
 
 	protected void checkConstraintAssertFieldConstraints(final List<ConstraintViolation> violations,
@@ -933,30 +827,20 @@ public class Validator
 		 * set the targetClass based on the validation context
 		 */
 		if (context instanceof ConstructorParameterContext)
-		{
 			// the class declaring the field must either be the class declaring the constructor or one of its super
 			// classes
 			targetClass = ((ConstructorParameterContext) context).getConstructor().getDeclaringClass();
-		}
 		else if (context instanceof MethodParameterContext)
-		{
 			// the class declaring the field must either be the class declaring the method or one of its super classes
 			targetClass = ((MethodParameterContext) context).getMethod().getDeclaringClass();
-		}
 		else if (context instanceof MethodReturnValueContext)
-		{
 			// the class declaring the field must either be the class declaring the getter or one of its super classes
 			targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
-		}
 		else if (check.getDeclaringClass() != null && check.getDeclaringClass() != Void.class)
-		{
 			targetClass = check.getDeclaringClass();
-		}
 		else
-		{
 			// the lowest class that is expected to declare the field (or one of its super classes)
 			targetClass = validatedObject.getClass();
-		}
 
 		// the name of the field whose constraints shall be used
 		String fieldName = check.getFieldName();
@@ -964,18 +848,13 @@ public class Validator
 		/*
 		 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
 		 */
-		if (fieldName == null || fieldName.length() == 0) if (context instanceof ConstructorParameterContext)
-		{
-			fieldName = ((ConstructorParameterContext) context).getParameterName();
-		}
-		else if (context instanceof MethodParameterContext)
-		{
-			fieldName = ((MethodParameterContext) context).getParameterName();
-		}
-		else if (context instanceof MethodReturnValueContext)
-		{
-			fieldName = ReflectionUtils.guessFieldName(((MethodReturnValueContext) context).getMethod());
-		}
+		if (fieldName == null || fieldName.length() == 0)
+			if (context instanceof ConstructorParameterContext)
+				fieldName = ((ConstructorParameterContext) context).getParameterName();
+			else if (context instanceof MethodParameterContext)
+				fieldName = ((MethodParameterContext) context).getParameterName();
+			else if (context instanceof MethodReturnValueContext)
+				fieldName = ReflectionUtils.guessFieldName(((MethodReturnValueContext) context).getMethod());
 
 		/*
 		 * find the field based on fieldName and targetClass
@@ -989,12 +868,8 @@ public class Validator
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 		final Collection<Check> referencedChecks = cc.checksForFields.get(field);
 		if (referencedChecks != null && referencedChecks.size() > 0)
-		{
 			for (final Check referencedCheck : referencedChecks)
-			{
 				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context);
-			}
-		}
 	}
 
 	protected void checkConstraintAssertValid(final List<ConstraintViolation> violations, final AssertValidCheck check,
@@ -1018,33 +893,20 @@ public class Validator
 
 		// if the value to validate is a collection also validate the collection items
 		if (valueToValidate instanceof Collection && check.isRequireValidElements())
-		{
 			for (final Object item : (Collection< ? >) valueToValidate)
-			{
 				checkConstraintAssertValid(violations, check, validatedObject, item, context);
-			}
-		}
 		else if (valueToValidate instanceof Map && check.isRequireValidElements())
 		{
 			for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
-			{
 				checkConstraintAssertValid(violations, check, validatedObject, item, context);
-			}
 
 			for (final Object item : ((Map< ? , ? >) valueToValidate).values())
-			{
 				checkConstraintAssertValid(violations, check, validatedObject, item, context);
-			}
 		}
 
 		// if the value to validate is an array also validate the array elements
-		else if (valueToValidate.getClass().isArray())
-		{
-			for (final Object item : (Object[]) valueToValidate)
-			{
-				checkConstraintAssertValid(violations, check, validatedObject, item, context);
-			}
-		}
+		else if (valueToValidate.getClass().isArray()) for (final Object item : (Object[]) valueToValidate)
+			checkConstraintAssertValid(violations, check, validatedObject, item, context);
 	}
 
 	/**
@@ -1068,13 +930,9 @@ public class Validator
 		isProfilesFeatureUsed = true;
 
 		if (isAllProfilesEnabledByDefault)
-		{
 			disabledProfiles.add(profile);
-		}
 		else
-		{
 			enabledProfiles.remove(profile);
-		}
 	}
 
 	/**
@@ -1098,13 +956,9 @@ public class Validator
 		isProfilesFeatureUsed = true;
 
 		if (isAllProfilesEnabledByDefault)
-		{
 			disabledProfiles.remove(profile);
-		}
 		else
-		{
 			enabledProfiles.add(profile);
-		}
 	}
 
 	/**
@@ -1179,10 +1033,7 @@ public class Validator
 				for (final Configurer configurer : configurers)
 				{
 					final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
-					if (classConfig != null)
-					{
-						addChecks(cc, classConfig);
-					}
+					if (classConfig != null) addChecks(cc, classConfig);
 				}
 
 				checksByClass.put(clazz, cc);
@@ -1207,18 +1058,15 @@ public class Validator
 		{
 			ConstraintSet cs = constraintSetsById.get(constraintSetId);
 
-			if (cs == null)
+			if (cs == null) for (final Configurer configurer : configurers)
 			{
-				for (final Configurer configurer : configurers)
+				final ConstraintSetConfiguration csc = configurer.getConstraintSetConfiguration(constraintSetId);
+				if (csc != null)
 				{
-					final ConstraintSetConfiguration csc = configurer.getConstraintSetConfiguration(constraintSetId);
-					if (csc != null)
-					{
-						cs = new ConstraintSet(csc.id);
-						cs.setChecks(csc.checks);
+					cs = new ConstraintSet(csc.id);
+					cs.setChecks(csc.checks);
 
-						addConstraintSet(cs, csc.overwrite != null && csc.overwrite);
-					}
+					addConstraintSet(cs, csc.overwrite != null && csc.overwrite);
 				}
 			}
 			return cs;
@@ -1247,10 +1095,7 @@ public class Validator
 
 		ExpressionLanguage el = expressionLanguages.get(languageId);
 
-		if (el == null)
-		{
-			el = _initializeDefaultEL(languageId);
-		}
+		if (el == null) el = _initializeDefaultEL(languageId);
 
 		if (el == null) throw new ExpressionLanguageNotAvailableException(languageId);
 
@@ -1268,9 +1113,7 @@ public class Validator
 		if (profileIds == null || profileIds.length == 0) return isProfileEnabled("default");
 
 		for (final String profile : profileIds)
-		{
 			if (isProfileEnabled(profile)) return true;
-		}
 		return false;
 	}
 
@@ -1457,9 +1300,7 @@ public class Validator
 			final FieldContext context = new FieldContext(validatedField);
 
 			for (final Check check : checks)
-			{
 				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
-			}
 			return violations;
 		}
 		catch (final OValException ex)
@@ -1487,13 +1328,9 @@ public class Validator
 		try
 		{
 			if (validatedObject instanceof Class)
-			{
 				_validateStaticInvariants((Class< ? >) validatedObject, violations);
-			}
 			else
-			{
 				_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations);
-			}
 		}
 		finally
 		{

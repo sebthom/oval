@@ -50,8 +50,8 @@ import net.sf.oval.constraint.NotNullCheck;
  */
 public class JPAAnnotationsConfigurer implements Configurer
 {
-	private final static NotNullCheck NOT_NULL = new NotNullCheck();
-	private final static AssertValidCheck ASSERT_VALID = new AssertValidCheck();
+	private static final NotNullCheck NOT_NULL = new NotNullCheck();
+	private static final AssertValidCheck ASSERT_VALID = new AssertValidCheck();
 
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;

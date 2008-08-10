@@ -26,7 +26,7 @@ import net.sf.oval.guard.Guarded;
 public class ExceptionTranslatorTest extends TestCase
 {
 	@Guarded
-	public final static class TestEntity
+	public static final class TestEntity
 	{
 		public void setName(@NotNull(message = "NULL")
 		final String name)

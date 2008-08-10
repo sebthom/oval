@@ -44,7 +44,9 @@ public class ClassChecks
 {
 	private static final Log LOG = Log.getLog(ClassChecks.class);
 
-	private static final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = " Class does not implement IsGuarded interface. This is an indicator, that constraints guarding is possibly not activated for this class.";
+	private static final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = //
+	" Class does not implement IsGuarded interface. This is an indicator, " + // 
+			"that constraints guarding is possibly not activated for this class.";
 
 	/**
 	 * compound constraints / object level invariants

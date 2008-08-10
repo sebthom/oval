@@ -147,13 +147,13 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	{
 		if (valueToValidate == null) return true;
 
-		final String URIString = valueToValidate.toString();
+		final String uriString = valueToValidate.toString();
 
 		try
 		{
 			// By constructing a java.net.URI object, the string representing the URI will be parsed against RFC 2396.
 			// In case of non compliance a java.net.URISyntaxException will be thrown
-			final URI uri = new URI(URIString);
+			final URI uri = new URI(uriString);
 
 			// Make sure that the URI contains: [scheme; scheme-specific-part]
 			final String scheme = uri.getScheme();
@@ -167,7 +167,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			if (!isURISchemeValid(scheme.toLowerCase(Locale.getDefault()))) return false;
 
 			// If the connect flag is true then attempt to connect to the URL
-			if (connect) return canConnect(URIString);
+			if (connect) return canConnect(uriString);
 		}
 		catch (final java.net.URISyntaxException ex)
 		{

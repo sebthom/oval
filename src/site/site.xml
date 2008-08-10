@@ -39,11 +39,12 @@
 
 		<menu name="${project.name} ${project.version}">
 			<item name="About" href="index.html" />
+			<item name="License" href="license.html" />
 			<item name="User Guide" href="userguide.html" />
+			<item name="API (JavaDoc)" href="api/index.html" />
+			<item name="Dependencies" href="dependencies.html" />
 			<item name="Roadmap" href="roadmap.html" />
 			<item name="Code Metrics" href="dashboard-report.html" />
-			<item name="License" href="license.html" />
-			<item name="Dependencies" href="dependencies.html" />
 		</menu>
 
 		<menu ref="reports" />

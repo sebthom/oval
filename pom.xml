@@ -9,20 +9,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.30-SNAPSHOT</version>
+	<version>1.30</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
-	<description>
-		OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only JavaBeans).
-
-		Constraints can be declared with annotations (@NotNull, @MaxLength), POJOs or XML. Custom constraints can be
-		expressed as custom Java classes or by using scripting languages such as JavaScript, Groovy, BeanShell, OGNL or
-		MVEL.
-
-		Besides field/property validation OVal implements Programming by Contract features by utilizing AspectJ based
-		aspects. This for example allows runtime validation of method arguments.
-	</description>
+	<description> OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only
+		JavaBeans). Constraints can be declared with annotations (@NotNull, @MaxLength), POJOs or XML. Custom constraints can
+		be expressed as custom Java classes or by using scripting languages such as JavaScript, Groovy, BeanShell, OGNL or
+		MVEL. Besides field/property validation OVal implements Programming by Contract features by utilizing AspectJ based
+		aspects. This for example allows runtime validation of method arguments. </description>
 	<organization>
 		<name>The OVal Development Team</name>
 		<url>http://oval.sf.net/</url>
@@ -56,6 +51,15 @@
 			<timezone>-1</timezone>
 		</developer>
 	</developers>
+	<contributors>
+		<contributor>
+			<name>Mirko Humbert</name>
+			<url>http://www.mirkohumbert.ch/</url>
+			<roles>
+				<role>Designer of the OVal logo</role>
+			</roles>
+		</contributor>
+	</contributors>
 	<scm>
 		<url>http://oval.svn.sourceforge.net/viewvc/oval/trunk</url>
 		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk</connection>
@@ -324,10 +328,9 @@
 			<!-- phase: generate-resources -->
 			<!-- ********************************************************************************** -->
 			<plugin>
-				<!-- 
-					better docbook support 
-					see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin
-					manual: mvn docbkx:generate-html
+				<!--
+					better docbook support see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin manual: mvn
+					docbkx:generate-html
 				-->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
@@ -662,6 +665,12 @@
 
       		<plugin>
         		<artifactId>maven-checkstyle-plugin</artifactId>
+        		<configuration>
+        	 		<configLocation>${basedir}/src/misc/checkstyle-config.xml</configLocation>
+        			<enableRSS>false</enableRSS>
+        			<failsOnError>false</failsOnError>
+        			<linkXref>true</linkXref>
+        		</configuration>
 	      	</plugin>
 
       		<plugin>

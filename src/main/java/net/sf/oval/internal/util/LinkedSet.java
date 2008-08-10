@@ -166,9 +166,9 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	@Override
 	public int hashCode()
 	{
-		final int PRIME = 31;
+		final int prime = 31;
 		int result = 1;
-		result = PRIME * result + (list == null ? 0 : list.hashCode());
+		result = prime * result + (list == null ? 0 : list.hashCode());
 		return result;
 	}
 

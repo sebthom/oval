@@ -58,22 +58,22 @@ import net.sf.oval.internal.util.ThreadLocalWeakHashSet;
  */
 public class Guard extends Validator
 {
-	private final static Log LOG = Log.getLog(Guard.class);
+	private static final Log  LOG = Log.getLog(Guard.class);
 
 	/**
 	 * string based on validated object hashcode + method hashcode for currently validated method return values
 	 */
-	private final static ThreadLocalList<String> currentlyCheckingMethodReturnValues = new ThreadLocalList<String>();
+	private static final ThreadLocalList<String> currentlyCheckingMethodReturnValues = new ThreadLocalList<String>();
 
 	/**
 	 * string based on validated object hashcode + method hashcode for currently validated method pre-conditions
 	 */
-	private final static ThreadLocalList<String> currentlyCheckingPreConditions = new ThreadLocalList<String>();
+	private static final ThreadLocalList<String> currentlyCheckingPreConditions = new ThreadLocalList<String>();
 
 	/**
 	 * string based on validated object hashcode + method hashcode for currently validated method post-conditions
 	 */
-	private final static ThreadLocalList<String> currentlyCheckingPostConditions = new ThreadLocalList<String>();
+	private static final ThreadLocalList<String> currentlyCheckingPostConditions = new ThreadLocalList<String>();
 
 	/**
 	 * holds the objects for which invariants are currently checked for

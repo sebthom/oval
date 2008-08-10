@@ -26,9 +26,10 @@ import net.sf.oval.internal.Log;
  */
 public class SerializableConstructor implements Serializable
 {
-	private final static Log LOG = Log.getLog(SerializableConstructor.class);
+	private static final Log LOG = Log.getLog(SerializableConstructor.class);
 
-	private static final WeakHashMap<Constructor< ? >, SerializableConstructor> CACHE = new WeakHashMap<Constructor< ? >, SerializableConstructor>();
+	private static final WeakHashMap<Constructor< ? >, SerializableConstructor> CACHE = //
+	new WeakHashMap<Constructor< ? >, SerializableConstructor>();
 
 	private static final long serialVersionUID = 1L;
 
@@ -83,8 +84,7 @@ public class SerializableConstructor implements Serializable
 		return parameterTypes;
 	}
 
-	private void readObject(final java.io.ObjectInputStream in) throws IOException,
-			ClassNotFoundException
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
 		try

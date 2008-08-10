@@ -27,7 +27,7 @@ import ognl.OgnlException;
  */
 public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
+	private static final Log  LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
 
 	/**
 	 * {@inheritDoc}

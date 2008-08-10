@@ -15,7 +15,7 @@
 
 <!ELEMENT FindBugsFilter ( Match+ ) >
 
-<!ELEMENT Match ( Bug | Method | Or | Package | Priority )* >
+<!ELEMENT Match ( Bug | Or | Method | Class | Package | Priority )* >
 
 <!ELEMENT Method EMPTY >
 <!ATTLIST Method name CDATA #REQUIRED >

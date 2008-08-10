@@ -10,21 +10,29 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.guard;
+package net.sf.oval.internal.util;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.AccessibleObject;
+import java.security.PrivilegedAction;
 
 /**
  * @author Sebastian Thomschke
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface SuppressOValWarnings
+public class SetAccessibleAction implements PrivilegedAction<Object>
 {
-	//
+	private final AccessibleObject ao;
+
+	public SetAccessibleAction(final AccessibleObject ao)
+	{
+		this.ao = ao;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object run()
+	{
+		ao.setAccessible(true);
+		return null;
+	}
 }

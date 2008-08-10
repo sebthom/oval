@@ -25,7 +25,7 @@ import bsh.Interpreter;
  */
 public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
+	private static final Log  LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
 
 	/**
 	 * {@inheritDoc}

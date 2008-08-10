@@ -47,7 +47,8 @@ public @interface DateRange
 	String format() default "";
 
 	/**
-	 * The upper date compared against in the format specified with the dateFormat parameter. If not specified then no upper boundary check is performed.<br>
+	 * The upper date compared against in the format specified with the dateFormat parameter. 
+	 * If not specified then no upper boundary check is performed.<br>
 	 * Special values are:
 	 * <ul>
 	 * <li><code>now</code>
@@ -66,7 +67,8 @@ public @interface DateRange
 	String message() default "net.sf.oval.constraints.DateRange.violated";
 
 	/**
-	 * The lower date compared against in the format specified with the dateFormat parameter. If not specified then no upper boundary check is performed.<br>
+	 * The lower date compared against in the format specified with the dateFormat parameter. 
+	 * If not specified then no upper boundary check is performed.<br>
 	 * Special values are:
 	 * <ul>
 	 * <li><code>now</code>

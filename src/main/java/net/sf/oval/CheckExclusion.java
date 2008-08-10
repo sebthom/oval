@@ -33,7 +33,8 @@ public interface CheckExclusion extends Serializable
 	 * This method implements the validation logic
 	 * 
 	 * @param check a check that OVal is about to validate
-	 * @param validatedObject the object/bean to validate the value against, for static fields or methods this is the class
+	 * @param validatedObject the object/bean to validate the value against, for static fields or methods this is 
+	 * the class
 	 * @param valueToValidate the value to validate, may be null when validating pre conditions for static methods
 	 * @param context the validation context (e.g. a field, a constructor parameter or a method parameter)
 	 * @param validator the calling validator

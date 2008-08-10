@@ -47,9 +47,9 @@ import net.sf.oval.internal.Log;
  */
 public class ResourceBundleValidationContextRenderer implements OValContextRenderer
 {
-	private final static Log LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
+	private static final Log  LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
 
-	public final static ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
+	public static final ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
 
 	private boolean containsKey(final ResourceBundle bundle, final String key)
 	{

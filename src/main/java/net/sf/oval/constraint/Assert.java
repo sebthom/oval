@@ -39,11 +39,13 @@ public @interface Assert
 	String errorCode() default "net.sf.oval.constraints.Assert";
 
 	/**
-	 * formula in the given expression language describing the constraint. the formula must return true if the constraint is satisfied.
+	 * Formula in the given expression language describing the constraint.
+	 * The formula must return <code>true</code> if the constraint is satisfied.
 	 * <br>
 	 * available variables are:<br>
 	 * <b>_this</b> -&gt; the validated bean<br>
-	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value, or the validated bean for object level constraints)
+	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value,
+	 *    or the validated bean for object level constraints)
 	 */
 	String expr();
 
