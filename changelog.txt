@@ -28,6 +28,7 @@
 - fixed bug [ 2023617 ] @ValidateWithMethod in super classes do not work
 + ConstraintViolation now provides more details about the violated constraint (checkName, messageVariables, messageTemplate)
 + added support for using Spring AOP to enable programming by contract for Spring managed beans
++ greatly simplified usage of the probe mode feature
 
 2008-04-05 v1.20
 ================

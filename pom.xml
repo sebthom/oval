@@ -100,6 +100,7 @@
 	</issueManagement>
 	<properties>
 		<version.java>1.5</version.java>
+		<version.aspectj>1.6.1</version.aspectj>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -135,7 +136,7 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.6.1</version>
+			<version>${version.aspectj}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -263,6 +264,23 @@
 	</dependencies>
 	<build>
 		<plugins>
+					<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>clirr-maven-plugin</artifactId>
+				 <version>2.2.2</version>
+				<configuration>
+					<minSeverity>info</minSeverity>
+          <!--  <comparisonArtifacts>
+            <comparisonArtifact>
+              <groupId>net.sf.oval</groupId>
+              <artifactId>oval</artifactId>
+              <version>1.10</version>
+            </comparisonArtifact>
+          </comparisonArtifacts>-->
+
+				</configuration>
+			</plugin>
+		
 			<!-- ********************************************************************************** -->
 			<!-- phase: validate -->
 			<!-- ********************************************************************************** -->
@@ -306,7 +324,6 @@
 			<!-- ********************************************************************************** -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.1</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -440,12 +457,12 @@
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjrt</artifactId>
-						<version>1.6.1</version>
+						<version>${version.aspectj}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjtools</artifactId>
-						<version>1.6.1</version>
+						<version>${version.aspectj}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -494,13 +511,13 @@
 						<artifactId>doxia-module-docbook-simple</artifactId> <version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 
-					<!-- TWIKI support -->
-					<!--  http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules -->
+					<!-- TWIKI support http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules
 					<dependency>
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-twiki</artifactId>
 						<version>1.0-alpha-10-SNAPSHOT</version>
 					</dependency>
+					 -->
 				</dependencies>
 				<configuration>
 					<inputEncoding>utf-8</inputEncoding>
@@ -680,11 +697,11 @@
       		</plugin>
 
 
-			<!-- seems to be broken currently http://jira.codehaus.org/browse/MCLIRR-12
-				<plugin>
+			<!-- does not work yet
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
-				</plugin>
+			</plugin>
 			-->
 
 			<!-- not yet released http://mojo.codehaus.org/jdiff-maven-plugin/howto.html

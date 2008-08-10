@@ -12,7 +12,6 @@ http://maven.apache.org/xsd/assembly-1.0.0.xsd">
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>LICENSE.txt</include>
-				<include>RELEASE_NOTES.txt</include>
 			</includes>
 		</fileSet>
 		<fileSet>

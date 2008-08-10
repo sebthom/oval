@@ -111,7 +111,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
 
-		guard.setInProbeMode(p, true);
+		guard.enableProbeMode(p);
 
 		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 		guard.addListener(va, p);

@@ -15,7 +15,6 @@ package net.sf.oval.constraint;
 import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -23,7 +22,6 @@ import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.internal.util.ReflectionUtils;
-import net.sf.oval.internal.util.SetAccessibleAction;
 
 /**
  * @author Sebastian Thomschke
@@ -93,21 +91,8 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	{
 		if (valueToValidate == null && ignoreIfNull) return true;
 
-		try
-		{
-			final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName,
-					parameterType);
-			if (!method.isAccessible())
-			{
-				AccessController.doPrivileged(new SetAccessibleAction(method));
-			}
-			return ((Boolean) method.invoke(validatedObject, valueToValidate)).booleanValue();
-		}
-		catch (final Exception e)
-		{
-			throw new ReflectionException("Calling validation method " + validatedObject.getClass().getName() + "."
-					+ methodName + "(" + validatedObject.getClass().getName() + ") failed.", e);
-		}
+		final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName, parameterType);
+		return ((Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate)).booleanValue();
 	}
 
 	/**

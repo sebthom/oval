@@ -80,7 +80,7 @@ public class ConstraintSetTest extends TestCase
 		{
 			final Person p = new Person();
 
-			TestGuardAspect.aspectOf().getGuard().setInProbeMode(p, true);
+			TestGuardAspect.aspectOf().getGuard().enableProbeMode(p);
 
 			final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
 			TestGuardAspect.aspectOf().getGuard().addListener(va, p);

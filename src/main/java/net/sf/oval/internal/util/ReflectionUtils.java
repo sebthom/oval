@@ -25,6 +25,7 @@ import java.util.Locale;
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.exception.AccessingFieldValueFailedException;
+import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.InvokingMethodFailedException;
 import net.sf.oval.internal.Log;
 
@@ -207,7 +208,6 @@ public final class ReflectionUtils
 	 * @return the method or null if the method does not exist
 	 */
 	public static Method getMethod(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
-			throws SecurityException
 	{
 		try
 		{
@@ -223,7 +223,7 @@ public final class ReflectionUtils
 	 * @return the method or null if the method does not exist
 	 */
 	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes) throws SecurityException
+			final Class< ? >... parameterTypes)
 	{
 		final Method m = getMethod(clazz, methodName, parameterTypes);
 		if (m != null) return m;
@@ -305,7 +305,7 @@ public final class ReflectionUtils
 	 * @throws InvokingMethodFailedException
 	 */
 	public static Object invokeMethod(final Method method, final Object obj, final Object... args)
-			throws InvokingMethodFailedException
+			throws InvokingMethodFailedException, ConstraintsViolatedException
 	{
 		try
 		{
@@ -317,6 +317,8 @@ public final class ReflectionUtils
 		}
 		catch (final Exception ex)
 		{
+			if (ex.getCause() instanceof ConstraintsViolatedException)
+				throw (ConstraintsViolatedException) ex.getCause();
 			throw new InvokingMethodFailedException("Executing method " + method.getName() + " failed.", obj,
 					new MethodReturnValueContext(method), ex);
 		}
