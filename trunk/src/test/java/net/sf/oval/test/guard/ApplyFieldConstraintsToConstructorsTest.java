@@ -48,7 +48,7 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 		@MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
 		private String zipCode = "1";
 
-		public Person(final boolean isValid, final String firstName, final String lastName, final String zipCode)
+		protected Person(final boolean isValid, final String firstName, final String lastName, final String zipCode)
 		{
 			super();
 			this.isValid = isValid;
@@ -57,7 +57,7 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 			this.zipCode = zipCode;
 		}
 
-		public Person(final String theFirstName, final String theLastName, final String theZipCode)
+		protected Person(final String theFirstName, final String theLastName, final String theZipCode)
 		{
 			super();
 			firstName = theFirstName;

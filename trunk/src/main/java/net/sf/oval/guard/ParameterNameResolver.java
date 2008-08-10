@@ -23,12 +23,18 @@ import net.sf.oval.exception.ReflectionException;
 public interface ParameterNameResolver
 {
 	/**
-	 * returns an empty String array if no parameters are declared
+	 * Returns an empty String array if no parameters are declared.
+	 * @param constructor the constructor
+	 * @return an array holding the parameter names of the given constructor.
+	 * @throws ReflectionException in case retrieving the parameter names fails
 	 */
 	String[] getParameterNames(Constructor< ? > constructor) throws ReflectionException;
 
 	/**
-	 * returns an empty String array if no parameters are declared
+	 * Returns an empty String array if no parameters are declared
+	 * @param method the method
+	 * @return an array holding the parameter names of the given method.
+	 * @throws ReflectionException in case retrieving the parameter names fails
 	 */
 	String[] getParameterNames(Method method) throws ReflectionException;
 }

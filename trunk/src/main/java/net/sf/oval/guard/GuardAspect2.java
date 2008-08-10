@@ -41,7 +41,32 @@ import org.aspectj.lang.reflect.MethodSignature;
 @Aspect
 public abstract class GuardAspect2 extends ApiUsageAuditor2
 {
-	private final static Log LOG = Log.getLog(GuardAspect2.class);
+	private static final class ProceedInvocable implements Invocable
+	{
+		final ProceedingJoinPoint thisJoinPoint;
+
+		protected ProceedInvocable(final ProceedingJoinPoint thisJoinPoint)
+		{
+			this.thisJoinPoint = thisJoinPoint;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Object invoke()
+		{
+			try
+			{
+				return thisJoinPoint.proceed();
+			}
+			catch (final Throwable ex)
+			{
+				throw new ValidationFailedException("Unexpected exception while invoking method.", ex);
+			}
+		}
+	}
+
+	private static final Log LOG = Log.getLog(GuardAspect2.class);
 
 	@SuppressWarnings("unused")
 	// add the IsGuarded marker interface to all classes annotated with @Guarded
@@ -50,12 +75,19 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 
 	private Guard guard;
 
+	/**
+	 * Constructor instantiating a new Guard object.
+	 */
 	public GuardAspect2()
 	{
 		this(new Guard());
 		getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
 	}
 
+	/**
+	 * Constructor using the given Guard object
+	 * @param guard the guard to use
+	 */
 	public GuardAspect2(final Guard guard)
 	{
 		LOG.info("Instantiated");
@@ -66,24 +98,24 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	@Around("execution((@net.sf.oval.guard.Guarded *).new(..))")
 	public Object allConstructors(final ProceedingJoinPoint thisJoinPoint) throws Throwable
 	{
-		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
+		final ConstructorSignature signature = (ConstructorSignature) thisJoinPoint.getSignature();
 
-		LOG.debug("aroundConstructor() {1}", SIGNATURE);
+		LOG.debug("aroundConstructor() {1}", signature);
 
-		final Constructor< ? > CONSTRUCTOR = SIGNATURE.getConstructor();
+		final Constructor< ? > ctor = signature.getConstructor();
 		final Object[] args = thisJoinPoint.getArgs();
-		final Object TARGET = thisJoinPoint.getTarget();
+		final Object target = thisJoinPoint.getTarget();
 
 		// pre conditions
 		{
-			guard.guardConstructorPre(TARGET, CONSTRUCTOR, args);
+			guard.guardConstructorPre(target, ctor, args);
 		}
 
 		final Object result = thisJoinPoint.proceed();
 
 		// post conditions
 		{
-			guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
+			guard.guardConstructorPost(target, ctor, args);
 		}
 
 		return result;
@@ -93,28 +125,15 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 	@Around("execution(* (@net.sf.oval.guard.Guarded *).*(..))")
 	public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable
 	{
-		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
+		final MethodSignature signature = (MethodSignature) thisJoinPoint.getSignature();
 
-		LOG.debug("aroundMethod() {1}", SIGNATURE);
+		LOG.debug("aroundMethod() {1}", signature);
 
-		final Method METHOD = SIGNATURE.getMethod();
+		final Method method = signature.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();
-		final Object TARGET = thisJoinPoint.getTarget();
+		final Object target = thisJoinPoint.getTarget();
 
-		return guard.guardMethod(TARGET, METHOD, args, new Invocable()
-			{
-				public Object invoke()
-				{
-					try
-					{
-						return thisJoinPoint.proceed();
-					}
-					catch (final Throwable ex)
-					{
-						throw new ValidationFailedException("Unexpected exception while invoking method.", ex);
-					}
-				}
-			});
+		return guard.guardMethod(target, method, args, new ProceedInvocable(thisJoinPoint));
 	}
 
 	/**

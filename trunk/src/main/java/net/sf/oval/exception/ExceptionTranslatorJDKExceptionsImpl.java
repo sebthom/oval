@@ -33,7 +33,7 @@ import net.sf.oval.internal.Log;
  */
 public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
 {
-	private final static Log LOG = Log.getLog(ExceptionTranslatorJDKExceptionsImpl.class);
+	private static final Log  LOG = Log.getLog(ExceptionTranslatorJDKExceptionsImpl.class);
 
 	/**
 	 * {@inheritDoc}

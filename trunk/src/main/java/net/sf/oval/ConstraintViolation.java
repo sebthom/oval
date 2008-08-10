@@ -28,9 +28,9 @@ import net.sf.oval.internal.Log;
  */
 public class ConstraintViolation implements Serializable
 {
-	private final static Log LOG = Log.getLog(ConstraintViolation.class);
+	private static final Log LOG = Log.getLog(ConstraintViolation.class);
 
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private final String checkName;
 	private final ConstraintViolation[] causes;
@@ -230,10 +230,9 @@ public class ConstraintViolation implements Serializable
 		}
 		else
 		{
-			LOG
-					.warn(
-							"Field 'invalidValue' could not be serialized because the field value object {1} does not implement java.io.Serializable.",
-							invalidValue);
+			final String warning = //
+			"Field 'invalidValue' could not be serialized because the field value object {1} does not implement java.io.Serializable.";
+			LOG.warn(warning, invalidValue);
 			// indicate value does not implement Serializable
 			out.writeBoolean(false);
 		}

@@ -20,10 +20,10 @@ import java.util.Collection;
  */
 public final class ArrayUtils
 {
-	public final static Object[] EMPTY_CLASS_ARRAY = new Class[0];
-	public final static Method[] EMPTY_METHOD_ARRAY = new Method[0];
-	public final static Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-	public final static String[] EMPTY_STRING_ARRAY = new String[0];
+	public static final Object[] EMPTY_CLASS_ARRAY = new Class[0];
+	public static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
+	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
 	/**
 	 * @throws IllegalArgumentException if <code>collection == null</code>

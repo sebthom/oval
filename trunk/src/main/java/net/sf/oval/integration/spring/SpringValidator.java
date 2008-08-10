@@ -28,13 +28,13 @@ import org.springframework.validation.Errors;
  */
 public class SpringValidator implements org.springframework.validation.Validator, InitializingBean
 {
-	private final static Log LOG = Log.getLog(SpringValidator.class);
+	private static final Log LOG = Log.getLog(SpringValidator.class);
 
 	private Validator validator;
 
 	public SpringValidator()
 	{
-	//
+		super();
 	}
 
 	public SpringValidator(final Validator validator)

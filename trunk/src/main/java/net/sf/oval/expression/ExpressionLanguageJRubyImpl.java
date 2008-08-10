@@ -29,7 +29,7 @@ import org.jruby.runtime.builtin.IRubyObject;
  */
 public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
+	private static final Log  LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
 
 	/**
 	 * {@inheritDoc}

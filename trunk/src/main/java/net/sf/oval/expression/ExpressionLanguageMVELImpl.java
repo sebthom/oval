@@ -22,7 +22,7 @@ import net.sf.oval.internal.Log;
  */
 public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageMVELImpl.class);
+	private static final Log  LOG = Log.getLog(ExpressionLanguageMVELImpl.class);
 
 	/**
 	 * {@inheritDoc}

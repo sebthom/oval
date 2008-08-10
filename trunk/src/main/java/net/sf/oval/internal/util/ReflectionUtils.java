@@ -18,7 +18,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
 import java.util.List;
+import java.util.Locale;
 
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodReturnValueContext;
@@ -50,7 +52,8 @@ public final class ReflectionUtils
 
 	/**
 	 * @param setter
-	 * @return Returns the corresponding field for a setter method. Returns null if the method is not a JavaBean style setter or the field could not be located.
+	 * @return Returns the corresponding field for a setter method. Returns null if the method is not a 
+	 * JavaBean style setter or the field could not be located.
 	 */
 	public static Field getFieldForSetter(final Method setter)
 	{
@@ -62,7 +65,7 @@ public final class ReflectionUtils
 
 		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field
 		// name)
-		String fieldName = methodName.substring(3, 4).toLowerCase();
+		String fieldName = methodName.substring(3, 4).toLowerCase(Locale.getDefault());
 		if (methodName.length() > 4)
 		{
 			fieldName += methodName.substring(4);
@@ -135,7 +138,7 @@ public final class ReflectionUtils
 		{
 			if (!field.isAccessible())
 			{
-				field.setAccessible(true);
+				AccessController.doPrivileged(new SetAccessibleAction(field));
 			}
 			return field.get(obj);
 		}
@@ -147,14 +150,14 @@ public final class ReflectionUtils
 
 	public static Method getGetter(final Class< ? > clazz, final String fieldName)
 	{
-		final String appendix = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+		final String appendix = fieldName.substring(0, 1).toUpperCase(Locale.getDefault()) + fieldName.substring(1);
 		try
 		{
 			return clazz.getDeclaredMethod("get" + appendix);
 		}
-		catch (final NoSuchMethodException e)
+		catch (final NoSuchMethodException ex)
 		{
-			// ignore
+			LOG.trace("getXXX method not found.", ex);
 		}
 		try
 		{
@@ -260,7 +263,7 @@ public final class ReflectionUtils
 			fieldName = fieldName.substring(3);
 			if (fieldName.length() == 1)
 			{
-				fieldName = fieldName.toLowerCase();
+				fieldName = fieldName.toLowerCase(Locale.getDefault());
 			}
 			else
 			{
@@ -272,7 +275,7 @@ public final class ReflectionUtils
 			fieldName = fieldName.substring(2);
 			if (fieldName.length() == 1)
 			{
-				fieldName = fieldName.toLowerCase();
+				fieldName = fieldName.toLowerCase(Locale.getDefault());
 			}
 			else
 			{
@@ -308,7 +311,7 @@ public final class ReflectionUtils
 		{
 			if (!method.isAccessible())
 			{
-				method.setAccessible(true);
+				AccessController.doPrivileged(new SetAccessibleAction(method));
 			}
 			return method.invoke(obj, args);
 		}

@@ -20,11 +20,15 @@ import java.io.Serializable;
 public class ConfigurationElement implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
-	 * if set to false the checks defined here and in the child configuration elements will be added to the already registered checks for the respective contexts
-	 * if set to true the already registered checks for the respective contexts will be replaced by the checks defined here and in the child configuration elements
-	 * if not set (null) -> interpreted as false   
+	 * If set to <code>false</code> the checks defined here and in the child configuration elements will be added to 
+	 * the already registered checks for the respective contexts.
+	 * 
+	 * If set to <code>true</code> the already registered checks for the respective contexts will be replaced by the 
+	 * checks defined here and in the child configuration elements.
+	 * 
+	 * If not set (<code>null</code>) -> interpreted as false.   
 	 */
 	public Boolean overwrite;
 }

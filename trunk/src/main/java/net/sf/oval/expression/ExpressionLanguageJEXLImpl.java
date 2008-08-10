@@ -28,7 +28,7 @@ import org.apache.commons.jexl.JexlHelper;
  */
 public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
+	private static final Log  LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
 
 	private final ObjectCache<String, Expression> expressionCache = new ObjectCache<String, Expression>();
 

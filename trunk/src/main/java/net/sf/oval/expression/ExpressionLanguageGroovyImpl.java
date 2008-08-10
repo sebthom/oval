@@ -29,9 +29,9 @@ import net.sf.oval.internal.util.ThreadLocalObjectCache;
  */
 public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageGroovyImpl.class);
+	private static final Log LOG = Log.getLog(ExpressionLanguageGroovyImpl.class);
 
-	private final static GroovyShell GROOVY_SHELL = new GroovyShell();
+	private static final GroovyShell GROOVY_SHELL = new GroovyShell();
 
 	private final ThreadLocalObjectCache<String, Script> threadScriptCache = new ThreadLocalObjectCache<String, Script>();
 
@@ -74,7 +74,9 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
+		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
+		}
 		return (Boolean) result;
 	}
 }

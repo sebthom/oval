@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005, 2006 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -113,7 +113,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
 
 		LOG.debug("aroundMethod() {1}", SIGNATURE);
-
+		
 		final Method METHOD = SIGNATURE.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();
 		final Object TARGET = thisJoinPoint.getTarget();

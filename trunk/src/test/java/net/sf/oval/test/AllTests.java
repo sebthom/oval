@@ -96,6 +96,8 @@ public class AllTests
 
 	public static Test suite() throws Exception
 	{
+		System.setSecurityManager(new SecurityManager());
+
 		// $JUnit-BEGIN$
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
 
@@ -185,5 +187,10 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
+	}
+
+	private AllTests()
+	{
+		super();
 	}
 }

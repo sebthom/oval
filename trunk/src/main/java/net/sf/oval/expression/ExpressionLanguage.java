@@ -22,11 +22,21 @@ import net.sf.oval.exception.ExpressionEvaluationException;
  */
 public interface ExpressionLanguage
 {
+	/**
+	 * Evaluates the given expression.
+	 * @param expression the expression to evaluate
+	 * @param values context values passed to the interpreter
+	 * @return the result of the expression evaluation
+	 * @throws ExpressionEvaluationException in case of an invalid expression
+	 */
 	Object evaluate(String expression, Map<String, ? > values) throws ExpressionEvaluationException;
 
 	/**
+	 * Evaluates the given expression and expects it to return a boolean.
+	 * @param expression the expression to evaluate
+	 * @param values context values passed to the interpreter
+	 * @return the result of the expression evaluation 
 	 * @throws ExpressionEvaluationException If an error during evaluation occurs or if the return value is not a boolean value.
 	 */
-	boolean evaluateAsBoolean(String expression, Map<String, ? > values)
-			throws ExpressionEvaluationException;
+	boolean evaluateAsBoolean(String expression, Map<String, ? > values) throws ExpressionEvaluationException;
 }

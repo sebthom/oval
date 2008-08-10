@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2006-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -29,7 +29,7 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 {
-	private static final ParameterNameResolver fallback = new ParameterNameResolverEnumerationImpl();
+	private static final ParameterNameResolver FALLBACK = new ParameterNameResolverEnumerationImpl();
 
 	private final Paranamer paranamer;
 
@@ -48,7 +48,7 @@ public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 	 */
 	public String[] getParameterNames(final Constructor< ? > constructor) throws ReflectionException
 	{
-		return fallback.getParameterNames(constructor);
+		return FALLBACK.getParameterNames(constructor);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class ParameterNameResolverParanamerImpl implements ParameterNameResolver
 	{
 		final String[] parameterNames = paranamer.lookupParameterNames(method);
 
-		if (parameterNames == null) return fallback.getParameterNames(method);
+		if (parameterNames == null) return FALLBACK.getParameterNames(method);
 
 		return parameterNames;
 	}

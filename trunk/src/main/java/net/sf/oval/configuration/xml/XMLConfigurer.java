@@ -101,14 +101,20 @@ import com.thoughtworks.xstream.mapper.Mapper;
  */
 public class XMLConfigurer implements Configurer
 {
-	protected final static class AssertCheckConverter implements Converter
+	protected static final class AssertCheckConverter implements Converter
 	{
+		/**
+		 * {@inheritDoc}
+		 */
 		@SuppressWarnings("unchecked")
 		public boolean canConvert(final Class clazz)
 		{
 			return clazz.equals(AssertCheck.class);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void marshal(final Object value, final HierarchicalStreamWriter writer, final MarshallingContext context)
 		{
 			final AssertCheck assertCheck = (AssertCheck) value;
@@ -133,6 +139,9 @@ public class XMLConfigurer implements Configurer
 			}
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context)
 		{
 			final AssertCheck assertCheck = new AssertCheck();
@@ -167,13 +176,16 @@ public class XMLConfigurer implements Configurer
 		}
 	}
 
-	protected final static class ListConverter extends CollectionConverter
+	protected static final class ListConverter extends CollectionConverter
 	{
-		public ListConverter(final Mapper mapper)
+		protected ListConverter(final Mapper mapper)
 		{
 			super(mapper);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public boolean canConvert(final Class type)
@@ -375,11 +387,17 @@ public class XMLConfigurer implements Configurer
 		pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz) throws InvalidConfigurationException
 	{
 		return pojoConfigurer.getClassConfiguration(clazz);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 			throws InvalidConfigurationException
 	{

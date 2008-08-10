@@ -27,13 +27,17 @@ public class ObjectCache<K, V>
 	private final LinkedList<V> objectsLastAccessed = new LinkedList<V>();
 	private final int objectsToKeepCount;
 
+	/**
+	 * Creates a new cache keeping all objects.
+	 */
 	public ObjectCache()
 	{
 		objectsToKeepCount = -1;
 	}
 
 	/**
-	 * @param maxObjectsToKeep the number of cached objects that should stay in memory when GC starts removing SoftReferences to free memory 
+	 * @param maxObjectsToKeep the number of cached objects that should stay in memory when GC 
+	 * starts removing SoftReferences to free memory 
 	 */
 	public ObjectCache(final int maxObjectsToKeep)
 	{

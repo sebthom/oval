@@ -20,20 +20,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.InvalidConfigurationException;
+import net.sf.oval.internal.Log;
 
 /**
  * @author Sebastian Thomschke
  */
 public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 {
-	private final static Logger LOG = Logger.getLogger(DateRangeCheck.class.getName());
+	private static final Log LOG = Log.getLog(DateRangeCheck.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -54,6 +53,19 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		setMin(constraintAnnotation.min());
 		setMax(constraintAnnotation.max());
 		setFormat(constraintAnnotation.format());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
+		messageVariables.put("min", min == null ? ".." : min);
+		messageVariables.put("max", max == null ? ".." : max);
+		messageVariables.put("format", format);
+		return messageVariables;
 	}
 
 	/**
@@ -244,7 +256,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 					}
 					catch (final ParseException ex)
 					{
-						LOG.log(Level.FINE, "valueToValidate not parsable with specified format " + format, ex);
+						LOG.debug("valueToValidate not parsable with specified format {1}", format, ex);
 					}
 				}
 
@@ -255,7 +267,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 			}
 			catch (final ParseException ex)
 			{
-				LOG.log(Level.FINE, "valueToValidate is unparsable.", ex);
+				LOG.debug("valueToValidate is unparsable.", ex);
 				return false;
 			}
 		}
@@ -290,18 +302,5 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		this.min = min;
 		minMillis = null;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
-		messageVariables.put("min", min == null ? ".." : min);
-		messageVariables.put("max", max == null ? ".." : max);
-		messageVariables.put("format", format);
-		return messageVariables;
 	}
 }

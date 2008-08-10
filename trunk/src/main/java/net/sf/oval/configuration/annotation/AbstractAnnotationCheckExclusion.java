@@ -29,7 +29,7 @@ public abstract class AbstractAnnotationCheckExclusion<ExclusionAnnotation exten
 {
 	private static final long serialVersionUID = 1L;
 
-	private final static Log LOG = Log.getLog(AbstractAnnotationCheckExclusion.class);
+	private static final Log LOG = Log.getLog(AbstractAnnotationCheckExclusion.class);
 
 	/**
 	 * {@inheritDoc}

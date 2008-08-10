@@ -32,7 +32,7 @@ public final class Log
 	/* cannot use CollectionFactoryHolder.getFactory().createMap(32) here, since 
 	 * the collection factory uses the Log itself which is not yet initialized
 	 */
-	private final static Map<String, Log> logRegistry = new HashMap<String, Log>(32);
+	private static final Map<String, Log> LOG_REGISTRY = new HashMap<String, Log>(32);
 
 	public static Log getLog(final Class< ? > clazz) throws IllegalArgumentException
 	{
@@ -45,7 +45,7 @@ public final class Log
 	{
 		Assert.notNull("name", name);
 
-		Log log = logRegistry.get(name);
+		Log log = LOG_REGISTRY.get(name);
 		if (log == null)
 		{
 			log = new Log(loggerFactory.createLogger(name));
@@ -58,7 +58,7 @@ public final class Log
 	 */
 	public static LoggerFactory getLoggerFactory()
 	{
-		synchronized (logRegistry)
+		synchronized (LOG_REGISTRY)
 		{
 			return loggerFactory;
 		}
@@ -71,10 +71,10 @@ public final class Log
 	{
 		Assert.notNull("loggerFactory", loggerFactory);
 
-		synchronized (logRegistry)
+		synchronized (LOG_REGISTRY)
 		{
 			Log.loggerFactory = loggerFactory;
-			for (final Entry<String, Log> entry : logRegistry.entrySet())
+			for (final Entry<String, Log> entry : LOG_REGISTRY.entrySet())
 			{
 				entry.getValue().setLogger(loggerFactory.createLogger(entry.getKey()));
 			}

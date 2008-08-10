@@ -24,7 +24,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class InheritanceTest extends TestCase
 {
-	public static abstract class AbstractEntity
+	public abstract static class AbstractEntity
 	{
 		@NotNull(message = "NOT_NULL")
 		private String name;

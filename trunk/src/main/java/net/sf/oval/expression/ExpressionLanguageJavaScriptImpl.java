@@ -31,12 +31,15 @@ import org.mozilla.javascript.Scriptable;
  */
 public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 {
-	private final static Log LOG = Log.getLog(ExpressionLanguageJavaScriptImpl.class);
+	private static final Log LOG = Log.getLog(ExpressionLanguageJavaScriptImpl.class);
 
 	private final Scriptable parentScope;
 
 	private final ObjectCache<String, Script> scriptCache = new ObjectCache<String, Script>();
 
+	/**
+	 * Default constructor.
+	 */
 	public ExpressionLanguageJavaScriptImpl()
 	{
 		final Context ctx = ContextFactory.getGlobal().enterContext();
@@ -96,9 +99,7 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 	{
 		final Object result = evaluate(expression, values);
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }

@@ -4,6 +4,10 @@
 
 <FindBugsFilter>
 	<Match>
+		<Class name="net.sf.oval.constrain.ValidateWithMethodCheck" />
+		<Bug pattern="REC_CATCH_EXCEPTION" />
+	</Match>
+	<Match>
 		<Or>
 			<Class name="net.sf.oval.AbstractCheck" />
 			<Class name="net.sf.oval.AbstractCheckExclusion" />
@@ -29,6 +33,13 @@
 		<Package name="net.sf.oval.constraint" />
 		<Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
 	</Match>
+	
+	<Match>
+		<!-- AspectJ code -->
+		<Method name="~^ajc\$pointcut\$\$.*$" />
+		<Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" />
+	</Match>
+	
 	<Match>
 		<!-- AspectJ code -->
 		<Method name="~^init\$_aroundBody\d+\$advice.*$" />

@@ -15,6 +15,7 @@ package net.sf.oval.constraint;
 import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.Map;
 
 import net.sf.oval.Validator;
@@ -22,6 +23,7 @@ import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.internal.util.ReflectionUtils;
+import net.sf.oval.internal.util.SetAccessibleAction;
 
 /**
  * @author Sebastian Thomschke
@@ -44,6 +46,19 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 		setMethodName(constraintAnnotation.methodName());
 		setParameterType(constraintAnnotation.parameterType());
 		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+		messageVariables.put("methodName", methodName);
+		messageVariables.put("parameterType", parameterType.getName());
+		return messageVariables;
 	}
 
 	/**
@@ -84,7 +99,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 					parameterType);
 			if (!method.isAccessible())
 			{
-				method.setAccessible(true);
+				AccessController.doPrivileged(new SetAccessibleAction(method));
 			}
 			return ((Boolean) method.invoke(validatedObject, valueToValidate)).booleanValue();
 		}
@@ -120,18 +135,5 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	{
 		this.parameterType = parameterType;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
-		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-		messageVariables.put("methodName", methodName);
-		messageVariables.put("parameterType", parameterType.getName());
-		return messageVariables;
 	}
 }

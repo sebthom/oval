@@ -42,7 +42,7 @@ public class AssertFieldConstraintsValidationTest extends TestCase
 		public String zipCode;
 	}
 
-	private final static String PATTERN_ZIP_CODE = "^[0-9]*$";
+	private static final String PATTERN_ZIP_CODE = "^[0-9]*$";
 
 	public void testFieldValidation()
 	{

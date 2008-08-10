@@ -2,11 +2,11 @@
 [+] Feature added.
 [*] Change.
 
-2008-0?-0? v1.30
+2008-08-10 v1.30
 ================
 - fixed an StackOverflowError that occurs when referencing the same property via _this.<property_name> in scripted pre/post conditions
 - fixed some issues in the DTD
-* migrated to Maven as project build system
+* migrated from Ant to Maven as project build system
 * upgraded to AspectJ 1.6.1
 * upgraded to Groovy 1.5.6
 * upgraded to JRuby 1.1.3
@@ -15,18 +15,19 @@
 * upgraded to Paranamer 1.1.4
 * upgraded to Spring 2.5.5
 * changed parameter substring() of annotation @HasSubstring() to value() which allows less verbose usage, e.g. @HasSubstring("foo") instead of @HasSubstring(substring="foo")
-* OVal now respects the order in which constraints, fields are returned by the reflection API when validating objects (thanks to CannyDuck)
-* @MatchPattern can now match against multiple patterns
+* OVal now respects the order in which constraint annotations are returned by the reflection API when validating objects (thanks to CannyDuck)
++ @MatchPattern can now match against multiple patterns
 + added support for logging via SLF4J
 + added constraint check exclusion feature which can be used for fine-grained deactivation of constraints
 + added @net.sf.oval.constraint.exclusion.Nullable constraint check exclusion
 * renamed MessageResolverImpl to ResourceBundleMessageResolver
 * moved MessageResolver classes from net.sf.oval.localization to net.sf.oval.localization.message
 + introduced net.sf.oval.localization.context.OValContextRenderer
-+ added configuration XSD as replacement for the DTD 
-* constraints declared without any profiles are associated with the "default" profile automatically
-- fixed bug [ 2023617 ] @ValidateWithMethod in superclasses do not work
-+ ConstraintViolation now provides more details about the constraint (checkName, messageVariables, messageTemplate)
++ added constraint configuration XSD as replacement for the DTD 
++ constraints declared without any profiles are associated with a profile named "default" automatically
+- fixed bug [ 2023617 ] @ValidateWithMethod in super classes do not work
++ ConstraintViolation now provides more details about the violated constraint (checkName, messageVariables, messageTemplate)
++ added support for using Spring AOP to enable programming by contract for Spring managed beans
 
 2008-04-05 v1.20
 ================

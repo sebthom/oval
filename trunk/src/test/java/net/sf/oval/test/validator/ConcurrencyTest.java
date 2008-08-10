@@ -24,7 +24,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class ConcurrencyTest extends TestCase
 {
-	public final static class TestEntity1
+	public static final class TestEntity1
 	{
 		@NotNull
 		@MaxLength(5)
@@ -36,7 +36,7 @@ public class ConcurrencyTest extends TestCase
 		}
 	}
 
-	public final static class TestEntity2
+	public static final class TestEntity2
 	{
 
 		public String name;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2006-2007 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -26,7 +26,8 @@ import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
- * This class determines the names of constructor and method parameters based on the static JoinPoint fields added to the classes by the AspectJ compiler
+ * This class determines the names of constructor and method parameters based on the static 
+ * JoinPoint fields added to the classes by the AspectJ compiler.
  *  
  * @author Sebastian Thomschke
  */

@@ -22,7 +22,7 @@ import net.sf.oval.constraint.AssertURLCheck.URIScheme;
  */
 public class AssertURLTest extends AbstractContraintsTest
 {
-	private static final URIScheme[] permittedSchemes = {URIScheme.FTP, URIScheme.HTTP, URIScheme.HTTPS};
+	private static final URIScheme[] PERMITTED_SCHEMES = {URIScheme.FTP, URIScheme.HTTP, URIScheme.HTTPS};
 
 	public void testAssertURL()
 	{
@@ -30,14 +30,14 @@ public class AssertURLTest extends AbstractContraintsTest
 		super.testCheck(check);
 		Assert.assertNull(check.getPermittedURISchemes());
 
-		check.setPermittedURISchemes(AssertURLTest.permittedSchemes);
+		check.setPermittedURISchemes(AssertURLTest.PERMITTED_SCHEMES);
 		final URIScheme[] actualPermittedSchemes = check.getPermittedURISchemes();
 		Assert.assertNotNull(actualPermittedSchemes);
-		Assert.assertEquals(AssertURLTest.permittedSchemes.length, actualPermittedSchemes.length);
-		for (int n = 0; n < AssertURLTest.permittedSchemes.length; n++)
+		Assert.assertEquals(AssertURLTest.PERMITTED_SCHEMES.length, actualPermittedSchemes.length);
+		for (int n = 0; n < AssertURLTest.PERMITTED_SCHEMES.length; n++)
 		{
-			Assert.assertEquals(AssertURLTest.permittedSchemes[n], actualPermittedSchemes[n]);
-			Assert.assertEquals(AssertURLTest.permittedSchemes[n].toString(), actualPermittedSchemes[n].getScheme());
+			Assert.assertEquals(AssertURLTest.PERMITTED_SCHEMES[n], actualPermittedSchemes[n]);
+			Assert.assertEquals(AssertURLTest.PERMITTED_SCHEMES[n].toString(), actualPermittedSchemes[n].getScheme());
 		}
 
 		Assert.assertFalse(check.isConnect());

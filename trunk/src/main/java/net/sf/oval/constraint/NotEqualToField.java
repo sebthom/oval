@@ -36,7 +36,8 @@ import net.sf.oval.configuration.annotation.Constraint;
 public @interface NotEqualToField
 {
 	/**
-	 * The class in which the field is declared. If omitted the current class and it's super classes are searched for a field with the given name.
+	 * The class in which the field is declared. If omitted the current class and it's super 
+	 * classes are searched for a field with the given name.
 	 * The default value Void.class means the current class.
 	 */
 	Class< ? > declaringClass() default Void.class;

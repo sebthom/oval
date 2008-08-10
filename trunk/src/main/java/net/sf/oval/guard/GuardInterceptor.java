@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
+ * Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.oval.guard;
 
 import java.lang.reflect.Constructor;
@@ -17,7 +29,7 @@ import org.aopalliance.intercept.MethodInvocation;
  */
 public class GuardInterceptor implements MethodInterceptor, ConstructorInterceptor
 {
-	protected final static class MethodInvocable implements Invocable
+	protected static final class MethodInvocable implements Invocable
 	{
 		private final MethodInvocation methodInvocation;
 
@@ -26,6 +38,9 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 			this.methodInvocation = methodInvocation;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public Object invoke() throws Exception
 		{
 			try
@@ -34,16 +49,13 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 			}
 			catch (final Throwable e)
 			{
-				if (e instanceof Exception)
-				{
-					throw (Exception) e;
-				}
+				if (e instanceof Exception) throw (Exception) e;
 				throw new RuntimeException(e);
 			}
 		}
 	}
 
-	private final static Log LOG = Log.getLog(GuardInterceptor.class);
+	private static final Log LOG = Log.getLog(GuardInterceptor.class);
 
 	private Guard guard;
 
@@ -64,20 +76,20 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 	 */
 	public Object construct(final ConstructorInvocation constructorInvocation) throws Throwable
 	{
-		final Constructor< ? > CONSTRUCTOR = constructorInvocation.getConstructor();
+		final Constructor< ? > ctor = constructorInvocation.getConstructor();
 		final Object[] args = constructorInvocation.getArguments();
-		final Object TARGET = constructorInvocation.getThis();
+		final Object target = constructorInvocation.getThis();
 
 		// pre conditions
 		{
-			guard.guardConstructorPre(TARGET, CONSTRUCTOR, args);
+			guard.guardConstructorPre(target, ctor, args);
 		}
 
 		final Object result = constructorInvocation.proceed();
 
 		// post conditions
 		{
-			guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
+			guard.guardConstructorPost(target, ctor, args);
 		}
 
 		return result;

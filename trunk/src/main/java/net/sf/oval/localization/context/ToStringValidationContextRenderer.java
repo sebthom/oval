@@ -19,7 +19,7 @@ import net.sf.oval.context.OValContext;
  */
 public class ToStringValidationContextRenderer implements OValContextRenderer
 {
-	public final static ToStringValidationContextRenderer INSTANCE = new ToStringValidationContextRenderer();
+	public static final ToStringValidationContextRenderer INSTANCE = new ToStringValidationContextRenderer();
 
 	/**
 	 * {@inheritDoc}

@@ -24,5 +24,10 @@ import net.sf.oval.exception.InvalidConfigurationException;
  */
 public interface AnnotationCheck<ConstraintAnnotation extends Annotation> extends Check
 {
+	/**
+	 * Configures the check based on the given constraint annotation.
+	 * @param constraintAnnotation the constraint annotation to use for configuration
+	 * @throws InvalidConfigurationException in case of an illegal configuration setting
+	 */
 	void configure(ConstraintAnnotation constraintAnnotation) throws InvalidConfigurationException;
 }
