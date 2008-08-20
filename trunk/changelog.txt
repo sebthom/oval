@@ -5,6 +5,7 @@
 2008-xx-xx v1.??
 ================
 - fixed Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
+- fixed [ 2063142 ] doc typo
 
 2008-08-10 v1.30
 ================
