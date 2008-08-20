@@ -32,6 +32,7 @@ import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
+import net.sf.oval.configuration.pojo.elements.ObjectConfiguration;
 import net.sf.oval.configuration.xml.XMLConfigurer;
 import net.sf.oval.constraint.AssertCheck;
 import net.sf.oval.constraint.AssertConstraintSetCheck;
@@ -105,6 +106,17 @@ public class XMLConfigurationTest extends TestCase
 			classConfigs.add(cf);
 			cf.type = User.class;
 
+			cf.objectConfiguration = new ObjectConfiguration();
+			{
+				cf.objectConfiguration.checks = new ArrayList<Check>();
+
+				final AssertCheck ac = new AssertCheck();
+				ac.setExpr("_this.firstName != _this.lastName");
+				ac.setMessage("firstName and lastName must not be the same");
+				ac.setLang("groovy");
+				cf.objectConfiguration.checks.add(ac);
+			}
+
 			cf.fieldConfigurations = new HashSet<FieldConfiguration>();
 			{
 				final FieldConfiguration fc = new FieldConfiguration();
@@ -113,7 +125,7 @@ public class XMLConfigurationTest extends TestCase
 				fc.name = "firstName";
 				fc.checks = new ArrayList<Check>();
 				final AssertCheck ac = new AssertCheck();
-				ac.setExpr("_value != null && _value.length() < 3");
+				ac.setExpr("_value != null && _value.length() <= 3");
 				ac.setMessage("{context} cannot be longer than 3 characters");
 				ac.setLang("groovy");
 				fc.checks.add(ac);
@@ -196,8 +208,8 @@ public class XMLConfigurationTest extends TestCase
 		usr.firstName = "123456";
 		List<ConstraintViolation> violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".firstName cannot be longer than 3 characters",
-				violations.get(0).getMessage());
+		assertEquals(User.class.getName() + ".firstName cannot be longer than 3 characters", violations.get(0)
+				.getMessage());
 
 		usr.firstName = "";
 
@@ -207,8 +219,8 @@ public class XMLConfigurationTest extends TestCase
 		usr.lastName = "123456";
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".lastName is not between 1 and 5 characters long",
-				violations.get(0).getMessage());
+		assertEquals(User.class.getName() + ".lastName is not between 1 and 5 characters long", violations.get(0)
+				.getMessage());
 
 		usr.lastName = "1";
 
@@ -223,8 +235,8 @@ public class XMLConfigurationTest extends TestCase
 		usr.userId = "%$$e3";
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".userId does not match the pattern ^[a-z0-9]{8}$",
-				violations.get(0).getMessage());
+		assertEquals(User.class.getName() + ".userId does not match the pattern ^[a-z0-9]{8}$", violations.get(0)
+				.getMessage());
 		usr.userId = "12345678";
 
 		/*
@@ -233,14 +245,24 @@ public class XMLConfigurationTest extends TestCase
 		usr.managerId = null;
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".getManagerId() is null", violations.get(0)
-				.getMessage());
+		assertEquals(User.class.getName() + ".getManagerId() is null", violations.get(0).getMessage());
 
 		usr.managerId = "%$$e3";
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName()
-				+ ".getManagerId() does not match the pattern ^[a-z0-9]{8}$", violations.get(0)
-				.getMessage());
+		assertEquals(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$", violations.get(
+				0).getMessage());
+
+		/*
+		 * check object constraints
+		 */
+		usr.userId = "12345678";
+		usr.managerId = "12345678";
+
+		usr.lastName = "abc";
+		usr.firstName = "abc";
+		violations = validator.validate(usr);
+		assertEquals(1, violations.size());
+		assertEquals("firstName and lastName must not be the same", violations.get(0).getMessage());
 	}
 }
