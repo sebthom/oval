@@ -910,7 +910,7 @@ public class Validator
 	}
 
 	/**
-	 * Enables all constraint profiles, i.e. all configured constraint will be validated.
+	 * Disables all constraint profiles, i.e. no configured constraint will be validated.
 	 */
 	public synchronized void disableAllProfiles()
 	{
@@ -936,7 +936,7 @@ public class Validator
 	}
 
 	/**
-	 * Disables all constraint profiles, i.e. no configured constraint will be validated.
+	 * Enables all constraint profiles, i.e. all configured constraint will be validated.
 	 */
 	public synchronized void enableAllProfiles()
 	{
