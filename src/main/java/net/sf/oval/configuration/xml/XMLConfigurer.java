@@ -304,8 +304,11 @@ public class XMLConfigurer implements Configurer
 			xStream.addImplicitCollection(POJOConfigurer.class, "classConfigurations", ClassConfiguration.class);
 			xStream.alias("class", ClassConfiguration.class);
 			{
-				xStream.alias("object", ObjectConfiguration.class);
-
+				// <object> -> net.sf.oval.configuration.elements.ObjectConfiguration
+				xStream.aliasField("object", ClassConfiguration.class, "objectConfiguration");
+				{
+					xStream.addImplicitCollection(ObjectConfiguration.class, "checks");
+				}
 				// <field> -> net.sf.oval.configuration.elements.FieldConfiguration
 				xStream
 						.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",

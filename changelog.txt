@@ -2,6 +2,10 @@
 [+] Feature added.
 [*] Change.
 
+2008-xx-xx v1.??
+================
+- fixed Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
+
 2008-08-10 v1.30
 ================
 - fixed an StackOverflowError that occurs when referencing the same property via _this.<property_name> in scripted pre/post conditions
