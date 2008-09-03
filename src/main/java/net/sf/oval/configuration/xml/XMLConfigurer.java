@@ -219,7 +219,7 @@ public class XMLConfigurer implements Configurer
 		configureXStream();
 	}
 
-	protected final void configureXStream()
+	private final void configureXStream()
 	{
 		xStream.registerConverter(new ListConverter(xStream.getMapper()));
 		xStream.registerConverter(new AssertCheckConverter());
