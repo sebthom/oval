@@ -15,6 +15,7 @@
 			<Class name="net.sf.oval.constraint.InstanceOfAnyCheck" />
 			<Class name="net.sf.oval.constraint.InstanceOfCheck" />
 			<Class name="net.sf.oval.exception.ConstraintsViolatedException" />
+			<Class name="net.sf.oval.internal.util.MethodInvocationCommand" />
 			<Class name="net.sf.oval.internal.util.SerializableConstructor" />
 			<Class name="net.sf.oval.internal.util.SerializableMethod" />
 		</Or>
