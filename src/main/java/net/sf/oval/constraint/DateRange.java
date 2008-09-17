@@ -38,7 +38,7 @@ public @interface DateRange
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.DateRange";
+	String errorCode() default "net.sf.oval.constraint.DateRange";
 
 	/**
 	 * The format of the specified dates in a form understandable by the SimpleDateFormat class.
@@ -64,7 +64,7 @@ public @interface DateRange
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.DateRange.violated";
+	String message() default "net.sf.oval.constraint.DateRange.violated";
 
 	/**
 	 * The lower date compared against in the format specified with the dateFormat parameter. 

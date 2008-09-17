@@ -44,14 +44,14 @@ public @interface EqualToField
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.EqualToField";
+	String errorCode() default "net.sf.oval.constraint.EqualToField";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.EqualToField.violated";
+	String message() default "net.sf.oval.constraint.EqualToField.violated";
 
 	/**
 	 * The associated constraint profiles.

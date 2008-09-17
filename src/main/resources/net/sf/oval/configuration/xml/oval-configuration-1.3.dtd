@@ -334,7 +334,7 @@ The node body contains the script expression as CDATA
 <!ATTLIST size min NMTOKEN #IMPLIED >
 <!ATTLIST size severity NMTOKEN #IMPLIED >
 
-<!-- built-in single value constraint, corresponds to net.sf.oval.constraints.ValidateWithMethod -->
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.ValidateWithMethod -->
 <!ELEMENT validateWithMethod (profiles?) >
 <!ATTLIST validateWithMethod errorCode CDATA #IMPLIED >
 <!ATTLIST validateWithMethod ignoreIfNull (true|false) #IMPLIED >

@@ -361,44 +361,44 @@ if(violations.size()&gt;0)
       <itemizedlist>
         <listitem>
           <para><command>@javax.persistence.Basic(optional=false) =&gt;
-          @net.sf.oval.constraints.NotNull </command></para>
+          @net.sf.oval.constraint.NotNull </command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.OneToOne(optional=false) =&gt;
-          @net.sf.oval.constraints.NotNull </command></para>
+          @net.sf.oval.constraint.NotNull </command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.OneToOne =&gt;
-          @net.sf.oval.constraints.AssertValid</command></para>
+          @net.sf.oval.constraint.AssertValid</command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.OneToMany =&gt;
-          @net.sf.oval.constraints.AssertValid</command></para>
+          @net.sf.oval.constraint.AssertValid</command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.ManyToOne(optional=false) =&gt;
-          @net.sf.oval.constraints.NotNull </command></para>
+          @net.sf.oval.constraint.NotNull </command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.ManyToOne =&gt;
-          @net.sf.oval.constraints.AssertValid</command></para>
+          @net.sf.oval.constraint.AssertValid</command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.Column(nullable=false) =&gt;
-          @net.sf.oval.constraints.NotNull (only applied for fields not
+          @net.sf.oval.constraint.NotNull (only applied for fields not
           annotated with @javax.persistence.GeneratedValue or
           @javax.persistence.Version) </command></para>
         </listitem>
 
         <listitem>
           <para><command>@javax.persistence.Column(length=5) =&gt;
-          @net.sf.oval.constraints.Length</command></para>
+          @net.sf.oval.constraint.Length</command></para>
         </listitem>
       </itemizedlist>
 
@@ -561,16 +561,16 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
 
         <para>You can apply the constraints specified for a field in the same
         or a super class to any constructor or method parameter by using the
-        <command>@net.sf.oval.constraints.AssertFieldConstraints</command>
+        <command>@net.sf.oval.constraint.AssertFieldConstraints</command>
         annotation.</para>
 
         <para>If you do not specify a field name within the
-        <command>@net.sf.oval.constraints.AssertFieldConstraints</command>
+        <command>@net.sf.oval.constraint.AssertFieldConstraints</command>
         annotation the constraints of the field with the same name as the
         annotated parameter are applied to the parameter.</para>
 
         <para>If you specify a field name within the
-        <command>@net.sf.oval.constraints.AssertFieldConstraints</command>
+        <command>@net.sf.oval.constraint.AssertFieldConstraints</command>
         annotation the constraints of the field with the specified name are
         applied to the annotated parameter.</para>
 

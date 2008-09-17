@@ -38,7 +38,7 @@ public @interface MemberOf
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.MemberOf";
+	String errorCode() default "net.sf.oval.constraint.MemberOf";
 
 	boolean ignoreCase() default false;
 
@@ -47,7 +47,7 @@ public @interface MemberOf
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.MemberOf.violated";
+	String message() default "net.sf.oval.constraint.MemberOf.violated";
 
 	/**
 	 * The associated constraint profiles.

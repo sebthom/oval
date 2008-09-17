@@ -62,7 +62,7 @@ abstract aspect ApiUsageAuditor
 	 * TODO AspectJ seems to be broken here, it does not match based on annotations at parameter level
 	 * e.g.	execution(* *.*(*,..)) => matches
 	 * 		execution(* *.*(@java.util.SuppressWarnings *,..)) => does not match
-	 *     	execution(* *.*(@net.sf.oval.constraints.NotNull *,..)) => does not match and results in warning: [Xlint:unmatchedTargetKind]
+	 *     	execution(* *.*(@net.sf.oval.constraint.NotNull *,..)) => does not match and results in warning: [Xlint:unmatchedTargetKind]
 	 *      execution(* (!@Guarded *).*(@(@Constraint *) *, ..)) => does not match and results in warning: [Xlint:unmatchedTargetKind]
 	 */
 	declare warning:

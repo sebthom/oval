@@ -35,14 +35,14 @@ public @interface NotNull
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.NotNull";
+	String errorCode() default "net.sf.oval.constraint.NotNull";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.NotNull.violated";
+	String message() default "net.sf.oval.constraint.NotNull.violated";
 
 	/**
 	 * The associated constraint profiles.

@@ -38,7 +38,7 @@ public @interface Length
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.Length";
+	String errorCode() default "net.sf.oval.constraint.Length";
 
 	int max() default Integer.MAX_VALUE;
 
@@ -47,7 +47,7 @@ public @interface Length
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Length.violated";
+	String message() default "net.sf.oval.constraint.Length.violated";
 
 	int min() default 0;
 

@@ -40,11 +40,11 @@ import net.sf.oval.constraint.NotNullCheck;
 /**
  * Constraints configurer that interprets certain EJB3 JPA annotations:
  * <ul>
- * <li>javax.persistence.Basic(optional=false)     => net.sf.oval.constraints.NotNullCheck
- * <li>javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraints.NotNullCheck
- * <li>javax.persistence.ManyToOne(optional=false) => net.sf.oval.constraints.NotNullCheck
- * <li>javax.persistence.Column(nullable=false)    => net.sf.oval.constraints.NotNullCheck
- * <li>javax.persistence.Column(length=5)          => net.sf.oval.constraints.LengthCheck
+ * <li>javax.persistence.Basic(optional=false)     => net.sf.oval.constraint.NotNullCheck
+ * <li>javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraint.NotNullCheck
+ * <li>javax.persistence.ManyToOne(optional=false) => net.sf.oval.constraint.NotNullCheck
+ * <li>javax.persistence.Column(nullable=false)    => net.sf.oval.constraint.NotNullCheck
+ * <li>javax.persistence.Column(length=5)          => net.sf.oval.constraint.LengthCheck
  * </ul>
  * @author Sebastian Thomschke
  */

@@ -38,14 +38,14 @@ public @interface Future
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.Future";
+	String errorCode() default "net.sf.oval.constraint.Future";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Future.violated";
+	String message() default "net.sf.oval.constraint.Future.violated";
 
 	/**
 	 * The associated constraint profiles.

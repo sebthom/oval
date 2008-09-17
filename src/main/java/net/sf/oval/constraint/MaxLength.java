@@ -38,14 +38,14 @@ public @interface MaxLength
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.MaxLength";
+	String errorCode() default "net.sf.oval.constraint.MaxLength";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.MaxLength.violated";
+	String message() default "net.sf.oval.constraint.MaxLength.violated";
 
 	/**
 	 * The associated constraint profiles.

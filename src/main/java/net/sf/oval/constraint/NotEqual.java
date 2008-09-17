@@ -38,7 +38,7 @@ public @interface NotEqual
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.NotEqual";
+	String errorCode() default "net.sf.oval.constraint.NotEqual";
 
 	boolean ignoreCase() default false;
 
@@ -47,7 +47,7 @@ public @interface NotEqual
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.NotEqual.violated";
+	String message() default "net.sf.oval.constraint.NotEqual.violated";
 
 	/**
 	 * The associated constraint profiles.

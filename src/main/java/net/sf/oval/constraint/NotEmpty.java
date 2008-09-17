@@ -38,14 +38,14 @@ public @interface NotEmpty
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.NotEmpty";
+	String errorCode() default "net.sf.oval.constraint.NotEmpty";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.NotEmpty.violated";
+	String message() default "net.sf.oval.constraint.NotEmpty.violated";
 
 	/**
 	 * The associated constraint profiles.

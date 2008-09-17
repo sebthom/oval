@@ -38,7 +38,7 @@ public @interface MatchPattern
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.MatchPattern";
+	String errorCode() default "net.sf.oval.constraint.MatchPattern";
 
 	/**
 	 *  Match flags, a bit mask that may include
@@ -59,7 +59,7 @@ public @interface MatchPattern
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.MatchPattern.violated";
+	String message() default "net.sf.oval.constraint.MatchPattern.violated";
 
 	/**
 	 * The regular expression(s) to match against

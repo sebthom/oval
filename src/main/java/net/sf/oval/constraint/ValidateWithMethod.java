@@ -36,7 +36,7 @@ public @interface ValidateWithMethod
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.ValidateWithMethod";
+	String errorCode() default "net.sf.oval.constraint.ValidateWithMethod";
 
 	/**
 	 * this constraint will be ignored if the value to check is null
@@ -48,7 +48,7 @@ public @interface ValidateWithMethod
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.ValidateWithMethod.violated";
+	String message() default "net.sf.oval.constraint.ValidateWithMethod.violated";
 
 	/**
 	 * name a the single parameter method to use for validation

@@ -37,7 +37,7 @@ public @interface CheckWith
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.CheckWith";
+	String errorCode() default "net.sf.oval.constraint.CheckWith";
 
 	/**
 	 * this constraint will be ignored if the value to check is null
@@ -49,7 +49,7 @@ public @interface CheckWith
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.CheckWith.violated";
+	String message() default "net.sf.oval.constraint.CheckWith.violated";
 
 	/**
 	 * The associated constraint profiles.
