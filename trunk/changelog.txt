@@ -6,6 +6,7 @@
 ================
 - fixed Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
 - fixed [ 2063142 ] doc typo
+- fixed prefix of default constraint message codes (changed from net.sf.oval.constraints to net.sf.oval.constraint)
 
 2008-08-10 v1.30
 ================

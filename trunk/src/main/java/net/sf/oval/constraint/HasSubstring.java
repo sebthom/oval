@@ -38,7 +38,7 @@ public @interface HasSubstring
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.HasSubstring";
+	String errorCode() default "net.sf.oval.constraint.HasSubstring";
 
 	boolean ignoreCase() default false;
 
@@ -47,7 +47,7 @@ public @interface HasSubstring
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Contains.violated";
+	String message() default "net.sf.oval.constraint.Contains.violated";
 
 	/**
 	 * The associated constraint profiles.

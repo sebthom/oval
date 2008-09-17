@@ -36,7 +36,7 @@ public @interface Assert
 	/**
 	 * failure code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.Assert";
+	String errorCode() default "net.sf.oval.constraint.Assert";
 
 	/**
 	 * Formula in the given expression language describing the constraint.
@@ -59,7 +59,7 @@ public @interface Assert
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Assert.violated";
+	String message() default "net.sf.oval.constraint.Assert.violated";
 
 	/**
 	 * The associated constraint profiles.

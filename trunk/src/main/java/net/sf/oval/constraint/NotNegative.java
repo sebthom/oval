@@ -38,14 +38,14 @@ public @interface NotNegative
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.NotNegative";
+	String errorCode() default "net.sf.oval.constraint.NotNegative";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.NotNegative.violated";
+	String message() default "net.sf.oval.constraint.NotNegative.violated";
 
 	/**
 	 * The associated constraint profiles.

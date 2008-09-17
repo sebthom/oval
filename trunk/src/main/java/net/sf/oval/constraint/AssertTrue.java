@@ -39,14 +39,14 @@ public @interface AssertTrue
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.AssertTrue";
+	String errorCode() default "net.sf.oval.constraint.AssertTrue";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.AssertTrue.violated";
+	String message() default "net.sf.oval.constraint.AssertTrue.violated";
 
 	/**
 	 * The associated constraint profiles.

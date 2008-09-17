@@ -38,14 +38,14 @@ public @interface MinLength
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.MinLength";
+	String errorCode() default "net.sf.oval.constraint.MinLength";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.MinLength.violated";
+	String message() default "net.sf.oval.constraint.MinLength.violated";
 
 	/**
 	 * The associated constraint profiles.

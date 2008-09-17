@@ -38,14 +38,14 @@ public @interface InstanceOfAny
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.InstanceOfAny";
+	String errorCode() default "net.sf.oval.constraint.InstanceOfAny";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.InstanceOfAny.violated";
+	String message() default "net.sf.oval.constraint.InstanceOfAny.violated";
 
 	/**
 	 * The associated constraint profiles.

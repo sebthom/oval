@@ -26,20 +26,20 @@ public abstract class ApiUsageAuditor2
 	/*
 	 * Rule 1: Warn about return value constraints for void methods 
 	 */
-	@DeclareWarning("execution(@(@net.sf.oval.constraints.Constraint *) void *.*(..))")
+	@DeclareWarning("execution(@(@net.sf.oval.configuration.annotation.Constraint *) void *.*(..))")
 	public static final String RULE1 = "OVal API usage violation 1: Method return value constraints are not allowed for methods without return values";
 
 	/*
 	 * Rule 2: Warn about return value constraints for non-void, parameterized methods in classes that are not guarded 
 	 */
-	@DeclareWarning("execution(@(@net.sf.oval.constraints.Constraint *) !void (!@net.sf.oval.guard.Guarded *).*(*,..))")
+	@DeclareWarning("execution(@(@net.sf.oval.configuration.annotation.Constraint *) !void (!@net.sf.oval.guard.Guarded *).*(*,..))")
 	public static final String RULE2 = "OVal API usage violation 2: Method return value constraints for parameterized methods are only allowed in guarded classes";
 
 	/*
 	 * Rule 3: Warn about return value constraints for non-void, non-parameterized methods missing the @Invariant annotation in classes 
 	 * that are not guarded
 	 */
-	@DeclareWarning("execution(!@net.sf.oval.configuration.annotation.IsInvariant @(@net.sf.oval.constraints.Constraint *) !void (!@net.sf.oval.guard.Guarded *).*())")
+	@DeclareWarning("execution(!@net.sf.oval.configuration.annotation.IsInvariant @(@net.sf.oval.configuration.annotation.Constraint *) !void (!@net.sf.oval.guard.Guarded *).*())")
 	public static final String RULE3 = "OVal API usage violation 3: Method return value constraints are only allowed if the method is annotated with @IsInvariant or the declaring class is guarded";
 
 	/*
@@ -57,13 +57,13 @@ public abstract class ApiUsageAuditor2
 	/*
 	 * Rule 6: Warn about method parameter constraints in classes that are not guarded
 	 */
-	@DeclareWarning("execution(* (!@net.sf.oval.guard.Guarded *).*(@(@net.sf.oval.constraints.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, *, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, *, *, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, *, *, *, @(@net.sf.oval.constraints.Constraint *) *, ..))")
+	@DeclareWarning("execution(* (!@net.sf.oval.guard.Guarded *).*(@(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, *, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution(* (!@net.sf.oval.guard.Guarded *).*(*, *, *, *, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..))")
 	public static final String RULE6 = "OVal API usage violation 6: Method parameter constraints are only allowed in guarded classes";
 
 	/*
 	 * Rule 7: Warn about constructor parameter constraints in classes that are not guarded
 	 */
-	@DeclareWarning("execution((!@net.sf.oval.guard.Guarded *).new(@(@net.sf.oval.constraints.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, *, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, *, *, @(@net.sf.oval.constraints.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, *, *, *, @(@net.sf.oval.constraints.Constraint *) *, ..))")
+	@DeclareWarning("execution((!@net.sf.oval.guard.Guarded *).new(@(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, *, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..)) || execution((!@net.sf.oval.guard.Guarded *).new(*, *, *, *, *, @(@net.sf.oval.configuration.annotation.Constraint *) *, ..))")
 	public static final String RULE7 = "OVal API usage violation 7: Method parameter constraints are only allowed in guarded classes";
 
 }

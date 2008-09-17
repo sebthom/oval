@@ -38,7 +38,7 @@ public @interface Range
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.Range";
+	String errorCode() default "net.sf.oval.constraint.Range";
 
 	double max() default Double.MAX_VALUE;
 
@@ -47,7 +47,7 @@ public @interface Range
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.Range.violated";
+	String message() default "net.sf.oval.constraint.Range.violated";
 
 	double min() default Double.MIN_VALUE;
 

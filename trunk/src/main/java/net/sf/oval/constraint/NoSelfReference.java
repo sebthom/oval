@@ -36,14 +36,14 @@ public @interface NoSelfReference
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraints.NoSelfReference";
+	String errorCode() default "net.sf.oval.constraint.NoSelfReference";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraints.NotSelfRef.violated";
+	String message() default "net.sf.oval.constraint.NotSelfRef.violated";
 
 	/**
 	 * severity passed to the ConstraintViolation object
