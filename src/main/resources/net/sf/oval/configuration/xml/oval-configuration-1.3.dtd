@@ -18,7 +18,7 @@ or
 <!ELEMENT string (#PCDATA) >
 
 <!-- Defines a constraint set -->
-<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notBlank|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST constraintSet id NMTOKEN #REQUIRED >
 <!ATTLIST constraintSet overwrite (true|false) #IMPLIED >
 
@@ -38,7 +38,7 @@ or
 <!ATTLIST object overwrite (true|false) #IMPLIED >
 
 <!-- Constraints configuration for a field -->
-<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notBlank|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field overwrite (true|false) #IMPLIED >
 
@@ -57,14 +57,14 @@ To identify the correct method you are required to list all parameters, includin
 
 <!-- Constraints configuration for a constructor/method parameter -->
 <!ELEMENT parameter ( (
-    assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod|
+    assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notBlank|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod|
     nullable
 )* )>
 <!ATTLIST parameter overwrite (true|false) #IMPLIED >
 <!ATTLIST parameter type CDATA #REQUIRED >
 
 <!-- Constraints configuration for the return value of a method. -->
-<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertURL|assertValid|checkWith|equalToField|future|hasSubstring|instanceOf|instanceOfAny|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notBlank|notEmpty|notEqual|notEqualToField|notNegative|notNull|past|range|size|validateWithMethod)* )>
 <!ATTLIST returnValue overwrite (true|false) #IMPLIED >
 
 <!ELEMENT preExcecution (pre*)>
