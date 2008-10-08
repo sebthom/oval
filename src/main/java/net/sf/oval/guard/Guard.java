@@ -304,7 +304,7 @@ public class Guard extends Validator
 	 * @return <code>true</code> if the listener was not yet registered
 	 * @throws IllegalArgumentException if <code>listener == null</code>
 	 */
-	public final boolean addListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
+	public boolean addListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
 		Assert.notNull("listener", listener);
 
