@@ -41,17 +41,9 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
 		/**
 		 * {@inheritDoc}
 		 */
-		public Object invoke() throws Exception
+		public Object invoke() throws Throwable
 		{
-			try
-			{
-				return methodInvocation.proceed();
-			}
-			catch (final Throwable e)
-			{
-				if (e instanceof Exception) throw (Exception) e;
-				throw new RuntimeException(e);
-			}
+			return methodInvocation.proceed();
 		}
 	}
 

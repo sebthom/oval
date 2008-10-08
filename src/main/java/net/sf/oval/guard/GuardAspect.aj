@@ -93,16 +93,12 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		final Object TARGET = thisJoinPoint.getTarget();
 
 		// pre conditions
-		{
-			guard.guardConstructorPre(TARGET, CONSTRUCTOR, args);
-		}
+		guard.guardConstructorPre(TARGET, CONSTRUCTOR, args);
 
 		final Object result = proceed();
 
 		// post conditions
-		{
-			guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
-		}
+		guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
 
 		return result;
 	}
@@ -117,14 +113,31 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		final Method METHOD = SIGNATURE.getMethod();
 		final Object[] args = thisJoinPoint.getArgs();
 		final Object TARGET = thisJoinPoint.getTarget();
-
-		return guard.guardMethod(TARGET, METHOD, args, new Invocable()
+		
+		/* Because of a limitation in AspectJ the following does not compile currently. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=240608
+		    return guard.guardMethod(TARGET, METHOD, args, new Invocable()
 			{
-				public Object invoke()
+				public Object invoke() throws Throwable
 				{
 					// invoke the advised method and return the result
 					return proceed();
 				}
 			});
+		 */
+		
+		// pre conditions
+		Guard.GuardMethodPreResult preResult = guard.guardMethodPre(TARGET, METHOD, args);
+		if(preResult == Guard.DO_NOT_PROCEED) 
+		{
+			LOG.debug("not proceeding with method execution");
+			return null;
+		}
+		
+		final Object result = proceed();
+
+		// post conditions
+		guard.guardMethodPost(result, preResult);
+
+		return result;
 	}
 }

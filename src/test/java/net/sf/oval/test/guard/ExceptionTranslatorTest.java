@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.test.guard;
 
+import java.lang.reflect.InvocationTargetException;
+
 import junit.framework.TestCase;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
@@ -28,10 +30,14 @@ public class ExceptionTranslatorTest extends TestCase
 	@Guarded
 	public static final class TestEntity
 	{
-		public void setName(@NotNull(message = "NULL")
-		final String name)
+		public void setName(@NotNull(message = "NULL") final String name)
 		{
-		// ...
+		//...
+		}
+
+		public void throwCheckedException() throws InvocationTargetException
+		{
+			throw new InvocationTargetException(null);
 		}
 	}
 
@@ -54,16 +60,27 @@ public class ExceptionTranslatorTest extends TestCase
 
 		try
 		{
+			final TestEntity t = new TestEntity();
+
 			guard.setExceptionTranslator(new ExceptionTranslatorJDKExceptionsImpl());
 			try
 			{
-				final TestEntity t = new TestEntity();
 				t.setName(null);
 				fail();
 			}
 			catch (final IllegalArgumentException ex)
 			{
 				assertEquals(ex.getMessage(), "NULL");
+			}
+
+			try
+			{
+				t.throwCheckedException();
+				fail();
+			}
+			catch (final InvocationTargetException ex)
+			{
+				// expected
 			}
 
 		}

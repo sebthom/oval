@@ -15,7 +15,6 @@ package net.sf.oval.guard;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.Invocable;
 
@@ -53,16 +52,9 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 		/**
 		 * {@inheritDoc}
 		 */
-		public Object invoke()
+		public Object invoke() throws Throwable
 		{
-			try
-			{
-				return thisJoinPoint.proceed();
-			}
-			catch (final Throwable ex)
-			{
-				throw new ValidationFailedException("Unexpected exception while invoking method.", ex);
-			}
+			return thisJoinPoint.proceed();
 		}
 	}
 

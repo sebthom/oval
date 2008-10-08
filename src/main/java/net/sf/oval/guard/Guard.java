@@ -58,6 +58,40 @@ import net.sf.oval.internal.util.ThreadLocalWeakHashMap;
  */
 public class Guard extends Validator
 {
+
+	/**
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions 
+	 */
+	protected final static class GuardMethodPreResult
+	{
+		protected final boolean checkInvariants;
+		protected final Method method;
+		protected final Object[] args;
+		protected final ClassChecks cc;
+		protected final List<ConstraintViolation> violations;
+		protected final Map<PostCheck, Object> postCheckOldValues;
+		protected final Object guardedObject;
+
+		public GuardMethodPreResult(final Object guardedObject, final Method method, final Object[] args,
+				final ClassChecks cc, final boolean checkInvariants, final Map<PostCheck, Object> postCheckOldValues,
+				final List<ConstraintViolation> violations)
+		{
+			this.guardedObject = guardedObject;
+			this.method = method;
+			this.args = args;
+			this.cc = cc;
+			this.checkInvariants = checkInvariants;
+			this.postCheckOldValues = postCheckOldValues;
+			this.violations = violations;
+		}
+	}
+
+	/**
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions 
+	 */
+	protected final static GuardMethodPreResult DO_NOT_PROCEED = new GuardMethodPreResult(null, null, null, null,
+			false, null, null);
+
 	private static final Log LOG = Log.getLog(Guard.class);
 
 	/**
@@ -79,9 +113,9 @@ public class Guard extends Validator
 	 * holds the objects for which invariants are currently checked for
 	 */
 	private final ThreadLocalIdentitySet<Object> currentlyInvariantCheckingFor = new ThreadLocalIdentitySet<Object>();
-
 	private boolean isActivated = true;
 	private boolean isInvariantsEnabled = true;
+
 	private boolean isPreConditionsEnabled = true;
 
 	private boolean isPostConditionsEnabled = true;
@@ -90,12 +124,12 @@ public class Guard extends Validator
 	 * Flag that indicates if any listeners were registered at any time. Used for improved performance.
 	 */
 	private boolean isListenersFeatureUsed = false;
-
 	/**
 	 * Flag that indicates if exception suppressing was used at any time. Used for improved performance.
 	 */
 	private boolean isProbeModeFeatureUsed = false;
 	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(4);
+
 	private final Map<Class< ? >, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class< ? >, Set<ConstraintsViolatedListener>>(
 			4);
 
@@ -613,19 +647,9 @@ public class Guard extends Validator
 	 *             mode.
 	 */
 	protected Object guardMethod(Object guardedObject, final Method method, final Object[] args,
-			final Invocable invocable) throws ConstraintsViolatedException, ValidationFailedException
+			final Invocable invocable) throws ConstraintsViolatedException, ValidationFailedException, Throwable
 	{
-		if (!isActivated)
-		{
-			try
-			{
-				return invocable.invoke();
-			}
-			catch (final Exception ex)
-			{
-				throw new ValidationFailedException("Invoking the method failed.", ex);
-			}
-		}
+		if (!isActivated) return invocable.invoke();
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -697,15 +721,7 @@ public class Guard extends Validator
 
 		final Map<PostCheck, Object> postCheckOldValues = calculateMethodPostOldValues(guardedObject, method, args);
 
-		final Object returnValue;
-		try
-		{
-			returnValue = invocable.invoke();
-		}
-		catch (final Exception ex)
-		{
-			throw new ValidationFailedException("Invoking the method failed.", ex);
-		}
+		final Object returnValue = invocable.invoke();
 
 		try
 		{
@@ -748,6 +764,160 @@ public class Guard extends Validator
 		}
 
 		return returnValue;
+	}
+
+	/**
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions, then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead 
+	 * 
+	 * This method is provided for use by guard aspects.
+	 * 
+	 * @param guardedObject
+	 * @param method
+	 * @param args
+	 * @param invocable
+	 * @return The method return value or null if the guarded object is in probe mode.
+	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
+	 *             mode.
+	 */
+	protected void guardMethodPost(final Object returnValue, final GuardMethodPreResult preResult)
+			throws ConstraintsViolatedException, ValidationFailedException
+	{
+		if (!isActivated) return;
+
+		try
+		{
+			// check invariants if executed method is not private
+			if (preResult.checkInvariants || preResult.cc.methodsWithCheckInvariantsPost.contains(preResult.method))
+			{
+				validateInvariants(preResult.guardedObject, preResult.violations);
+			}
+
+			if (isPostConditionsEnabled)
+			{
+
+				// method return value
+				if (preResult.violations.size() == 0)
+				{
+					validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue,
+							preResult.violations);
+				}
+
+				// @Post
+				if (preResult.violations.size() == 0)
+				{
+					validateMethodPost(preResult.guardedObject, preResult.method, preResult.args, returnValue,
+							preResult.postCheckOldValues, preResult.violations);
+				}
+			}
+		}
+		catch (final ValidationFailedException ex)
+		{
+			throw translateException(ex);
+		}
+
+		if (preResult.violations.size() > 0)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
+					preResult.violations);
+			if (isListenersFeatureUsed)
+			{
+				notifyListeners(preResult.guardedObject, violationException);
+			}
+
+			throw translateException(violationException);
+		}
+	}
+
+	/**
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions, then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead
+	 * 
+	 * This method is provided for use by guard aspects.
+	 * 
+	 * @param guardedObject
+	 * @param method
+	 * @param args
+	 * @param invocable
+	 * @return Null if method guarding is deactivated or a result object that needs to be passed to {@link #guardMethodPost(Object, Method, Object[], Object, GuardMethodPreResult)}
+	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
+	 *             mode.
+	 */
+	protected GuardMethodPreResult guardMethodPre(Object guardedObject, final Method method, final Object[] args)
+			throws ConstraintsViolatedException, ValidationFailedException
+	{
+		if (!isActivated) return null;
+
+		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
+
+		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants
+				&& !ReflectionUtils.isPrivate(method) && !ReflectionUtils.isProtected(method);
+
+		final List<ConstraintViolation> violations = getCollectionFactory().createList();
+
+		// if static method use the declaring class as guardedObject
+		if (guardedObject == null && ReflectionUtils.isStatic(method))
+		{
+			guardedObject = method.getDeclaringClass();
+		}
+
+		try
+		{
+			// check invariants
+			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
+			{
+				validateInvariants(guardedObject, violations);
+			}
+
+			if (isPreConditionsEnabled)
+			{
+				// method parameter validation
+				if (violations.size() == 0 && args.length > 0)
+				{
+					validateMethodParameters(guardedObject, method, args, violations);
+				}
+
+				// @Pre validation
+				if (violations.size() == 0)
+				{
+					validateMethodPre(guardedObject, method, args, violations);
+				}
+			}
+		}
+		catch (final ValidationFailedException ex)
+		{
+			throw translateException(ex);
+		}
+
+		final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
+		if (pml != null)
+		{
+			pml.onMethodCall(method, args);
+		}
+
+		if (violations.size() > 0)
+		{
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+			if (isListenersFeatureUsed)
+			{
+				notifyListeners(guardedObject, violationException);
+			}
+
+			// don't throw an exception if the method is a setter and suppressing for precondition is enabled
+			if (pml != null)
+			{
+				pml.onConstraintsViolatedException(violationException);
+				return DO_NOT_PROCEED;
+			}
+
+			throw translateException(violationException);
+		}
+
+		// abort method execution if in probe mode
+		if (pml != null) return DO_NOT_PROCEED;
+
+		final Map<PostCheck, Object> postCheckOldValues = calculateMethodPostOldValues(guardedObject, method, args);
+
+		return new GuardMethodPreResult(guardedObject, method, args, cc, checkInvariants, postCheckOldValues,
+				violations);
 	}
 
 	/**
