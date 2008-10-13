@@ -89,7 +89,7 @@ public class SerializableConstructor implements Serializable
 		in.defaultReadObject();
 		try
 		{
-			constructor = declaringClass.getConstructor(parameterTypes);
+			constructor = declaringClass.getDeclaredConstructor(parameterTypes);
 		}
 		catch (final NoSuchMethodException ex)
 		{
