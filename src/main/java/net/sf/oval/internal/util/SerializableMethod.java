@@ -26,7 +26,7 @@ import net.sf.oval.internal.Log;
  */
 public class SerializableMethod implements Serializable
 {
-	private static final Log  LOG = Log.getLog(SerializableMethod.class);
+	private static final Log LOG = Log.getLog(SerializableMethod.class);
 
 	private static final WeakHashMap<Method, SerializableMethod> CACHE = new WeakHashMap<Method, SerializableMethod>();
 
@@ -92,13 +92,12 @@ public class SerializableMethod implements Serializable
 		return parameterTypes;
 	}
 
-	private void readObject(final java.io.ObjectInputStream in) throws IOException,
-			ClassNotFoundException
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
 		try
 		{
-			method = declaringClass.getMethod(name, parameterTypes);
+			method = declaringClass.getDeclaredMethod(name, parameterTypes);
 		}
 		catch (final NoSuchMethodException ex)
 		{

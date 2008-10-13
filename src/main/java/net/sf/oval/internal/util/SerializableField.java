@@ -26,7 +26,7 @@ import net.sf.oval.internal.Log;
  */
 public class SerializableField implements Serializable
 {
-	private static final Log  LOG = Log.getLog(SerializableField.class);
+	private static final Log LOG = Log.getLog(SerializableField.class);
 
 	private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
 
@@ -81,13 +81,12 @@ public class SerializableField implements Serializable
 		return name;
 	}
 
-	private void readObject(final java.io.ObjectInputStream in) throws IOException,
-			ClassNotFoundException
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
 		try
 		{
-			field = declaringClass.getField(name);
+			field = declaringClass.getDeclaredField(name);
 		}
 		catch (final NoSuchFieldException ex)
 		{
