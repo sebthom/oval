@@ -23,6 +23,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -41,8 +42,9 @@ import net.sf.oval.constraint.NotNullCheck;
  * Constraints configurer that interprets certain EJB3 JPA annotations:
  * <ul>
  * <li>javax.persistence.Basic(optional=false)     => net.sf.oval.constraint.NotNullCheck
- * <li>javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraint.NotNullCheck
- * <li>javax.persistence.ManyToOne(optional=false) => net.sf.oval.constraint.NotNullCheck
+ * <li>javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraint.NotNullCheck, net.sf.oval.constraint.AssertValidCheck
+ * <li>javax.persistence.ManyToOne(optional=false) => net.sf.oval.constraint.NotNullCheck, net.sf.oval.constraint.AssertValidCheck
+ * <li>javax.persistence.ManyToMany                => net.sf.oval.constraint.AssertValidCheck
  * <li>javax.persistence.Column(nullable=false)    => net.sf.oval.constraint.NotNullCheck
  * <li>javax.persistence.Column(length=5)          => net.sf.oval.constraint.LengthCheck
  * </ul>
@@ -99,6 +101,10 @@ public class JPAAnnotationsConfigurer implements Configurer
 				else if (annotation instanceof ManyToOne)
 				{
 					initializeChecks((ManyToOne) annotation, checks, field);
+				}
+				else if (annotation instanceof ManyToMany)
+				{
+					initializeChecks((ManyToMany) annotation, checks, field);
 				}
 				else if (annotation instanceof OneToMany)
 				{
@@ -164,6 +170,14 @@ public class JPAAnnotationsConfigurer implements Configurer
 			lengthCheck.setMax(annotation.length());
 			checks.add(lengthCheck);
 		}
+	}
+
+	protected void initializeChecks(final ManyToMany annotation, final Collection<Check> checks, final Field field)
+	{
+		assert annotation != null;
+		assert checks != null;
+
+		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
 	}
 
 	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks, final Field field)
