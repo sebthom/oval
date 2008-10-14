@@ -9,6 +9,7 @@
 - fixed prefix of default constraint message codes (changed from net.sf.oval.constraints to net.sf.oval.constraint)
 - fixed an issue where OVal was translating exception thrown by guarded methods into ValidationFailedException
 - fixed bug [ 2164438 ] SerializableField bug when dealing with private fields
+- fixed bug [ 2166232 ] JPAAnnotationsConfigurer should use AssertValidCheck for @ManyToMany
 
 2008-08-10 v1.30
 ================
