@@ -62,7 +62,7 @@ public class ConstraintViolation implements Serializable
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
-		this.causes = causes;
+		this.causes = causes != null && causes.length == 0 ? null : causes;
 	}
 
 	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
@@ -77,11 +77,12 @@ public class ConstraintViolation implements Serializable
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
-		this.causes = causes.toArray(new ConstraintViolation[causes.size()]);
+		this.causes = causes != null && causes.size() == 0 ? null : causes.toArray(new ConstraintViolation[causes
+				.size()]);
 	}
 
 	/**
-	 * @return the causes
+	 * @return the causes or null of no causes exists
 	 */
 	public ConstraintViolation[] getCauses()
 	{
