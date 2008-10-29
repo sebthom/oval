@@ -73,10 +73,11 @@ import net.sf.oval.internal.ClassChecks;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
 import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
-import net.sf.oval.internal.util.ThreadLocalList;
+import net.sf.oval.internal.util.ThreadLocalLinkedList;
 import net.sf.oval.localization.context.OValContextRenderer;
 import net.sf.oval.localization.context.ToStringValidationContextRenderer;
 import net.sf.oval.localization.message.MessageResolver;
@@ -204,7 +205,7 @@ public class Validator
 
 	private final Map<String, ConstraintSet> constraintSetsById = collectionFactory.createMap(4);
 
-	private final ThreadLocalList<Object> currentlyValidatedObjects = new ThreadLocalList<Object>();
+	protected final ThreadLocalLinkedList<Set<Object>> currentlyValidatedObjects = new ThreadLocalLinkedList<Set<Object>>();
 
 	private final Set<String> disabledProfiles = collectionFactory.createSet();
 
@@ -880,7 +881,8 @@ public class Validator
 		// ignore circular dependencies
 		if (isCurrentlyValidated(valueToValidate)) return;
 
-		final List<ConstraintViolation> additionalViolations = validate(valueToValidate);
+		final List<ConstraintViolation> additionalViolations = collectionFactory.createList();
+		validateInvariants(valueToValidate, additionalViolations);
 
 		if (additionalViolations.size() != 0)
 		{
@@ -905,8 +907,9 @@ public class Validator
 		}
 
 		// if the value to validate is an array also validate the array elements
-		else if (valueToValidate.getClass().isArray()) for (final Object item : (Object[]) valueToValidate)
-			checkConstraintAssertValid(violations, check, validatedObject, item, context);
+		else if (valueToValidate.getClass().isArray() && check.isRequireValidElements())
+			for (final Object item : (Object[]) valueToValidate)
+				checkConstraintAssertValid(violations, check, validatedObject, item, context);
 	}
 
 	/**
@@ -1126,7 +1129,7 @@ public class Validator
 	protected boolean isCurrentlyValidated(final Object object)
 	{
 		Assert.notNull("object", object);
-		return currentlyValidatedObjects.get().contains(object);
+		return currentlyValidatedObjects.get().getLast().contains(object);
 	}
 
 	/**
@@ -1269,10 +1272,20 @@ public class Validator
 	{
 		Assert.notNull("validatedObject", validatedObject);
 
-		final List<ConstraintViolation> violations = collectionFactory.createList();
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+		try
+		{
+			final List<ConstraintViolation> violations = collectionFactory.createList();
 
-		validateInvariants(validatedObject, violations);
-		return violations;
+			validateInvariants(validatedObject, violations);
+			return violations;
+		}
+		finally
+		{
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
+		}
 	}
 
 	/**
@@ -1324,17 +1337,10 @@ public class Validator
 	{
 		Assert.notNull("validatedObject", validatedObject);
 
-		currentlyValidatedObjects.get().add(validatedObject);
-		try
-		{
-			if (validatedObject instanceof Class)
-				_validateStaticInvariants((Class< ? >) validatedObject, violations);
-			else
-				_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations);
-		}
-		finally
-		{
-			currentlyValidatedObjects.get().remove(validatedObject);
-		}
+		currentlyValidatedObjects.get().getLast().add(validatedObject);
+		if (validatedObject instanceof Class)
+			_validateStaticInvariants((Class< ? >) validatedObject, violations);
+		else
+			_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations);
 	}
 }

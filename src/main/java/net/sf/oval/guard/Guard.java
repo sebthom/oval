@@ -47,7 +47,6 @@ import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.Invocable;
 import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
-import net.sf.oval.internal.util.ThreadLocalIdentitySet;
 import net.sf.oval.internal.util.ThreadLocalList;
 import net.sf.oval.internal.util.ThreadLocalWeakHashMap;
 
@@ -109,10 +108,6 @@ public class Guard extends Validator
 	 */
 	private static final ThreadLocalList<String> currentlyCheckingPostConditions = new ThreadLocalList<String>();
 
-	/**
-	 * holds the objects for which invariants are currently checked for
-	 */
-	private final ThreadLocalIdentitySet<Object> currentlyInvariantCheckingFor = new ThreadLocalIdentitySet<Object>();
 	private boolean isActivated = true;
 	private boolean isInvariantsEnabled = true;
 
@@ -1355,17 +1350,16 @@ public class Guard extends Validator
 	protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations)
 			throws IllegalArgumentException, ValidationFailedException
 	{
-		if (!currentlyInvariantCheckingFor.get().contains(guardedObject))
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+		try
 		{
-			currentlyInvariantCheckingFor.get().add(guardedObject);
-			try
-			{
-				super.validateInvariants(guardedObject, violations);
-			}
-			finally
-			{
-				currentlyInvariantCheckingFor.get().remove(guardedObject);
-			}
+			super.validateInvariants(guardedObject, violations);
+		}
+		finally
+		{
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
 		}
 	}
 
