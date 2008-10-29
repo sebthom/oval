@@ -144,9 +144,10 @@ public class AssertValidTest extends TestCase
 		assertEquals(2, validator.validate(registry).size());
 
 		registry.personsByCity.clear();
-		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1,
-				invalidPerson1, invalidPerson2, invalidPerson2}));
-		assertEquals(4, validator.validate(registry).size());
+		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1, invalidPerson1, invalidPerson2,
+				invalidPerson2}));
+		// still only two since invalidPerson1 and invalidPerson2 have already been validated
+		assertEquals(2, validator.validate(registry).size());
 
 		registry.personsByCity.clear();
 
@@ -160,9 +161,9 @@ public class AssertValidTest extends TestCase
 		registry.addressClusters.add(new Address[10]);
 		assertEquals(0, validator.validate(registry).size());
 
-		registry.addressClusters.add(new Address[]{invalidAddress1, invalidAddress2,
-				invalidAddress1, invalidAddress2});
-		assertEquals(4, validator.validate(registry).size());
+		registry.addressClusters.add(new Address[]{invalidAddress1, invalidAddress2, invalidAddress1, invalidAddress2});
+		// still only two since invalidPerson1 and invalidPerson2 have already been validated
+		assertEquals(2, validator.validate(registry).size());
 
 		registry.addressClusters.clear();
 
@@ -176,7 +177,8 @@ public class AssertValidTest extends TestCase
 
 		registry.addressesByCityAndStreet.get("city1").put("street1",
 				new Address[]{invalidAddress1, invalidAddress1, invalidAddress2, invalidAddress2});
-		assertEquals(4, validator.validate(registry).size());
+		// still only two since invalidAddress1 and invalidAddress2 have already been validated
+		assertEquals(2, validator.validate(registry).size());
 	}
 
 	public void testScalarValues()

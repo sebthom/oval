@@ -181,6 +181,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ObjectGraphTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);

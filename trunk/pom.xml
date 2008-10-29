@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
-<!--
+	<!--
 	@author Holger Riegel
 	@author Sebastian Thomschke 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
->
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
@@ -65,6 +64,16 @@
 		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk</connection>
 		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk</developerConnection>
 	</scm>
+	<mailingLists>
+		<mailingList>
+			<name>Help</name>
+			<archive>http://sourceforge.net/forum/forum.php?forum_id=488110</archive>
+		</mailingList>
+		<mailingList>
+			<name>Open Discussion</name>
+			<archive>http://sourceforge.net/forum/forum.php?forum_id=488109</archive>
+		</mailingList>
+	</mailingLists>
 	<repositories>
 		<repository>
 			<id>net.sf.oval-repo</id>
@@ -264,23 +273,20 @@
 	</dependencies>
 	<build>
 		<plugins>
-					<plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
-				 <version>2.2.2</version>
+				<version>2.2.2</version>
 				<configuration>
 					<minSeverity>info</minSeverity>
-          <!--  <comparisonArtifacts>
-            <comparisonArtifact>
-              <groupId>net.sf.oval</groupId>
-              <artifactId>oval</artifactId>
-              <version>1.10</version>
-            </comparisonArtifact>
-          </comparisonArtifacts>-->
+					<!--
+						<comparisonArtifacts> <comparisonArtifact> <groupId>net.sf.oval</groupId> <artifactId>oval</artifactId>
+						<version>1.10</version> </comparisonArtifact> </comparisonArtifacts>
+					-->
 
 				</configuration>
 			</plugin>
-		
+
 			<!-- ********************************************************************************** -->
 			<!-- phase: validate -->
 			<!-- ********************************************************************************** -->
@@ -511,13 +517,11 @@
 						<artifactId>doxia-module-docbook-simple</artifactId> <version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 
-					<!-- TWIKI support http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules
-					<dependency>
-						<groupId>org.apache.maven.doxia</groupId>
-						<artifactId>doxia-module-twiki</artifactId>
-						<version>1.0-alpha-10-SNAPSHOT</version>
-					</dependency>
-					 -->
+					<!--
+						TWIKI support http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules <dependency>
+						<groupId>org.apache.maven.doxia</groupId> <artifactId>doxia-module-twiki</artifactId>
+						<version>1.0-alpha-10-SNAPSHOT</version> </dependency>
+					-->
 				</dependencies>
 				<configuration>
 					<inputEncoding>utf-8</inputEncoding>
