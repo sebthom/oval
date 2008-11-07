@@ -43,6 +43,8 @@ import net.sf.oval.guard.PreCheck;
 import net.sf.oval.guard.PreValidateThis;
 
 /**
+ * Configurer that configures constraints based on annotations tagged with {@link Constraint}
+ * 
  * @author Sebastian Thomschke
  */
 public class AnnotationsConfigurer implements Configurer
@@ -65,6 +67,10 @@ public class AnnotationsConfigurer implements Configurer
 				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				{
 					paramChecks.add(initializeCheck(annotation));
+				}
+				else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+				{
+					initializeChecks(annotation, paramChecks);
 				}
 
 				// check if the current annotation is a exclusion annotation
@@ -121,6 +127,10 @@ public class AnnotationsConfigurer implements Configurer
 				{
 					checks.add(initializeCheck(annotation));
 				}
+				else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+				{
+					initializeChecks(annotation, checks);
+				}
 			}
 			if (checks.size() > 0)
 			{
@@ -145,7 +155,8 @@ public class AnnotationsConfigurer implements Configurer
 		for (final Method method : classCfg.type.getDeclaredMethods())
 		{
 			/*
-			 * determine method return value checks and method pre/post conditions
+			 * determine method return value checks and method pre/post
+			 * conditions
 			 */
 			final List<Check> returnValueChecks = getCollectionFactory().createList(2);
 			final List<PreCheck> preChecks = getCollectionFactory().createList(2);
@@ -181,6 +192,10 @@ public class AnnotationsConfigurer implements Configurer
 				else if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				{
 					returnValueChecks.add(initializeCheck(annotation));
+				}
+				else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+				{
+					initializeChecks(annotation, returnValueChecks);
 				}
 			}
 
@@ -235,6 +250,10 @@ public class AnnotationsConfigurer implements Configurer
 			{
 				checks.add(initializeCheck(annotation));
 			}
+			else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+			{
+				initializeChecks(annotation, checks);
+			}
 		}
 		if (checks.size() > 0)
 		{
@@ -272,6 +291,26 @@ public class AnnotationsConfigurer implements Configurer
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 	{
 		return null;
+	}
+
+	protected <ConstraintsAnnotation extends Annotation> void initializeChecks(
+			final ConstraintsAnnotation constraintsAnnotation, final List<Check> checks) throws ReflectionException
+	{
+		try
+		{
+			final Method getValue = constraintsAnnotation.annotationType().getDeclaredMethod("value",
+					(Class< ? >[]) null);
+			final Object[] constraintAnnotations = (Object[]) getValue.invoke(constraintsAnnotation, (Object[]) null);
+			for (final Object ca : constraintAnnotations)
+			{
+				checks.add(initializeCheck((Annotation) ca));
+			}
+		}
+		catch (final Exception e)
+		{
+			throw new ReflectionException("Cannot initialize constraint exclusion "
+					+ constraintsAnnotation.annotationType().getName(), e);
+		}
 	}
 
 	protected <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(

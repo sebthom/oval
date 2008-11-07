@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.30</version>
+	<version>1.31</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.5</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -181,7 +181,7 @@
 		<dependency>
 			<groupId>org.jruby</groupId>
 			<artifactId>jruby</artifactId>
-			<version>1.1.3</version>
+			<version>1.1.4</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -199,7 +199,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.5.5</version>
+			<version>2.5.6</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -217,7 +217,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>1.5.6</version>
+			<version>1.5.7</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -248,13 +248,13 @@
 		<dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel</artifactId>
-			<version>1.3.11-java${version.java}</version>
+			<version>1.3.14-java${version.java}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
-			<version>1.1.4</version>
+			<version>1.1.5</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -280,16 +280,20 @@
 				<configuration>
 					<minSeverity>info</minSeverity>
 					<!--
-						<comparisonArtifacts> <comparisonArtifact> <groupId>net.sf.oval</groupId> <artifactId>oval</artifactId>
-						<version>1.10</version> </comparisonArtifact> </comparisonArtifacts>
+						<comparisonArtifacts> <comparisonArtifact>
+						<groupId>net.sf.oval</groupId> <artifactId>oval</artifactId>
+						<version>1.10</version> </comparisonArtifact>
+						</comparisonArtifacts>
 					-->
 
 				</configuration>
 			</plugin>
 
-			<!-- ********************************************************************************** -->
-			<!-- phase: validate -->
-			<!-- ********************************************************************************** -->
+			<!--
+				**********************************************************************************
+				phase: validate
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -300,13 +304,14 @@
 						</goals>
 						<configuration>
 							<rules>
-								<noSnapshots>
+								<requireReleaseDeps>
 									<message>No Snapshots Allowed!</message>
-								</noSnapshots>
+								</requireReleaseDeps>
 							</rules>
 							<fail>true</fail>
 						</configuration>
 					</execution>
+
 					<execution>
 						<id>enforce-versions</id>
 						<goals>
@@ -325,9 +330,12 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- ********************************************************************************** -->
-			<!-- phase: generate-sources -->
-			<!-- ********************************************************************************** -->
+
+			<!--
+				**********************************************************************************
+				phase: generate-sources
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -338,7 +346,8 @@
 								<copy todir="${project.build.directory}">
 									<fileset dir="${basedir}" includes="README.txt" />
 								</copy>
-								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${pom.version}" />
+								<replace file="${project.build.directory}/README.txt"
+									token="$VERSION$" value="${pom.version}" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -347,13 +356,17 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- ********************************************************************************** -->
-			<!-- phase: generate-resources -->
-			<!-- ********************************************************************************** -->
+
+			<!--
+				**********************************************************************************
+				phase: generate-resources
+				**********************************************************************************
+			-->
 			<plugin>
 				<!--
-					better docbook support see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin manual: mvn
-					docbkx:generate-html
+					better docbook support see
+					http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin
+					manual: mvn docbkx:generate-html
 				-->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
@@ -363,15 +376,17 @@
 							<goal>generate-html</goal>
 						</goals>
 						<!--
-							needs to be in generate-resources and not pre-site since we also want to include the documentation in the
-							distributions and not just the site
+							needs to be in generate-resources and not pre-site since we also
+							want to include the documentation in the distributions and not
+							just the site
 						-->
 						<phase>generate-resources</phase>
 					</execution>
 				</executions>
 				<configuration>
 					<!--
-						see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/ and
+						see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/
+						and
 						http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html
 					-->
 					<sourceDirectory>${basedir}/src/site/docbook</sourceDirectory>
@@ -390,7 +405,9 @@
 					<htmlStylesheet>css/userguide.css</htmlStylesheet>
 					<tableBordersWithCss>1</tableBordersWithCss>
 
-					<!-- Turn off rules below/above header/footer - we'll use CSS borders -->
+					<!--
+						Turn off rules below/above header/footer - we'll use CSS borders
+					-->
 					<headerRule>0</headerRule>
 					<footerRule>0</footerRule>
 
@@ -398,7 +415,10 @@
 					<makeGraphicViewport>1</makeGraphicViewport>
 					<ignoreImageScaling>1</ignoreImageScaling>
 
-					<!-- Make external links stay within window (don't let them take over entire frame) -->
+					<!--
+						Make external links stay within window (don't let them take over
+						entire frame)
+					-->
 					<ulinkTarget>'_self'</ulinkTarget>
 
 					<!-- Spend extra CPU time to try and produce valid and pretty HTML -->
@@ -432,9 +452,12 @@
 					<encoding>UTF8</encoding>
 				</configuration>
 			</plugin>
-			<!-- ********************************************************************************** -->
-			<!-- phase: compile -->
-			<!-- ********************************************************************************** -->
+
+			<!--
+				**********************************************************************************
+				phase: compile
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -472,9 +495,12 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<!-- ********************************************************************************** -->
-			<!-- phase: package -->
-			<!-- ********************************************************************************** -->
+
+			<!--
+				**********************************************************************************
+				phase: package
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -509,17 +535,24 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- we are generating the site in the package phase because we want to include it in the distribution -->
+				<!--
+					we are generating the site in the package phase because we want to
+					include it in the distribution
+				-->
 				<artifactId>maven-site-plugin</artifactId>
 				<dependencies>
 					<!--
-						docbook support, unfortunately very limited <dependency> <groupId>org.apache.maven.doxia</groupId>
-						<artifactId>doxia-module-docbook-simple</artifactId> <version>1.0-alpha-10-SNAPSHOT</version> </dependency>
+						docbook support, unfortunately very limited <dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-docbook-simple</artifactId>
+						<version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 
 					<!--
-						TWIKI support http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules <dependency>
-						<groupId>org.apache.maven.doxia</groupId> <artifactId>doxia-module-twiki</artifactId>
+						TWIKI support
+						http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules
+						<dependency> <groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-twiki</artifactId>
 						<version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 				</dependencies>
@@ -554,9 +587,11 @@
 				</executions>
 			</plugin>
 
-			<!-- ********************************************************************************** -->
-			<!-- manual execution -->
-			<!-- ********************************************************************************** -->
+			<!--
+				**********************************************************************************
+				manual execution
+				**********************************************************************************
+			-->
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
