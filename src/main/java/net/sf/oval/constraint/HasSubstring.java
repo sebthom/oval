@@ -47,7 +47,7 @@ public @interface HasSubstring
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraint.Contains.violated";
+	String message() default "net.sf.oval.constraint.HasSubstring.violated";
 
 	/**
 	 * The associated constraint profiles.
