@@ -37,6 +37,7 @@ import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.NotNullCheck;
+import net.sf.oval.constraint.RangeCheck;
 
 /**
  * Constraints configurer that interprets certain EJB3 JPA annotations:
@@ -169,6 +170,20 @@ public class JPAAnnotationsConfigurer implements Configurer
 			final LengthCheck lengthCheck = new LengthCheck();
 			lengthCheck.setMax(annotation.length());
 			checks.add(lengthCheck);
+		}
+
+		// only consider precision/scale for numeric fields
+		if (annotation.precision() > 0 && Number.class.isAssignableFrom(field.getType()))
+		{
+			/*
+			 * precision = 6, scale = 2  => -9999.99<=x<=9999.99
+			 * precision = 4, scale = 1  =>   -999.9<=x<=999.9
+			 */
+			final RangeCheck rangeCheck = new RangeCheck();
+			rangeCheck.setMax(Math.pow(10, annotation.precision() - annotation.scale())
+					- Math.pow(0.1, annotation.scale()));
+			rangeCheck.setMin(-1 * rangeCheck.getMax());
+			checks.add(rangeCheck);
 		}
 	}
 
