@@ -47,7 +47,7 @@ public class ConstraintViolation implements Serializable
 	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
 			final Object invalidValue, final OValContext context)
 	{
-		this(check, message, validatedObject, invalidValue, context, (ConstraintViolation) null);
+		this(check, message, validatedObject, invalidValue, context, (ConstraintViolation[]) null);
 	}
 
 	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
