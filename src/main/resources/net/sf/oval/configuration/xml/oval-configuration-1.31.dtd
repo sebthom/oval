@@ -75,7 +75,7 @@ To identify the correct method you are required to list all parameters, includin
 <!ELEMENT pre (profiles?) >
 <!ATTLIST pre expr CDATA #REQUIRED >
 <!ATTLIST pre errorCode CDATA #IMPLIED >
-<!ATTLIST pre lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
+<!ATTLIST pre lang (bsh|beanshell|js|javascript|jexl|jruby|groovy|ognl|ruby|mvel) #REQUIRED >
 <!ATTLIST pre message CDATA #IMPLIED >
 <!ATTLIST pre severity NMTOKEN #IMPLIED >
 
@@ -87,7 +87,7 @@ To identify the correct method you are required to list all parameters, includin
 <!ELEMENT post (profiles?) >
 <!ATTLIST post expr CDATA #REQUIRED >
 <!ATTLIST post errorCode CDATA #IMPLIED >
-<!ATTLIST post lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
+<!ATTLIST post lang (bsh|beanshell|js|javascript|jexl|jruby|groovy|ognl|ruby|mvel) #REQUIRED >
 <!ATTLIST post message CDATA #IMPLIED >
 <!ATTLIST post severity NMTOKEN #IMPLIED >
 
@@ -96,7 +96,7 @@ The node body contains the script expression as CDATA
 -->
 <!ELEMENT assert (expr,profiles?) >
 <!ATTLIST assert errorCode CDATA #IMPLIED >
-<!ATTLIST assert lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
+<!ATTLIST assert lang (bsh|beanshell|js|javascript|jexl|jruby|groovy|ognl|ruby|mvel) #REQUIRED >
 <!ATTLIST assert message CDATA #IMPLIED >
 <!ATTLIST assert severity NMTOKEN #IMPLIED >
 <!ELEMENT expr (#PCDATA)>

@@ -117,8 +117,12 @@
 			<enumeration value="beanshell" />
 			<enumeration value="js" />
 			<enumeration value="javascript" />
+			<enumeration value="jexl" />
+			<enumeration value="jruby" />
 			<enumeration value="groovy" />
 			<enumeration value="ognl" />
+			<enumeration value="ruby" />
+			<enumeration value="mvel" />
 		</restriction>
 	</simpleType>
 		
