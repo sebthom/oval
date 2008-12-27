@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2008-xx-xx v1.31
+2008-12-27 v1.31
 ================
 - fixed Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
 - fixed [ 2063142 ] doc typo
