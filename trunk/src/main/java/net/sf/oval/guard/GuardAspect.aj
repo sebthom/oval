@@ -16,7 +16,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import net.sf.oval.internal.Log;
-import net.sf.oval.internal.util.Invocable;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.aspectj.lang.reflect.ConstructorSignature;

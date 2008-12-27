@@ -109,7 +109,7 @@
 	</issueManagement>
 	<properties>
 		<version.java>1.5</version.java>
-		<version.aspectj>1.6.1</version.aspectj>
+		<version.aspectj>1.6.2</version.aspectj>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -157,13 +157,13 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.5</version>
+			<version>1.5.6</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.3</version>
+			<version>1.3.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -181,7 +181,7 @@
 		<dependency>
 			<groupId>org.jruby</groupId>
 			<artifactId>jruby</artifactId>
-			<version>1.1.4</version>
+			<version>1.1.6</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -248,13 +248,13 @@
 		<dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel</artifactId>
-			<version>1.3.14-java${version.java}</version>
+			<version>1.3.15-java${version.java}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
-			<version>1.1.5</version>
+			<version>1.1.6</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
