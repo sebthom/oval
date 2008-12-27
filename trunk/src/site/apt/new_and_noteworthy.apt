@@ -1,5 +1,22 @@
 New and Noteworthy
 
+* Version 1.31 (2008-21-27)
+
+** New Features
+  * added support for multi-valued constraints
+  * JPAAnnotationsConfigurer now interprets @Column.precision/scale for numeric fields
+    
+** Issues solved
+  * fixed Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
+  * fixed [ 2063142 ] doc typo
+  * fixed prefix of default constraint message codes (changed from net.sf.oval.constraints to net.sf.oval.constraint)
+  * fixed an issue where OVal was translating exception thrown by guarded methods into ValidationFailedException
+  * fixed bug [ 2164438 ] SerializableField bug when dealing with private fields
+  * fixed bug [ 2166232 ] JPAAnnotationsConfigurer should use AssertValidCheck for @ManyToMany
+  * fixed bug [ 2192175 ] Validator.validate checks the same object multiple times
+  * fixed [ oval-Bugs-2406574 ] wrong scripting language enumerations in xsd and dtd
+
+
 * Version 1.30 (2008-08-10)
 
 ** New Features
