@@ -77,7 +77,7 @@ public class ConstraintViolation implements Serializable
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
-		this.causes = causes != null && causes.size() == 0 ? null : causes.toArray(new ConstraintViolation[causes
+		this.causes = causes == null || causes.size() == 0 ? null : causes.toArray(new ConstraintViolation[causes
 				.size()]);
 	}
 
