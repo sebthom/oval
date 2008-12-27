@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
-"http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN" "http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
 <?xml-stylesheet type="text/xsl" href="oval.xsl"?>
 <article class="specification">
   <title>OVal - the object validation framework for
@@ -1710,6 +1709,14 @@ v.validate(p);
     referencing OVal:</para>
 
     <itemizedlist>
+      <listitem>
+        <para>OVal Blog Entry Series at the "JEE, BPEL, SOA" blog (2008)</para>
+
+        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/jsr-303-and-oval-validation-framework.html">JSR 303 and OVal Validation Framework</ulink></para>
+        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/oval-and-profiles.html">OVal and profiles</ulink></para>
+        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/springs-piecemeal-validation-and-oval.html">Spring's piecemeal validation and OVal integration</ulink></para>
+      </listitem>
+      
       <listitem>
         <para>Pre and post condition validation with OVal as intruments of
         software architecture (2008)</para>
