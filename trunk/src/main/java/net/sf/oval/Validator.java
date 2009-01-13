@@ -720,8 +720,8 @@ public class Validator implements IValidator
 		_addExpressionLanguage(languageId, expressionLanguage);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.oval.IValidator#assertValid(java.lang.Object)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException,
 			ConstraintsViolatedException
@@ -731,8 +731,8 @@ public class Validator implements IValidator
 		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.oval.IValidator#assertValidFieldValue(java.lang.Object, java.lang.reflect.Field, java.lang.Object)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void assertValidFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException,
@@ -1245,8 +1245,8 @@ public class Validator implements IValidator
 		return ex;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.oval.IValidator#validate(java.lang.Object)
+	/**
+	 * {@inheritDoc}
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException,
 			ValidationFailedException
@@ -1269,8 +1269,8 @@ public class Validator implements IValidator
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.oval.IValidator#validateFieldValue(java.lang.Object, java.lang.reflect.Field, java.lang.Object)
+	/**
+	 * {@inheritDoc}
 	 */
 	public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException
