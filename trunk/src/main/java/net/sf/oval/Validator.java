@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -97,7 +97,7 @@ import net.sf.oval.logging.LoggerFactory;
  * @see POJOConfigurer
  * @see XMLConfigurer
  */
-public class Validator
+public class Validator implements IValidator
 {
 	private static final Log LOG = Log.getLog(Validator.class);
 
@@ -720,15 +720,8 @@ public class Validator
 		_addExpressionLanguage(languageId, expressionLanguage);
 	}
 
-	/**
-	 * validates the field and getter constrains of the given object
-	 * and throws an ConstraintsViolatedException if any constraint
-	 * violations are detected
-	 * 
-	 * @param validatedObject the object to validate, cannot be null
-	 * @throws ConstraintsViolatedException
-	 * @throws ValidationFailedException
-	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
+	/* (non-Javadoc)
+	 * @see net.sf.oval.IValidator#assertValid(java.lang.Object)
 	 */
 	public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException,
 			ConstraintsViolatedException
@@ -738,15 +731,8 @@ public class Validator
 		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
 	}
 
-	/**
-	 * Validates the give value against the defined field constraints and throws 
-	 * an ConstraintsViolatedException if any constraint violations are detected.<br>
-	 * 
-	 * @param validatedObject the object to validate, cannot be null
-	 * @param validatedField the field to validate, cannot be null
-	 * @throws IllegalArgumentException if <code>validatedObject == null</code> or <code>field == null</code>
-	 * @throws ConstraintsViolatedException
-	 * @throws ValidationFailedException 
+	/* (non-Javadoc)
+	 * @see net.sf.oval.IValidator#assertValidFieldValue(java.lang.Object, java.lang.reflect.Field, java.lang.Object)
 	 */
 	public void assertValidFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException,
@@ -1259,13 +1245,8 @@ public class Validator
 		return ex;
 	}
 
-	/**
-	 * validates the field and getter constrains of the given object
-	 * 
-	 * @param validatedObject the object to validate, cannot be null
-	 * @return a list with the detected constraint violations. if no violations are detected an empty list is returned
-	 * @throws ValidationFailedException
-	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
+	/* (non-Javadoc)
+	 * @see net.sf.oval.IValidator#validate(java.lang.Object)
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException,
 			ValidationFailedException
@@ -1288,12 +1269,8 @@ public class Validator
 		}
 	}
 
-	/**
-	 * Validates the give value against the defined field constraints.<br>
-	 * 
-	 * @return a list with the detected constraint violations. if no violations are detected an empty list is returned
-	 * @throws IllegalArgumentException if <code>validatedObject == null</code> or <code>validatedField == null</code>
-	 * @throws ValidationFailedException 
+	/* (non-Javadoc)
+	 * @see net.sf.oval.IValidator#validateFieldValue(java.lang.Object, java.lang.reflect.Field, java.lang.Object)
 	 */
 	public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException
