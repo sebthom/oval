@@ -1301,6 +1301,8 @@ public class Validator
 		Assert.notNull("validatedObject", validatedObject);
 		Assert.notNull("validatedField", validatedField);
 
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
 		try
 		{
 			final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());
@@ -1321,6 +1323,12 @@ public class Validator
 			throw new ValidationFailedException("Field validation failed. Field: " + validatedField
 					+ " Validated object: " + validatedObject, ex);
 		}
+		finally
+		{
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
+		}
+
 	}
 
 	/**

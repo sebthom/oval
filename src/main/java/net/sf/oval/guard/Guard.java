@@ -1309,6 +1309,8 @@ public class Guard extends Validator
 	protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor< ? > constructor, final Object[] argsToValidate) throws ValidationFailedException
 	{
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
 		try
 		{
 			final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -1341,6 +1343,11 @@ public class Guard extends Validator
 			throw new ValidationFailedException("Validation of constructor parameters failed. Constructor: "
 					+ constructor + " Validated object:" + validatedObject, ex);
 		}
+		finally
+		{
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
+		}
 	}
 
 	/**
@@ -1371,6 +1378,8 @@ public class Guard extends Validator
 	protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args,
 			final List<ConstraintViolation> violations) throws ValidationFailedException
 	{
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
 		try
 		{
 			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -1403,6 +1412,11 @@ public class Guard extends Validator
 		{
 			throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method
 					+ " Validated object: " + validatedObject, ex);
+		}
+		finally
+		{
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
 		}
 	}
 
@@ -1576,6 +1590,8 @@ public class Guard extends Validator
 		if (currentlyCheckingMethodReturnValues.get().contains(key)) return;
 
 		currentlyCheckingMethodReturnValues.get().add(key);
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
 		try
 		{
 			final ClassChecks cc = getClassChecks(method.getDeclaringClass());
@@ -1598,6 +1614,9 @@ public class Guard extends Validator
 		finally
 		{
 			currentlyCheckingMethodReturnValues.get().remove(key);
+
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
 		}
 	}
 }

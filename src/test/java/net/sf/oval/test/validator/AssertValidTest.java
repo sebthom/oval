@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -84,6 +85,25 @@ public class AssertValidTest extends TestCase
 
 		@AssertValid
 		public Map<String, Map<String, Address[]>> addressesByCityAndStreet;
+	}
+
+	public void testValidateFieldValue() throws SecurityException, NoSuchFieldException
+	{
+		final Validator validator = new Validator();
+
+		final Person p = new Person();
+		final Field fieldHomeAddress = p.getClass().getDeclaredField("homeAddress");
+		final Address a = new Address();
+
+		final List<ConstraintViolation> violations = validator.validateFieldValue(p, fieldHomeAddress, a);
+		assertEquals(1, violations.size());
+		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
+		assertEquals(a, violations.get(0).getInvalidValue());
+
+		a.street = "The Street";
+		a.city = "The City";
+		a.zipCode = "12345";
+		assertEquals(0, validator.validateFieldValue(p, fieldHomeAddress, a).size());
 	}
 
 	public void testCollectionValues()
