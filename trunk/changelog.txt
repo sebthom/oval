@@ -6,6 +6,7 @@
 ================
 - introduced an interface implemented by Validator for supporting easier mocking
 - fixed [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
+- fixed [ 2495825 ] The profile feature of Validator is not thread safe
 
 2008-12-27 v1.31
 ================

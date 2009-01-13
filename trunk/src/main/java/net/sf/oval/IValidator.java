@@ -55,7 +55,7 @@ public interface IValidator
 
 	/**
 	 * validates the field and getter constrains of the given object
-	 * 
+	 *
 	 * @param validatedObject the object to validate, cannot be null
 	 * @return a list with the detected constraint violations. if no violations are detected an empty list is returned
 	 * @throws ValidationFailedException
@@ -63,6 +63,18 @@ public interface IValidator
 	 */
 	List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException,
 			ValidationFailedException;
+
+	/**
+	 * validates the field and getter constrains of the given object
+	 *
+	 * @param validatedObject the object to validate, cannot be null
+	 * @param profiles constraint profiles to validate against, by default the globally enabled profiles are used that.
+	 * @return a list with the detected constraint violations. if no violations are detected an empty list is returned
+	 * @throws ValidationFailedException
+	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
+	 */
+	List<ConstraintViolation> validate(final Object validatedObject, String... profiles)
+			throws IllegalArgumentException, ValidationFailedException;
 
 	/**
 	 * Validates the give value against the defined field constraints.<br>

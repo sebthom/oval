@@ -72,6 +72,7 @@ import net.sf.oval.guard.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.internal.ClassChecks;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
+import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.LinkedSet;
@@ -308,7 +309,7 @@ public class Validator implements IValidator
 	 * validate validatedObject based on the constraints of the given class 
 	 */
 	private void _validateObjectInvariants(final Object validatedObject, final Class< ? > clazz,
-			final List<ConstraintViolation> violations) throws ValidationFailedException
+			final List<ConstraintViolation> violations, final String[] profiles) throws ValidationFailedException
 	{
 		assert validatedObject != null;
 		assert clazz != null;
@@ -333,7 +334,7 @@ public class Validator implements IValidator
 
 					for (final Check check : checks)
 					{
-						checkConstraint(violations, check, validatedObject, valueToValidate, ctx);
+						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles);
 					}
 				}
 			}
@@ -350,7 +351,7 @@ public class Validator implements IValidator
 
 					for (final Check check : checks)
 					{
-						checkConstraint(violations, check, validatedObject, valueToValidate, ctx);
+						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles);
 					}
 				}
 			}
@@ -361,12 +362,12 @@ public class Validator implements IValidator
 				final ClassContext ctx = new ClassContext(clazz);
 				for (final Check check : cc.checksForObject)
 				{
-					checkConstraint(violations, check, validatedObject, validatedObject, ctx);
+					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles);
 				}
 			}
 
 			// if the super class is annotated to be validatable also validate it against the object
-			_validateObjectInvariants(validatedObject, clazz.getSuperclass(), violations);
+			_validateObjectInvariants(validatedObject, clazz.getSuperclass(), violations, profiles);
 		}
 		catch (final OValException ex)
 		{
@@ -379,8 +380,8 @@ public class Validator implements IValidator
 	 * Validates the static field and static getter constrains of the given class.
 	 * Constraints specified for super classes are not taken in account.
 	 */
-	private void _validateStaticInvariants(final Class< ? > validatedClass, final List<ConstraintViolation> violations)
-			throws ValidationFailedException
+	private void _validateStaticInvariants(final Class< ? > validatedClass, final List<ConstraintViolation> violations,
+			final String[] profiles) throws ValidationFailedException
 	{
 		assert validatedClass != null;
 		assert violations != null;
@@ -399,7 +400,7 @@ public class Validator implements IValidator
 
 				for (final Check check : checks)
 				{
-					checkConstraint(violations, check, validatedClass, valueToValidate, context);
+					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles);
 				}
 			}
 		}
@@ -416,7 +417,7 @@ public class Validator implements IValidator
 
 				for (final Check check : checks)
 				{
-					checkConstraint(violations, check, validatedClass, valueToValidate, context);
+					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles);
 				}
 			}
 		}
@@ -745,16 +746,18 @@ public class Validator implements IValidator
 	}
 
 	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
-			final Object validatedObject, final Object valueToValidate, final OValContext context) throws OValException
+			final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final String[] profiles) throws OValException
 	{
-		if (!isAnyProfileEnabled(check.getProfiles())) return;
+		if (!isAnyProfileEnabled(check.getProfiles(), profiles)) return;
 
 		/*
 		 * special handling of the AssertValid constraint
 		 */
 		if (check instanceof AssertValidCheck)
 		{
-			checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject, valueToValidate, context);
+			checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject, valueToValidate, context,
+					profiles);
 			return;
 		}
 
@@ -764,7 +767,7 @@ public class Validator implements IValidator
 		if (check instanceof AssertConstraintSetCheck)
 		{
 			checkConstraintAssertConstraintSet(violations, (AssertConstraintSetCheck) check, validatedObject,
-					valueToValidate, context);
+					valueToValidate, context, profiles);
 			return;
 		}
 
@@ -774,7 +777,7 @@ public class Validator implements IValidator
 		if (check instanceof AssertFieldConstraintsCheck)
 		{
 			checkConstraintAssertFieldConstraints(violations, (AssertFieldConstraintsCheck) check, validatedObject,
-					valueToValidate, context);
+					valueToValidate, context, profiles);
 			return;
 		}
 
@@ -791,7 +794,7 @@ public class Validator implements IValidator
 
 	protected void checkConstraintAssertConstraintSet(final List<ConstraintViolation> violations,
 			final AssertConstraintSetCheck check, final Object validatedObject, final Object valueToValidate,
-			final OValContext context) throws OValException
+			final OValContext context, final String[] profiles) throws OValException
 	{
 		final ConstraintSet cs = getConstraintSet(check.getId());
 
@@ -801,12 +804,12 @@ public class Validator implements IValidator
 
 		if (referencedChecks != null && referencedChecks.size() > 0)
 			for (final Check referencedCheck : referencedChecks)
-				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context);
+				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles);
 	}
 
 	protected void checkConstraintAssertFieldConstraints(final List<ConstraintViolation> violations,
 			final AssertFieldConstraintsCheck check, final Object validatedObject, final Object valueToValidate,
-			final OValContext context) throws OValException
+			final OValContext context, final String[] profiles) throws OValException
 	{
 		final Class< ? > targetClass;
 
@@ -856,11 +859,12 @@ public class Validator implements IValidator
 		final Collection<Check> referencedChecks = cc.checksForFields.get(field);
 		if (referencedChecks != null && referencedChecks.size() > 0)
 			for (final Check referencedCheck : referencedChecks)
-				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context);
+				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles);
 	}
 
 	protected void checkConstraintAssertValid(final List<ConstraintViolation> violations, final AssertValidCheck check,
-			final Object validatedObject, final Object valueToValidate, final OValContext context) throws OValException
+			final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final String[] profiles) throws OValException
 	{
 		if (valueToValidate == null) return;
 
@@ -868,7 +872,7 @@ public class Validator implements IValidator
 		if (isCurrentlyValidated(valueToValidate)) return;
 
 		final List<ConstraintViolation> additionalViolations = collectionFactory.createList();
-		validateInvariants(valueToValidate, additionalViolations);
+		validateInvariants(valueToValidate, additionalViolations, profiles);
 
 		if (additionalViolations.size() != 0)
 		{
@@ -882,24 +886,24 @@ public class Validator implements IValidator
 		// if the value to validate is a collection also validate the collection items
 		if (valueToValidate instanceof Collection && check.isRequireValidElements())
 			for (final Object item : (Collection< ? >) valueToValidate)
-				checkConstraintAssertValid(violations, check, validatedObject, item, context);
+				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
 		else if (valueToValidate instanceof Map && check.isRequireValidElements())
 		{
 			for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
-				checkConstraintAssertValid(violations, check, validatedObject, item, context);
+				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
 
 			for (final Object item : ((Map< ? , ? >) valueToValidate).values())
-				checkConstraintAssertValid(violations, check, validatedObject, item, context);
+				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
 		}
 
 		// if the value to validate is an array also validate the array elements
 		else if (valueToValidate.getClass().isArray() && check.isRequireValidElements())
 			for (final Object item : (Object[]) valueToValidate)
-				checkConstraintAssertValid(violations, check, validatedObject, item, context);
+				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
 	}
 
 	/**
-	 * Disables all constraint profiles, i.e. no configured constraint will be validated.
+	 * Disables all constraints profiles globally, i.e. no configured constraint will be validated.
 	 */
 	public synchronized void disableAllProfiles()
 	{
@@ -911,7 +915,7 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * Disables a constraints profile.
+	 * Disables a constraints profile globally.
 	 * @param profile the id of the profile
 	 */
 	public void disableProfile(final String profile)
@@ -925,7 +929,7 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * Enables all constraint profiles, i.e. all configured constraint will be validated.
+	 * Enables all constraints profiles globally, i.e. all configured constraint will be validated.
 	 */
 	public synchronized void enableAllProfiles()
 	{
@@ -937,7 +941,7 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * Enables a constraints profile.
+	 * Enables a constraints profile globally.
 	 * @param profile the id of the profile
 	 */
 	public void enableProfile(final String profile)
@@ -1094,15 +1098,29 @@ public class Validator implements IValidator
 	/**
 	 * Determines if at least one of the given profiles is enabled
 	 * 
-	 * @param profileIds
+	 * @param profilesOfCheck
+	 * @param enabledProfiles optional array of profiles (can be null)
 	 * @return Returns true if at least one of the given profiles is enabled. 
 	 */
-	protected boolean isAnyProfileEnabled(final String[] profileIds)
+	protected boolean isAnyProfileEnabled(final String[] profilesOfCheck, final String[] enabledProfiles)
 	{
-		if (profileIds == null || profileIds.length == 0) return isProfileEnabled("default");
+		if (enabledProfiles == null)
+		{
+			// use the global profile configuration
+			if (profilesOfCheck == null || profilesOfCheck.length == 0) return isProfileEnabled("default");
 
-		for (final String profile : profileIds)
-			if (isProfileEnabled(profile)) return true;
+			for (final String profile : profilesOfCheck)
+				if (isProfileEnabled(profile)) return true;
+		}
+		else
+		{
+			// use the local profile configuration
+			if (profilesOfCheck == null || profilesOfCheck.length == 0)
+				return ArrayUtils.containsEqual(enabledProfiles, "default");
+
+			for (final String profile : profilesOfCheck)
+				if (ArrayUtils.containsEqual(enabledProfiles, profile)) return true;
+		}
 		return false;
 	}
 
@@ -1258,8 +1276,30 @@ public class Validator implements IValidator
 		try
 		{
 			final List<ConstraintViolation> violations = collectionFactory.createList();
+			validateInvariants(validatedObject, violations, (String[]) null);
+			return violations;
+		}
+		finally
+		{
+			// remove the set
+			currentlyValidatedObjects.get().removeLast();
+		}
+	}
 
-			validateInvariants(validatedObject, violations);
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles)
+			throws IllegalArgumentException, ValidationFailedException
+	{
+		Assert.notNull("validatedObject", validatedObject);
+
+		// create a new set for this validation cycle
+		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+		try
+		{
+			final List<ConstraintViolation> violations = collectionFactory.createList();
+			validateInvariants(validatedObject, violations, profiles);
 			return violations;
 		}
 		finally
@@ -1292,7 +1332,7 @@ public class Validator implements IValidator
 			final FieldContext context = new FieldContext(validatedField);
 
 			for (final Check check : checks)
-				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context);
+				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context, null);
 			return violations;
 		}
 		catch (final OValException ex)
@@ -1317,15 +1357,15 @@ public class Validator implements IValidator
 	 * @throws ValidationFailedException
 	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
 	 */
-	protected void validateInvariants(final Object validatedObject, final List<ConstraintViolation> violations)
-			throws IllegalArgumentException, ValidationFailedException
+	protected void validateInvariants(final Object validatedObject, final List<ConstraintViolation> violations,
+			final String[] profiles) throws IllegalArgumentException, ValidationFailedException
 	{
 		Assert.notNull("validatedObject", validatedObject);
 
 		currentlyValidatedObjects.get().getLast().add(validatedObject);
 		if (validatedObject instanceof Class)
-			_validateStaticInvariants((Class< ? >) validatedObject, violations);
+			_validateStaticInvariants((Class< ? >) validatedObject, violations, profiles);
 		else
-			_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations);
+			_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations, profiles);
 	}
 }

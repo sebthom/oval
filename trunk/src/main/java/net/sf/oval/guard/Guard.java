@@ -161,7 +161,7 @@ public class Guard extends Validator
 		for (final Iterator<CheckExclusion> it = activeExclusions.iterator(); it.hasNext();)
 		{
 			final CheckExclusion exclusion = it.next();
-			if (!isAnyProfileEnabled(exclusion.getProfiles()))
+			if (!isAnyProfileEnabled(exclusion.getProfiles(), null))
 			{
 				it.remove();
 			}
@@ -195,7 +195,7 @@ public class Guard extends Validator
 			}
 			if (!skip)
 			{
-				checkConstraint(violations, check, validatedObject, valueToValidate, context);
+				checkConstraint(violations, check, validatedObject, valueToValidate, context, null);
 			}
 		}
 	}
@@ -422,7 +422,8 @@ public class Guard extends Validator
 
 			for (final PostCheck check : postChecks)
 			{
-				if (isAnyProfileEnabled(check.getProfiles()) && check.getOld() != null && check.getOld().length() > 0)
+				if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null
+						&& check.getOld().length() > 0)
 				{
 					final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
 					final Map<String, Object> values = getCollectionFactory().createMap();
@@ -573,7 +574,7 @@ public class Guard extends Validator
 			final List<ConstraintViolation> violations = getCollectionFactory().createList();
 			try
 			{
-				validateInvariants(guardedObject, violations);
+				validateInvariants(guardedObject, violations, null);
 			}
 			catch (final ValidationFailedException ex)
 			{
@@ -664,7 +665,7 @@ public class Guard extends Validator
 			// check invariants
 			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
 			{
-				validateInvariants(guardedObject, violations);
+				validateInvariants(guardedObject, violations, null);
 			}
 
 			if (isPreConditionsEnabled)
@@ -723,7 +724,7 @@ public class Guard extends Validator
 			// check invariants if executed method is not private
 			if (checkInvariants || cc.methodsWithCheckInvariantsPost.contains(method))
 			{
-				validateInvariants(guardedObject, violations);
+				validateInvariants(guardedObject, violations, null);
 			}
 
 			if (isPostConditionsEnabled)
@@ -784,7 +785,7 @@ public class Guard extends Validator
 			// check invariants if executed method is not private
 			if (preResult.checkInvariants || preResult.cc.methodsWithCheckInvariantsPost.contains(preResult.method))
 			{
-				validateInvariants(preResult.guardedObject, preResult.violations);
+				validateInvariants(preResult.guardedObject, preResult.violations, null);
 			}
 
 			if (isPostConditionsEnabled)
@@ -859,7 +860,7 @@ public class Guard extends Validator
 			// check invariants
 			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
 			{
-				validateInvariants(guardedObject, violations);
+				validateInvariants(guardedObject, violations, null);
 			}
 
 			if (isPreConditionsEnabled)
@@ -1354,14 +1355,14 @@ public class Guard extends Validator
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations)
-			throws IllegalArgumentException, ValidationFailedException
+	protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations,
+			final String[] profiles) throws IllegalArgumentException, ValidationFailedException
 	{
 		// create a new set for this validation cycle
 		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
 		try
 		{
-			super.validateInvariants(guardedObject, violations);
+			super.validateInvariants(guardedObject, violations, profiles);
 		}
 		finally
 		{
@@ -1451,7 +1452,7 @@ public class Guard extends Validator
 
 			for (final PostCheck check : postChecks)
 			{
-				if (!isAnyProfileEnabled(check.getProfiles()))
+				if (!isAnyProfileEnabled(check.getProfiles(), null))
 				{
 					continue;
 				}
@@ -1525,7 +1526,7 @@ public class Guard extends Validator
 
 			for (final PreCheck check : preChecks)
 			{
-				if (!isAnyProfileEnabled(check.getProfiles()))
+				if (!isAnyProfileEnabled(check.getProfiles(), null))
 				{
 					continue;
 				}
@@ -1603,7 +1604,7 @@ public class Guard extends Validator
 
 			for (final Check check : returnValueChecks)
 			{
-				checkConstraint(violations, check, validatedObject, returnValue, context);
+				checkConstraint(violations, check, validatedObject, returnValue, context, null);
 			}
 		}
 		catch (final OValException ex)
