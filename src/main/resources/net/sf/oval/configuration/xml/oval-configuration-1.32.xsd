@@ -218,7 +218,7 @@
 				<sequence>
 					<element name="nullable" minOccurs="0" maxOccurs="unbounded" type="tns:Nullable" />
 				</sequence>
-				<attribute name="type" use="required" type="QName" />
+				<attribute name="type" use="required" type="string" />
 			</extension>
 		</complexContent>
 	</complexType>
