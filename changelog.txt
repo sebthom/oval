@@ -4,6 +4,7 @@
 
 2009-??-?? v1.32
 ================
+- introduced an interface implemented by Validator for supporting easier mocking
 - fixed [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
 
 2008-12-27 v1.31
