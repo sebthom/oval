@@ -39,6 +39,32 @@ public class ProfilesTest extends TestCase
 		public String zipCode;
 	}
 
+	public void testAdhocProfiles()
+	{
+		final Validator validator = new Validator();
+
+		// disable all profiles = no constraints by default
+		validator.disableAllProfiles();
+		final Person p = new Person();
+		List<ConstraintViolation> violations = validator.validate(p, (String[]) null);
+		assertEquals(0, violations.size());
+		violations = validator.validate(p, "profile1");
+		assertEquals(1, violations.size());
+		assertEquals("NOTNULL1", violations.get(0).getMessage());
+		violations = validator.validate(p, "profile1", "profile2");
+		assertEquals(2, violations.size());
+
+		// enable all profiles = all constraints by default
+		validator.enableAllProfiles();
+		violations = validator.validate(p, (String[]) null);
+		assertEquals(4, violations.size());
+		violations = validator.validate(p, "profile1");
+		assertEquals(1, violations.size());
+		assertEquals("NOTNULL1", violations.get(0).getMessage());
+		violations = validator.validate(p, "profile1", "profile2");
+		assertEquals(2, violations.size());
+	}
+
 	public void testProfilesGloballyDisabled()
 	{
 		final Validator validator = new Validator();

@@ -45,6 +45,25 @@ public final class ArrayUtils
 		return count;
 	}
 
+	public static <T> boolean containsSame(final T[] theArray, final T theItem)
+	{
+		for (final T t : theArray)
+		{
+			if (t == theItem) return true;
+		}
+		return false;
+	}
+
+	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
+	{
+		for (final T t : theArray)
+		{
+			if (t == theItem) return true;
+			if (t != null && t.equals(theItem)) return true;
+		}
+		return false;
+	}
+
 	private ArrayUtils()
 	{
 	// do nothing
