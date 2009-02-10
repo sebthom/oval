@@ -348,15 +348,15 @@ public class XMLConfigurer implements Configurer
 
 					// <pre> -> net.sf.oval.configuration.elements.MethodConfiguration.preExecutionConfiguration ->
 					// MethodPreExecutionConfiguration
-					xStream.aliasField("pre", MethodConfiguration.class, "preExecutionConfiguration");
+					xStream.aliasField("preExecution", MethodConfiguration.class, "preExecutionConfiguration");
 					xStream.addImplicitCollection(MethodPreExecutionConfiguration.class, "checks", PreCheck.class);
-					xStream.alias("preCheck", PreCheck.class);
+					xStream.alias("pre", PreCheck.class);
 
 					// <post> -> net.sf.oval.configuration.elements.MethodConfiguration.postExecutionConfiguration ->
 					// MethodPpstExecutionConfiguration
-					xStream.aliasField("post", MethodConfiguration.class, "postExecutionConfiguration");
+					xStream.aliasField("postExcecution", MethodConfiguration.class, "postExecutionConfiguration");
 					xStream.addImplicitCollection(MethodPostExecutionConfiguration.class, "checks", PostCheck.class);
-					xStream.alias("postCheck", PostCheck.class);
+					xStream.alias("post", PostCheck.class);
 				}
 			}
 		}
