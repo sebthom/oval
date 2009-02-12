@@ -4,6 +4,7 @@
 
 2009-??-?? v1.32
 ================
++ added Brazilian Portuguese translation of the constraint violation messages [ 2593104 ] (thanks to Leonardo Pinto) 
 - introduced an interface implemented by Validator for supporting easier mocking
 - fixed [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
 - fixed [ 2495825 ] The profile feature of Validator is not thread safe
