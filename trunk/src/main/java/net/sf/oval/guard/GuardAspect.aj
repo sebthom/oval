@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -125,7 +125,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		 */
 		
 		// pre conditions
-		Guard.GuardMethodPreResult preResult = guard.guardMethodPre(TARGET, METHOD, args);
+		final Guard.GuardMethodPreResult preResult = guard.guardMethodPre(TARGET, METHOD, args);
 		if(preResult == Guard.DO_NOT_PROCEED) 
 		{
 			LOG.debug("not proceeding with method execution");
