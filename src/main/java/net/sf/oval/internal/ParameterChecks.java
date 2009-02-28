@@ -1,3 +1,18 @@
+/********************************import java.util.Set;
+
+import net.sf.oval.Check;
+import net.sf.oval.CheckExclusion;
+import net.sf.oval.internal.util.LinkedSet;
+ Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.oval.internal;
 
 import java.util.Set;
