@@ -32,7 +32,7 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 		try
 		{
 			LOG.debug("Evaluating MVEL expression: {1}", expression);
-			return org.mvel.MVEL.eval(expression, values);
+			return org.mvel2.MVEL.eval(expression, values);
 		}
 		catch (final Exception ex)
 		{
