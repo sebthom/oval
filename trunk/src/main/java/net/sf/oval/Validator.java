@@ -289,17 +289,17 @@ public class Validator implements IValidator
 		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
 			return _addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
 
-		// MVEL support
-		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel.MVEL"))
+		// MVEL2 support
+		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel2.MVEL"))
 			return _addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
 
 		// JRuby support
-		if (("jruby".equals(languageId) || "ruby".equals(languageId))
+		else if (("jruby".equals(languageId) || "ruby".equals(languageId))
 				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
 			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
 		// JEXL support
-		if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
+		else if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
 			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
 		return null;
