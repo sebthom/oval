@@ -105,6 +105,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<url>scp://shell.sourceforge.net:/home/group/o/ov/oval/htdocs/site</url>
 		</site>
 	</distributionManagement>
+	<inceptionYear>2005</inceptionYear>
 	<issueManagement>
 		<system>sourceforge</system>
 		<url>http://sourceforge.net/tracker/?group_id=145963</url>
