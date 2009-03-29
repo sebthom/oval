@@ -21,8 +21,12 @@ import net.sf.oval.Validator;
  */
 public abstract class AbstractContraintsTest extends TestCase
 {
-	protected Validator validator = new Validator();
+	protected final Validator validator = new Validator();
 
+	/**
+	 * Performs basic tests of the check implementation.
+	 * @param check
+	 */
 	protected void testCheck(final Check check)
 	{
 		check.setMessage("XYZ");

@@ -33,6 +33,7 @@ public class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.DateRangeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.EmailTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.EqualToFieldTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.HasSubStringTest.class);

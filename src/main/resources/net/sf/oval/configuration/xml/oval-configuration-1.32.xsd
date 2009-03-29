@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-	XSD for OVal
- -->
+	<!-- XSD for OVal -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://oval.sourceforge.net/oval-configuration"
-	xmlns:tns="http://oval.sourceforge.net/oval-configuration"
->
+	xmlns:tns="http://oval.sourceforge.net/oval-configuration">
 	<!--
 	*************************** 
 	top-level configuration element 
@@ -21,7 +18,7 @@
 			</choice>
 		</complexType>
 	</element>
-	
+
 	<!--
 	*************************** 
 	abstract types
@@ -33,7 +30,7 @@
 	<complexType name="ConfigurationElementWithConstraints" abstract="true">
 		<annotation>
 			<documentation>
-                A super type for all types that use constraints.
+				A super type for all types that use constraints.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -48,6 +45,7 @@
 					<element name="assertValid" type="tns:AssertValid" minOccurs="0" maxOccurs="unbounded" />
 					<element name="checkWith" type="tns:CheckWith" minOccurs="0" maxOccurs="unbounded" />
 					<element name="equalToField" type="tns:EqualToField" minOccurs="0" maxOccurs="unbounded" />
+					<element name="email" type="tns:Email" minOccurs="0" maxOccurs="unbounded" />
 					<element name="future" type="tns:Future" minOccurs="0" maxOccurs="unbounded" />
 					<element name="hasSubstring" type="tns:HasSubstring" minOccurs="0" maxOccurs="unbounded" />
 					<element name="instanceOf" type="tns:InstanceOf" minOccurs="0" maxOccurs="unbounded" />
@@ -97,7 +95,7 @@
 	<complexType name="ConstraintSet">
 		<annotation>
 			<documentation>
-                Defines a constraint set
+				Defines a constraint set
             </documentation>
 		</annotation>
 		<complexContent>
@@ -125,7 +123,7 @@
 			<enumeration value="mvel" />
 		</restriction>
 	</simpleType>
-		
+
 	<!--
 	*************************** 
 	elements with constraints
@@ -134,7 +132,7 @@
 	<complexType name="Class">
 		<annotation>
 			<documentation>
-                Constraints configuration for a specific class 
+				Constraints configuration for a specific class 
             </documentation>
 		</annotation>
 		<complexContent>
@@ -162,7 +160,7 @@
 	<complexType name="Field">
 		<annotation>
 			<documentation>
-                Constraints configuration for a field
+				Constraints configuration for a field
             </documentation>
 		</annotation>
 		<complexContent>
@@ -174,9 +172,11 @@
 	<complexType name="Constructor">
 		<annotation>
 			<documentation>
-                Constraints configuration for a constructor.
-                To identify the correct constructor you are required to list all parameters in their declared order, including parameters you are not intending to specify constraints for.
-            </documentation>
+				Constraints configuration for a constructor.
+				To identify the correct constructor you are required to
+				list all parameters in their declared order, including
+				parameters you are not intending to specify constraints for.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElement">
@@ -190,8 +190,10 @@
 	<complexType name="Method">
 		<annotation>
 			<documentation>
-                Constraints configuration for a method.
-                To identify the correct method you are required to list all parameters, including parameters you are not intending to specify constraints for.
+				Constraints configuration for a method.
+				To identify the correct method you are required to list all
+				parameters,
+				including parameters you are not intending to specify constraints for.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -210,7 +212,7 @@
 	<complexType name="Parameter">
 		<annotation>
 			<documentation>
-                Constraints configuration for a constructor/method parameter
+				Constraints configuration for a constructor/method parameter
             </documentation>
 		</annotation>
 		<complexContent>
@@ -225,7 +227,7 @@
 	<complexType name="ReturnValue">
 		<annotation>
 			<documentation>
-                Constraints configuration for the return value of a method
+				Constraints configuration for the return value of a method
             </documentation>
 		</annotation>
 		<complexContent>
@@ -236,7 +238,7 @@
 	<complexType name="Object">
 		<annotation>
 			<documentation>
-                Constraints configuration for constraints on object level
+				Constraints configuration for constraints on object level
             </documentation>
 		</annotation>
 		<complexContent>
@@ -269,7 +271,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-		
+
 	<!--
 	*************************** 
 	constraint elements
@@ -277,9 +279,7 @@
 	-->
 	<complexType name="Pre" mixed="true">
 		<annotation>
-			<documentation>
-                method pre condition - special programming by contract constraints
-            </documentation>
+			<documentation>method pre condition - special programming by contract constraints</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -290,9 +290,7 @@
 	</complexType>
 	<complexType name="Post" mixed="true">
 		<annotation>
-			<documentation>
-                method post condition - special programming by contract constraints
-            </documentation>
+			<documentation>method post condition - special programming by contract constraints</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -304,8 +302,9 @@
 	<complexType name="Assert" mixed="true">
 		<annotation>
 			<documentation>
-                Check if evaluating the expression in the specified expression language returns true.
-                The node body contains the script expression as CDATA.
+				Check if evaluating the expression in the specified expression language returns true.
+				The node body
+				contains the script expression as CDATA.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -320,7 +319,7 @@
 	<complexType name="AssertConstraintSet" mixed="true">
 		<annotation>
 			<documentation>
-                Check if the value satisfies the all constraints of specified constraint set
+				Check if the value satisfies the all constraints of specified constraint set
             </documentation>
 		</annotation>
 		<complexContent>
@@ -335,7 +334,8 @@
 		<annotation>
 			<documentation>
 				Check if the value is false.
-				Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Note: This constraint is also satisfied when the value to validate is
+				null, therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -345,7 +345,7 @@
 	<complexType name="AssertFieldConstraints" mixed="true">
 		<annotation>
 			<documentation>
-                Check if the value satisfies the constraints defined for the specified field.
+				Check if the value satisfies the constraints defined for the specified field.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -359,7 +359,8 @@
 		<annotation>
 			<documentation>
 				Check if the value is true.
-				Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Note: This constraint is also satisfied when the value to validate is null,
+				therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -370,7 +371,9 @@
 		<annotation>
 			<documentation>
 				Check if the value is a valid URL.
-				Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Note: This constraint is also satisfied when the value to validate
+				is null,
+				therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -388,7 +391,7 @@
 	<complexType name="AssertValid" mixed="true">
 		<annotation>
 			<documentation>
-               Check if the value passes a validation by Validator.validate().
+				Check if the value passes a validation by Validator.validate().
             </documentation>
 		</annotation>
 		<complexContent>
@@ -400,7 +403,8 @@
 	<complexType name="CheckWith" mixed="true">
 		<annotation>
 			<documentation>
-                Check the value by a method of the same class that takes the value as argument and returns true if valid and false if invalid.
+				Check the value by a method of the same class that takes the value as argument and returns true if
+				valid and false if invalid.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -415,16 +419,31 @@
 	<complexType name="SimpleCheck" mixed="true">
 		<annotation>
 			<documentation>
-                name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck
+				Name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck
             </documentation>
 		</annotation>
 		<attribute name="class" type="string" />
 	</complexType>
+	<complexType name="Email" mixed="true">
+		<annotation>
+			<documentation>
+				Check if the string representation is a valid e-mail address.
+				Note: This constraint is also satisfied
+				when the value to validate is null,
+				therefore you might also need to declare the NotNull constraint.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
 	<complexType name="EqualToField" mixed="true">
 		<annotation>
 			<documentation>
-			    Check if value equals the value of the referenced field.
-			    Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if value equals the value of the referenced field.
+				Note: This constraint is also satisfied when
+				the value to validate is null,
+				therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -438,8 +457,10 @@
 	<complexType name="Future" mixed="true">
 		<annotation>
 			<documentation>
-			    Check if the date is in the future.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the date is in the future.
+				Note: This constraint is also satisfied when the value to validate
+				is null,
+				therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -449,8 +470,10 @@
 	<complexType name="HasSubstring" mixed="true">
 		<annotation>
 			<documentation>
-                Check if the string contains a certain substring.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the string contains a certain substring.
+				Note: This constraint is also satisfied when the
+				value to validate is null,
+				therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -463,11 +486,13 @@
 	<complexType name="InstanceOf" mixed="true">
 		<annotation>
 			<documentation>
-			    Check if the value is an instance of the specified class or implements <u>
-				all
-			</u> specified interfaces.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the value is an instance of the specified class or implements
+				<u>all</u>
+				specified interfaces.
+				Note: This constraint is also satisfied when the value to validate is null,
+				therefore you might
+				also need to declare the NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -480,11 +505,15 @@
 	<complexType name="InstanceOfAny" mixed="true">
 		<annotation>
 			<documentation>
-                Check if the value is an instance of the specified class or implements <u>
-				one
-			</u> of the specified interfaces.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the value is an instance of the specified class or implements
+				<u>
+					one
+			</u>
+				of the specified interfaces.
+				Note: This constraint is also satisfied when the value to validate is null, therefore
+				you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -508,8 +537,10 @@
 	<complexType name="Length" mixed="true">
 		<annotation>
 			<documentation>
-                Check if the string representation has certain length.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the string representation has certain length.
+				Note: This constraint is also satisfied when the
+				value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -522,8 +553,10 @@
 	<complexType name="MatchPattern" mixed="true">
 		<annotation>
 			<documentation>
-			    Check if the specified regular expression pattern is matched.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the specified regular expression pattern is matched.
+				Note: This constraint is also satisfied
+				when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -543,8 +576,10 @@
 	<complexType name="Max" mixed="true">
 		<annotation>
 			<documentation>
-                Check if the number is smaller than or equal to [max].
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the number is smaller than or equal to [max].
+				Note: This constraint is also satisfied when the
+				value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -556,9 +591,11 @@
 	<complexType name="MaxLength" mixed="true">
 		<annotation>
 			<documentation>
-                 Check if the string representation does not exceed the given length.
-                 Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the string representation does not exceed the given length.
+				Note: This constraint is also
+				satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -569,8 +606,10 @@
 	<complexType name="MaxSize" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if an array or collection does not exceed the given size.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if an array or collection does not exceed the given size.
+				Note: This constraint is also satisfied
+				when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -587,9 +626,11 @@
 	<complexType name="MemberOf" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the string representation is contained in the given string array.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the string representation is contained in the given string array.
+				Note: This constraint is
+				also satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -603,8 +644,10 @@
 	<complexType name="Min" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the number is greater than or equal to [min]
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the number is greater than or equal to [min]
+				Note: This constraint is also satisfied when the
+				value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -616,9 +659,11 @@
 	<complexType name="MinLength" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the string representation has at least the given length.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the string representation has at least the given length.
+				Note: This constraint is also
+				satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -629,9 +674,11 @@
 	<complexType name="MinSize" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the array or collection has at least the given number of elements.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the array or collection has at least the given number of elements.
+				Note: This constraint is
+				also satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -642,8 +689,9 @@
 	<complexType name="NoSelfReference" mixed="true">
 		<annotation>
 			<documentation>
-               Check that the value is not a reference to the validated object itself.
-               This is e.g. useful to avoid circular references.
+				Check that the value is not a reference to the validated object itself.
+				This is e.g. useful to avoid
+				circular references.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -653,8 +701,10 @@
 	<complexType name="NotBlank" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the string representation is not empty and does not only contain white spaces.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the string representation is not empty and does not only contain white spaces.
+				Note: This
+				constraint is also satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -664,8 +714,10 @@
 	<complexType name="NotEmpty" mixed="true">
 		<annotation>
 			<documentation>
-			    Check if the string representation is not empty ("").
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the string representation is not empty ("").
+				Note: This constraint is also satisfied when the
+				value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -675,9 +727,11 @@
 	<complexType name="NotEqual" mixed="true">
 		<annotation>
 			<documentation>
-               Check if the string representation does not equal a given string.			   
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the string representation does not equal a given string.
+				Note: This constraint is also
+				satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -689,9 +743,11 @@
 	<complexType name="NotEqualToField" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if value does not equal the value of the referenced field.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if value does not equal the value of the referenced field.
+				Note: This constraint is also
+				satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -704,9 +760,11 @@
 	<complexType name="NotMemberOf" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the string representation is not contained in the given string array.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+				Check if the string representation is not contained in the given string array.
+				Note: This constraint is
+				also satisfied when the value to validate is null, therefore you might also need to declare the
+				NotNull constraint.
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -720,8 +778,10 @@
 	<complexType name="NotNegative" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the number is greater or equal zero.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the number is greater or equal zero.
+				Note: This constraint is also satisfied when the value to
+				validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -731,7 +791,7 @@
 	<complexType name="NotNull" mixed="true">
 		<annotation>
 			<documentation>
-                Check if not null.
+				Check if not null.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -741,8 +801,10 @@
 	<complexType name="Past" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the date is in the past.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the date is in the past.
+				Note: This constraint is also satisfied when the value to validate is
+				null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -752,8 +814,10 @@
 	<complexType name="Range" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the number is in the given range.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the number is in the given range.
+				Note: This constraint is also satisfied when the value to
+				validate is null, therefore you might also need to declare the
+				NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -766,8 +830,10 @@
 	<complexType name="Size" mixed="true">
 		<annotation>
 			<documentation>
-			   Check if the array or collection has the given size.
-               Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+				Check if the array or collection has the given size.
+				Note: This constraint is also satisfied when the
+				value to validate is null,
+				therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -780,7 +846,8 @@
 	<complexType name="ValidateWithMethod" mixed="true">
 		<annotation>
 			<documentation>
-                Check the value by a method of the same class that takes the value as argument and returns true if valid and false if invalid
+				Check the value by a method of the same class that takes the value as argument and returns true if
+				valid and false if invalid
             </documentation>
 		</annotation>
 		<complexContent>
@@ -791,7 +858,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
 	<!--
 	*************************** 
 	constraint exclusion elements
@@ -799,9 +866,7 @@
 	-->
 	<complexType name="Nullable" mixed="true">
 		<annotation>
-			<documentation>
-               Allows a value to be nullable.
-            </documentation>
+			<documentation>Allows a value to be nullable.</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles" />
