@@ -1,5 +1,28 @@
 New and Noteworthy
 
+* Version Snapshot
+
+** New Features and Improvements
+ 
+ * added Brazilian Portuguese translation of the constraint violation messages [ 2593104 ] (thanks to Leonardo Pinto) 
+
+ * introduced an interface implemented by Validator for supporting easier mocking
+
+ * French translation updated (thanks to  Éric Vigeant)
+ 
+ * upgraded Groovy 1.6.0, MVEL 2.0.7, Paranamer 1.3
+
+** Issues solved 
+
+ * fixed [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
+ 
+ * fixed [ 2495825 ] The profile feature of Validator is not thread safe
+ 
+ * fixed [ 2493379 ] array types in xml based configuration
+ 
+ * fixed [ 2579897 ] xml based configuration related to post/pre checks
+
+
 * Version 1.31 (2008-21-27)
 
 ** New Features
