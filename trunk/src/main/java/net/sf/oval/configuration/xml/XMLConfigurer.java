@@ -46,6 +46,7 @@ import net.sf.oval.constraint.AssertTrueCheck;
 import net.sf.oval.constraint.AssertURLCheck;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.CheckWithCheck;
+import net.sf.oval.constraint.EmailCheck;
 import net.sf.oval.constraint.EqualToFieldCheck;
 import net.sf.oval.constraint.FutureCheck;
 import net.sf.oval.constraint.HasSubstringCheck;
@@ -256,6 +257,7 @@ public class XMLConfigurer implements Configurer
 		}
 		xStream.alias("assertValid", AssertValidCheck.class);
 		xStream.alias("checkWith", CheckWithCheck.class);
+		xStream.alias("email", EmailCheck.class);
 		xStream.alias("equalToField", EqualToFieldCheck.class);
 		xStream.alias("future", FutureCheck.class);
 		xStream.alias("hasSubstring", HasSubstringCheck.class);

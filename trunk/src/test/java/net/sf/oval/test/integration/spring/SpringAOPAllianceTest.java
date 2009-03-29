@@ -23,7 +23,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
 * @author Sebastian Thomschke
 */
-
 public class SpringAOPAllianceTest extends TestCase
 {
 	/**

@@ -11,6 +11,8 @@ New and Noteworthy
  * French translation updated (thanks to  Éric Vigeant)
  
  * upgraded Groovy 1.6.0, MVEL 2.0.7, Paranamer 1.3
+ 
+ * added an @Email constraint (thanks to Musachy Barosso)
 
 ** Issues solved 
 
