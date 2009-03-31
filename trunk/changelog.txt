@@ -10,6 +10,7 @@
 - fixed [ 2495825 ] The profile feature of Validator is not thread safe
 - fixed [ 2493379 ] array types in xml based configuration
 - fixed [ 2579897 ] xml based configuration related to post/pre checks
+- fixed [ 2723344 ] Should not call any method on not fully initialized object
 * French translation updated (thanks to  Éric Vigeant)
 * upgraded Groovy 1.6.0, MVEL 2.0.7, Paranamer 1.3
 * removed the DTD for XML Configuration, use the XSD instead

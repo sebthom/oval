@@ -23,6 +23,8 @@ New and Noteworthy
  * fixed [ 2493379 ] array types in xml based configuration
  
  * fixed [ 2579897 ] xml based configuration related to post/pre checks
+ 
+ * fixed [ 2723344 ] Should not call any method on not fully initialized object
 
 
 * Version 1.31 (2008-21-27)

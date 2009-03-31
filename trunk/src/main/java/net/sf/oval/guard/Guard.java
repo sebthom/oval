@@ -1342,7 +1342,8 @@ public class Guard extends Validator
 		catch (final OValException ex)
 		{
 			throw new ValidationFailedException("Validation of constructor parameters failed. Constructor: "
-					+ constructor + " Validated object:" + validatedObject, ex);
+					+ constructor + " Validated object: " + validatedObject.getClass().getName() + "@"
+					+ Integer.toHexString(validatedObject.hashCode()), ex);
 		}
 		finally
 		{
