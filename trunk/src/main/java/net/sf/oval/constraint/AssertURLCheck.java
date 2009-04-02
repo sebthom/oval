@@ -96,16 +96,16 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 				final int rc = httpConnection.getResponseCode();
 
 				if (rc < HttpURLConnection.HTTP_BAD_REQUEST) return true;
-				LOG.trace("Connecting failed with HTTP response code " + rc);
+				LOG.debug("Connecting failed with HTTP response code " + rc);
 				return false;
 			}
+			return true;
 		}
 		catch (final IOException e)
 		{
-			LOG.trace("Connecting failed with exception", e);
+			LOG.debug("Connecting failed with exception", e);
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			final String scheme = uri.getScheme();
 			if (scheme == null || uri.getRawSchemeSpecificPart() == null)
 			{
-				LOG.trace("URI scheme or scheme-specific-part not specified");
+				LOG.debug("URI scheme or scheme-specific-part not specified");
 				return false;
 			}
 
@@ -171,7 +171,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		}
 		catch (final java.net.URISyntaxException ex)
 		{
-			LOG.trace("URI scheme or scheme-specific-part not specified");
+			LOG.debug("URI scheme or scheme-specific-part not specified");
 			return false;
 		}
 

@@ -66,8 +66,8 @@ public class AssertURLTest extends AbstractContraintsTest
 		Assert.assertFalse(check.isSatisfied(this, "http://www.cfhsdagfhas6sa.com", null, validator));
 		Assert.assertFalse(check.isSatisfied(this, "http://www.checkupdown.com/accounts/grpb/B1394343/", null,
 				validator));
-		Assert.assertTrue(check.isSatisfied(this, "ftp://ftp.is.co.za/rfc/rfc1808.txt", null, validator));
-		Assert.assertFalse(check.isSatisfied(this, "ftp://ftp.is.co.za/rff/rfc1808.txt", null, validator));
+		Assert.assertTrue(check.isSatisfied(this, "ftp://ftp.debian.org/debian/README.html", null, validator));
+		Assert.assertFalse(check.isSatisfied(this, "ftp://ftp.debian.org/debian/foo.html", null, validator));
 
 		check.setPermittedURISchemes(null);
 	}
