@@ -13,7 +13,8 @@
 
 		<para>OVal is a pragmatic and extensible general purpose
 			validation
-			framework for any kind of Java objects (not only JavaBeans)
+			framework for any kind of Java objects (not only
+			JavaBeans)
 			and allows
 			you:</para>
 
@@ -30,7 +31,8 @@
 
 			<listitem>
 				<para>to validate objects based on certain EJB3 JPA annotations
-					(namely all field annotations that require a not-null value),
+					(namely all field annotations that require a
+					not-null value),
 				</para>
 			</listitem>
 
@@ -106,7 +108,8 @@
 			<listitem>
 				<para>specifying constrains for a method's return value
 					that are
-					automatically checked after a method has been executed
+					automatically checked after a method has
+					been executed
 					(postconditions),</para>
 			</listitem>
 
@@ -129,11 +132,13 @@
 
 		<para>OVal requires Java 5 or later - mainly for annotation
 			support but
-			other new language features (generics, for each loop,
+			other new language features (generics, for
+			each loop,
 			etc.) are used
 			across the OVal source code too. Java 5 is actually the
 			only hard
-			requirement, depending on the features you want to use
+			requirement, depending on the
+			features you want to use
 			additional
 			libraries are required:</para>
 
@@ -194,13 +199,15 @@
 			<listitem>
 				<para>GNU Trove is required if you want to have OVal to
 					internally use
-					the GNU Trove high performance collections.</para>
+					the GNU Trove high performance collections.
+				</para>
 			</listitem>
 
 			<listitem>
 				<para>Javolution is required if you want to have OVal to
 					internally
-					use Javolution's high performance collections.</para>
+					use Javolution's high performance
+					collections.</para>
 			</listitem>
 
 			<listitem>
@@ -220,7 +227,8 @@
 			<para>
 				You can add constraint annotations to class fields that are
 				checked
-				when an object validation is performed. There exists a number of
+				when an object validation is performed. There
+				exists a number of
 				pre-built constraints that you can find in the package
 				<command>net.sf.oval.constraint</command>
 				.
@@ -243,13 +251,14 @@
 
 				...
 				}
-</programlisting>
+			</programlisting>
 
 			<para>Example usage:</para>
 
 			<programlisting>Validator validator = new Validator();
 
-				BusinessObject bo = new BusinessObject(); // name is null
+				BusinessObject bo = new BusinessObject(); // name is
+				null
 
 				// collect
 				the constraint violations List&amp;lt;ConstraintViolation&amp;gt; violations =
@@ -1675,8 +1684,17 @@ v.validate(p);
 </programlisting>
       </section>
     </section>
-  </section>
 
+    <section>
+      <title>Apache Struts 2 integration</title>
+
+      <para>Musachy Barroso has developed an OVal Plug-in for Apache Struts 2, which is documented at <ulink
+       url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin
+      </ulink></para>
+    </section>
+
+  </section>
+       
   <section>
     <title>API documentation</title>
 
@@ -1874,6 +1892,15 @@ v.validate(p);
     <para>The following projects are using OVal:</para>
 
     <itemizedlist>
+    
+      <listitem>
+        <para>Struts 2 OVal Plug-in</para>
+
+        <para><ulink
+        url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin
+        </ulink></para>
+      </listitem>
+      
       <listitem>
         <para>Play! Framework</para>
 
