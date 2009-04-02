@@ -184,7 +184,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.jruby</groupId>
 			<artifactId>jruby</artifactId>
-			<version>1.1.6</version>
+			<version>1.2.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
