@@ -137,7 +137,7 @@ public class LoggerJDKImpl implements Logger
 		 *	at net.sf.oval.logging.LoggerJDKImpl.warn(LoggerJDKImpl.java:136)
 		 *	at net.sf.oval.internal.Log.warn(Log.java:180)
 		 */
-		final int offset = 3;
+		final int offset = 2;
 		final StackTraceElement[] steArray = new Throwable().getStackTrace();
 		record.setSourceClassName(steArray[offset].getClassName());
 		record.setSourceMethodName(steArray[offset].getMethodName());
