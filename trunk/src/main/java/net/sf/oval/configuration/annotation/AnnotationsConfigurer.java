@@ -306,9 +306,13 @@ public class AnnotationsConfigurer implements Configurer
 				checks.add(initializeCheck((Annotation) ca));
 			}
 		}
+		catch (final ReflectionException ex)
+		{
+			throw ex;
+		}
 		catch (final Exception e)
 		{
-			throw new ReflectionException("Cannot initialize constraint exclusion "
+			throw new ReflectionException("Cannot initialize constraint check "
 					+ constraintsAnnotation.annotationType().getName(), e);
 		}
 	}
