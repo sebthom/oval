@@ -767,10 +767,8 @@ public class Guard extends Validator
 	 * 
 	 * This method is provided for use by guard aspects.
 	 * 
-	 * @param guardedObject
-	 * @param method
-	 * @param args
-	 * @param invocable
+	 * @param returnValue
+	 * @param preResult
 	 * @return The method return value or null if the guarded object is in probe mode.
 	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
 	 *             mode.
@@ -832,8 +830,7 @@ public class Guard extends Validator
 	 * @param guardedObject
 	 * @param method
 	 * @param args
-	 * @param invocable
-	 * @return Null if method guarding is deactivated or a result object that needs to be passed to {@link #guardMethodPost(Object, Method, Object[], Object, GuardMethodPreResult)}
+	 * @return Null if method guarding is deactivated or a result object that needs to be passed to {@link #guardMethodPost(Object, GuardMethodPreResult)}
 	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
 	 *             mode.
 	 */
