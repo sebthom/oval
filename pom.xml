@@ -111,6 +111,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<url>http://sourceforge.net/tracker/?group_id=145963</url>
 	</issueManagement>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.java>1.5</version.java>
 		<version.aspectj>1.6.2</version.aspectj>
 	</properties>
@@ -562,6 +564,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<descriptors>
 						<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
 						<descriptor>${basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
+						<descriptor>${basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
