@@ -603,22 +603,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 	<reporting>
 		<plugins>
 			<plugin>
-				<!-- Generate a report from issue tracking or a change document. -->
-				<artifactId>maven-changes-plugin</artifactId>
-				<inherited>false</inherited>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-				<configuration>
-					<issueLinkTemplate>http://sourceforge.net/support/tracker.php?aid=%ISSUE%</issueLinkTemplate>
-				</configuration>
-			</plugin>
-
-			<plugin>
 				<!-- Generate Javadoc for the project. -->
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
