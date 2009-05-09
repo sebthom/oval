@@ -1,6 +1,6 @@
 New and Noteworthy
 
-* Version 1.32 (2009-05-09)
+* Version 1.32 (2009-05-10)
 
 ** New Features and Improvements
  
@@ -10,7 +10,7 @@ New and Noteworthy
 
  * French translation updated (thanks to  Éric Vigeant)
  
- * upgraded Groovy 1.6.0, MVEL 2.0.7, Paranamer 1.3
+ * upgraded Groovy 1.6.2, MVEL 2.0.8, Paranamer 1.3, JRuby 1.2.0, cglib 2.2,Spring 2.5.6SEC01
  
  * added an @Email constraint (thanks to Musachy Barosso)
 
@@ -27,6 +27,8 @@ New and Noteworthy
  * fixed [ 2723344 ] Should not call any method on not fully initialized object
  
  * fixed [ 2723413 ] translated JDK exception should keep the cause
+
+ * fixed NPE in JDK Logger implementation (thanks to Carsten Siedentop)
 
 
 * Version 1.31 (2008-21-27)
