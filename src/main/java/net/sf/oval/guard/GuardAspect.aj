@@ -92,12 +92,12 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		final Object TARGET = thisJoinPoint.getTarget();
 
 		// pre conditions
-		guard.guardConstructorPre(TARGET, CONSTRUCTOR, args);
+		getGuard().guardConstructorPre(TARGET, CONSTRUCTOR, args);
 
 		final Object result = proceed();
 
 		// post conditions
-		guard.guardConstructorPost(TARGET, CONSTRUCTOR, args);
+		getGuard().guardConstructorPost(TARGET, CONSTRUCTOR, args);
 
 		return result;
 	}
@@ -125,7 +125,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		 */
 		
 		// pre conditions
-		final Guard.GuardMethodPreResult preResult = guard.guardMethodPre(TARGET, METHOD, args);
+		final Guard.GuardMethodPreResult preResult = getGuard().guardMethodPre(TARGET, METHOD, args);
 		if(preResult == Guard.DO_NOT_PROCEED) 
 		{
 			LOG.debug("not proceeding with method execution");
@@ -135,7 +135,7 @@ public abstract aspect GuardAspect extends ApiUsageAuditor
 		final Object result = proceed();
 
 		// post conditions
-		guard.guardMethodPost(result, preResult);
+		getGuard().guardMethodPost(result, preResult);
 
 		return result;
 	}

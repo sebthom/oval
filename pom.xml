@@ -202,7 +202,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.5.6</version>
+			<version>2.5.6.SEC01</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -214,13 +214,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>2.1_3</version>
+			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.2</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -251,7 +251,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel2</artifactId>
-			<version>2.0.7</version>
+			<version>2.0.8</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -283,20 +283,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<configuration>
 					<minSeverity>info</minSeverity>
 					<!--
-						<comparisonArtifacts> <comparisonArtifact>
-						<groupId>net.sf.oval</groupId> <artifactId>oval</artifactId>
-						<version>1.10</version> </comparisonArtifact>
-						</comparisonArtifacts>
+						<comparisonArtifacts> <comparisonArtifact> <groupId>net.sf.oval</groupId> <artifactId>oval</artifactId>
+						<version>1.10</version> </comparisonArtifact> </comparisonArtifacts>
 					-->
 
 				</configuration>
 			</plugin>
 
-			<!--
-				**********************************************************************************
-				phase: validate
-				**********************************************************************************
-			-->
+
+			<!-- ********************************************************************* -->
+			<!-- phase: validate -->
+			<!-- ********************************************************************* -->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -334,11 +331,10 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 
-			<!--
-				**********************************************************************************
-				phase: generate-sources
-				**********************************************************************************
-			-->
+
+			<!-- ********************************************************************* -->
+			<!-- phase: generate-sources -->
+			<!-- ********************************************************************* -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -349,8 +345,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 								<copy todir="${project.build.directory}">
 									<fileset dir="${basedir}" includes="README.txt" />
 								</copy>
-								<replace file="${project.build.directory}/README.txt"
-									token="$VERSION$" value="${pom.version}" />
+								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${pom.version}" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -360,16 +355,14 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 
-			<!--
-				**********************************************************************************
-				phase: generate-resources
-				**********************************************************************************
-			-->
+
+			<!-- ********************************************************************* -->
+			<!-- phase: generate-resources -->
+			<!-- ********************************************************************* -->
 			<plugin>
 				<!--
-					better docbook support see
-					http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin
-					manual: mvn docbkx:generate-html
+					better docbook support see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin manual: mvn
+					docbkx:generate-html
 				-->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
@@ -379,17 +372,15 @@ Besides field/property validation OVal implements Programming by Contract featur
 							<goal>generate-html</goal>
 						</goals>
 						<!--
-							needs to be in generate-resources and not pre-site since we also
-							want to include the documentation in the distributions and not
-							just the site
+							needs to be in generate-resources and not pre-site since we also want to include the documentation in the
+							distributions and not just the site
 						-->
 						<phase>generate-resources</phase>
 					</execution>
 				</executions>
 				<configuration>
 					<!--
-						see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/
-						and
+						see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/ and
 						http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html
 					-->
 					<sourceDirectory>${basedir}/src/site/docbook</sourceDirectory>
@@ -456,11 +447,10 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</configuration>
 			</plugin>
 
-			<!--
-				**********************************************************************************
-				phase: compile
-				**********************************************************************************
-			-->
+
+			<!-- ********************************************************************* -->
+			<!-- phase: compile -->
+			<!-- ********************************************************************* -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -499,11 +489,10 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</dependencies>
 			</plugin>
 
-			<!--
-				**********************************************************************************
-				phase: package
-				**********************************************************************************
-			-->
+
+			<!-- ********************************************************************* -->
+			<!-- phase: package -->
+			<!-- ********************************************************************* -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -539,23 +528,18 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 			<plugin>
 				<!--
-					we are generating the site in the package phase because we want to
-					include it in the distribution
+					we are generating the site in the package phase because we want to include it in the distribution
 				-->
 				<artifactId>maven-site-plugin</artifactId>
 				<dependencies>
 					<!--
-						docbook support, unfortunately very limited <dependency>
-						<groupId>org.apache.maven.doxia</groupId>
-						<artifactId>doxia-module-docbook-simple</artifactId>
-						<version>1.0-alpha-10-SNAPSHOT</version> </dependency>
+						docbook support, unfortunately very limited <dependency> <groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-docbook-simple</artifactId> <version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 
 					<!--
-						TWIKI support
-						http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules
-						<dependency> <groupId>org.apache.maven.doxia</groupId>
-						<artifactId>doxia-module-twiki</artifactId>
+						TWIKI support http://twiki.org/cgi-bin/view/TWiki/TextFormattingRules <dependency>
+						<groupId>org.apache.maven.doxia</groupId> <artifactId>doxia-module-twiki</artifactId>
 						<version>1.0-alpha-10-SNAPSHOT</version> </dependency>
 					-->
 				</dependencies>
@@ -590,11 +574,10 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 
-			<!--
-				**********************************************************************************
-				manual execution
-				**********************************************************************************
-			-->
+
+			<!-- ********************************************************************* -->
+			<!-- phase: manual execution -->
+			<!-- ********************************************************************* -->
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
@@ -738,23 +721,10 @@ Besides field/property validation OVal implements Programming by Contract featur
         		<artifactId>dashboard-maven-plugin</artifactId>
       		</plugin>
 
-
-			<!-- does not work yet
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
 			</plugin>
-			-->
-
-			<!-- not yet released http://mojo.codehaus.org/jdiff-maven-plugin/howto.html
-				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jdiff-maven-plugin</artifactId>
-				<configuration>
-				<oldTag>1.20</oldTag>
-				</configuration>
-				</plugin>
-			-->
 		</plugins>
 	</reporting>
 
