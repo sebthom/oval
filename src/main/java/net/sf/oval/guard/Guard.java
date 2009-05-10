@@ -769,7 +769,6 @@ public class Guard extends Validator
 	 * 
 	 * @param returnValue
 	 * @param preResult
-	 * @return The method return value or null if the guarded object is in probe mode.
 	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
 	 *             mode.
 	 */
