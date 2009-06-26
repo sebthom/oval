@@ -185,7 +185,8 @@ public class Guard extends Validator
 			{
 				for (final CheckExclusion exclusion : activeExclusions)
 				{
-					if (exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
+					if (exclusion.isActive(validatedObject, valueToValidate, this)
+							&& exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
 					{
 						// skip if this check should be excluded
 						skip = true;

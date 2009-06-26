@@ -1,5 +1,11 @@
 New and Noteworthy
 
+* Version 1.3.3-SNAPSHOT
+
+** New Features and Improvements
+
+ * added support for conditional constraint activation (added the when="" attribute)
+
 * Version 1.32 (2009-05-10)
 
 ** New Features and Improvements

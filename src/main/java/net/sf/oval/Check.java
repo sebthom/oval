@@ -60,6 +60,31 @@ public interface Check extends Serializable
 	int getSeverity();
 
 	/**
+	 * Formula returning <code>true</code> if this constraint shall be evaluated and
+	 * <code>false</code> if it shall be ignored for the current validation.
+	 * <p>
+	 * <b>Important:</b> The formula must be prefixed with the name of the scripting language that is used.
+	 * E.g. <code>groovy:_this.amount > 10</code>
+	 * <p>
+	 * Available context variables are:<br>
+	 * <b>_this</b> -&gt; the validated bean<br>
+	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value,
+	 *    or the validated bean for object level constraints)
+	 *    
+	 * @return the formula
+	 */
+	String getWhen();
+
+	/**
+	 * 
+	 * @param validatedObject the object/bean to validate the value against, for static fields or methods this is the class
+	 * @param valueToValidate the value to validate, may be null when validating pre conditions for static methods
+	 * @param validator the calling validator
+	 * @return <code>true</code> if this check is active and must be satisfied
+	 */
+	boolean isActive(Object validatedObject, Object valueToValidate, Validator validator);
+
+	/**
 	 * This method implements the validation logic
 	 * 
 	 * @param validatedObject the object/bean to validate the value against, for static fields or methods this is the class
@@ -68,8 +93,8 @@ public interface Check extends Serializable
 	 * @param validator the calling validator
 	 * @return true if the value satisfies the checked constraint
 	 */
-	boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context,
-			Validator validator) throws OValException;
+	boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator)
+			throws OValException;
 
 	/**
 	 * @param errorCode the error code to set
@@ -98,4 +123,20 @@ public interface Check extends Serializable
 	 * @param severity the severity to set
 	 */
 	void setSeverity(int severity);
+
+	/**
+	 * Sets the formula returning <code>true</code> if this constraint shall be evaluated and
+	 * <code>false</code> if it shall be ignored for the current validation.
+	 * <p>
+	 * <b>Important:</b> The formula must be prefixed with the name of the scripting language that is used.
+	 * E.g. <code>groovy:_this.amount > 10</code>
+	 * <p>
+	 * Available context variables are:<br>
+	 * <b>_this</b> -&gt; the validated bean<br>
+	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value,
+	 *    or the validated bean for object level constraints)
+	 *  
+	 * @param when formula calculating if this check is active
+	 */
+	void setWhen(final String when);
 }

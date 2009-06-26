@@ -299,7 +299,8 @@ public class Validator implements IValidator
 			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
 		// JEXL support
-		else if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
+		else if ("jexl".equals(languageId)
+				&& ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
 			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
 		return null;
@@ -750,6 +751,8 @@ public class Validator implements IValidator
 			final String[] profiles) throws OValException
 	{
 		if (!isAnyProfileEnabled(check.getProfiles(), profiles)) return;
+
+		if (!check.isActive(validatedObject, valueToValidate, this)) return;
 
 		/*
 		 * special handling of the AssertValid constraint

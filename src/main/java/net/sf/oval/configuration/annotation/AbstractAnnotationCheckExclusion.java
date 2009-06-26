@@ -39,16 +39,29 @@ public abstract class AbstractAnnotationCheckExclusion<ExclusionAnnotation exten
 		final Class< ? > exclusionClazz = exclusionAnnotation.getClass();
 
 		/*
-		 * Retrieve the profiles value from the constraint annotation via reflection.
+		 * Retrieve the profiles value from the constraint exclusion annotation via reflection.
 		 */
 		try
 		{
 			final Method getProfiles = exclusionClazz.getDeclaredMethod("profiles", (Class< ? >[]) null);
-			profiles = (String[]) getProfiles.invoke(exclusionAnnotation, (Object[]) null);
+			setProfiles((String[]) getProfiles.invoke(exclusionAnnotation, (Object[]) null));
 		}
 		catch (final Exception e)
 		{
 			LOG.debug("Cannot determine constraint profiles based on annotation {1}", exclusionClazz.getName(), e);
+		}
+
+		/*
+		 * Retrieve the when formula from the constraint exclusion annotation via reflection.
+		 */
+		try
+		{
+			final Method getWhen = exclusionClazz.getDeclaredMethod("when", (Class< ? >[]) null);
+			setWhen((String) getWhen.invoke(exclusionClazz, (Object[]) null));
+		}
+		catch (final Exception e)
+		{
+			LOG.debug("Cannot determine constraint when formula based on annotation {1}", exclusionClazz.getName(), e);
 		}
 	}
 }
