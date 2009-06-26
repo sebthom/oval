@@ -12,8 +12,12 @@
  *******************************************************************************/
 package net.sf.oval;
 
+import static net.sf.oval.Validator.getCollectionFactory;
+
 import java.util.Collections;
 import java.util.Map;
+
+import net.sf.oval.expression.ExpressionLanguage;
 
 /**
  * Partial implementation of check classes.
@@ -24,14 +28,17 @@ public abstract class AbstractCheck implements Check
 {
 	private static final long serialVersionUID = 1L;
 
-	protected String errorCode;
-	protected String message;
-	protected int severity;
-	protected String[] profiles;
-
-	private boolean messageVariablesUpToDate = true;
+	private String errorCode;
+	private String message;
 	private Map<String, String> messageVariables;
 	private Map<String, String> messageVariablesUnmodifiable;
+	private boolean messageVariablesUpToDate = true;
+
+	private String[] profiles;
+	private int severity;
+	private String when;
+	private String whenFormula;
+	private String whenLang;
 
 	protected Map<String, String> createMessageVariables()
 	{
@@ -130,6 +137,29 @@ public abstract class AbstractCheck implements Check
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public String getWhen()
+	{
+		return whenLang + ":" + when;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isActive(final Object validatedObject, final Object valueToValidate, final Validator validator)
+	{
+		if (when == null) return true;
+
+		final Map<String, Object> values = getCollectionFactory().createMap();
+		values.put("_value", valueToValidate);
+		values.put("_this", validatedObject);
+
+		final ExpressionLanguage el = validator.getExpressionLanguage(whenLang);
+		return el.evaluateAsBoolean(whenFormula, values);
+	}
+
+	/**
 	 * Calling this method indicates that the {@link #createMessageVariables()} method needs to be called before the message 
 	 * for the next violation of this check is rendered.
 	 */
@@ -168,5 +198,27 @@ public abstract class AbstractCheck implements Check
 	public void setSeverity(final int severity)
 	{
 		this.severity = severity;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setWhen(final String when)
+	{
+		if (when == null || when.length() == 0)
+		{
+			this.when = null;
+			this.whenFormula = null;
+			this.whenLang = null;
+		}
+		else
+		{
+			this.when = when;
+			final String[] parts = when.split(":", 2);
+			if (parts.length == 0)
+				throw new IllegalArgumentException("[when] is missing the scripting language declaration");
+			whenLang = parts[0];
+			whenFormula = parts[1];
+		}
 	}
 }

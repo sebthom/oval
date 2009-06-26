@@ -46,14 +46,21 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getMessage = constraintClazz.getDeclaredMethod("message", (Class< ? >[]) null);
-			message = (String) getMessage.invoke(constraintAnnotation, (Object[]) null);
+			setMessage((String) getMessage.invoke(constraintAnnotation, (Object[]) null));
 		}
 		catch (final Exception e)
 		{
 			LOG
 					.debug("Cannot determine constraint error message based on annotation {1}", constraintClazz
 							.getName(), e);
-			message = constraintClazz.getName() + ".violated";
+			try
+			{
+				setMessage(constraintClazz.getName() + ".violated");
+			}
+			catch (final UnsupportedOperationException ex)
+			{
+				// ignore
+			}
 		}
 
 		/*
@@ -62,12 +69,19 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getErrorCode = constraintClazz.getDeclaredMethod("errorCode", (Class< ? >[]) null);
-			errorCode = (String) getErrorCode.invoke(constraintAnnotation, (Object[]) null);
+			setErrorCode((String) getErrorCode.invoke(constraintAnnotation, (Object[]) null));
 		}
 		catch (final Exception e)
 		{
 			LOG.debug("Cannot determine constraint error code based on annotation {1}", constraintClazz.getName(), e);
-			errorCode = constraintClazz.getName();
+			try
+			{
+				setErrorCode(constraintClazz.getName());
+			}
+			catch (final UnsupportedOperationException ex)
+			{
+				// ignore
+			}
 		}
 
 		/*
@@ -76,7 +90,7 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getSeverity = constraintClazz.getDeclaredMethod("severity", (Class< ? >[]) null);
-			severity = ((Number) getSeverity.invoke(constraintAnnotation, (Object[]) null)).intValue();
+			setSeverity(((Number) getSeverity.invoke(constraintAnnotation, (Object[]) null)).intValue());
 		}
 		catch (final Exception e)
 		{
@@ -89,11 +103,24 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		try
 		{
 			final Method getProfiles = constraintClazz.getDeclaredMethod("profiles", (Class< ? >[]) null);
-			profiles = (String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null);
+			setProfiles((String[]) getProfiles.invoke(constraintAnnotation, (Object[]) null));
 		}
 		catch (final Exception e)
 		{
 			LOG.debug("Cannot determine constraint profiles based on annotation {1}", constraintClazz.getName(), e);
+		}
+
+		/*
+		 * Retrieve the when formula from the constraint annotation via reflection.
+		 */
+		try
+		{
+			final Method getWhen = constraintClazz.getDeclaredMethod("when", (Class< ? >[]) null);
+			setWhen((String) getWhen.invoke(constraintAnnotation, (Object[]) null));
+		}
+		catch (final Exception e)
+		{
+			LOG.debug("Cannot determine constraint when formula based on annotation {1}", constraintClazz.getName(), e);
 		}
 	}
 }
