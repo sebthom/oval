@@ -5,7 +5,7 @@
 2009-??-?? v1.33
 ================
 + added support for conditional constraint activation (added the when="" attribute)
-
+* upgraded to GNU Trove 2.0.4
 
 2009-05-10 v1.32
 ================
