@@ -57,6 +57,7 @@ import net.sf.oval.exception.FieldNotFoundException;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.exception.MethodNotFoundException;
 import net.sf.oval.exception.OValException;
+import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.exception.UndefinedConstraintSetException;
 import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.expression.ExpressionLanguage;
@@ -427,8 +428,8 @@ public class Validator implements IValidator
 	/**
 	 * Registers object-level constraint checks
 	 *  
-	 * @param clazz
-	 * @param checks
+	 * @param clazz the class to register the checks for
+	 * @param checks the checks to add
 	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
 	 */
 	public void addChecks(final Class< ? > clazz, final Check... checks) throws IllegalArgumentException
@@ -440,7 +441,8 @@ public class Validator implements IValidator
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void addChecks(final ClassChecks cc, final ClassConfiguration classCfg) throws OValException
+	private void _addChecks(final ClassChecks cc, final ClassConfiguration classCfg)
+			throws InvalidConfigurationException, ReflectionException
 	{
 		if (TRUE.equals(classCfg.overwrite)) cc.clear();
 
@@ -654,8 +656,8 @@ public class Validator implements IValidator
 	/**
 	 * Registers constraint checks for the given field 
 	 *  
-	 * @param field
-	 * @param checks
+	 * @param field the field to declare the checks for
+	 * @param checks the checks to add
 	 * @throws IllegalArgumentException if <code>field == null</code> or <code>checks == null</code> or checks is empty 
 	 */
 	public void addChecks(final Field field, final Check... checks) throws IllegalArgumentException
@@ -670,7 +672,7 @@ public class Validator implements IValidator
 	 * Registers constraint checks for the given getter's return value
 	 * 
 	 * @param invariantMethod a non-void, non-parameterized method (usually a JavaBean Getter style method)
-	 * @param checks
+	 * @param checks the checks to add
 	 * @throws IllegalArgumentException if <code>getter == null</code> or <code>checks == null</code>
 	 * @throws InvalidConfigurationException if getter is not a getter method
 	 */
@@ -712,8 +714,8 @@ public class Validator implements IValidator
 
 	/**
 	 * 
-	 * @param languageId
-	 * @param expressionLanguage
+	 * @param languageId the expression language identifier
+	 * @param expressionLanguage the expression language implementation
 	 * @throws IllegalArgumentException if <code>languageId == null || expressionLanguage == null</code>
 	 */
 	public void addExpressionLanguage(final String languageId, final ExpressionLanguage expressionLanguage)
@@ -960,7 +962,7 @@ public class Validator implements IValidator
 	/**
 	 * Gets the object-level constraint checks for the given class 
 	 *  
-	 * @param clazz
+	 * @param clazz the class to get the checks for
 	 * @throws IllegalArgumentException if <code>clazz == null</code> 
 	 */
 	public Check[] getChecks(final Class< ? > clazz) throws IllegalArgumentException
@@ -976,7 +978,7 @@ public class Validator implements IValidator
 	/**
 	 * Gets the constraint checks for the given field 
 	 *  
-	 * @param field
+	 * @param field the field to get the checks for
 	 * @throws IllegalArgumentException if <code>field == null</code> 
 	 */
 	public Check[] getChecks(final Field field) throws IllegalArgumentException
@@ -992,7 +994,7 @@ public class Validator implements IValidator
 	/**
 	 * Gets the constraint checks for the given method's return value
 	 *  
-	 * @param method
+	 * @param method the method to get the checks for
 	 * @throws IllegalArgumentException if <code>getter == null</code>
 	 */
 	public Check[] getChecks(final Method method) throws IllegalArgumentException
@@ -1012,9 +1014,9 @@ public class Validator implements IValidator
 	 * @param clazz cannot be null
 	 * @return returns the ClassChecks for the given class
 	 * @throws IllegalArgumentException if <code>clazz == null</code>
-	 * @throws OValException
 	 */
-	protected ClassChecks getClassChecks(final Class< ? > clazz) throws IllegalArgumentException, OValException
+	protected ClassChecks getClassChecks(final Class< ? > clazz) throws IllegalArgumentException,
+			InvalidConfigurationException, ReflectionException
 	{
 		Assert.notNull("clazz", clazz);
 
@@ -1029,7 +1031,7 @@ public class Validator implements IValidator
 				for (final Configurer configurer : configurers)
 				{
 					final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
-					if (classConfig != null) addChecks(cc, classConfig);
+					if (classConfig != null) _addChecks(cc, classConfig);
 				}
 
 				checksByClass.put(clazz, cc);
@@ -1047,7 +1049,16 @@ public class Validator implements IValidator
 		return configurers;
 	}
 
-	public ConstraintSet getConstraintSet(final String constraintSetId) throws InvalidConfigurationException
+	/**
+	 * Returns the given constraint set.
+	 * 
+	 * @param constraintSetId the id of the constraint set to retrieve
+	 * @return the constraint set or null if not found
+	 * @throws InvalidConfigurationException
+	 * @throws IllegalArgumentException if <code>constraintSetId</code> is null
+	 */
+	public ConstraintSet getConstraintSet(final String constraintSetId) throws InvalidConfigurationException,
+			IllegalArgumentException
 	{
 		Assert.notNull("constraintSetsById", constraintSetsById);
 		synchronized (constraintSetsById)

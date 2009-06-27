@@ -49,7 +49,7 @@ public class ConcurrencyTest extends TestCase
 		}
 	}
 
-	private final static class TestRunner implements Runnable
+	private static final class TestRunner implements Runnable
 	{
 		private final boolean[] failed;
 		private final Validator validator;

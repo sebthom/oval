@@ -220,7 +220,7 @@ public class XMLConfigurer implements Configurer
 		configureXStream();
 	}
 
-	private final void configureXStream()
+	private void configureXStream()
 	{
 		xStream.registerConverter(new ListConverter(xStream.getMapper()));
 		xStream.registerConverter(new AssertCheckConverter());

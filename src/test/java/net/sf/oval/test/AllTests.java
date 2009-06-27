@@ -24,7 +24,7 @@ import net.sf.oval.collection.CollectionFactoryTroveImpl;
 /**
  * @author Sebastian Thomschke
  */
-public class AllTests
+public final class AllTests
 {
 	private static void constraintsTests(final TestSuite suite) throws Exception
 	{
