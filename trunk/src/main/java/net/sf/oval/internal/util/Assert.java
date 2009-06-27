@@ -26,21 +26,21 @@ public final class Assert
 		return ex;
 	}
 
-	public static <T> void notEmpty(final String name, final String value)
+	public static <T> void notEmpty(final String name, final String value) throws IllegalArgumentException
 	{
 		if (value == null) throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
 		if (value.length() == 0)
 			throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be empty"));
 	}
 
-	public static <T> void notEmpty(final String name, final T[] value)
+	public static <T> void notEmpty(final String name, final T[] value) throws IllegalArgumentException
 	{
 		if (value == null) throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
 		if (value.length == 0)
 			throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be empty"));
 	}
 
-	public static void notNull(final String name, final Object value)
+	public static void notNull(final String name, final Object value) throws IllegalArgumentException
 	{
 		if (value == null) throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
 	}
