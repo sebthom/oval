@@ -49,13 +49,13 @@ abstract aspect ApiUsageAuditor
 	 * Rule 4: Warn about the @PreValidateThis annotation used on methods in classes that are not guarded
 	 */
 	declare warning: execution (!@SuppressOValWarnings @PreValidateThis * (!@Guarded *).*(..)): 
-		"OVal API usage violation 4: @PreValidateThis is only allowed in guarded class";
+		"OVal API usage violation 4: @PreValidateThis is allowed in guarded class only";
 
 	/*
 	 * Rule 5: Warn about the @PostValidateThis annotation used on methods and constructors in classes that are not guarded
 	 */
 	declare warning: execution (!@SuppressOValWarnings @PostValidateThis * (!@(Guarded || SuppressOValWarnings) *).*(..)) || execution (!@SuppressOValWarnings @PostValidateThis (!@Guarded *).new(..)): 
-		"OVal API usage violation 5: @PostValidateThis is only allowed in guarded classes";
+		"OVal API usage violation 5: @PostValidateThis is allowed in guarded classes only";
 
 	/*
 	 * Rule 6: Warn about method parameter constraints in classes that are not guarded
@@ -72,7 +72,7 @@ abstract aspect ApiUsageAuditor
 		execution(* (!@Guarded *).*(*, *, *, @(@Constraint *) *, ..)) ||
 		execution(* (!@Guarded *).*(*, *, *, *, @(@Constraint *) *, ..)) ||
 		execution(* (!@Guarded *).*(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"OVal API usage violation 6: Method parameter constraints are only allowed in guarded class";
+		"OVal API usage violation 6: Method parameter constraints are allowed in guarded classes only";
 
 	/*
 	 * Rule 7: Warn about constructor parameter constraints in classes that are not guarded
@@ -85,5 +85,5 @@ abstract aspect ApiUsageAuditor
 		execution((!@Guarded *).new(*, *, *, @(@Constraint *) *, ..)) ||
 		execution((!@Guarded *).new(*, *, *, *, @(@Constraint *) *, ..)) ||
 		execution((!@Guarded *).new(*, *, *, *, *, @(@Constraint *) *, ..)): 
-		"OVal API usage violation 7: Constructor parameter constraints are only allowed in guarded class";
+		"OVal API usage violation 7: Constructor parameter constraints are allowed in guarded classes only";
 }
