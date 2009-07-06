@@ -1,268 +1,207 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN" "http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
 <?xml-stylesheet type="text/xsl" href="oval.xsl"?>
 <article class="specification">
-	<title>
-		OVal - the object validation framework for
-		<trademark>Java</trademark>
-		5 or later
-	</title>
+  <title>OVal - the object validation framework for
+  <trademark>Java</trademark> 5 or later</title>
 
-	<section>
-		<title>What is OVal?</title>
+  <section>
+    <title>What is OVal?</title>
 
-		<para>OVal is a pragmatic and extensible general purpose
-			validation
-			framework for any kind of Java objects (not only
-			JavaBeans)
-			and allows
-			you:</para>
+    <para>OVal is a pragmatic and extensible general purpose validation
+    framework for any kind of Java objects (not only JavaBeans) and allows
+    you:</para>
 
-		<itemizedlist>
-			<listitem>
-				<para>to easily validate objects on demand,</para>
-			</listitem>
+    <itemizedlist>
+      <listitem>
+        <para>to easily validate objects on demand,</para>
+      </listitem>
 
-			<listitem>
-				<para>to specify constraints for class fields and getter
-					methods,
-				</para>
-			</listitem>
+      <listitem>
+        <para>to specify constraints for class fields and getter
+        methods,</para>
+      </listitem>
 
-			<listitem>
-				<para>to validate objects based on certain EJB3 JPA annotations
-					(namely all field annotations that require a
-					not-null value),
-				</para>
-			</listitem>
+      <listitem>
+        <para>to validate objects based on certain EJB3 JPA annotations
+        (namely all field annotations that require a not-null value),</para>
+      </listitem>
 
-			<listitem>
-				<para>to configure constraints via annotations, POJOs and/or
-					simple
-					XML files,</para>
-			</listitem>
+      <listitem>
+        <para>to configure constraints via annotations, POJOs and/or simple
+        XML files,</para>
+      </listitem>
 
-			<listitem>
-				<para>to express constraints using scripting languages such as
-					Groovy,
-					BeanShell, and JavaScript</para>
-			</listitem>
+      <listitem>
+        <para>to express constraints using scripting languages such as Groovy,
+        BeanShell, and JavaScript</para>
+      </listitem>
 
-			<listitem>
-				<para>to easily create custom constraints, and</para>
-			</listitem>
+      <listitem>
+        <para>to easily create custom constraints, and</para>
+      </listitem>
 
-			<listitem>
-				<para>to develop new constraint configuration mechanisms</para>
-			</listitem>
-		</itemizedlist>
+      <listitem>
+        <para>to develop new constraint configuration mechanisms</para>
+      </listitem>
+    </itemizedlist>
 
-		<para>
-			When using AspectJ certain programming by contract (aka
-			<trademark>Design By Contract</trademark>
-			or DBC) features are
-			available:
-		</para>
+    <para>When using AspectJ certain programming by contract (aka
+    <trademark>Design By Contract</trademark> or DBC) features are
+    available:</para>
 
-		<itemizedlist>
-			<listitem>
-				<para>
-					specifying constraints for
-					<emphasis>constructor
-						parameters</emphasis>
-					that are automatically checked when a
-					constructor is called
-					(preconditions),
-				</para>
-			</listitem>
+    <itemizedlist>
+      <listitem>
+        <para>specifying constraints for <emphasis>constructor
+        parameters</emphasis> that are automatically checked when a
+        constructor is called (preconditions),</para>
+      </listitem>
 
-			<listitem>
-				<para>
-					specifying constraints for
-					<emphasis>method
-						parameters</emphasis>
-					that are automatically checked when a method is
-					called
-					(preconditions),
-				</para>
-			</listitem>
+      <listitem>
+        <para>specifying constraints for <emphasis>method
+        parameters</emphasis> that are automatically checked when a method is
+        called (preconditions),</para>
+      </listitem>
 
-			<listitem>
-				<para>requiring a certain object state before a method is
-					called
-					(preconditions)</para>
-			</listitem>
+      <listitem>
+        <para>requiring a certain object state before a method is called
+        (preconditions)</para>
+      </listitem>
 
-			<listitem>
-				<para>enforcing object validation after an object has been
-					created
-					(invariants),</para>
-			</listitem>
+      <listitem>
+        <para>enforcing object validation after an object has been created
+        (invariants),</para>
+      </listitem>
 
-			<listitem>
-				<para>enforcing object validation before/after a method of
-					an object
-					is/has been called (invariants),</para>
-			</listitem>
+      <listitem>
+        <para>enforcing object validation before/after a method of an object
+        is/has been called (invariants),</para>
+      </listitem>
 
-			<listitem>
-				<para>specifying constrains for a method's return value
-					that are
-					automatically checked after a method has
-					been executed
-					(postconditions),</para>
-			</listitem>
+      <listitem>
+        <para>specifying constrains for a method's return value that are
+        automatically checked after a method has been executed
+        (postconditions),</para>
+      </listitem>
 
-			<listitem>
-				<para>requiring a certain object state after a method is
-					called
-					(postconditions).</para>
-			</listitem>
-		</itemizedlist>
+      <listitem>
+        <para>requiring a certain object state after a method is called
+        (postconditions).</para>
+      </listitem>
+    </itemizedlist>
 
-		<para>
-			Missing a useful feature? Let's discuss it in the
-			<ulink url="http://sourceforge.net/forum/forum.php?forum_id=488109">OVal
-				forum</ulink>
-		</para>
-	</section>
+    <para>Missing a useful feature? Let's discuss it in the <ulink
+    url="http://sourceforge.net/forum/forum.php?forum_id=488109">OVal
+    forum</ulink></para>
+  </section>
 
-	<section>
-		<title>Dependencies</title>
+  <section>
+    <title>Dependencies</title>
 
-		<para>OVal requires Java 5 or later - mainly for annotation
-			support but
-			other new language features (generics, for
-			each loop,
-			etc.) are used
-			across the OVal source code too. Java 5 is actually the
-			only hard
-			requirement, depending on the
-			features you want to use
-			additional
-			libraries are required:</para>
+    <para>OVal requires Java 5 or later - mainly for annotation support but
+    other new language features (generics, for each loop, etc.) are used
+    across the OVal source code too. Java 5 is actually the only hard
+    requirement, depending on the features you want to use additional
+    libraries are required:</para>
 
-		<itemizedlist>
-			<listitem>
-				<para>AspectJ is required if you want to use the above
-					mentioned
-					programming by contract features.</para>
-			</listitem>
+    <itemizedlist>
+      <listitem>
+        <para>AspectJ is required if you want to use the above mentioned
+        programming by contract features.</para>
+      </listitem>
 
-			<listitem>
-				<para>Apache Commons JEXL is required if you want to define
-					constraints via JEXL expressions.</para>
-			</listitem>
+      <listitem>
+        <para>Apache Commons JEXL is required if you want to define
+        constraints via JEXL expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>BeanShell is required if you want to define
-					constraints via
-					BeanShell expressions.</para>
-			</listitem>
+      <listitem>
+        <para>BeanShell is required if you want to define constraints via
+        BeanShell expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>Groovy is required if you want to define constraints via
-					Groovy
-					expressions.</para>
-			</listitem>
+      <listitem>
+        <para>Groovy is required if you want to define constraints via Groovy
+        expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>JRuby is required if you want to define constraints via
-					Ruby
-					expressions.</para>
-			</listitem>
+      <listitem>
+        <para>JRuby is required if you want to define constraints via Ruby
+        expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>Mozilla Rhino is required if you want to define
-					constraints via
-					JavaScript expressions.</para>
-			</listitem>
+      <listitem>
+        <para>Mozilla Rhino is required if you want to define constraints via
+        JavaScript expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>MVEL is required if you want to define constraints via
-					MVEL
-					expressions.</para>
-			</listitem>
+      <listitem>
+        <para>MVEL is required if you want to define constraints via MVEL
+        expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>OGNL is required if you want to define constraints via
-					OGNL
-					expressions.</para>
-			</listitem>
+      <listitem>
+        <para>OGNL is required if you want to define constraints via OGNL
+        expressions.</para>
+      </listitem>
 
-			<listitem>
-				<para>XStream is required if you want to configure OVal via
-					XML
-					configuration files.</para>
-			</listitem>
+      <listitem>
+        <para>XStream is required if you want to configure OVal via XML
+        configuration files.</para>
+      </listitem>
 
-			<listitem>
-				<para>GNU Trove is required if you want to have OVal to
-					internally use
-					the GNU Trove high performance collections.
-				</para>
-			</listitem>
+      <listitem>
+        <para>GNU Trove is required if you want to have OVal to internally use
+        the GNU Trove high performance collections.</para>
+      </listitem>
 
-			<listitem>
-				<para>Javolution is required if you want to have OVal to
-					internally
-					use Javolution's high performance
-					collections.</para>
-			</listitem>
+      <listitem>
+        <para>Javolution is required if you want to have OVal to internally
+        use Javolution's high performance collections.</para>
+      </listitem>
 
-			<listitem>
-				<para>JUnit and all other libraries are required if you want to
-					run
-					the test cases.</para>
-			</listitem>
-		</itemizedlist>
-	</section>
+      <listitem>
+        <para>JUnit and all other libraries are required if you want to run
+        the test cases.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
 
-	<section>
-		<title>Using OVal for property validation</title>
+  <section>
+    <title>Using OVal for property validation</title>
 
-		<section>
-			<title>Declaring constraints for class fields</title>
+    <section>
+      <title>Declaring constraints for class fields</title>
 
-			<para>
-				You can add constraint annotations to class fields that are
-				checked
-				when an object validation is performed. There
-				exists a number of
-				pre-built constraints that you can find in the package
-				<command>net.sf.oval.constraint</command>
-				.
-			</para>
+      <para>You can add constraint annotations to class fields that are
+      checked when an object validation is performed. There exists a number of
+      pre-built constraints that you can find in the package
+      <command>net.sf.oval.constraint</command> .</para>
 
-			<para>
-				An object can be validated by using the
-				<command>public
-					validate(Object validatedObject)</command>
-				method of
-				<command>net.sf.oval.Validator</command>
-			</para>
+      <para>An object can be validated by using the <command>public
+      validate(Object validatedObject)</command> method of
+      <command>net.sf.oval.Validator</command></para>
 
-			<programlisting>public class BusinessObject {
+      <programlisting>public class BusinessObject {
 
-				@NotNull
-				@NotEmpty
-				@Length(max=32)
-				private String name;
+  @NotNull
+  @NotEmpty
+  @Length(max=32)
+  private String name;
 
-				...
-				}
-			</programlisting>
+  ...
+}
+</programlisting>
 
-			<para>Example usage:</para>
+      <para>Example usage:</para>
 
-			<programlisting>Validator validator = new Validator();
+      <programlisting>Validator validator = new Validator();
 
-				BusinessObject bo = new BusinessObject(); // name is
-				null
+BusinessObject bo = new BusinessObject(); // name is null
 
-				// collect
-				the constraint violations List&amp;lt;ConstraintViolation&amp;gt; violations =
-validator.validate(bo);
+// collect the constraint violations
+List&lt;ConstraintViolation&gt; violations = validator.validate(bo);
 
 if(violations.size()&gt;0)
 {
@@ -270,7 +209,7 @@ if(violations.size()&gt;0)
   throw new BussinessException(violations);
 }
 </programlisting>
-	</section>
+    </section>
 
     <section>
       <title>Declaring constraints for getter methods' return value</title>
@@ -403,6 +342,32 @@ if(violations.size()&gt;0)
       <para>Additional scripting languages can be registered via
       <command>Validator.addExpressionLanguage(String,
       ExpressionLanguage)</command> .</para>
+    </section>
+
+    <section>
+      <title>Declaring activation rules for constraints</title>
+
+      <para>Besides using @Assert to declare conditional constraints it is
+      also possible to specify a activation rules for other constraints using
+      the <command>when</command> attribute. This way you can for example turn
+      on or off constraints based on a given state of the object. The
+      <command>when</command> attribute can hold a formula in one of the
+      supported expression languages, it is prefixed by the id of the
+      expression language to be used.</para>
+
+      <para>In the following example <command>fieldB</command> must not be
+      <command>null</command> only if <command>fieldA</command> is not
+      <command>null</command> as well. With the prefix
+      <command>groovy:</command> it is indicated that the formula is expressed
+      in the Groovy language. </para>
+
+      <programlisting>public class BusinessObject
+{
+  private String fieldA;
+
+  @NotNull(when = "groovy:_this.fieldA != null")
+  private String fieldB;
+}</programlisting>
     </section>
 
     <section>
@@ -643,12 +608,12 @@ public class BusinessObject
   @Length(max=10)
   private String name;
 
-  public void setName(@FieldConstraints String name) 
+  public void setName(@AssertFieldConstraints String name) 
   {
     this.name = name;
   }
 
-  public void setAlternativeName(@FieldConstraints("name") String altName)
+  public void setAlternativeName(@AssertFieldConstraints("name") String altName)
   {
     this.alternativeName = altName;
   }
@@ -1688,13 +1653,13 @@ v.validate(p);
     <section>
       <title>Apache Struts 2 integration</title>
 
-      <para>Musachy Barroso has developed an OVal Plug-in for Apache Struts 2, which is documented at <ulink
-       url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin
+      <para>Musachy Barroso has developed an OVal Plug-in for Apache Struts 2,
+      which is documented at <ulink
+      url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin
       </ulink></para>
     </section>
-
   </section>
-       
+
   <section>
     <title>API documentation</title>
 
@@ -1781,13 +1746,22 @@ v.validate(p);
 
     <itemizedlist>
       <listitem>
-        <para>OVal Blog Entry Series at the "JEE, BPEL, SOA" blog (2008)</para>
+        <para>OVal Blog Entry Series at the "JEE, BPEL, SOA" blog
+        (2008)</para>
 
-        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/jsr-303-and-oval-validation-framework.html">JSR 303 and OVal Validation Framework</ulink></para>
-        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/oval-and-profiles.html">OVal and profiles</ulink></para>
-        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/springs-piecemeal-validation-and-oval.html">Spring's piecemeal validation and OVal integration</ulink></para>
+        <para><ulink
+        url="http://jee-bpel-soa.blogspot.com/2008/12/jsr-303-and-oval-validation-framework.html">JSR
+        303 and OVal Validation Framework</ulink></para>
+
+        <para><ulink
+        url="http://jee-bpel-soa.blogspot.com/2008/12/oval-and-profiles.html">OVal
+        and profiles</ulink></para>
+
+        <para><ulink
+        url="http://jee-bpel-soa.blogspot.com/2008/12/springs-piecemeal-validation-and-oval.html">Spring's
+        piecemeal validation and OVal integration</ulink></para>
       </listitem>
-      
+
       <listitem>
         <para>Pre and post condition validation with OVal as intruments of
         software architecture (2008)</para>
@@ -1892,7 +1866,6 @@ v.validate(p);
     <para>The following projects are using OVal:</para>
 
     <itemizedlist>
-    
       <listitem>
         <para>Struts 2 OVal Plug-in</para>
 
@@ -1900,7 +1873,7 @@ v.validate(p);
         url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin
         </ulink></para>
       </listitem>
-      
+
       <listitem>
         <para>Play! Framework</para>
 
@@ -1908,7 +1881,7 @@ v.validate(p);
         url="http://www.playframework.org/">http://www.playframework.org/
         </ulink></para>
       </listitem>
-      
+
       <listitem>
         <para>Cayenne annotations</para>
 
