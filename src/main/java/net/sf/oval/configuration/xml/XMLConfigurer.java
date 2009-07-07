@@ -123,7 +123,7 @@ public class XMLConfigurer implements Configurer
 			writer.addAttribute("message", assertCheck.getMessage());
 			writer.addAttribute("errorCode", assertCheck.getErrorCode());
 			writer.addAttribute("severity", Integer.toString(assertCheck.getSeverity()));
-			writer.addAttribute("when", assertCheck.getWhen());
+			if (assertCheck.getWhen() != null) writer.addAttribute("when", assertCheck.getWhen());
 			writer.startNode("expr");
 			writer.setValue(assertCheck.getExpr());
 			writer.endNode();
@@ -154,8 +154,8 @@ public class XMLConfigurer implements Configurer
 			{
 				assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
 			}
-            assertCheck.setWhen(reader.getAttribute("when"));
-			
+			assertCheck.setWhen(reader.getAttribute("when"));
+
 			reader.moveDown();
 			assertCheck.setExpr(reader.getValue());
 			reader.moveUp();
