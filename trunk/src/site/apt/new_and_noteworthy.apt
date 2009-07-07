@@ -6,6 +6,10 @@ New and Noteworthy
 
  * added support for conditional constraint activation (added the when="" attribute)
 
+** Issues solved 
+
+ * parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
+ 
 * Version 1.32 (2009-05-10)
 
 ** New Features and Improvements

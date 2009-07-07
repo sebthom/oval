@@ -821,7 +821,9 @@ public class Validator implements IValidator
 		/*
 		 * set the targetClass based on the validation context
 		 */
-		if (context instanceof ConstructorParameterContext)
+		if (check.getDeclaringClass() != null && check.getDeclaringClass() != Void.class)
+			targetClass = check.getDeclaringClass();
+		else if (context instanceof ConstructorParameterContext)
 			// the class declaring the field must either be the class declaring the constructor or one of its super
 			// classes
 			targetClass = ((ConstructorParameterContext) context).getConstructor().getDeclaringClass();
@@ -831,8 +833,6 @@ public class Validator implements IValidator
 		else if (context instanceof MethodReturnValueContext)
 			// the class declaring the field must either be the class declaring the getter or one of its super classes
 			targetClass = ((MethodReturnValueContext) context).getMethod().getDeclaringClass();
-		else if (check.getDeclaringClass() != null && check.getDeclaringClass() != Void.class)
-			targetClass = check.getDeclaringClass();
 		else
 			// the lowest class that is expected to declare the field (or one of its super classes)
 			targetClass = validatedObject.getClass();
@@ -841,7 +841,7 @@ public class Validator implements IValidator
 		String fieldName = check.getFieldName();
 
 		/*
-		 * calculate the field name based on the validation context if the @FieldConstraints constraint didn't specify the field name
+		 * calculate the field name based on the validation context if the @AssertFieldConstraints constraint didn't specify the field name
 		 */
 		if (fieldName == null || fieldName.length() == 0)
 			if (context instanceof ConstructorParameterContext)

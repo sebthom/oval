@@ -6,6 +6,7 @@
 ================
 + added support for conditional constraint activation (added the when="" attribute)
 * upgraded to GNU Trove 2.0.4
+- parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
 
 2009-05-10 v1.32
 ================

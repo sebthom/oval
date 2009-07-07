@@ -22,6 +22,7 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
 import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
@@ -97,6 +98,40 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		public void setZipCode2(final String zipCode)
 		{
 			this.zipCode = zipCode;
+		}
+	}
+
+	@Guarded
+	protected static class PersonService
+	{
+		public Person[] findPersonsByZipCode(@AssertFieldConstraints(declaringClass = Person.class) String zipCode)
+		{
+			return null;
+		}
+	}
+
+	public void testFieldConstraintsFromDifferentClass()
+	{
+		final PersonService ps = new PersonService();
+
+		try
+		{
+			ps.findPersonsByZipCode(null);
+			fail();
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertEquals("NOT_NULL", ex.getMessage());
+		}
+		
+		try
+		{
+			ps.findPersonsByZipCode("foobar");
+			fail();
+		}
+		catch (ConstraintsViolatedException ex)
+		{
+			assertEquals("REG_EX", ex.getMessage());
 		}
 	}
 

@@ -141,7 +141,7 @@ public abstract class AbstractCheck implements Check
 	 */
 	public String getWhen()
 	{
-		return whenLang + ":" + when;
+		return when == null ? null : whenLang + ":" + when;
 	}
 
 	/**
