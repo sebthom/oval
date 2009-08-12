@@ -167,7 +167,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				return 0L;
 			else if ("now".equals(min))
 				return System.currentTimeMillis();
-			else if ("today".equals(max))
+			else if ("today".equals(min))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -176,7 +176,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.set(Calendar.MILLISECOND, 0);
 				return cal.getTimeInMillis();
 			}
-			else if ("tomorrow".equals(max))
+			else if ("tomorrow".equals(min))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -186,7 +186,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.add(Calendar.DAY_OF_YEAR, 1);
 				return cal.getTimeInMillis();
 			}
-			else if ("yesterday".equals(max))
+			else if ("yesterday".equals(min))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
