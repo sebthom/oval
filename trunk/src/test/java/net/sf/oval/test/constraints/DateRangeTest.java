@@ -57,6 +57,12 @@ public class DateRangeTest extends AbstractContraintsTest
 		assertFalse(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
 		assertFalse(check.isSatisfied(null, "bla", null, null));
+	}
+
+	public void testLiterals()
+	{
+		final DateRangeCheck check = new DateRangeCheck();
+		check.setFormat("yyyy-MM-dd HH:mm:ss");
 
 		check.setMin("now");
 		assertTrue(check.isSatisfied(null, new Date(), null, null));
@@ -79,6 +85,24 @@ public class DateRangeTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, "2000-03-03 09:09:10", null, null));
 		check.setMax("yesterday");
 		assertFalse(check.isSatisfied(null, new Date(), null, null));
+		check.setMax("");
+	}
+
+	public void testTolerance()
+	{
+		final DateRangeCheck check = new DateRangeCheck();
+		check.setMax("now");
+		check.setTolerance(4000);
+		assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
+		check.setTolerance(0);
+		assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
+		check.setMax("");
+
+		check.setMax("now");
+		check.setTolerance(4000);
+		assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
+		check.setTolerance(0);
+		assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
 		check.setMax("");
 	}
 }
