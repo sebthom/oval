@@ -10,6 +10,8 @@ New and Noteworthy
 
  * parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
  
+ * fixed [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
+ 
 * Version 1.32 (2009-05-10)
 
 ** New Features and Improvements
