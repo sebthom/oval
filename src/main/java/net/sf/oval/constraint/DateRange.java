@@ -88,4 +88,10 @@ public @interface DateRange
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
+	
+	/**
+	 * Tolerance in milliseconds the validated value can be beyond the min/max limits. 
+	 * This is useful to compensate time differences in distributed environments where the clocks are not 100% in sync.
+	 */
+	int tolerance() default 0;
 }

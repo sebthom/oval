@@ -44,6 +44,7 @@
 					<element name="assertURL" type="tns:AssertURL" minOccurs="0" maxOccurs="unbounded" />
 					<element name="assertValid" type="tns:AssertValid" minOccurs="0" maxOccurs="unbounded" />
 					<element name="checkWith" type="tns:CheckWith" minOccurs="0" maxOccurs="unbounded" />
+					<element name="dateRange" type="tns:DateRange" minOccurs="0" maxOccurs="unbounded" />
 					<element name="equalToField" type="tns:EqualToField" minOccurs="0" maxOccurs="unbounded" />
 					<element name="email" type="tns:Email" minOccurs="0" maxOccurs="unbounded" />
 					<element name="future" type="tns:Future" minOccurs="0" maxOccurs="unbounded" />
@@ -424,6 +425,24 @@
             </documentation>
 		</annotation>
 		<attribute name="class" type="string" />
+	</complexType>
+	<complexType name="DateRange" mixed="true">
+		<annotation>
+			<documentation>
+				Check if the date is within the a date range.
+				Note: This constraint is also satisfied when the value to validate is
+				null, therefore you might also need to declare the
+				NotNull constraint.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="format" type="string" use="optional" />
+				<attribute name="max" type="string" use="optional" />
+				<attribute name="min" type="string" use="optional" />
+				<attribute name="tolerance" type="integer" use="optional" />
+			</extension>
+		</complexContent>
 	</complexType>
 	<complexType name="Email" mixed="true">
 		<annotation>

@@ -5,6 +5,7 @@ New and Noteworthy
 ** New Features and Improvements
 
  * added support for conditional constraint activation (added the when="" attribute)
+ * added tolerance attribute for @DateRange constraint [ 2821805]
 
 ** Issues solved 
 

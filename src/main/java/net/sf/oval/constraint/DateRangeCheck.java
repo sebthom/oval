@@ -42,6 +42,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 
 	private transient Long maxMillis;
 	private transient Long minMillis;
+	private long tolerance;
 
 	/**
 	 * {@inheritDoc}
@@ -88,11 +89,11 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	{
 		if (maxMillis == null)
 		{
-			if (max == null || max.length() == 0)
-				return Long.MAX_VALUE;
-			else if ("now".equals(max))
-				return System.currentTimeMillis();
-			else if ("today".equals(max))
+			if (max == null || max.length() == 0) return Long.MAX_VALUE;
+
+			if ("now".equals(max)) return System.currentTimeMillis() + tolerance;
+
+			if ("today".equals(max))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -101,9 +102,10 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.set(Calendar.MILLISECOND, 0);
 				cal.add(Calendar.DAY_OF_YEAR, 1);
 				cal.add(Calendar.MILLISECOND, -1);
-				return cal.getTimeInMillis();
+				return cal.getTimeInMillis() + tolerance;
 			}
-			else if ("tomorrow".equals(max))
+
+			if ("tomorrow".equals(max))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -112,9 +114,10 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.set(Calendar.MILLISECOND, 0);
 				cal.add(Calendar.DAY_OF_YEAR, 2);
 				cal.add(Calendar.MILLISECOND, -1);
-				return cal.getTimeInMillis();
+				return cal.getTimeInMillis() + tolerance;
 			}
-			else if ("yesterday".equals(max))
+
+			if ("yesterday".equals(max))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -122,14 +125,15 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
 				cal.add(Calendar.MILLISECOND, -1);
-				return cal.getTimeInMillis();
+				return cal.getTimeInMillis() + tolerance;
 			}
-			else if (format != null && format.length() > 0)
+
+			if (format != null && format.length() > 0)
 			{
 				final SimpleDateFormat sdf = new SimpleDateFormat(format);
 				try
 				{
-					maxMillis = sdf.parse(max).getTime();
+					maxMillis = sdf.parse(max).getTime() + tolerance;
 				}
 				catch (final ParseException e)
 				{
@@ -140,7 +144,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 			{
 				try
 				{
-					maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime();
+					maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime() + tolerance;
 				}
 				catch (final ParseException e)
 				{
@@ -163,20 +167,21 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	{
 		if (minMillis == null)
 		{
-			if (min == null || min.length() == 0)
-				return 0L;
-			else if ("now".equals(min))
-				return System.currentTimeMillis();
-			else if ("today".equals(min))
+			if (min == null || min.length() == 0) return 0L;
+
+			if ("now".equals(min)) return System.currentTimeMillis() - tolerance;
+
+			if ("today".equals(min))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
 				cal.set(Calendar.MINUTE, 0);
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
-				return cal.getTimeInMillis();
+				return cal.getTimeInMillis() - tolerance;
 			}
-			else if ("tomorrow".equals(min))
+
+			if ("tomorrow".equals(min))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -184,9 +189,10 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
 				cal.add(Calendar.DAY_OF_YEAR, 1);
-				return cal.getTimeInMillis();
+				return cal.getTimeInMillis() - tolerance;
 			}
-			else if ("yesterday".equals(min))
+
+			if ("yesterday".equals(min))
 			{
 				final Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -194,14 +200,15 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
 				cal.add(Calendar.DAY_OF_YEAR, -1);
-				return cal.getTimeInMillis();
+				return cal.getTimeInMillis() - tolerance;
 			}
-			else if (format != null && format.length() > 0)
+
+			if (format != null && format.length() > 0)
 			{
 				final SimpleDateFormat sdf = new SimpleDateFormat(format);
 				try
 				{
-					minMillis = sdf.parse(min).getTime();
+					minMillis = sdf.parse(min).getTime() - tolerance;
 				}
 				catch (final ParseException e)
 				{
@@ -212,7 +219,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 			{
 				try
 				{
-					minMillis = DateFormat.getDateTimeInstance().parse(min).getTime();
+					minMillis = DateFormat.getDateTimeInstance().parse(min).getTime() - tolerance;
 				}
 				catch (final ParseException e)
 				{
@@ -221,6 +228,14 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 			}
 		}
 		return minMillis;
+	}
+
+	/**
+	 * @return the tolerance
+	 */
+	public long getTolerance()
+	{
+		return tolerance;
 	}
 
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
@@ -302,5 +317,15 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		this.min = min;
 		minMillis = null;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * @param tolerance the tolerance to set
+	 */
+	public void setTolerance(long tolerance)
+	{
+		this.tolerance = tolerance;
+		minMillis = null;
+		maxMillis = null;
 	}
 }
