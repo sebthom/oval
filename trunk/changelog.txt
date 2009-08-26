@@ -9,6 +9,7 @@
 - parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
 - fixed [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
 + implemented [ 2821805] @DateRange should be tolerant
+- corrected checking of BigDecimal by @NotNegative constraint  (thanks to Saleem)
  
 2009-05-10 v1.32
 ================

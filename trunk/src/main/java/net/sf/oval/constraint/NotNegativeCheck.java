@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import java.math.BigDecimal;
+
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -21,6 +23,8 @@ import net.sf.oval.context.OValContext;
  */
 public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 {
+	private final static BigDecimal ZERO = BigDecimal.valueOf(0);
+	
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -35,6 +39,8 @@ public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 		{
 			if (valueToValidate instanceof Float || valueToValidate instanceof Double)
 				return ((Number) valueToValidate).doubleValue() >= 0;
+			if (valueToValidate instanceof BigDecimal)
+				return ((BigDecimal)valueToValidate).compareTo(ZERO) >= 0;
 			return ((Number) valueToValidate).longValue() >= 0;
 		}
 

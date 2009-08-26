@@ -5,6 +5,7 @@ New and Noteworthy
 ** New Features and Improvements
 
  * added support for conditional constraint activation (added the when="" attribute)
+ 
  * added tolerance attribute for @DateRange constraint [ 2821805]
 
 ** Issues solved 
@@ -12,6 +13,8 @@ New and Noteworthy
  * parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
  
  * fixed [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
+
+ * corrected checking of BigDecimal by @NotNegative constraint (thanks to Saleem)
  
 * Version 1.32 (2009-05-10)
 
