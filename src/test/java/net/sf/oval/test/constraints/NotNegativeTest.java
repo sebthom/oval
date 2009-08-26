@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.test.constraints;
 
+import java.math.BigDecimal;
+
 import net.sf.oval.constraint.NotNegativeCheck;
 
 /**
@@ -37,5 +39,8 @@ public class NotNegativeTest extends AbstractContraintsTest
 		assertFalse(check.isSatisfied(null, "-1.0", null, null));
 		assertFalse(check.isSatisfied(null, false, null, null));
 		assertFalse(check.isSatisfied(null, true, null, null));
+		assertFalse(check.isSatisfied(null, new BigDecimal(-1), null, null));
+		assertTrue(check.isSatisfied(null, new BigDecimal(0), null, null));
+		assertTrue(check.isSatisfied(null, new BigDecimal(1), null, null));
 	}
 }
