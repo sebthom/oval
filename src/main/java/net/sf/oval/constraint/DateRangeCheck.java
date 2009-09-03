@@ -54,6 +54,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		setMin(constraintAnnotation.min());
 		setMax(constraintAnnotation.max());
 		setFormat(constraintAnnotation.format());
+		setTolerance(constraintAnnotation.tolerance());
 	}
 
 	/**
