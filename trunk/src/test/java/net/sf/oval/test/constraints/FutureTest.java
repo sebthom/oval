@@ -32,15 +32,26 @@ public class FutureTest extends AbstractContraintsTest
 		cal.roll(Calendar.YEAR, 1);
 		assertTrue(check.isSatisfied(null, cal, null, null));
 		assertTrue(check.isSatisfied(null, cal.getTime(), null, null));
-		assertTrue(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()),
-				null, null));
+		assertTrue(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
 		cal.roll(Calendar.YEAR, -2);
 		assertFalse(check.isSatisfied(null, cal, null, null));
 		assertFalse(check.isSatisfied(null, cal.getTime(), null, null));
-		assertFalse(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()),
-				null, null));
+		assertFalse(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
 		assertFalse(check.isSatisfied(null, "bla", null, null));
+	}
+
+	public void testTolerance()
+	{
+		final FutureCheck check = new FutureCheck();
+
+		Calendar cal = Calendar.getInstance();
+		cal.roll(Calendar.SECOND, -2);
+		assertFalse(check.isSatisfied(null, cal, null, null));
+		check.setTolerance(1000);
+		assertFalse(check.isSatisfied(null, cal, null, null));
+		check.setTolerance(5000);
+		assertTrue(check.isSatisfied(null, cal, null, null));
 	}
 }
