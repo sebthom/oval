@@ -56,7 +56,13 @@ public @interface Past
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
-
+	
+	/**
+	 * Tolerance in milliseconds the validated value can be in the future. 
+	 * This is useful to compensate time differences in distributed environments where the clocks are not 100% in sync.
+	 */
+	int tolerance() default 0;
+	
 	/**
 	 * Formula returning <code>true</code> if this constraint shall be evaluated and
 	 * <code>false</code> if it shall be ignored for the current validation.

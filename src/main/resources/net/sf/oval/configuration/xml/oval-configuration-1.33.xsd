@@ -484,7 +484,9 @@
             </documentation>
 		</annotation>
 		<complexContent>
-			<extension base="tns:Constraint" />
+			<extension base="tns:Constraint">
+				<attribute name="tolerance" type="integer" use="optional" />
+			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="HasSubstring" mixed="true">
@@ -828,7 +830,9 @@
             </documentation>
 		</annotation>
 		<complexContent>
-			<extension base="tns:Constraint" />
+			<extension base="tns:Constraint">
+				<attribute name="tolerance" type="integer" use="optional" />
+			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="Range" mixed="true">

@@ -6,7 +6,7 @@ New and Noteworthy
 
  * added support for conditional constraint activation (added the when="" attribute)
  
- * added tolerance attribute for @DateRange constraint [ 2821805]
+ * added tolerance attribute for @DateRange, @Past and @Future constraint [ 2821805]
 
 ** Issues solved 
 

@@ -28,6 +28,24 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 {
 	private static final long serialVersionUID = 1L;
 
+	private long tolerance;
+
+	@Override
+	public void configure(Past constraintAnnotation)
+	{
+		super.configure(constraintAnnotation);
+		setTolerance(constraintAnnotation.tolerance());
+	}
+	
+
+	/**
+	 * @return the tolerance
+	 */
+	public long getTolerance()
+	{
+		return tolerance;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -36,24 +54,34 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 	{
 		if (valueToValidate == null) return true;
 
+		final long now = System.currentTimeMillis() + tolerance;
+		
 		// check if the value is a Date
 		if (valueToValidate instanceof Date) // return ((Date) value).before(new Date());
-			return ((Date) valueToValidate).getTime() < System.currentTimeMillis();
+			return ((Date) valueToValidate).getTime() < now;
 
 		// check if the value is a Calendar
 		if (valueToValidate instanceof Calendar) // return ((Calendar) value).getTime().before(new Date());
-			return ((Calendar) valueToValidate).getTime().getTime() < System.currentTimeMillis();
+			return ((Calendar) valueToValidate).getTime().getTime() < now;
 
 		// see if we can extract a date based on the object's String representation
 		final String stringValue = valueToValidate.toString();
 		try
 		{
 			// return DateFormat.getDateTimeInstance().parse(stringValue).before(new Date());
-			return DateFormat.getDateTimeInstance().parse(stringValue).getTime() < System.currentTimeMillis();
+			return DateFormat.getDateTimeInstance().parse(stringValue).getTime() < now;
 		}
 		catch (final ParseException ex)
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * @param tolerance the tolerance to set
+	 */
+	public void setTolerance(long tolerance)
+	{
+		this.tolerance = tolerance;
 	}
 }
