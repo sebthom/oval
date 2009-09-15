@@ -56,6 +56,7 @@
 					<element name="max" type="tns:Max" minOccurs="0" maxOccurs="unbounded" />
 					<element name="maxLength" type="tns:MaxLength" minOccurs="0" maxOccurs="unbounded" />
 					<element name="maxSize" type="tns:MaxSize" minOccurs="0" maxOccurs="unbounded" />
+					<element name="memberOf" type="tns:MemberOf" minOccurs="0" maxOccurs="unbounded" />
 					<element name="min" type="tns:Min" minOccurs="0" maxOccurs="unbounded" />
 					<element name="minLength" type="tns:MinLength" minOccurs="0" maxOccurs="unbounded" />
 					<element name="minSize" type="tns:MinSize" minOccurs="0" maxOccurs="unbounded" />
@@ -63,6 +64,8 @@
 					<element name="notEmpty" type="tns:NotEmpty" minOccurs="0" maxOccurs="unbounded" />
 					<element name="notEqual" type="tns:NotEqual" minOccurs="0" maxOccurs="unbounded" />
 					<element name="notEqualToField" type="tns:NotEqualToField" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notMatchPattern" type="tns:NotMatchPattern" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notMemberOf" type="tns:NotMemberOf" minOccurs="0" maxOccurs="unbounded" />
 					<element name="notNegative" type="tns:NotNegative" minOccurs="0" maxOccurs="unbounded" />
 					<element name="notNull" type="tns:NotNull" minOccurs="0" maxOccurs="unbounded" />
 					<element name="past" type="tns:Past" minOccurs="0" maxOccurs="unbounded" />
@@ -430,7 +433,8 @@
 		<annotation>
 			<documentation>
 				Check if the date is within the a date range.
-				Note: This constraint is also satisfied when the value to validate is
+				Note: This constraint is also satisfied when the value to
+				validate is
 				null, therefore you might also need to declare the
 				NotNull constraint.
             </documentation>
@@ -776,6 +780,28 @@
 				<attribute name="fieldName" type="string" use="required" />
 				<attribute name="declaringClass" type="string" use="optional" />
 				<attribute name="useGetter" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="NotMatchPattern" mixed="true">
+		<annotation>
+			<documentation>
+				Check if the specified regular expression pattern does not match.
+				Note: This constraint is also satisfied when the value to 
+				validate is null, therefore you might also need to declare the 
+				NotNull constraint.
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="pattern" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<attribute name="flags" type="integer" use="optional" />
+							<attribute name="pattern" type="string" use="required" />
+						</complexType>
+					</element>
+				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
