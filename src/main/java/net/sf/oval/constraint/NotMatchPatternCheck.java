@@ -27,22 +27,19 @@ import net.sf.oval.internal.util.ArrayUtils;
 /**
  * @author Sebastian Thomschke
  */
-public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
+public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPattern>
 {
 	private static final long serialVersionUID = 1L;
 
 	private final List<Pattern> patterns = getCollectionFactory().createList(2);
-	private boolean matchAll = true;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void configure(final MatchPattern constraintAnnotation)
+	public void configure(final NotMatchPattern constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-
-		setMatchAll(constraintAnnotation.matchAll());
 
 		synchronized (patterns)
 		{
@@ -70,14 +67,6 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 	}
 
 	/**
-	 * @return the matchAll
-	 */
-	public boolean isMatchAll()
-	{
-		return matchAll;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
@@ -87,27 +76,9 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 
 		for (final Pattern p : patterns)
 		{
-			final boolean matches = p.matcher(valueToValidate.toString()).matches();
-
-			if (matches)
-			{
-				if (!matchAll) return true;
-			}
-			else
-			{
-				if (matchAll) return false;
-			}
+			if (p.matcher(valueToValidate.toString()).matches()) return false;
 		}
-		return matchAll ? true : false;
-	}
-
-	/**
-	 * @param matchAll the matchAll to set
-	 */
-	public void setMatchAll(final boolean matchAll)
-	{
-		this.matchAll = matchAll;
-		requireMessageVariablesRecreation();
+		return true;
 	}
 
 	/**
