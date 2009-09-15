@@ -11,6 +11,7 @@
 + implemented [ 2821805] @DateRange should be tolerant
 - corrected checking of BigDecimal by @NotNegative constraint  (thanks to Saleem)
 + added tolerance to @Past and @Future
++ implemented [ 2859133 ] Enhancement:@MatchPattern should be able to negate the match (thanks to Eric Lewis)
 
 2009-05-10 v1.32
 ================
