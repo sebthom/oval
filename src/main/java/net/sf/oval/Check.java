@@ -25,6 +25,20 @@ import net.sf.oval.exception.OValException;
  */
 public interface Check extends Serializable
 {
+	
+	/**
+	 * @return Returns the context where the constraint was declared.
+	 * 
+	 * @see net.sf.oval.context.ClassContext
+	 * @see net.sf.oval.context.ConstraintSet
+	 * @see net.sf.oval.context.FieldContext
+	 * @see net.sf.oval.context.MethodEntryContext
+	 * @see net.sf.oval.context.MethodExitContext
+	 * @see net.sf.oval.context.MethodParameterContext
+	 * @see net.sf.oval.context.MethodReturnValueContext
+	 */
+	OValContext getContext();
+	
 	/**
 	 * @return the error code that will be used in a corresponding ConstraintViolation object
 	 */
@@ -96,6 +110,11 @@ public interface Check extends Serializable
 	boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator)
 			throws OValException;
 
+	/**
+	 * @param context the context to set
+	 */
+	void setContext(OValContext context);
+	
 	/**
 	 * @param errorCode the error code to set
 	 */

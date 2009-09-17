@@ -71,6 +71,7 @@ import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
 import net.sf.oval.guard.ParameterNameResolver;
 import net.sf.oval.guard.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.internal.ClassChecks;
+import net.sf.oval.internal.ContextCache;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
 import net.sf.oval.internal.util.ArrayUtils;
@@ -332,7 +333,7 @@ public class Validator implements IValidator
 				if (checks != null && checks.size() > 0)
 				{
 					final Object valueToValidate = ReflectionUtils.getFieldValue(field, validatedObject);
-					final FieldContext ctx = new FieldContext(field);
+					final FieldContext ctx = ContextCache.getFieldContext(field);
 
 					for (final Check check : checks)
 					{
@@ -349,7 +350,7 @@ public class Validator implements IValidator
 				if (checks != null && checks.size() > 0)
 				{
 					final Object valueToValidate = ReflectionUtils.invokeMethod(getter, validatedObject);
-					final MethodReturnValueContext ctx = new MethodReturnValueContext(getter);
+					final MethodReturnValueContext ctx = ContextCache.getMethodReturnValueContext(getter);
 
 					for (final Check check : checks)
 					{
@@ -361,7 +362,7 @@ public class Validator implements IValidator
 			// validate object constraints
 			if (cc.checksForObject.size() > 0)
 			{
-				final ClassContext ctx = new ClassContext(clazz);
+				final ClassContext ctx = ContextCache.getClassContext(clazz);
 				for (final Check check : cc.checksForObject)
 				{
 					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles);
@@ -398,7 +399,7 @@ public class Validator implements IValidator
 			if (checks != null && checks.size() > 0)
 			{
 				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
-				final FieldContext context = new FieldContext(field);
+				final FieldContext context = ContextCache.getFieldContext(field);
 
 				for (final Check check : checks)
 				{
@@ -415,7 +416,7 @@ public class Validator implements IValidator
 			if (checks != null && checks.size() > 0)
 			{
 				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
-				final MethodReturnValueContext context = new MethodReturnValueContext(getter);
+				final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(getter);
 
 				for (final Check check : checks)
 				{
@@ -1226,7 +1227,7 @@ public class Validator implements IValidator
 		Assert.notNull("getter", getter);
 		Assert.notEmpty("checks", checks);
 
-		getClassChecks(getter.getDeclaringClass()).removeMethodChecks(getter, checks);
+		getClassChecks(getter.getDeclaringClass()).removeMethodReturnValueChecks(getter, checks);
 	}
 
 	/**
@@ -1343,7 +1344,7 @@ public class Validator implements IValidator
 
 			if (checks == null || checks.size() == 0) return violations;
 
-			final FieldContext context = new FieldContext(validatedField);
+			final FieldContext context = ContextCache.getFieldContext(validatedField);
 
 			for (final Check check : checks)
 				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context, null);

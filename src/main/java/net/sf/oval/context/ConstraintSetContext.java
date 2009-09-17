@@ -12,42 +12,22 @@
  *******************************************************************************/
 package net.sf.oval.context;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import net.sf.oval.internal.util.SerializableMethod;
-import net.sf.oval.internal.util.StringUtils;
-
 /**
  * @author Sebastian Thomschke
  */
-public class MethodEntryContext extends OValContext
+public class ConstraintSetContext extends OValContext
 {
 	private static final long serialVersionUID = 1L;
 
-	private final SerializableMethod method;
+	private final String constraintSetId;
 
-	public MethodEntryContext(final Method method)
+	public ConstraintSetContext(final  String constraintSetId)
 	{
-		this.method = SerializableMethod.getInstance(method);
+		this.constraintSetId = constraintSetId;
 	}
-
-	/**
-	 * @return Returns the method.
-	 */
-	public Method getMethod()
+	
+	public String getConstraintSetId()
 	{
-		return method.getMethod();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return method.getDeclaringClass().getName() + "." + method.getName() + "("
-				+ StringUtils.implode(method.getParameterTypes(), ",") + ")";
+		return constraintSetId;
 	}
 }

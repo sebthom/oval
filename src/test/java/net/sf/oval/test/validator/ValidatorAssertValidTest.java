@@ -23,7 +23,7 @@ import net.sf.oval.exception.ConstraintsViolatedException;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidatorAssertTest extends TestCase
+public class ValidatorAssertValidTest extends TestCase
 {
 	protected static class TestEntity
 	{
@@ -32,7 +32,6 @@ public class ValidatorAssertTest extends TestCase
 
 		@NotNull(message = "NOT_NULL")
 		public Integer value;
-
 	}
 
 	public void testValidatorAssert() throws Exception

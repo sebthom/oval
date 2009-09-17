@@ -20,11 +20,11 @@ import java.util.Map;
 
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.FieldNotFoundException;
 import net.sf.oval.exception.InvokingMethodFailedException;
 import net.sf.oval.exception.MethodNotFoundException;
+import net.sf.oval.internal.ContextCache;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
@@ -93,7 +93,7 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 			catch (final Exception ex)
 			{
 				throw new InvokingMethodFailedException(getter.getName(), validatedObject,
-						new MethodReturnValueContext(getter), ex);
+						ContextCache.getMethodReturnValueContext(getter), ex);
 			}
 		}
 		else
