@@ -39,6 +39,7 @@ import net.sf.oval.exception.OValException;
 import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.expression.ExpressionLanguage;
 import net.sf.oval.internal.ClassChecks;
+import net.sf.oval.internal.ContextCache;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.ParameterChecks;
 import net.sf.oval.internal.util.ArrayUtils;
@@ -484,7 +485,7 @@ public class Guard extends Validator
 	{
 		Assert.notNull("guardedObject", guardedObject);
 
-		if (guardedObject instanceof Class)
+		if (guardedObject instanceof Class< ? >)
 		{
 			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {1}", guardedObject);
 		}
@@ -1446,7 +1447,7 @@ public class Guard extends Validator
 			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
 			final boolean hasParameters = parameterNames.length > 0;
 
-			final MethodExitContext context = new MethodExitContext(method);
+			final MethodExitContext context = ContextCache.getMethodExitContext(method);
 
 			for (final PostCheck check : postChecks)
 			{
@@ -1520,7 +1521,7 @@ public class Guard extends Validator
 			final String[] parameterNames = parameterNameResolver.getParameterNames(method);
 			final boolean hasParameters = parameterNames.length > 0;
 
-			final MethodEntryContext context = new MethodEntryContext(method);
+			final MethodEntryContext context = ContextCache.getMethodEntryContext(method);
 
 			for (final PreCheck check : preChecks)
 			{
@@ -1598,7 +1599,7 @@ public class Guard extends Validator
 
 			if (returnValueChecks == null || returnValueChecks.size() == 0) return;
 
-			final MethodReturnValueContext context = new MethodReturnValueContext(method);
+			final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
 			for (final Check check : returnValueChecks)
 			{

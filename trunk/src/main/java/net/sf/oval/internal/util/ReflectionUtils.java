@@ -22,11 +22,10 @@ import java.security.AccessController;
 import java.util.List;
 import java.util.Locale;
 
-import net.sf.oval.context.FieldContext;
-import net.sf.oval.context.MethodReturnValueContext;
 import net.sf.oval.exception.AccessingFieldValueFailedException;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.InvokingMethodFailedException;
+import net.sf.oval.internal.ContextCache;
 import net.sf.oval.internal.Log;
 
 /**
@@ -145,7 +144,7 @@ public final class ReflectionUtils
 		}
 		catch (final Exception ex)
 		{
-			throw new AccessingFieldValueFailedException(field.getName(), obj, new FieldContext(field), ex);
+			throw new AccessingFieldValueFailedException(field.getName(), obj, ContextCache.getFieldContext(field), ex);
 		}
 	}
 
@@ -320,7 +319,7 @@ public final class ReflectionUtils
 			if (ex.getCause() instanceof ConstraintsViolatedException)
 				throw (ConstraintsViolatedException) ex.getCause();
 			throw new InvokingMethodFailedException("Executing method " + method.getName() + " failed.", obj,
-					new MethodReturnValueContext(method), ex);
+					ContextCache.getMethodReturnValueContext(method), ex);
 		}
 	}
 

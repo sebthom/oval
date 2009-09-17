@@ -25,7 +25,7 @@ import net.sf.oval.constraint.NotNull;
 /**
  * @author Sebastian Thomschke
  */
-public class AssertFieldConstraintsValidationTest extends TestCase
+public class FieldConstraintsValidationTest extends TestCase
 {
 	protected static class Person
 	{

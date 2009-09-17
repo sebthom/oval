@@ -32,17 +32,18 @@ public class ConstraintViolation implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	private final String checkName;
 	private final ConstraintViolation[] causes;
+	private final OValContext checkDeclaringContext;
+	private final String checkName;
 	private final OValContext context;
 	private final String errorCode;
+	private transient Object invalidValue;
 	private final String message;
 	private final String messageTemplate;
 	private final Map<String, String> messageVariables;
-	private final int severity;
 
+	private final int severity;
 	private transient Object validatedObject;
-	private transient Object invalidValue;
 
 	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
 			final Object invalidValue, final OValContext context)
@@ -54,6 +55,7 @@ public class ConstraintViolation implements Serializable
 			final Object invalidValue, final OValContext context, final ConstraintViolation... causes)
 	{
 		this.checkName = check.getClass().getName();
+		this.checkDeclaringContext = check.getContext();
 		this.errorCode = check.getErrorCode();
 		this.message = message;
 		this.messageTemplate = check.getMessage();
@@ -69,6 +71,7 @@ public class ConstraintViolation implements Serializable
 			final Object invalidValue, final OValContext context, final List<ConstraintViolation> causes)
 	{
 		this.checkName = check.getClass().getName();
+		this.checkDeclaringContext = check.getContext();
 		this.errorCode = check.getErrorCode();
 		this.message = message;
 		this.messageTemplate = check.getMessage();
@@ -87,6 +90,22 @@ public class ConstraintViolation implements Serializable
 	public ConstraintViolation[] getCauses()
 	{
 		return causes == null ? null : causes.clone();
+	}
+
+	/**
+	 * @return Returns the context where the constraint was declared.
+	 * 
+	 * @see net.sf.oval.context.ClassContext
+	 * @see net.sf.oval.context.ConstraintSet
+	 * @see net.sf.oval.context.FieldContext
+	 * @see net.sf.oval.context.MethodEntryContext
+	 * @see net.sf.oval.context.MethodExitContext
+	 * @see net.sf.oval.context.MethodParameterContext
+	 * @see net.sf.oval.context.MethodReturnValueContext
+	 */
+	public OValContext getCheckDeclaringContext()
+	{
+		return checkDeclaringContext;
 	}
 
 	/**
@@ -192,7 +211,6 @@ public class ConstraintViolation implements Serializable
 	/**
 	 * {@inheritDoc}
 	 */
-
 	@Override
 	public String toString()
 	{

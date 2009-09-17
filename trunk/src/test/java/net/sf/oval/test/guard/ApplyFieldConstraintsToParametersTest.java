@@ -22,6 +22,8 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
 import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.context.FieldContext;
+import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guard;
@@ -121,7 +123,10 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		}
 		catch (ConstraintsViolatedException ex)
 		{
+			assertEquals(1, ex.getConstraintViolations().length);
 			assertEquals("NOT_NULL", ex.getMessage());
+			assertEquals(MethodParameterContext.class, ex.getConstraintViolations()[0].getContext().getClass());
+			assertEquals(FieldContext.class, ex.getConstraintViolations()[0].getCheckDeclaringContext().getClass());		
 		}
 		
 		try

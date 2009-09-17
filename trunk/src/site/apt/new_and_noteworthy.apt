@@ -6,9 +6,11 @@ New and Noteworthy
 
  * added support for conditional constraint activation (added the when="" attribute)
  
- * added tolerance attribute for @DateRange, @Past and @Future constraint [ 2821805]
+ * added tolerance attribute for @DateRange, @Past and @Future constraint [ 2821805] (thanks to Eric Lewis)
  
- * added @NotMatchPattern [ 2859133 ]
+ * added @NotMatchPattern [ 2859133 ] (thanks to Eric Lewis)
+ 
+ * added ConstraintViolation.getCheckDeclaringContext() (thanks to Eric Lewis)
 
 ** Issues solved 
 

@@ -17,6 +17,7 @@ import static net.sf.oval.Validator.getCollectionFactory;
 import java.util.Collections;
 import java.util.Map;
 
+import net.sf.oval.context.OValContext;
 import net.sf.oval.expression.ExpressionLanguage;
 
 /**
@@ -28,6 +29,7 @@ public abstract class AbstractCheck implements Check
 {
 	private static final long serialVersionUID = 1L;
 
+	private OValContext context;
 	private String errorCode;
 	private String message;
 	private Map<String, String> messageVariables;
@@ -43,6 +45,14 @@ public abstract class AbstractCheck implements Check
 	protected Map<String, String> createMessageVariables()
 	{
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public OValContext getContext()
+	{
+		return context;
 	}
 
 	/**
@@ -166,6 +176,14 @@ public abstract class AbstractCheck implements Check
 	protected void requireMessageVariablesRecreation()
 	{
 		messageVariablesUpToDate = false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setContext(OValContext context)
+	{
+		this.context = context;
 	}
 
 	/**

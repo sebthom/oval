@@ -28,8 +28,8 @@ public final class AllTests
 {
 	private static void constraintsTests(final TestSuite suite) throws Exception
 	{
-		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertFalseTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.DateRangeTest.class);
@@ -41,13 +41,13 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.constraints.InstanceOfTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.LengthTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MatchPatternTest.class);
-		suite.addTestSuite(net.sf.oval.test.constraints.MaxTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MaxLengthTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MaxSizeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MaxTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MemberOfTest.class);
-		suite.addTestSuite(net.sf.oval.test.constraints.MinTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MinLengthTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.MinSizeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.MinTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NoSelfReferenceTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotBlankTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.NotEmptyTest.class);
@@ -169,7 +169,6 @@ public final class AllTests
 	{
 		suite.addTestSuite(net.sf.oval.test.validator.AddingChecksTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertBeanShellTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.AssertFieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertGroovyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJavascriptTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertJEXLTest.class);
@@ -182,6 +181,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.ConditionalConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.FieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
@@ -191,7 +191,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertValidTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.XMLConfigurationTest.class);
 	}
 
