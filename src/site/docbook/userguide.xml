@@ -1866,6 +1866,14 @@ v.validate(p);
     <para>The following projects are using OVal:</para>
 
     <itemizedlist>
+    
+      <listitem>
+        <para>Cubby Simple Web Application Framework</para>
+
+        <para><ulink
+        url="http://cubby.seasar.org/20x/cubby-oval/index.html">http://cubby.seasar.org/20x/cubby-oval/index.html</ulink></para>
+      </listitem>   
+    
       <listitem>
         <para>Metawidget</para>
 
