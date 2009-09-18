@@ -23,7 +23,7 @@ import com.thoughtworks.paranamer.Paranamer;
 
 /**
  * This implementation that uses com.thoughtworks.paranamer.Paranamer (http://paranamer.codehaus.org/)
- * to determine the names of paramater names as a fallback the results of a 
+ * to determine the names of parameter names as a fallback the results of a 
  * ParameterNameResolverEnumerationImpl are returned
  *  
  * @author Sebastian Thomschke
