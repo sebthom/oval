@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.POJOConfigurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
@@ -245,6 +246,7 @@ public class XMLConfigurer implements Configurer
 		xStream.useAttributeFor(String.class);
 
 		xStream.alias("java-type", Class.class);
+		xStream.alias("constraintTarget", ConstraintTarget.class);
 
 		// constraint check short forms
 		xStream.alias("assert", AssertCheck.class);

@@ -81,9 +81,45 @@
 			<element name="profiles" minOccurs="0" maxOccurs="1" type="tns:Profiles" />
 		</sequence>
 	</complexType>
-	<complexType name="Constraint" abstract="true">
+	<complexType name="Constraint" mixed="true" abstract="true">
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles">
+				<choice>
+					<element name="appliesTo" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>
+								In case the constraint is declared for an array, collection or map this controls how
+								the constraint
+								is applied to it and it's child objects.</documentation>
+						</annotation>
+						<complexType>
+							<sequence>
+								<element name="constraintTarget" minOccurs="0" maxOccurs="unbounded">
+									<simpleType>
+										<restriction base="string">
+											<enumeration value="CONTAINER">
+												<annotation>
+													<documentation>apply the constraint to the collection / map / array object itself</documentation>
+												</annotation>
+											</enumeration>
+											<enumeration value="KEYS">
+												<annotation>
+													<documentation>apply the constraint to the keys of a map</documentation>
+												</annotation>
+											</enumeration>
+											<enumeration value="VALUES">
+												<annotation>
+													<documentation>apply the constraint to the values of a the map / the items of the collection / the elements
+														of the array</documentation>
+												</annotation>
+											</enumeration>
+										</restriction>
+									</simpleType>
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+				</choice>
 				<attribute name="errorCode" type="string" use="optional" />
 				<attribute name="message" type="string" use="optional" />
 				<attribute name="severity" type="string" use="optional" />
@@ -94,7 +130,7 @@
 
 	<!--
 	*************************** 
-	basic elements
+	shared elements
 	***************************
 	-->
 	<complexType name="ConstraintSet">
@@ -401,7 +437,11 @@
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
-				<attribute name="requireValidElements" type="boolean" use="required" />
+				<attribute name="requireValidElements" type="boolean" use="required">
+					<annotation>
+						<documentation>deprecated, use appliesTo</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -787,8 +827,9 @@
 		<annotation>
 			<documentation>
 				Check if the specified regular expression pattern does not match.
-				Note: This constraint is also satisfied when the value to 
-				validate is null, therefore you might also need to declare the 
+				Note: This constraint is also
+				satisfied when the value to
+				validate is null, therefore you might also need to declare the
 				NotNull constraint.
 			</documentation>
 		</annotation>
