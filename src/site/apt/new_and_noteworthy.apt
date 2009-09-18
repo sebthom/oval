@@ -1,6 +1,6 @@
 New and Noteworthy
 
-* Version 1.3.3-SNAPSHOT
+* Version 1.40-SNAPSHOT
 
 ** New Features and Improvements
 
@@ -11,6 +11,8 @@ New and Noteworthy
  * added @NotMatchPattern [ 2859133 ] (thanks to Eric Lewis)
  
  * added ConstraintViolation.getCheckDeclaringContext() (thanks to Eric Lewis)
+
+ * added appliesTo() attribute to constraints allowing to control if and how validation should be applied to childs of arrays, maps and collections (thanks to tomtran711)
 
 ** Issues solved 
 

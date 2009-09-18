@@ -2,10 +2,10 @@
 [+] Feature added.
 [*] Change.
 
-2009-??-?? v1.33
+2009-??-?? v1.40
 ================
 + added support for conditional constraint activation (added the when="" attribute)
-* upgraded to GNU Trove 2.0.4
+* upgraded to GNU Trove 2.0.4, SLF4J 1.5.8, JRuby 1.3.1, Rhino 1.7R2, Groovy 1.6.4, MVEL 2.0.13, Paranamer 2.1
 - parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
 - fixed [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
 + implemented [ 2821805] @DateRange should be tolerant
@@ -13,6 +13,8 @@
 + added tolerance to @Past and @Future
 + implemented [ 2859133 ] Enhancement:@MatchPattern should be able to negate the match (thanks to Eric Lewis)
 + added ConstraintViolation.getCheckDeclaringContext() (thanks to Eric Lewis)
++ added appliesTo() attribute to constraints allowing to control if and how validation should be applied to childs of arrays, maps and collections (thanks to tomtran711)
+
 
 2009-05-10 v1.32
 ================

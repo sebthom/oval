@@ -22,4 +22,11 @@ import java.io.Serializable;
 public abstract class OValContext implements Serializable
 {
 	private static final long serialVersionUID = 1L;
+
+	protected Class< ? > compileTimeType = null;
+
+	public Class< ? > getCompileTimeType()
+	{
+		return compileTimeType;
+	}
 }

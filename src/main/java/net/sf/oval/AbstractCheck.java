@@ -38,6 +38,7 @@ public abstract class AbstractCheck implements Check
 
 	private String[] profiles;
 	private int severity;
+	private ConstraintTarget[] targets;
 	private String when;
 	private String whenFormula;
 	private String whenLang;
@@ -45,6 +46,14 @@ public abstract class AbstractCheck implements Check
 	protected Map<String, String> createMessageVariables()
 	{
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ConstraintTarget[] getAppliesTo()
+	{
+		return targets == null ? new ConstraintTarget[]{ConstraintTarget.VALUES} : targets;
 	}
 
 	/**
@@ -177,7 +186,15 @@ public abstract class AbstractCheck implements Check
 	{
 		messageVariablesUpToDate = false;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setAppliesTo(ConstraintTarget... targets)
+	{
+		this.targets = targets;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

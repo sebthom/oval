@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -79,7 +80,7 @@ public class CustomAssertValidTest extends TestCase
 				assertValidCheck.setErrorCode(customAssertValid.errorCode());
 				assertValidCheck.setMessage(customAssertValid.message());
 				assertValidCheck.setProfiles(customAssertValid.profiles());
-				assertValidCheck.setRequireValidElements(customAssertValid.requireValidElements());
+				assertValidCheck.setAppliesTo(customAssertValid.appliesTo());
 				assertValidCheck.setSeverity(customAssertValid.severity());
 				return (AnnotationCheck<ConstraintAnnotation>) assertValidCheck;
 			}
@@ -99,7 +100,7 @@ public class CustomAssertValidTest extends TestCase
 
 		String[] profiles() default {};
 
-		boolean requireValidElements() default true;
+		ConstraintTarget[] appliesTo() default {ConstraintTarget.VALUES};
 
 		int severity() default 0;
 	}
@@ -116,7 +117,7 @@ public class CustomAssertValidTest extends TestCase
 			assertValidCheck.setErrorCode(constraintAnnotation.errorCode());
 			assertValidCheck.setMessage(constraintAnnotation.message());
 			assertValidCheck.setProfiles(constraintAnnotation.profiles());
-			assertValidCheck.setRequireValidElements(constraintAnnotation.requireValidElements());
+			assertValidCheck.setAppliesTo(constraintAnnotation.appliesTo());
 			assertValidCheck.setSeverity(constraintAnnotation.severity());
 		}
 
@@ -141,10 +142,10 @@ public class CustomAssertValidTest extends TestCase
 		@CustomAssertValid(message = "ASSERT_VALID")
 		public List<Address> otherAddresses1;
 
-		@CustomAssertValid(message = "ASSERT_VALID", requireValidElements = false)
+		@CustomAssertValid(message = "ASSERT_VALID", appliesTo = ConstraintTarget.CONTAINER)
 		public Set<Address> otherAddresses2;
 
-		@CustomAssertValid(message = "ASSERT_VALID", requireValidElements = true)
+		@CustomAssertValid(message = "ASSERT_VALID", appliesTo = {ConstraintTarget.VALUES, ConstraintTarget.CONTAINER})
 		public Set<Address> otherAddresses3;
 
 	}

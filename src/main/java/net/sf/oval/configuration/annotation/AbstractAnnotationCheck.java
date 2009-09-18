@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import net.sf.oval.AbstractCheck;
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.internal.Log;
 
 /**
@@ -63,6 +64,19 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 			}
 		}
 
+		/*
+		 * Retrieve the appliesTo value from the constraint annotation via reflection.
+		 */
+		try
+		{
+			final Method getAppliesTo = constraintClazz.getDeclaredMethod("appliesTo", (Class< ? >[]) null);
+			setAppliesTo((ConstraintTarget[]) getAppliesTo.invoke(constraintAnnotation, (Object[]) null));
+		}
+		catch (final Exception e)
+		{
+			LOG.debug("Cannot determine constraint targets based on annotation {1}", constraintClazz.getName(), e);
+		}
+		
 		/*
 		 * Retrieve the error code value from the constraint annotation via reflection.
 		 */

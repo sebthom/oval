@@ -12,9 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import java.util.List;
+
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -23,24 +27,26 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 {
 	private static final long serialVersionUID = 1L;
 
-	private boolean requireValidElements = true;
-
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void configure(final AssertValid constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
-		setRequireValidElements(constraintAnnotation.requireValidElements());
+		if (!constraintAnnotation.requireValidElements())
+			setRequireValidElements(constraintAnnotation.requireValidElements());
 	}
 
 	/**
-	 * @return true if all elements of a collection must be valid 
+	 * @return true if all elements of a collection must be valid
+	 * @deprecated use appliesTo instead
 	 */
+	@Deprecated
 	public boolean isRequireValidElements()
 	{
-		return requireValidElements;
+		return ArrayUtils.containsSame(this.getAppliesTo(), ConstraintTarget.VALUES);
 	}
 
 	/**
@@ -56,9 +62,31 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 
 	/**
 	 * Specifies if all the elements of a collection must be valid.
+	 * @deprecated use appliesTo instead
 	 */
+	@Deprecated
 	public void setRequireValidElements(final boolean requireValidElements)
 	{
-		this.requireValidElements = requireValidElements;
+		ConstraintTarget[] targets = getAppliesTo();
+		if (requireValidElements)
+		{
+			if (!ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+			{
+				List<ConstraintTarget> targetsList = Validator.getCollectionFactory().createList(4);
+				ArrayUtils.addAll(targetsList, targets);
+				targetsList.add(ConstraintTarget.VALUES);
+				setAppliesTo(targetsList.toArray(new ConstraintTarget[targetsList.size()]));
+			}
+		}
+		else
+		{
+			if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+			{
+				List<ConstraintTarget> targetsList = Validator.getCollectionFactory().createList(4);
+				ArrayUtils.addAll(targetsList, targets);
+				targetsList.remove(ConstraintTarget.VALUES);
+				setAppliesTo(targetsList.toArray(new ConstraintTarget[targetsList.size()]));
+			}
+		}
 	}
 }

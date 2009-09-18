@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.AssertValid;
@@ -67,10 +68,10 @@ public class AssertValidTest extends TestCase
 		@AssertValid(message = "ASSERT_VALID")
 		public List<Address> otherAddresses1;
 
-		@AssertValid(message = "ASSERT_VALID", requireValidElements = false)
+		@AssertValid(message = "ASSERT_VALID", appliesTo = ConstraintTarget.CONTAINER)
 		public Set<Address> otherAddresses2;
 
-		@AssertValid(message = "ASSERT_VALID", requireValidElements = true)
+		@AssertValid(message = "ASSERT_VALID", appliesTo = {ConstraintTarget.VALUES, ConstraintTarget.CONTAINER})
 		public Set<Address> otherAddresses3;
 
 	}
