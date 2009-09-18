@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 import net.sf.oval.Check;
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.pojo.POJOConfigurer;
@@ -140,6 +141,7 @@ public class XMLConfigurationTest extends TestCase
 				lc.setMessage("{context} is not between {min} and {max} characters long");
 				lc.setMin(1);
 				lc.setMax(5);
+				lc.setAppliesTo(ConstraintTarget.CONTAINER, ConstraintTarget.KEYS);
 				fc.checks.add(lc);
 			}
 			{
@@ -189,7 +191,7 @@ public class XMLConfigurationTest extends TestCase
 		 * test XML de/serialization
 		 */
 		final String xmlConfig = x.toXML();
-		// System.out.println(xmlConfig);
+		 System.out.println(xmlConfig);
 		x.fromXML(xmlConfig);
 		validateUser(new Validator(x));
 	}
