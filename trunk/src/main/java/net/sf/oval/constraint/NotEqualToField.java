@@ -18,6 +18,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
@@ -35,6 +36,15 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = NotEqualToFieldCheck.class)
 public @interface NotEqualToField
 {
+	/**
+	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
+	 * 
+	 * <p><b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES
+	 * 
+	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
+	 */
+	ConstraintTarget[] appliesTo() default {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+	
 	/**
 	 * The class in which the field is declared. If omitted the current class and it's super 
 	 * classes are searched for a field with the given name.

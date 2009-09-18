@@ -13,8 +13,6 @@
 package net.sf.oval.context;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import net.sf.oval.internal.util.SerializableMethod;
 import net.sf.oval.internal.util.StringUtils;

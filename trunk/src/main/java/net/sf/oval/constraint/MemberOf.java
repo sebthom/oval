@@ -18,6 +18,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
@@ -35,6 +36,15 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = MemberOfCheck.class)
 public @interface MemberOf
 {
+	/**
+	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
+	 * 
+	 * <p><b>Default:</b> ConstraintTarget.VALUES
+	 * 
+	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
+	 */
+	ConstraintTarget[] appliesTo() default ConstraintTarget.VALUES;
+	
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */

@@ -10,44 +10,25 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.context;
+package net.sf.oval;
 
-import java.lang.reflect.Field;
-
-import net.sf.oval.internal.util.SerializableField;
-
-/**
+/** 
  * @author Sebastian Thomschke
  */
-public class FieldContext extends OValContext
+public enum ConstraintTarget
 {
-	private static final long serialVersionUID = 1L;
-
-	private final SerializableField field;
+	/**
+	 * apply the constraint to the keys of a map
+	 */
+	KEYS,
 
 	/**
-	 * @param field
+	 * apply the constraint to the values of a the map / the items of the collection / the elements of the array
 	 */
-	public FieldContext(final Field field)
-	{
-		this.field = SerializableField.getInstance(field);
-		this.compileTimeType = field.getType();
-	}
+	VALUES,
 
 	/**
-	 * @return Returns the field.
+	 * apply the constraint to the collection / map / array object itself
 	 */
-	public Field getField()
-	{
-		return field.getField();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return field.getDeclaringClass().getName() + "." + field.getName();
-	}
+	CONTAINER
 }

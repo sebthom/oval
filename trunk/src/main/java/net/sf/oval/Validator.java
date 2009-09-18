@@ -257,190 +257,6 @@ public class Validator implements IValidator
 			this.configurers.add(configurer);
 	}
 
-	private ExpressionLanguage _addExpressionLanguage(final String languageId,
-			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
-	{
-		Assert.notNull("languageId", languageId);
-		Assert.notNull("expressionLanguage", expressionLanguage);
-
-		LOG.info("Expression language '{1}' registered: {2}", languageId, expressionLanguage);
-
-		expressionLanguages.put(languageId, expressionLanguage);
-		return expressionLanguage;
-	}
-
-	private ExpressionLanguage _initializeDefaultEL(final String languageId)
-	{
-		// JavaScript support
-		if (("javascript".equals(languageId) || "js".equals(languageId))
-				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
-			return _addExpressionLanguage("js", _addExpressionLanguage("javascript",
-					new ExpressionLanguageJavaScriptImpl()));
-
-		// Groovy support
-		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
-			return _addExpressionLanguage("groovy", new ExpressionLanguageGroovyImpl());
-
-		// BeanShell support
-		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
-				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
-			return _addExpressionLanguage("beanshell", _addExpressionLanguage("bsh",
-					new ExpressionLanguageBeanShellImpl()));
-
-		// OGNL support
-		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
-			return _addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
-
-		// MVEL2 support
-		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel2.MVEL"))
-			return _addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
-
-		// JRuby support
-		else if (("jruby".equals(languageId) || "ruby".equals(languageId))
-				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
-			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
-
-		// JEXL support
-		else if ("jexl".equals(languageId)
-				&& ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
-			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
-
-		return null;
-	}
-
-	/**
-	 * validate validatedObject based on the constraints of the given class 
-	 */
-	private void _validateObjectInvariants(final Object validatedObject, final Class< ? > clazz,
-			final List<ConstraintViolation> violations, final String[] profiles) throws ValidationFailedException
-	{
-		assert validatedObject != null;
-		assert clazz != null;
-		assert violations != null;
-
-		// abort if the root class has been reached
-		if (clazz == Object.class) return;
-
-		try
-		{
-			final ClassChecks cc = getClassChecks(clazz);
-
-			// validate field constraints
-			for (final Field field : cc.constrainedFields)
-			{
-				final Collection<Check> checks = cc.checksForFields.get(field);
-
-				if (checks != null && checks.size() > 0)
-				{
-					final Object valueToValidate = ReflectionUtils.getFieldValue(field, validatedObject);
-					final FieldContext ctx = ContextCache.getFieldContext(field);
-
-					for (final Check check : checks)
-					{
-						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles);
-					}
-				}
-			}
-
-			// validate constraints on getter methods
-			for (final Method getter : cc.constrainedMethods)
-			{
-				final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
-
-				if (checks != null && checks.size() > 0)
-				{
-					final Object valueToValidate = ReflectionUtils.invokeMethod(getter, validatedObject);
-					final MethodReturnValueContext ctx = ContextCache.getMethodReturnValueContext(getter);
-
-					for (final Check check : checks)
-					{
-						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles);
-					}
-				}
-			}
-
-			// validate object constraints
-			if (cc.checksForObject.size() > 0)
-			{
-				final ClassContext ctx = ContextCache.getClassContext(clazz);
-				for (final Check check : cc.checksForObject)
-				{
-					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles);
-				}
-			}
-
-			// if the super class is annotated to be validatable also validate it against the object
-			_validateObjectInvariants(validatedObject, clazz.getSuperclass(), violations, profiles);
-		}
-		catch (final OValException ex)
-		{
-			throw new ValidationFailedException("Object validation failed. Class: " + clazz + " Validated object: "
-					+ validatedObject, ex);
-		}
-	}
-
-	/**
-	 * Validates the static field and static getter constrains of the given class.
-	 * Constraints specified for super classes are not taken in account.
-	 */
-	private void _validateStaticInvariants(final Class< ? > validatedClass, final List<ConstraintViolation> violations,
-			final String[] profiles) throws ValidationFailedException
-	{
-		assert validatedClass != null;
-		assert violations != null;
-
-		final ClassChecks cc = getClassChecks(validatedClass);
-
-		// validate static field constraints
-		for (final Field field : cc.constrainedStaticFields)
-		{
-			final Collection<Check> checks = cc.checksForFields.get(field);
-
-			if (checks != null && checks.size() > 0)
-			{
-				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
-				final FieldContext context = ContextCache.getFieldContext(field);
-
-				for (final Check check : checks)
-				{
-					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles);
-				}
-			}
-		}
-
-		// validate constraints on getter methods
-		for (final Method getter : cc.constrainedStaticMethods)
-		{
-			final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
-
-			if (checks != null && checks.size() > 0)
-			{
-				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
-				final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(getter);
-
-				for (final Check check : checks)
-				{
-					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Registers object-level constraint checks
-	 *  
-	 * @param clazz the class to register the checks for
-	 * @param checks the checks to add
-	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
-	 */
-	public void addChecks(final Class< ? > clazz, final Check... checks) throws IllegalArgumentException
-	{
-		Assert.notNull("clazz", clazz);
-		Assert.notEmpty("checks", checks);
-
-		getClassChecks(clazz).addObjectChecks(checks);
-	}
-
 	@SuppressWarnings("unchecked")
 	private void _addChecks(final ClassChecks cc, final ClassConfiguration classCfg)
 			throws InvalidConfigurationException, ReflectionException
@@ -654,6 +470,235 @@ public class Validator implements IValidator
 		}
 	}
 
+	private ExpressionLanguage _addExpressionLanguage(final String languageId,
+			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
+	{
+		Assert.notNull("languageId", languageId);
+		Assert.notNull("expressionLanguage", expressionLanguage);
+
+		LOG.info("Expression language '{1}' registered: {2}", languageId, expressionLanguage);
+
+		expressionLanguages.put(languageId, expressionLanguage);
+		return expressionLanguage;
+	}
+
+	private void _checkConstraint(final List<ConstraintViolation> violations, final Check check,
+			final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final String[] profiles)
+	{
+		/*
+		 * special handling of the AssertValid constraint
+		 */
+		if (check instanceof AssertValidCheck)
+		{
+			checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject, valueToValidate, context,
+					profiles);
+			return;
+		}
+
+		/*
+		 * special handling of the FieldConstraints constraint
+		 */
+		if (check instanceof AssertConstraintSetCheck)
+		{
+			checkConstraintAssertConstraintSet(violations, (AssertConstraintSetCheck) check, validatedObject,
+					valueToValidate, context, profiles);
+			return;
+		}
+
+		/*
+		 * special handling of the FieldConstraints constraint
+		 */
+		if (check instanceof AssertFieldConstraintsCheck)
+		{
+			checkConstraintAssertFieldConstraints(violations, (AssertFieldConstraintsCheck) check, validatedObject,
+					valueToValidate, context, profiles);
+			return;
+		}
+
+		/*
+		 * standard constraints handling
+		 */
+		if (!check.isSatisfied(validatedObject, valueToValidate, context, this))
+		{
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check
+					.getMessageVariables());
+			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context));
+		}
+	}
+
+	private ExpressionLanguage _initializeDefaultEL(final String languageId)
+	{
+		// JavaScript support
+		if (("javascript".equals(languageId) || "js".equals(languageId))
+				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
+			return _addExpressionLanguage("js", _addExpressionLanguage("javascript",
+					new ExpressionLanguageJavaScriptImpl()));
+
+		// Groovy support
+		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
+			return _addExpressionLanguage("groovy", new ExpressionLanguageGroovyImpl());
+
+		// BeanShell support
+		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
+				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
+			return _addExpressionLanguage("beanshell", _addExpressionLanguage("bsh",
+					new ExpressionLanguageBeanShellImpl()));
+
+		// OGNL support
+		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
+			return _addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
+
+		// MVEL2 support
+		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel2.MVEL"))
+			return _addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
+
+		// JRuby support
+		else if (("jruby".equals(languageId) || "ruby".equals(languageId))
+				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
+			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
+
+		// JEXL support
+		else if ("jexl".equals(languageId)
+				&& ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
+			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
+
+		return null;
+	}
+
+	/**
+	 * validate validatedObject based on the constraints of the given class 
+	 */
+	private void _validateObjectInvariants(final Object validatedObject, final Class< ? > clazz,
+			final List<ConstraintViolation> violations, final String[] profiles) throws ValidationFailedException
+	{
+		assert validatedObject != null;
+		assert clazz != null;
+		assert violations != null;
+
+		// abort if the root class has been reached
+		if (clazz == Object.class) return;
+
+		try
+		{
+			final ClassChecks cc = getClassChecks(clazz);
+
+			// validate field constraints
+			for (final Field field : cc.constrainedFields)
+			{
+				final Collection<Check> checks = cc.checksForFields.get(field);
+
+				if (checks != null && checks.size() > 0)
+				{
+					final Object valueToValidate = ReflectionUtils.getFieldValue(field, validatedObject);
+					final FieldContext ctx = ContextCache.getFieldContext(field);
+
+					for (final Check check : checks)
+					{
+						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles);
+					}
+				}
+			}
+
+			// validate constraints on getter methods
+			for (final Method getter : cc.constrainedMethods)
+			{
+				final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
+
+				if (checks != null && checks.size() > 0)
+				{
+					final Object valueToValidate = ReflectionUtils.invokeMethod(getter, validatedObject);
+					final MethodReturnValueContext ctx = ContextCache.getMethodReturnValueContext(getter);
+
+					for (final Check check : checks)
+					{
+						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles);
+					}
+				}
+			}
+
+			// validate object constraints
+			if (cc.checksForObject.size() > 0)
+			{
+				final ClassContext ctx = ContextCache.getClassContext(clazz);
+				for (final Check check : cc.checksForObject)
+				{
+					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles);
+				}
+			}
+
+			// if the super class is annotated to be validatable also validate it against the object
+			_validateObjectInvariants(validatedObject, clazz.getSuperclass(), violations, profiles);
+		}
+		catch (final OValException ex)
+		{
+			throw new ValidationFailedException("Object validation failed. Class: " + clazz + " Validated object: "
+					+ validatedObject, ex);
+		}
+	}
+
+	/**
+	 * Validates the static field and static getter constrains of the given class.
+	 * Constraints specified for super classes are not taken in account.
+	 */
+	private void _validateStaticInvariants(final Class< ? > validatedClass, final List<ConstraintViolation> violations,
+			final String[] profiles) throws ValidationFailedException
+	{
+		assert validatedClass != null;
+		assert violations != null;
+
+		final ClassChecks cc = getClassChecks(validatedClass);
+
+		// validate static field constraints
+		for (final Field field : cc.constrainedStaticFields)
+		{
+			final Collection<Check> checks = cc.checksForFields.get(field);
+
+			if (checks != null && checks.size() > 0)
+			{
+				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
+				final FieldContext context = ContextCache.getFieldContext(field);
+
+				for (final Check check : checks)
+				{
+					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles);
+				}
+			}
+		}
+
+		// validate constraints on getter methods
+		for (final Method getter : cc.constrainedStaticMethods)
+		{
+			final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
+
+			if (checks != null && checks.size() > 0)
+			{
+				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
+				final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(getter);
+
+				for (final Check check : checks)
+				{
+					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Registers object-level constraint checks
+	 *  
+	 * @param clazz the class to register the checks for
+	 * @param checks the checks to add
+	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty 
+	 */
+	public void addChecks(final Class< ? > clazz, final Check... checks) throws IllegalArgumentException
+	{
+		Assert.notNull("clazz", clazz);
+		Assert.notEmpty("checks", checks);
+
+		getClassChecks(clazz).addObjectChecks(checks);
+	}
+
 	/**
 	 * Registers constraint checks for the given field 
 	 *  
@@ -757,45 +802,52 @@ public class Validator implements IValidator
 
 		if (!check.isActive(validatedObject, valueToValidate, this)) return;
 
-		/*
-		 * special handling of the AssertValid constraint
-		 */
-		if (check instanceof AssertValidCheck)
-		{
-			checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject, valueToValidate, context,
-					profiles);
-			return;
-		}
+		final ConstraintTarget[] targets = check.getAppliesTo();
 
-		/*
-		 * special handling of the FieldConstraints constraint
-		 */
-		if (check instanceof AssertConstraintSetCheck)
-		{
-			checkConstraintAssertConstraintSet(violations, (AssertConstraintSetCheck) check, validatedObject,
-					valueToValidate, context, profiles);
-			return;
-		}
+		final Class< ? > compileTimeType = context.getCompileTimeType();
 
-		/*
-		 * special handling of the FieldConstraints constraint
-		 */
-		if (check instanceof AssertFieldConstraintsCheck)
-		{
-			checkConstraintAssertFieldConstraints(violations, (AssertFieldConstraintsCheck) check, validatedObject,
-					valueToValidate, context, profiles);
-			return;
-		}
+		final boolean isCollection = valueToValidate != null ? //
+				valueToValidate instanceof Collection< ? > : //
+				(compileTimeType != null && Collection.class.isAssignableFrom(compileTimeType));
+		final boolean isMap = !isCollection && //
+				(valueToValidate != null ? //
+						valueToValidate instanceof Map< ? , ? > : //
+						(compileTimeType != null && Map.class.isAssignableFrom(compileTimeType)) //
+				);
+		final boolean isArray = !isCollection && !isMap && //
+				(valueToValidate != null ? // 
+						valueToValidate.getClass().isArray() : //
+						(compileTimeType != null && compileTimeType.isArray()) //
+				);
+		final boolean isContainer = isCollection || isMap || isArray;
 
-		/*
-		 * standard constraints handling
-		 */
-		if (!check.isSatisfied(validatedObject, valueToValidate, context, this))
+		if (isContainer && valueToValidate != null)
 		{
-			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check
-					.getMessageVariables());
-			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context));
+			if (isCollection)
+			{
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+					for (final Object item : (Collection< ? >) valueToValidate)
+						checkConstraint(violations, check, validatedObject, item, context, profiles);
+			}
+			else if (isMap)
+			{
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS))
+					for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
+						checkConstraint(violations, check, validatedObject, item, context, profiles);
+
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+					for (final Object item : ((Map< ? , ? >) valueToValidate).values())
+						checkConstraint(violations, check, validatedObject, item, context, profiles);
+			}
+			else if (isArray)
+			{
+				if (valueToValidate != null && ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+					for (final Object item : (Object[]) valueToValidate)
+						checkConstraint(violations, check, validatedObject, item, context, profiles);
+			}
 		}
+		if (!isContainer || (isContainer && ArrayUtils.containsSame(targets, ConstraintTarget.CONTAINER)))
+			_checkConstraint(violations, check, validatedObject, valueToValidate, context, profiles);
 	}
 
 	protected void checkConstraintAssertConstraintSet(final List<ConstraintViolation> violations,
@@ -888,24 +940,6 @@ public class Validator implements IValidator
 			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context,
 					additionalViolations));
 		}
-
-		// if the value to validate is a collection also validate the collection items
-		if (valueToValidate instanceof Collection && check.isRequireValidElements())
-			for (final Object item : (Collection< ? >) valueToValidate)
-				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
-		else if (valueToValidate instanceof Map && check.isRequireValidElements())
-		{
-			for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
-				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
-
-			for (final Object item : ((Map< ? , ? >) valueToValidate).values())
-				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
-		}
-
-		// if the value to validate is an array also validate the array elements
-		else if (valueToValidate.getClass().isArray() && check.isRequireValidElements())
-			for (final Object item : (Object[]) valueToValidate)
-				checkConstraintAssertValid(violations, check, validatedObject, item, context, profiles);
 	}
 
 	/**
@@ -1378,7 +1412,7 @@ public class Validator implements IValidator
 		Assert.notNull("validatedObject", validatedObject);
 
 		currentlyValidatedObjects.get().getLast().add(validatedObject);
-		if (validatedObject instanceof Class)
+		if (validatedObject instanceof Class< ? >)
 			_validateStaticInvariants((Class< ? >) validatedObject, violations, profiles);
 		else
 			_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations, profiles);

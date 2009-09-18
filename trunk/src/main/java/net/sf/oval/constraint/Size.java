@@ -18,11 +18,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the array or collection has the given size.
+ * Check if the array, map, or collection has the given size.
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
@@ -35,6 +36,15 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Constraint(checkWith = SizeCheck.class)
 public @interface Size
 {
+	/**
+	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
+	 * 
+	 * <p><b>Default:</b> ConstraintTarget.CONTAINER
+	 * 
+	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
+	 */
+	ConstraintTarget[] appliesTo() default ConstraintTarget.CONTAINER;
+	
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */

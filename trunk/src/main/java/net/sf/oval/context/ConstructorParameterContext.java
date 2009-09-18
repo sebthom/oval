@@ -40,6 +40,7 @@ public class ConstructorParameterContext extends OValContext
 		this.constructor = SerializableConstructor.getInstance(constructor);
 		this.parameterIndex = parameterIndex;
 		this.parameterName = parameterName;
+		this.compileTimeType = constructor.getParameterTypes()[parameterIndex];
 	}
 
 	/**

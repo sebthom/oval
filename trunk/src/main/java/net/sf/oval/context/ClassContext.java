@@ -24,6 +24,7 @@ public class ClassContext extends OValContext
 	public ClassContext(final Class< ? > clazz)
 	{
 		this.clazz = clazz;
+		this.compileTimeType = clazz;
 	}
 
 	/**

@@ -25,6 +25,14 @@ import net.sf.oval.exception.OValException;
  */
 public interface Check extends Serializable
 {
+	/**
+	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
+	 * 
+	 * <p><b>Default:</b> ConstraintTarget.VALUES
+	 * 
+	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
+	 */
+	ConstraintTarget[] getAppliesTo();
 	
 	/**
 	 * @return Returns the context where the constraint was declared.
@@ -38,7 +46,7 @@ public interface Check extends Serializable
 	 * @see net.sf.oval.context.MethodReturnValueContext
 	 */
 	OValContext getContext();
-	
+
 	/**
 	 * @return the error code that will be used in a corresponding ConstraintViolation object
 	 */
@@ -111,10 +119,15 @@ public interface Check extends Serializable
 			throws OValException;
 
 	/**
+	 * @param target the constraint target to set
+	 */
+	void setAppliesTo(ConstraintTarget... target);
+
+	/**
 	 * @param context the context to set
 	 */
 	void setContext(OValContext context);
-	
+
 	/**
 	 * @param errorCode the error code to set
 	 */
