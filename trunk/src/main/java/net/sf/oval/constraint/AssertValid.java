@@ -36,12 +36,12 @@ public @interface AssertValid
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
 	 * 
-	 * <p><b>Default:</b> ConstraintTarget.VALUES
+	 * <p><b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES
 	 * 
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
-	ConstraintTarget[] appliesTo() default ConstraintTarget.VALUES;
-	
+	ConstraintTarget[] appliesTo() default {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
