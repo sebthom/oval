@@ -177,6 +177,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CollectionTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConditionalConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
