@@ -53,7 +53,7 @@ public abstract class AbstractCheck implements Check
 	 */
 	public ConstraintTarget[] getAppliesTo()
 	{
-		return targets == null ? new ConstraintTarget[]{ConstraintTarget.VALUES} : targets;
+		return targets == null ? new ConstraintTarget[]{ConstraintTarget.CONTAINER} : targets;
 	}
 
 	/**

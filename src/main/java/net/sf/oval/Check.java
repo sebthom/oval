@@ -28,7 +28,7 @@ public interface Check extends Serializable
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
 	 * 
-	 * <p><b>Default:</b> ConstraintTarget.VALUES
+	 * <p><b>Default:</b> ConstraintTarget.CONTAINER
 	 * 
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
