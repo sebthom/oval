@@ -102,10 +102,10 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 	{
 		if (o == this) return true;
 
-		if (!(o instanceof Set)) return false;
+		if (!(o instanceof Set< ? >)) return false;
 
-		@SuppressWarnings("unchecked")
-		final Set set = (Set) o;
+		final Set< ? > set = (Set< ? >) o;
+		
 		if (set.size() != size()) return false;
 
 		return containsAll(set);
@@ -120,10 +120,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		int hash = 0;
 		for (final E e : map.keySet())
 		{
-			if (e != null)
-			{
-				hash += e.hashCode();
-			}
+			if (e != null) hash += e.hashCode();
 		}
 		return hash;
 	}

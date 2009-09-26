@@ -191,7 +191,7 @@ public class XMLConfigurationTest extends TestCase
 		 * test XML de/serialization
 		 */
 		final String xmlConfig = x.toXML();
-		 System.out.println(xmlConfig);
+		// System.out.println(xmlConfig);
 		x.fromXML(xmlConfig);
 		validateUser(new Validator(x));
 	}

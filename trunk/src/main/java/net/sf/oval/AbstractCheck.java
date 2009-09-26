@@ -53,7 +53,17 @@ public abstract class AbstractCheck implements Check
 	 */
 	public ConstraintTarget[] getAppliesTo()
 	{
-		return targets == null ? new ConstraintTarget[]{ConstraintTarget.CONTAINER} : targets;
+		return targets == null ? getAppliesToDefault() : targets;
+	}
+
+	/**
+	 * 
+	 * @return the default behavior when the constraint is validated for a array/map/collection reference.
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		// default behavior is only validate the array/map/collection reference and not the contained keys/values
+		return new ConstraintTarget[]{ConstraintTarget.CONTAINER};
 	}
 
 	/**

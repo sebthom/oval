@@ -1,6 +1,6 @@
 New and Noteworthy
 
-* Version 1.40-SNAPSHOT
+* Version 1.40 (2009-09-27)
 
 ** New Features and Improvements
 
@@ -21,6 +21,8 @@ New and Noteworthy
  * fixed [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
 
  * corrected checking of BigDecimal by @NotNegative constraint (thanks to Saleem)
+ 
+ * fixed [ 2799870 ] Wrong escaped unicode sequences in Messages_de.properties
  
 * Version 1.32 (2009-05-10)
 

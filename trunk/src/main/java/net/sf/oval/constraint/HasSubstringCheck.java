@@ -17,6 +17,7 @@ import static net.sf.oval.Validator.getCollectionFactory;
 import java.util.Locale;
 import java.util.Map;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -56,6 +57,14 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 		return messageVariables;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * @return the substring
 	 */

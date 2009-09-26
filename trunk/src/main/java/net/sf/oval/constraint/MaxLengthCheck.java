@@ -16,6 +16,7 @@ import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.util.Map;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -37,6 +38,14 @@ public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength>
 	{
 		super.configure(constraintAnnotation);
 		setMax(constraintAnnotation.value());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
 
 	/**

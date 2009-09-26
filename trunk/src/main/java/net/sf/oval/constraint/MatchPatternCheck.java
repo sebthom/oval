@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -58,6 +59,14 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern>
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * @return the pattern
 	 */

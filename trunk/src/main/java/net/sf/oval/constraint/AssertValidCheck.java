@@ -50,6 +50,15 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+	}
+	
+	
+	/**
 	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
 	 *  @throws UnsupportedOperationException always thrown if this method is invoked

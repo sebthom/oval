@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -70,6 +71,14 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 		return messageVariables;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * @return the format
 	 */

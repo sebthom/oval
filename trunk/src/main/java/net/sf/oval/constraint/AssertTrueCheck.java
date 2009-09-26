@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -22,7 +23,15 @@ import net.sf.oval.context.OValContext;
 public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
 {
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
