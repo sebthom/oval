@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.40-SNAPSHOT</version>
+	<version>1.40</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -458,6 +458,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<dest>${project.build.directory}/classes</dest>
 					<src>${basedir}/src/main/resources</src>
 					<includes>**/*.properties</includes>
+					<excludes>**/Messages_de.properties</excludes>
+					
 					<!--<encoding>UTF8</encoding>-->
 				</configuration>
 			</plugin>

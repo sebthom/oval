@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -37,6 +38,14 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 		setTolerance(constraintAnnotation.tolerance());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * @return the tolerance
 	 */

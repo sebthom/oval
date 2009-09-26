@@ -23,6 +23,7 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -118,7 +119,15 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		setConnect(constraintAnnotation.connect());
 		setPermittedURISchemes(constraintAnnotation.permittedURISchemes());
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * Gets the allowed URL schemes.
 	 * @return the permittedURISchemes

@@ -35,11 +35,11 @@ public @interface AssertConstraintSet
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
 	 * 
-	 * <p><b>Default:</b> ConstraintTarget.VALUES
+	 * <p><b>Default:</b> ConstraintTarget.CONTAINER
 	 * 
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
-	ConstraintTarget[] appliesTo() default ConstraintTarget.VALUES;
+	ConstraintTarget[] appliesTo() default ConstraintTarget.CONTAINER;
 	
 	/**
 	 * The id of the constraint set to apply here<br>

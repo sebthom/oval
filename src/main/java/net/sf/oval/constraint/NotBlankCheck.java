@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -23,6 +24,14 @@ public class NotBlankCheck extends AbstractAnnotationCheck<NotEmpty>
 {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.VALUES};
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
