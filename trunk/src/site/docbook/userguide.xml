@@ -1746,6 +1746,13 @@ v.validate(p);
 
     <itemizedlist>
       <listitem>
+        <para>Diseño por Contrato con OVal y Spring [Design by Contract with OVal and Spring] (2009)</para>
+
+        <para><ulink url="http://www.dosideas.com/java/562-diseno-por-contrato-con-oval-y-spring.html">http://www.dosideas.com/java/562-diseno-por-contrato-con-oval-y-spring.html</ulink></para>
+        <para><ulink url="http://translate.google.com/translate?u=http%3A%2F%2Fwww.dosideas.com%2Fjava%2F562-diseno-por-contrato-con-oval-y-spring.html&amp;sl=es&amp;tl=en">English Translation</ulink></para>
+      </listitem>
+      
+      <listitem>
         <para>OVal Blog Entry Series at the "JEE, BPEL, SOA" blog
         (2008)</para>
 
