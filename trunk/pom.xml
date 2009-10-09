@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.40</version>
+	<version>1.41-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -23,7 +23,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<name>The OVal Development Team</name>
 		<url>http://oval.sf.net/</url>
 	</organization>
-	
+
 	<licenses>
 		<license>
 			<name>Eclipse Public License - v 1.0</name>
@@ -32,7 +32,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<url>http://oval.sf.net/license/epl-v10.txt</url>
 		</license>
 	</licenses>
-	
+
 	<developers>
 		<developer>
 			<id>sebthom</id>
@@ -54,7 +54,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<timezone>-1</timezone>
 		</developer>
 	</developers>
-	
+
 	<contributors>
 		<contributor>
 			<name>Mirko Humbert</name>
@@ -64,13 +64,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</roles>
 		</contributor>
 	</contributors>
-	
+
 	<scm>
 		<url>http://oval.svn.sourceforge.net/viewvc/oval/trunk</url>
 		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk</connection>
 		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk</developerConnection>
 	</scm>
-	
+
 	<mailingLists>
 		<mailingList>
 			<name>Help</name>
@@ -127,7 +127,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<version.java>1.5</version.java>
 		<version.aspectj>1.6.2</version.aspectj>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -459,7 +459,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<src>${basedir}/src/main/resources</src>
 					<includes>**/*.properties</includes>
 					<excludes>**/Messages_de.properties</excludes>
-					
+
 					<!--<encoding>UTF8</encoding>-->
 				</configuration>
 			</plugin>

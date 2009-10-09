@@ -132,6 +132,42 @@ public class Validator implements IValidator
 			return new CollectionFactoryJDKImpl();
 	}
 
+	protected static final class DelegatingParameterNameResolver implements ParameterNameResolver
+	{
+		private ParameterNameResolver delegate;
+
+		public DelegatingParameterNameResolver(ParameterNameResolver delegate)
+		{
+			this.delegate = delegate;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String[] getParameterNames(Constructor< ? > constructor) throws ReflectionException
+		{
+			return delegate.getParameterNames(constructor);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String[] getParameterNames(Method method) throws ReflectionException
+		{
+			return delegate.getParameterNames(method);
+		}
+
+		public ParameterNameResolver getDelegate()
+		{
+			return delegate;
+		}
+
+		public void setDelegate(ParameterNameResolver delegate)
+		{
+			this.delegate = delegate;
+		}
+	}
+
 	/**
 	 * Returns a shared instance of the CollectionFactory
 	 */
@@ -226,7 +262,7 @@ public class Validator implements IValidator
 	 */
 	private boolean isProfilesFeatureUsed = false;
 
-	protected ParameterNameResolver parameterNameResolver = new ParameterNameResolverEnumerationImpl();
+	protected final DelegatingParameterNameResolver parameterNameResolver = new DelegatingParameterNameResolver(new ParameterNameResolverEnumerationImpl());
 
 	/**
 	 * Constructs a new validator instance and uses a new instance of AnnotationsConfigurer
@@ -1061,7 +1097,7 @@ public class Validator implements IValidator
 
 			if (cc == null)
 			{
-				cc = new ClassChecks(clazz);
+				cc = new ClassChecks(clazz, this.parameterNameResolver);
 
 				for (final Configurer configurer : configurers)
 				{
