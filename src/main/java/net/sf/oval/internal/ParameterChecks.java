@@ -1,9 +1,6 @@
-/********************************import java.util.Set;
-
-import net.sf.oval.Check;
-import net.sf.oval.CheckExclusion;
-import net.sf.oval.internal.util.LinkedSet;
- Thomschke.
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
+ * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,17 +35,15 @@ public class ParameterChecks
 
 	public final OValContext context;
 
-	public ParameterChecks(Constructor< ? > ctor, int paramIndex)
+	public ParameterChecks(Constructor< ? > ctor, int paramIndex, String paramName)
 	{
-		//TODO
-		context = new ConstructorParameterContext(ctor, paramIndex, "TODO");
+		context = new ConstructorParameterContext(ctor, paramIndex, paramName);
 		this.parameterIndex = paramIndex;
 	}
 
-	public ParameterChecks(Method method, int paramIndex)
+	public ParameterChecks(Method method, int paramIndex, String paramName)
 	{
-		//TODO
-		context = new MethodParameterContext(method, paramIndex, "TODO");
+		context = new MethodParameterContext(method, paramIndex, paramName);
 		this.parameterIndex = paramIndex;
 	}
 

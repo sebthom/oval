@@ -26,6 +26,7 @@ import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.IsGuarded;
+import net.sf.oval.guard.ParameterNameResolver;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.util.ArrayUtils;
@@ -111,16 +112,19 @@ public class ClassChecks
 
 	public final Set<Method> methodsWithCheckInvariantsPre = getCollectionFactory().createSet();
 
+	private final ParameterNameResolver parameterNameResolver;
+
 	/**
 	 * package constructor used by the Validator class
 	 * 
 	 * @param clazz
 	 */
-	public ClassChecks(final Class< ? > clazz)
+	public ClassChecks(final Class< ? > clazz, final ParameterNameResolver parameterNameResolver)
 	{
 		LOG.debug("Initializing constraints configuration for class {1}", clazz);
 
 		this.clazz = clazz;
+		this.parameterNameResolver = parameterNameResolver;
 	}
 
 	private void _addConstructorParameterCheckExclusions(final Constructor< ? > constructor, final int parameterIndex,
@@ -394,7 +398,8 @@ public class ClassChecks
 			ParameterChecks checksOfConstructorParameter = checksOfConstructorByParameter.get(paramIndex);
 			if (checksOfConstructorParameter == null)
 			{
-				checksOfConstructorParameter = new ParameterChecks(ctor, paramIndex);
+				checksOfConstructorParameter = new ParameterChecks(ctor, paramIndex, parameterNameResolver
+						.getParameterNames(ctor)[paramIndex]);
 				checksOfConstructorByParameter.put(paramIndex, checksOfConstructorParameter);
 			}
 
@@ -424,7 +429,8 @@ public class ClassChecks
 			ParameterChecks checksOfMethodParameter = checksOfMethodByParameter.get(paramIndex);
 			if (checksOfMethodParameter == null)
 			{
-				checksOfMethodParameter = new ParameterChecks(method, paramIndex);
+				checksOfMethodParameter = new ParameterChecks(method, paramIndex, parameterNameResolver
+						.getParameterNames(method)[paramIndex]);
 				checksOfMethodByParameter.put(paramIndex, checksOfMethodParameter);
 			}
 

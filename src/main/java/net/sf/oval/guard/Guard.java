@@ -1280,7 +1280,7 @@ public class Guard extends Validator
 	{
 		Assert.notNull("parameterNameResolver", parameterNameResolver);
 
-		this.parameterNameResolver = parameterNameResolver;
+		this.parameterNameResolver.setDelegate(parameterNameResolver);
 	}
 
 	/**
