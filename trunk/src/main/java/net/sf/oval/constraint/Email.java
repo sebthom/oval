@@ -48,14 +48,14 @@ public @interface Email
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraint.EMail";
+	String errorCode() default "net.sf.oval.constraint.Email";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraint.EMail.violated";
+	String message() default "net.sf.oval.constraint.Email.violated";
 
 	/**
 	 * The associated constraint profiles.

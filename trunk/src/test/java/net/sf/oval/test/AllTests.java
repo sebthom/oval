@@ -180,6 +180,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.CollectionTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConditionalConstraintsTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationMessagesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.FieldConstraintsValidationTest.class);
