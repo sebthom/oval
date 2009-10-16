@@ -5,6 +5,7 @@
 2009-??-?? v1.41
 ================
 * upgraded to AspectJ 1.6.6, JUnit 4.7
+- fixed [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
 
 2009-09-27 v1.40
 ================

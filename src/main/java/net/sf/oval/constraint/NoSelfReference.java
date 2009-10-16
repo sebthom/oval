@@ -53,7 +53,7 @@ public @interface NoSelfReference
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraint.NotSelfRef.violated";
+	String message() default "net.sf.oval.constraint.NoSelfReference.violated";
 
 	/**
 	 * severity passed to the ConstraintViolation object
