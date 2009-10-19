@@ -12,9 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
@@ -28,9 +26,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
 public class ConstraintViolationMessagesTest extends TestCase
 {
 
-	public void testMessages() throws IOException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException,
-			NoSuchMethodException
+	public void testMessages() throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
 		ResourceBundle bundle = ResourceBundle.getBundle("net.sf.oval.Messages");
 		for (Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();)
@@ -48,9 +44,9 @@ public class ConstraintViolationMessagesTest extends TestCase
 						.getDefaultValue();
 				assertEquals(key, annotationMessage);
 				String annotationErrorCode = (String) ReflectionUtils.getMethod(annotationClass, "errorCode")
-				.getDefaultValue();
+						.getDefaultValue();
 				assertEquals(className, annotationErrorCode);
-				
+
 				// check that the message key returned by the check instance is the same as the key read from the bundle
 				Check check = (Check) Class.forName(className + "Check").newInstance();
 				assertEquals(key, check.getMessage());
