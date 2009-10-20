@@ -20,6 +20,7 @@
 + added ConstraintViolation.getCheckDeclaringContext() (thanks to Eric Lewis)
 + added appliesTo() attribute to constraints allowing to control if and how validation should be applied to childs of arrays, maps and collections (thanks to tomtran711)
 - fixed [ 2799870 ] Wrong escaped unicode sequences in Messages_de.properties
+- fixed [ 2865777 ] Wrong English error message for MinLength
 
 2009-05-10 v1.32
 ================
