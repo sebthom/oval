@@ -30,6 +30,7 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
 import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.context.FieldContext;
 
 /**
  * @author Sebastian Thomschke
@@ -38,7 +39,7 @@ public class AssertValidTest extends TestCase
 {
 	protected static class Address
 	{
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		public String street;
 
 		@NotNull
@@ -100,7 +101,8 @@ public class AssertValidTest extends TestCase
 		assertEquals(1, violations.size());
 		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
 		assertEquals(a, violations.get(0).getInvalidValue());
-
+		assertEquals("NOT_NULL", violations.get(0).getCauses()[0].getMessage());
+		assertEquals("street", ((FieldContext) violations.get(0).getCauses()[0].getContext()).getField().getName());
 		a.street = "The Street";
 		a.city = "The City";
 		a.zipCode = "12345";
