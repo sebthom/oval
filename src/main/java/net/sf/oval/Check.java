@@ -38,7 +38,7 @@ public interface Check extends Serializable
 	 * @return Returns the context where the constraint was declared.
 	 * 
 	 * @see net.sf.oval.context.ClassContext
-	 * @see net.sf.oval.context.ConstraintSet
+	 * @see net.sf.oval.context.ConstraintSetContext
 	 * @see net.sf.oval.context.FieldContext
 	 * @see net.sf.oval.context.MethodEntryContext
 	 * @see net.sf.oval.context.MethodExitContext
