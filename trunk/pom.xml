@@ -508,6 +508,22 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 
 			<!-- ********************************************************************* -->
+			<!-- phase: test -->
+			<!-- ********************************************************************* -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<excludes>
+						<exclude>**/TestGuardAspect*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+
+
+			<!-- ********************************************************************* -->
 			<!-- phase: package -->
 			<!-- ********************************************************************* -->
 			<plugin>
