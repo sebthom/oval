@@ -43,8 +43,6 @@ public class JPAAnnotationsConfigurerTest extends TestCase
 		@Column(length = 4)
 		public String code;
 
-		// -> @NotNull
-		@Column(nullable = false)
 		public String description;
 
 		// -> @NotNull & @AssertValid
@@ -58,6 +56,13 @@ public class JPAAnnotationsConfigurerTest extends TestCase
 		// -> @AssertValid
 		@OneToMany
 		public Collection<TestEntity> refs;
+
+		// -> @NotNull
+		@Column(nullable = false)
+		public String getDescription()
+		{
+			return description;
+		}
 	}
 
 	public void testJPAAnnotationsConfigurer()
