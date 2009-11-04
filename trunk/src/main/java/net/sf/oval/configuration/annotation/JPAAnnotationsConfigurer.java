@@ -15,7 +15,9 @@ package net.sf.oval.configuration.annotation;
 import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,10 +36,13 @@ import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
+import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
+import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.constraint.RangeCheck;
+import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * Constraints configurer that interprets certain EJB3 JPA annotations:
@@ -53,9 +58,6 @@ import net.sf.oval.constraint.RangeCheck;
  */
 public class JPAAnnotationsConfigurer implements Configurer
 {
-	private static final NotNullCheck NOT_NULL = new NotNullCheck();
-	private static final AssertValidCheck ASSERT_VALID = new AssertValidCheck();
-
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;
 
@@ -89,7 +91,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 			{
 				if (annotation instanceof Basic)
 				{
-					initializeChecks((Basic) annotation, checks, field);
+					initializeChecks((Basic) annotation, checks);
 				}
 				else if (annotation instanceof Column)
 				{
@@ -97,19 +99,19 @@ public class JPAAnnotationsConfigurer implements Configurer
 				}
 				else if (annotation instanceof OneToOne)
 				{
-					initializeChecks((OneToOne) annotation, checks, field);
+					initializeChecks((OneToOne) annotation, checks);
 				}
 				else if (annotation instanceof ManyToOne)
 				{
-					initializeChecks((ManyToOne) annotation, checks, field);
+					initializeChecks((ManyToOne) annotation, checks);
 				}
 				else if (annotation instanceof ManyToMany)
 				{
-					initializeChecks((ManyToMany) annotation, checks, field);
+					initializeChecks((ManyToMany) annotation, checks);
 				}
 				else if (annotation instanceof OneToMany)
 				{
-					initializeChecks((OneToMany) annotation, checks, field);
+					initializeChecks((OneToMany) annotation, checks);
 				}
 			}
 			if (checks.size() > 0)
@@ -125,6 +127,65 @@ public class JPAAnnotationsConfigurer implements Configurer
 				config.fieldConfigurations.add(fc);
 			}
 		}
+
+		/*
+		 * determine getter checks
+		 */
+		for (final Method method : config.type.getDeclaredMethods())
+		{
+			// consider getters only 
+			if (!ReflectionUtils.isGetter(method)) continue;
+
+			final List<Check> checks = getCollectionFactory().createList(2);
+
+			// loop over all annotations
+			for (final Annotation annotation : method.getAnnotations())
+			{
+				if (annotation instanceof Basic)
+				{
+					initializeChecks((Basic) annotation, checks);
+				}
+				else if (annotation instanceof Column)
+				{
+					initializeChecks((Column) annotation, checks, method);
+				}
+				else if (annotation instanceof OneToOne)
+				{
+					initializeChecks((OneToOne) annotation, checks);
+				}
+				else if (annotation instanceof ManyToOne)
+				{
+					initializeChecks((ManyToOne) annotation, checks);
+				}
+				else if (annotation instanceof ManyToMany)
+				{
+					initializeChecks((ManyToMany) annotation, checks);
+				}
+				else if (annotation instanceof OneToMany)
+				{
+					initializeChecks((OneToMany) annotation, checks);
+				}
+			}
+
+			// check if anything has been configured for this method at all
+			if (checks.size() > 0)
+			{
+				if (config.methodConfigurations == null)
+				{
+					config.methodConfigurations = getCollectionFactory().createSet(2);
+				}
+
+				final MethodConfiguration mc = new MethodConfiguration();
+				mc.name = method.getName();
+				mc.isInvariant = true;
+				if (checks.size() > 0)
+				{
+					mc.returnValueConfiguration = new MethodReturnValueConfiguration();
+					mc.returnValueConfiguration.checks = checks;
+				}
+				config.methodConfigurations.add(mc);
+			}
+		}
 		return config;
 	}
 
@@ -136,18 +197,19 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return null;
 	}
 
-	protected void initializeChecks(final Basic annotation, final Collection<Check> checks, final Field field)
+	protected void initializeChecks(final Basic annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
 
 		if (!annotation.optional())
 		{
-			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
+			checks.add(new NotNullCheck());
 		}
 	}
 
-	protected void initializeChecks(final Column annotation, final Collection<Check> checks, final Field field)
+	protected void initializeChecks(final Column annotation, final Collection<Check> checks,
+			AccessibleObject fieldOrMethod)
 	{
 		assert annotation != null;
 		assert checks != null;
@@ -158,14 +220,14 @@ public class JPAAnnotationsConfigurer implements Configurer
 		 * Therefore and because of the fact that there is no generic way to determine if an entity 
 		 * has been persisted already, a not-null check will not be performed for such fields. 
 		 */
-		if (!annotation.nullable() && !field.isAnnotationPresent(GeneratedValue.class)
-				&& !field.isAnnotationPresent(Version.class))
+		if (!annotation.nullable() && !fieldOrMethod.isAnnotationPresent(GeneratedValue.class)
+				&& !fieldOrMethod.isAnnotationPresent(Version.class))
 		{
-			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
+			checks.add(new NotNullCheck());
 		}
 
 		// only consider length parameter if @Lob is not present
-		if (!field.isAnnotationPresent(Lob.class))
+		if (!fieldOrMethod.isAnnotationPresent(Lob.class))
 		{
 			final LengthCheck lengthCheck = new LengthCheck();
 			lengthCheck.setMax(annotation.length());
@@ -173,7 +235,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 
 		// only consider precision/scale for numeric fields
-		if (annotation.precision() > 0 && Number.class.isAssignableFrom(field.getType()))
+		if (annotation.precision() > 0
+				&& Number.class.isAssignableFrom(fieldOrMethod instanceof Field ? ((Field) fieldOrMethod).getType()
+						: ((Method) fieldOrMethod).getReturnType()))
 		{
 			/*
 			 * precision = 6, scale = 2  => -9999.99<=x<=9999.99
@@ -187,44 +251,44 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
-	protected void initializeChecks(final ManyToMany annotation, final Collection<Check> checks, final Field field)
+	protected void initializeChecks(final ManyToMany annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
 
-		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
+		checks.add(new AssertValidCheck());
 	}
 
-	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks, final Field field)
+	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
 
 		if (!annotation.optional())
 		{
-			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
+			checks.add(new NotNullCheck());
 		}
-		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
+		checks.add(new AssertValidCheck());
 	}
 
-	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks, final Field field)
+	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
 
-		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
+		checks.add(new AssertValidCheck());
 	}
 
-	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks, final Field field)
+	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks)
 	{
 		assert annotation != null;
 		assert checks != null;
 
 		if (!annotation.optional())
 		{
-			checks.add(JPAAnnotationsConfigurer.NOT_NULL);
+			checks.add(new NotNullCheck());
 		}
-		checks.add(JPAAnnotationsConfigurer.ASSERT_VALID);
+		checks.add(new AssertValidCheck());
 	}
 
 	/**
