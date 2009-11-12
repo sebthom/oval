@@ -878,8 +878,10 @@ public class Validator implements IValidator
 			else if (isArray)
 			{
 				if (valueToValidate != null && ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
-					for (final Object item : (Object[]) valueToValidate)
+				{
+					for (final Object item : ArrayUtils.arrayToList(valueToValidate))
 						checkConstraint(violations, check, validatedObject, item, context, profiles);
+				}
 			}
 		}
 		if (!isContainer || (isContainer && ArrayUtils.containsSame(targets, ConstraintTarget.CONTAINER)))
