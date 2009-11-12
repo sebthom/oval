@@ -13,7 +13,10 @@
 package net.sf.oval.internal.util;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Sebastian Thomschke
@@ -62,6 +65,79 @@ public final class ArrayUtils
 			if (t != null && t.equals(theItem)) return true;
 		}
 		return false;
+	}
+
+	public static List<Object> arrayToList(Object array)
+	{
+		Assert.notNull("array", array);
+
+		if (array instanceof Object[]) return Arrays.asList((Object[]) array);
+		if (array instanceof byte[])
+		{
+			byte[] arrayCasted = (byte[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (byte i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof char[])
+		{
+			char[] arrayCasted = (char[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (char i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof short[])
+		{
+			short[] arrayCasted = (short[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (short i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof int[])
+		{
+			int[] arrayCasted = (int[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (int i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof long[])
+		{
+			long[] arrayCasted = (long[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (long i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof double[])
+		{
+			double[] arrayCasted = (double[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (double i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof float[])
+		{
+			float[] arrayCasted = (float[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (float i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+		if (array instanceof boolean[])
+		{
+			boolean[] arrayCasted = (boolean[]) array;
+			List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (boolean i : arrayCasted)
+				result.add(i);
+			return result;
+		}
+
+		throw new IllegalArgumentException("Parameter [array] must be an array");
 	}
 
 	private ArrayUtils()

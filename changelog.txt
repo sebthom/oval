@@ -9,6 +9,7 @@
 - added missing violation message for @AssertValid (thanks to Eric Lewis)
 - fixed [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
 + JPAAnnotationsConfigurer now also interprets annotated getter methods
+- fixed [ oval-Bugs-2894631 ] ClassCastException when validating arrays
 
 2009-09-27 v1.40
 ================
