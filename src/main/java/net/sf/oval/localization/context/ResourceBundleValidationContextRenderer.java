@@ -37,11 +37,11 @@ import net.sf.oval.internal.Log;
  * <p>
  * The properties file is expected to have values following this scheme
  * <pre>
- * label.class=My translated name of the class
- * label.field.firstname=My translated name of firstname
- * label.field.lastname=My translated name of lastname
- * label.parameter.amount=My translated name of a constructor/method amount
- * label.method.increase=My translated name of the increase
+ * label.class=My translated name of the class name
+ * label.field.firstname=My translated name of the field "firstname"
+ * label.field.lastname=My translated name of the field "lastname"
+ * label.parameter.amount=My translated name of a constructor/method parameter "amount"
+ * label.method.increase=My translated name of the method "increase"
  * </pre>
  * @author Sebastian Thomschke
  */
