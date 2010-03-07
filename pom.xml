@@ -67,18 +67,22 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 	<scm>
 		<url>http://oval.svn.sourceforge.net/viewvc/oval/trunk</url>
-		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk</connection>
-		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk</developerConnection>
+		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk
+		</connection>
+		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk
+		</developerConnection>
 	</scm>
 
 	<mailingLists>
 		<mailingList>
 			<name>Help</name>
-			<archive>http://sourceforge.net/forum/forum.php?forum_id=488110</archive>
+			<archive>http://sourceforge.net/forum/forum.php?forum_id=488110
+			</archive>
 		</mailingList>
 		<mailingList>
 			<name>Open Discussion</name>
-			<archive>http://sourceforge.net/forum/forum.php?forum_id=488109</archive>
+			<archive>http://sourceforge.net/forum/forum.php?forum_id=488109
+			</archive>
 		</mailingList>
 	</mailingLists>
 
@@ -99,18 +103,22 @@ Besides field/property validation OVal implements Programming by Contract featur
 	</pluginRepositories>
 
 	<distributionManagement>
-		<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963</downloadUrl>
+		<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963
+		</downloadUrl>
 		<repository>
 			<id>oval-release</id>
-			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/mvn-repo/release</url>
+			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/mvn-repo/release
+			</url>
 		</repository>
 		<snapshotRepository>
 			<id>oval-snapshot</id>
-			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/mvn-repo/snapshot</url>
+			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/mvn-repo/snapshot
+			</url>
 		</snapshotRepository>
 		<site>
 			<id>oval-site</id>
-			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/site</url>
+			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/site
+			</url>
 		</site>
 	</distributionManagement>
 
@@ -123,16 +131,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8
+		</project.reporting.outputEncoding>
 		<version.java>1.5</version.java>
-		<version.aspectj>1.6.6</version.aspectj>
+		<version.aspectj>1.6.8</version.aspectj>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -174,7 +183,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.8</version>
+			<version>1.5.11</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -198,7 +207,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.jruby</groupId>
 			<artifactId>jruby</artifactId>
-			<version>1.3.1</version>
+			<version>1.4.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -265,13 +274,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel2</artifactId>
-			<version>2.0.13</version>
+			<version>2.0.16</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
-			<version>2.1</version>
+			<version>2.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -288,6 +297,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
+
+
 	<build>
 		<plugins>
 			<plugin>
@@ -305,11 +316,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: validate -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.0-beta-1</version>
 				<executions>
 					<execution>
 						<id>enforce-no-snapshots</id>
@@ -347,11 +364,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: generate-sources -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.3</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -360,7 +383,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 								<copy todir="${project.build.directory}">
 									<fileset dir="${basedir}" includes="README.txt" />
 								</copy>
-								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${pom.version}" />
+								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -371,9 +394,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: generate-resources -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
 				<!--
 					better docbook support see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin manual: mvn
@@ -381,6 +408,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				-->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.9</version>
 				<executions>
 					<execution>
 						<goals>
@@ -446,6 +474,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>native2ascii-maven-plugin</artifactId>
+				<version>1.0-alpha-1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -465,11 +494,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: compile -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.1</version>
 				<configuration>
 					<source>${version.java}</source>
 					<target>${version.java}</target>
@@ -478,6 +513,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.3</version>
 				<executions>
 					<execution>
 						<goals>
@@ -507,9 +543,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: test -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -522,28 +562,37 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: package -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3</version>
 				<configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile>-->
 					<archive>
-						<manifestFile>${basedir}/src/main/java/META-INF/MANIFEST.MF</manifestFile>
+						<manifestFile>${basedir}/src/main/java/META-INF/MANIFEST.MF
+						</manifestFile>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
-							<Bundle-Version>${pom.version}</Bundle-Version>
-							<Specification-Title>${pom.name}</Specification-Title>
-							<Specification-Version>${pom.version}</Specification-Version>
-							<Specification-Vendor>${pom.organization.name}</Specification-Vendor>
-							<Specification-URL>${pom.url}</Specification-URL>
-							<Implementation-Title>${pom.name}</Implementation-Title>
-							<Implementation-Version>${pom.version}</Implementation-Version>
-							<Implementation-Vendor-Id>${pom.groupId}</Implementation-Vendor-Id>
-							<Implementation-Vendor>${pom.organization.name}</Implementation-Vendor>
-							<Implementation-URL>${pom.url}</Implementation-URL>
+							<Bundle-Version>${project.version}</Bundle-Version>
+							<Specification-Title>${project.name}</Specification-Title>
+							<Specification-Version>${project.version}</Specification-Version>
+							<Specification-Vendor>${project.organization.name}
+							</Specification-Vendor>
+							<Specification-URL>${project.url}</Specification-URL>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor-Id>${project.groupId}
+							</Implementation-Vendor-Id>
+							<Implementation-Vendor>${project.organization.name}
+							</Implementation-Vendor>
+							<Implementation-URL>${project.url}</Implementation-URL>
 						</manifestEntries>
 					</archive>
 					<excludes>
@@ -563,7 +612,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!--
 					we are generating the site in the package phase because we want to include it in the distribution
 				-->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+				<version>2.1</version>
 				<dependencies>
 					<!--
 						docbook support, unfortunately very limited <dependency> <groupId>org.apache.maven.doxia</groupId>
@@ -590,12 +641,16 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
 				<configuration>
 					<descriptors>
 						<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
-						<descriptor>${basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
-						<descriptor>${basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
+						<descriptor>${basedir}/src/main/assembly/archive-with-dependencies.xml
+						</descriptor>
+						<descriptor>${basedir}/src/main/assembly/archive-without-dependencies.xml
+						</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
@@ -609,16 +664,22 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<!-- phase: manual execution -->
-			<!-- ********************************************************************* -->
+			<!--
+				*********************************************************************
+			-->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<classpathContainers>
 						<classpathContainer>
-							org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${version.java} 
+							org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${version.java}
 						</classpathContainer>
 					</classpathContainers>
 					<additionalProjectnatures>
@@ -635,9 +696,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<plugins>
 			<plugin>
 				<!-- Generate Javadoc for the project. -->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.6.1</version>
 				<configuration>
-					<stylesheetfile>${basedir}/src/site/javadoc/oval-javadoc.css</stylesheetfile>
+					<stylesheetfile>${basedir}/src/site/javadoc/oval-javadoc.css
+					</stylesheetfile>
 					<stylesheet>maven</stylesheet>
 					<linksource>true</linksource>
 					<links>
@@ -657,8 +721,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 			<plugin>
-				<!-- Creates an html-based, cross referenced version of Java source code for a project. -->
+				<!--
+					Creates an html-based, cross referenced version of Java source code
+					for a project.
+				-->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.1</version>
 				<configuration>
 					<linkJavadoc>true</linkJavadoc>
 					<javadocDir>api</javadocDir>
@@ -667,7 +736,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 			<plugin>
 				<!-- Generate a report based on the results of unit tests. -->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.5</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -681,12 +752,14 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- TODO, @todo list report -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
 			</plugin>
 
 			<plugin>
 				<!-- JUnit Code Coverage report -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.3</version>
 				<configuration>
 					<instrumentation>
 						<excludes>
@@ -699,11 +772,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
+				<version>2.0-beta-2</version>
 			</plugin>
 
 			<plugin>
-				<!-- This plugin produces a nicely formatted metrics report based on your project -->
+				<!--
+					This plugin produces a nicely formatted metrics report based on
+					your project
+				-->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<linkXref>true</linkXref>
 					<sourceEncoding>utf-8</sourceEncoding>
@@ -716,6 +795,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- FindBugs looks for bugs in Java programs -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.1</version>
 				<configuration>
 					<excludeFilterFile>${basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
 					<xmlOutput>true</xmlOutput>
@@ -724,7 +804,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.5</version>
 				<configuration>
 					<configLocation>${basedir}/src/misc/checkstyle-config.xml</configLocation>
 					<enableRSS>false</enableRSS>
@@ -740,11 +822,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 				-->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>dashboard-maven-plugin</artifactId>
+				<version>1.0.0-beta-1</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
+				<version>2.2.2</version>
 			</plugin>
 		</plugins>
 	</reporting>
