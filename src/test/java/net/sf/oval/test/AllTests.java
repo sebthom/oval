@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -29,10 +29,12 @@ public final class AllTests
 	private static void constraintsTests(final TestSuite suite) throws Exception
 	{
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertFalseTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.AssertNullTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.DateRangeTest.class);
+		suite.addTestSuite(net.sf.oval.test.constraints.DigitsTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.EmailTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.EqualToFieldTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);

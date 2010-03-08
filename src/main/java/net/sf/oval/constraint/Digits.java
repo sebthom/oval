@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -23,9 +23,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the array, map, or collection has the given size. 
- * 
- * For objects of other types the length of their String representation will be checked.
+ * Check if the String representation has the given max/min number of integral and fractional digits.
  * 
  * <br><br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
@@ -35,33 +33,37 @@ import net.sf.oval.configuration.annotation.Constraint;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = SizeCheck.class)
-public @interface Size
+@Constraint(checkWith = DigitsCheck.class)
+public @interface Digits
 {
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
 	 * 
-	 * <p><b>Default:</b> ConstraintTarget.CONTAINER
+	 * <p><b>Default:</b> ConstraintTarget.VALUES
 	 * 
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
-	ConstraintTarget[] appliesTo() default ConstraintTarget.CONTAINER;
+	ConstraintTarget[] appliesTo() default ConstraintTarget.VALUES;
 
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraint.Size";
+	String errorCode() default "net.sf.oval.constraint.Digits";
 
-	int max() default Integer.MAX_VALUE;
+	int maxFraction() default Integer.MAX_VALUE;
+
+	int maxInteger() default Integer.MAX_VALUE;
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraint.Size.violated";
+	String message() default "net.sf.oval.constraint.Digits.violated";
 
-	int min() default 0;
+	int minFraction() default 0;
+
+	int minInteger() default 0;
 
 	/**
 	 * The associated constraint profiles.

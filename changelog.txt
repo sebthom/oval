@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2009-??-?? v1.41
+2010-??-?? v1.50
 ================
 * upgraded to AspectJ 1.6.8, JUnit 4.8.1, SLF4J 1.5.11, MVEL 2.0.16, Paranamer 2.2, JRuby 1.4.0
 - fixed [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
@@ -10,6 +10,22 @@
 - fixed [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
 + JPAAnnotationsConfigurer now also interprets annotated getter methods
 - fixed [ oval-Bugs-2894631 ] ClassCastException when validating arrays
++ @Size now checks the length of the value's String representation if the value is not a map, a list, or an array
++ added @AssertNull, @Digits constraints
++ added BeanValidationAnnotationsConfigurer to translate standard JSR303 constraint annotations into OVal constraints
+    @javax.validation.constraints.AssertFalse    => net.sf.oval.constraint.AssertFalseCheck
+    @javax.validation.constraints.AssertTrue     => net.sf.oval.constraint.AssertTrueCheck
+    @javax.validation.constraints.DecimalMax     => net.sf.oval.constraint.MaxCheck
+    @javax.validation.constraints.DecimalMin     => net.sf.oval.constraint.MinCheck
+    @javax.validation.constraints.Digits         => net.sf.oval.constraint.DigitsCheck
+    @javax.validation.constraints.Future         => net.sf.oval.constraint.FutureCheck
+    @javax.validation.constraints.Max            => net.sf.oval.constraint.MaxCheck
+    @javax.validation.constraints.Min            => net.sf.oval.constraint.MinCheck
+    @javax.validation.constraints.NotNull        => net.sf.oval.constraint.NotNullCheck
+    @javax.validation.constraints.Null           => net.sf.oval.constraint.AssertNullCheck
+    @javax.validation.constraints.Past           => net.sf.oval.constraint.PastCheck
+    @javax.validation.constraints.Pattern        => net.sf.oval.constraint.PatternCheck
+    @javax.validation.Valid                      => net.sf.oval.constraint.AssertValidCheck
 
 2009-09-27 v1.40
 ================
