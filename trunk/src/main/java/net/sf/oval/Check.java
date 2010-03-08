@@ -33,7 +33,7 @@ public interface Check extends Serializable
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
 	ConstraintTarget[] getAppliesTo();
-	
+
 	/**
 	 * @return Returns the context where the constraint was declared.
 	 * 
@@ -69,7 +69,7 @@ public interface Check extends Serializable
 	 * A key "min" with a value "4" will replace the place holder {min} in an error message
 	 * like "Value cannot be smaller than {min}" with the string "4".
 	 */
-	Map<String, String> getMessageVariables();
+	Map<String, ? > getMessageVariables();
 
 	/**
 	 * @return the profiles, may return null
