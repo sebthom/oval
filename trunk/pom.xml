@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.41-SNAPSHOT</version>
+	<version>1.50-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -294,6 +294,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<groupId>trove</groupId>
 			<artifactId>trove</artifactId>
 			<version>2.0.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>

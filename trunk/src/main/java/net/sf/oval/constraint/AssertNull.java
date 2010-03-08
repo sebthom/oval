@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -23,45 +23,36 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the array, map, or collection has the given size. 
- * 
- * For objects of other types the length of their String representation will be checked.
- * 
- * <br><br>
- * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
+ * Check if null.
  * 
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(checkWith = SizeCheck.class)
-public @interface Size
+@Constraint(checkWith = AssertNullCheck.class)
+public @interface AssertNull
 {
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
 	 * 
-	 * <p><b>Default:</b> ConstraintTarget.CONTAINER
+	 * <p><b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES
 	 * 
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
-	ConstraintTarget[] appliesTo() default ConstraintTarget.CONTAINER;
-
+	ConstraintTarget[] appliesTo() default { ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+	
 	/**
 	 * error code passed to the ConstraintViolation object
 	 */
-	String errorCode() default "net.sf.oval.constraint.Size";
-
-	int max() default Integer.MAX_VALUE;
+	String errorCode() default "net.sf.oval.constraint.AssertNull";
 
 	/**
 	 * message to be used for the ContraintsViolatedException
 	 * 
 	 * @see ConstraintViolation
 	 */
-	String message() default "net.sf.oval.constraint.Size.violated";
-
-	int min() default 0;
+	String message() default "net.sf.oval.constraint.AssertNull.violated";
 
 	/**
 	 * The associated constraint profiles.

@@ -67,12 +67,12 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	{
 		if (valueToValidate == null) return true;
 
-		if (valueToValidate instanceof Collection)
+		if (valueToValidate instanceof Collection< ? >)
 		{
 			final int size = ((Collection< ? >) valueToValidate).size();
 			return size >= min && size <= max;
 		}
-		if (valueToValidate instanceof Map)
+		if (valueToValidate instanceof Map< ? , ? >)
 		{
 			final int size = ((Map< ? , ? >) valueToValidate).size();
 			return size >= min && size <= max;
@@ -82,7 +82,9 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 			final int size = Array.getLength(valueToValidate);
 			return size >= min && size <= max;
 		}
-		return false;
+		String str = valueToValidate.toString();
+		final int size = str.length();
+		return size >= min && size <= max;
 	}
 
 	/**
