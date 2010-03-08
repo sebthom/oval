@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 
 import net.sf.oval.Validator;
 import net.sf.oval.internal.util.StringUtils;
+import net.sf.oval.localization.value.MessageValueFormatter;
 
 /**
  * @author Sebastian Thomschke
@@ -24,7 +25,7 @@ import net.sf.oval.internal.util.StringUtils;
  */
 public final class MessageRenderer
 {
-	public static String renderMessage(final String messageKey, final Map<String, String> messageValues)
+	public static String renderMessage(final String messageKey, final Map<String, ? > messageValues)
 	{
 		String message = Validator.getMessageResolver().getMessage(messageKey);
 		if (message == null)
@@ -32,14 +33,17 @@ public final class MessageRenderer
 			message = messageKey;
 		}
 
+		final MessageValueFormatter formatter = Validator.getMessageValueFormatter();
+
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
 
 		if (messageValues != null && messageValues.size() > 0)
 		{
-			for (final Entry<String, String> entry : messageValues.entrySet())
+			for (final Entry<String, ? > entry : messageValues.entrySet())
 			{
-				message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", entry.getValue());
+				message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", formatter
+						.format(entry.getValue()));
 			}
 		}
 		return message;

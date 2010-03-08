@@ -40,7 +40,7 @@ public class ConstraintViolation implements Serializable
 	private transient Object invalidValue;
 	private final String message;
 	private final String messageTemplate;
-	private final Map<String, String> messageVariables;
+	private final Map<String, ? > messageVariables;
 
 	private final int severity;
 	private transient Object validatedObject;
@@ -54,13 +54,13 @@ public class ConstraintViolation implements Serializable
 	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
 			final Object invalidValue, final OValContext context, final ConstraintViolation... causes)
 	{
-		this.checkName = check.getClass().getName();
-		this.checkDeclaringContext = check.getContext();
-		this.errorCode = check.getErrorCode();
+		checkName = check.getClass().getName();
+		checkDeclaringContext = check.getContext();
+		errorCode = check.getErrorCode();
 		this.message = message;
-		this.messageTemplate = check.getMessage();
-		this.messageVariables = check.getMessageVariables();
-		this.severity = check.getSeverity();
+		messageTemplate = check.getMessage();
+		messageVariables = check.getMessageVariables();
+		severity = check.getSeverity();
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
@@ -70,13 +70,13 @@ public class ConstraintViolation implements Serializable
 	public ConstraintViolation(final Check check, final String message, final Object validatedObject,
 			final Object invalidValue, final OValContext context, final List<ConstraintViolation> causes)
 	{
-		this.checkName = check.getClass().getName();
-		this.checkDeclaringContext = check.getContext();
-		this.errorCode = check.getErrorCode();
+		checkName = check.getClass().getName();
+		checkDeclaringContext = check.getContext();
+		errorCode = check.getErrorCode();
 		this.message = message;
-		this.messageTemplate = check.getMessage();
-		this.messageVariables = check.getMessageVariables();
-		this.severity = check.getSeverity();
+		messageTemplate = check.getMessage();
+		messageVariables = check.getMessageVariables();
+		severity = check.getSeverity();
 		this.validatedObject = validatedObject;
 		this.invalidValue = invalidValue;
 		this.context = context;
@@ -167,7 +167,7 @@ public class ConstraintViolation implements Serializable
 	 * Returns the message variables provided by the corresponding check.
 	 * @return an unmodifiable map holding the message variables provided by the corresponding check.
 	 */
-	public Map<String, String> getMessageVariables()
+	public Map<String, ? > getMessageVariables()
 	{
 		return messageVariables;
 	}

@@ -32,8 +32,8 @@ public abstract class AbstractCheck implements Check
 	private OValContext context;
 	private String errorCode;
 	private String message;
-	private Map<String, String> messageVariables;
-	private Map<String, String> messageVariablesUnmodifiable;
+	private Map<String, ? > messageVariables;
+	private Map<String, ? > messageVariablesUnmodifiable;
 	private boolean messageVariablesUpToDate = true;
 
 	private String[] profiles;
@@ -43,7 +43,7 @@ public abstract class AbstractCheck implements Check
 	private String whenFormula;
 	private String whenLang;
 
-	protected Map<String, String> createMessageVariables()
+	protected Map<String, ? > createMessageVariables()
 	{
 		return null;
 	}
@@ -131,7 +131,7 @@ public abstract class AbstractCheck implements Check
 	 * 
 	 * @return an unmodifiable map
 	 */
-	public final Map<String, String> getMessageVariables()
+	public final Map<String, ? > getMessageVariables()
 	{
 		if (!messageVariablesUpToDate)
 		{
@@ -200,7 +200,7 @@ public abstract class AbstractCheck implements Check
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setAppliesTo(ConstraintTarget... targets)
+	public void setAppliesTo(final ConstraintTarget... targets)
 	{
 		this.targets = targets;
 	}
@@ -208,7 +208,7 @@ public abstract class AbstractCheck implements Check
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setContext(OValContext context)
+	public void setContext(final OValContext context)
 	{
 		this.context = context;
 	}
@@ -253,8 +253,8 @@ public abstract class AbstractCheck implements Check
 		if (when == null || when.length() == 0)
 		{
 			this.when = null;
-			this.whenFormula = null;
-			this.whenLang = null;
+			whenFormula = null;
+			whenLang = null;
 		}
 		else
 		{

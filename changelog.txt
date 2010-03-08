@@ -26,6 +26,7 @@
     @javax.validation.constraints.Past           => net.sf.oval.constraint.PastCheck
     @javax.validation.constraints.Pattern        => net.sf.oval.constraint.PatternCheck
     @javax.validation.Valid                      => net.sf.oval.constraint.AssertValidCheck
++ implemented [ oval-Bugs-2907399] added MessageValueFormatter and Validator.setMessageValueFormatter()
 
 2009-09-27 v1.40
 ================
