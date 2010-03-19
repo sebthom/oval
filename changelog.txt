@@ -27,6 +27,7 @@
     @javax.validation.constraints.Pattern        => net.sf.oval.constraint.PatternCheck
     @javax.validation.Valid                      => net.sf.oval.constraint.AssertValidCheck
 + implemented [ oval-Bugs-2907399] added MessageValueFormatter and Validator.setMessageValueFormatter()
+- fixed [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
 
 2009-09-27 v1.40
 ================

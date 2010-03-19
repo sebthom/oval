@@ -43,10 +43,13 @@ import net.sf.oval.constraint.AssertCheck;
 import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.AssertFalseCheck;
 import net.sf.oval.constraint.AssertFieldConstraintsCheck;
+import net.sf.oval.constraint.AssertNullCheck;
 import net.sf.oval.constraint.AssertTrueCheck;
 import net.sf.oval.constraint.AssertURLCheck;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.CheckWithCheck;
+import net.sf.oval.constraint.DateRangeCheck;
+import net.sf.oval.constraint.DigitsCheck;
 import net.sf.oval.constraint.EmailCheck;
 import net.sf.oval.constraint.EqualToFieldCheck;
 import net.sf.oval.constraint.FutureCheck;
@@ -67,6 +70,7 @@ import net.sf.oval.constraint.NotBlankCheck;
 import net.sf.oval.constraint.NotEmptyCheck;
 import net.sf.oval.constraint.NotEqualCheck;
 import net.sf.oval.constraint.NotEqualToFieldCheck;
+import net.sf.oval.constraint.NotMatchPatternCheck;
 import net.sf.oval.constraint.NotMemberOfCheck;
 import net.sf.oval.constraint.NotNegativeCheck;
 import net.sf.oval.constraint.NotNullCheck;
@@ -124,7 +128,10 @@ public class XMLConfigurer implements Configurer
 			writer.addAttribute("message", assertCheck.getMessage());
 			writer.addAttribute("errorCode", assertCheck.getErrorCode());
 			writer.addAttribute("severity", Integer.toString(assertCheck.getSeverity()));
-			if (assertCheck.getWhen() != null) writer.addAttribute("when", assertCheck.getWhen());
+			if (assertCheck.getWhen() != null)
+			{
+				writer.addAttribute("when", assertCheck.getWhen());
+			}
 			writer.startNode("expr");
 			writer.setValue(assertCheck.getExpr());
 			writer.endNode();
@@ -253,6 +260,7 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("assertConstraintSet", AssertConstraintSetCheck.class);
 		xStream.alias("assertFalse", AssertFalseCheck.class);
 		xStream.alias("assertFieldConstraints", AssertFieldConstraintsCheck.class);
+		xStream.alias("assertNull", AssertNullCheck.class);
 		xStream.alias("assertTrue", AssertTrueCheck.class);
 		{
 			xStream.alias("assertURL", AssertURLCheck.class);
@@ -261,6 +269,8 @@ public class XMLConfigurer implements Configurer
 		}
 		xStream.alias("assertValid", AssertValidCheck.class);
 		xStream.alias("checkWith", CheckWithCheck.class);
+		xStream.alias("dateRange", DateRangeCheck.class);
+		xStream.alias("digits", DigitsCheck.class);
 		xStream.alias("email", EmailCheck.class);
 		xStream.alias("equalToField", EqualToFieldCheck.class);
 		xStream.alias("future", FutureCheck.class);
@@ -285,6 +295,10 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("notEmpty", NotEmptyCheck.class);
 		xStream.alias("notEqual", NotEqualCheck.class);
 		xStream.alias("notEqualToField", NotEqualToFieldCheck.class);
+		{
+			xStream.alias("notMatchPattern", NotMatchPatternCheck.class);
+			xStream.addImplicitCollection(NotMatchPatternCheck.class, "patterns", Pattern.class);
+		}
 		xStream.alias("notMemberOf", NotMemberOfCheck.class);
 		xStream.alias("notNegative", NotNegativeCheck.class);
 		xStream.alias("notNull", NotNullCheck.class);
