@@ -367,6 +367,42 @@
 		</annotation>
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="appliesTo">
+						<annotation>
+							<documentation>
+								In case the constraint is declared for an array, collection or map this controls how
+								the constraint
+								is applied to it and it's child objects.</documentation>
+						</annotation>
+						<complexType>
+							<sequence>
+								<element name="constraintTarget" minOccurs="0" maxOccurs="unbounded">
+									<simpleType>
+										<restriction base="string">
+											<enumeration value="CONTAINER">
+												<annotation>
+													<documentation>apply the constraint to the collection / map / array object itself</documentation>
+												</annotation>
+											</enumeration>
+											<enumeration value="KEYS">
+												<annotation>
+													<documentation>apply the constraint to the keys of a map</documentation>
+												</annotation>
+											</enumeration>
+											<enumeration value="VALUES">
+												<annotation>
+													<documentation>apply the constraint to the values of a the map / the items of the collection / the elements
+														of the array</documentation>
+												</annotation>
+											</enumeration>
+										</restriction>
+									</simpleType>
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+				</choice>
 				<attribute name="id" type="IDREF" use="required" />
 				<!-- TODO -->
 				<attribute name="source" type="string" use="optional" />
