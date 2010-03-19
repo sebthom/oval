@@ -29,6 +29,7 @@
 + implemented [ oval-Bugs-2907399] added MessageValueFormatter and Validator.setMessageValueFormatter()
 - fixed [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
 - fixed [ oval-Bugs-2973323 ] XSD scheme is not complete
+- fixed [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
 
 2009-09-27 v1.40
 ================
