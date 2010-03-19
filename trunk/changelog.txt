@@ -30,6 +30,7 @@
 - fixed [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
 - fixed [ oval-Bugs-2973323 ] XSD scheme is not complete
 - fixed [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
+- fixed [ oval-Bugs-2973339 ] Defaults are not applied to checks
 
 2009-09-27 v1.40
 ================

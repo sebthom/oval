@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -20,6 +20,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -27,7 +31,10 @@ import java.util.regex.Pattern;
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
 import net.sf.oval.ConstraintTarget;
+import net.sf.oval.Validator;
 import net.sf.oval.configuration.Configurer;
+import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
+import net.sf.oval.configuration.annotation.Constraint;
 import net.sf.oval.configuration.pojo.POJOConfigurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
@@ -84,6 +91,7 @@ import net.sf.oval.constraint.exclusion.NullableExclusion;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
+import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -91,6 +99,7 @@ import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -103,7 +112,6 @@ import com.thoughtworks.xstream.mapper.Mapper;
  * XStream (http://xstream.codehaus.org/) based XML configuration class.
  * 
  * @author Sebastian Thomschke
- * 
  */
 public class XMLConfigurer implements Configurer
 {
@@ -245,6 +253,52 @@ public class XMLConfigurer implements Configurer
 		}
 	}
 
+	/**
+	 * This reflection provider applies default values declared on constraint annotations to the corresponding check class
+	 */
+	protected static final class XStreamReflectionProvider extends Sun14ReflectionProvider
+	{
+		@Override
+		@SuppressWarnings("unchecked")
+		public Object newInstance(final Class type)
+		{
+			final Object instance = super.newInstance(type);
+
+			// test if a AnnotationCheck instance is requested 
+			if (instance instanceof AbstractAnnotationCheck)
+			{
+				// determine the constraint annotation
+				Class<Annotation> constraintAnnotation = null;
+				final ParameterizedType genericSuperclass = (ParameterizedType) type.getGenericSuperclass();
+				for (final Type genericType : genericSuperclass.getActualTypeArguments())
+				{
+					final Class genericClass = (Class) genericType;
+					if (genericClass.isAnnotation() && genericClass.isAnnotationPresent(Constraint.class))
+					{
+						constraintAnnotation = genericClass;
+						break;
+					}
+				}
+				// in case we could determine the constraint annotation, read the attributes and 
+				// apply the declared default values to the check instance
+				if (constraintAnnotation != null)
+				{
+					for (final Method m : constraintAnnotation.getMethods())
+					{
+						final Object defaultValue = m.getDefaultValue();
+						if (defaultValue != null)
+						{
+							ReflectionUtils.setViaSetter(instance, m.getName(), defaultValue);
+						}
+					}
+				}
+			}
+			return instance;
+		}
+	}
+
+	private static final Log LOG = Log.getLog(Validator.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
@@ -259,14 +313,12 @@ public class XMLConfigurer implements Configurer
 	 */
 	public XMLConfigurer()
 	{
-		// new com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider()
-
 		final HierarchicalStreamDriver xmlDriver = //
 		ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader") ? new StaxDriver() : //
 				ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
 						new DomDriver();
-
-		xStream = new XStream(xmlDriver);
+		LOG.info("XML driver implementation: {1}", xmlDriver.getClass().getName());
+		xStream = new XStream(new XStreamReflectionProvider(), xmlDriver);
 		configureXStream();
 	}
 
