@@ -38,7 +38,7 @@ public abstract class AbstractCheck implements Check
 
 	private String[] profiles;
 	private int severity;
-	private ConstraintTarget[] targets;
+	private ConstraintTarget[] appliesTo;
 	private String when;
 	private String whenFormula;
 	private String whenLang;
@@ -53,7 +53,7 @@ public abstract class AbstractCheck implements Check
 	 */
 	public ConstraintTarget[] getAppliesTo()
 	{
-		return targets == null ? getAppliesToDefault() : targets;
+		return appliesTo == null ? getAppliesToDefault() : appliesTo;
 	}
 
 	/**
@@ -202,7 +202,7 @@ public abstract class AbstractCheck implements Check
 	 */
 	public void setAppliesTo(final ConstraintTarget... targets)
 	{
-		this.targets = targets;
+		appliesTo = targets;
 	}
 
 	/**
