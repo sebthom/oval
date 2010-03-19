@@ -13,8 +13,8 @@
 		</annotation>
 		<complexType>
 			<choice minOccurs="0" maxOccurs="unbounded">
-				<element name="class" type="tns:Class" minOccurs="0" />
-				<element name="constraintSet" type="tns:ConstraintSet" minOccurs="0" />
+				<element name="class" type="tns:Class" />
+				<element name="constraintSet" type="tns:ConstraintSet" />
 			</choice>
 		</complexType>
 	</element>
@@ -36,42 +36,44 @@
 		<complexContent>
 			<extension base="tns:ConfigurationElement">
 				<choice minOccurs="0" maxOccurs="unbounded">
-					<element name="assert" type="tns:Assert" minOccurs="0" maxOccurs="unbounded" />
-					<element name="assertConstraintSet" type="tns:AssertConstraintSet" minOccurs="0" maxOccurs="unbounded" />
-					<element name="assertFalse" type="tns:AssertFalse" minOccurs="0" maxOccurs="unbounded" />
-					<element name="assertFieldConstraints" type="tns:AssertFieldConstraints" minOccurs="0" maxOccurs="unbounded" />
-					<element name="assertTrue" type="tns:AssertTrue" minOccurs="0" maxOccurs="unbounded" />
-					<element name="assertURL" type="tns:AssertURL" minOccurs="0" maxOccurs="unbounded" />
-					<element name="assertValid" type="tns:AssertValid" minOccurs="0" maxOccurs="unbounded" />
-					<element name="checkWith" type="tns:CheckWith" minOccurs="0" maxOccurs="unbounded" />
-					<element name="dateRange" type="tns:DateRange" minOccurs="0" maxOccurs="unbounded" />
-					<element name="equalToField" type="tns:EqualToField" minOccurs="0" maxOccurs="unbounded" />
-					<element name="email" type="tns:Email" minOccurs="0" maxOccurs="unbounded" />
-					<element name="future" type="tns:Future" minOccurs="0" maxOccurs="unbounded" />
-					<element name="hasSubstring" type="tns:HasSubstring" minOccurs="0" maxOccurs="unbounded" />
-					<element name="instanceOf" type="tns:InstanceOf" minOccurs="0" maxOccurs="unbounded" />
-					<element name="instanceOfAny" type="tns:InstanceOfAny" minOccurs="0" maxOccurs="unbounded" />
-					<element name="length" type="tns:Length" minOccurs="0" maxOccurs="unbounded" />
-					<element name="matchPattern" type="tns:MatchPattern" minOccurs="0" maxOccurs="unbounded" />
-					<element name="max" type="tns:Max" minOccurs="0" maxOccurs="unbounded" />
-					<element name="maxLength" type="tns:MaxLength" minOccurs="0" maxOccurs="unbounded" />
-					<element name="maxSize" type="tns:MaxSize" minOccurs="0" maxOccurs="unbounded" />
-					<element name="memberOf" type="tns:MemberOf" minOccurs="0" maxOccurs="unbounded" />
-					<element name="min" type="tns:Min" minOccurs="0" maxOccurs="unbounded" />
-					<element name="minLength" type="tns:MinLength" minOccurs="0" maxOccurs="unbounded" />
-					<element name="minSize" type="tns:MinSize" minOccurs="0" maxOccurs="unbounded" />
-					<element name="noSelfReference" type="tns:NoSelfReference" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notEmpty" type="tns:NotEmpty" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notEqual" type="tns:NotEqual" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notEqualToField" type="tns:NotEqualToField" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notMatchPattern" type="tns:NotMatchPattern" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notMemberOf" type="tns:NotMemberOf" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notNegative" type="tns:NotNegative" minOccurs="0" maxOccurs="unbounded" />
-					<element name="notNull" type="tns:NotNull" minOccurs="0" maxOccurs="unbounded" />
-					<element name="past" type="tns:Past" minOccurs="0" maxOccurs="unbounded" />
-					<element name="range" type="tns:Range" minOccurs="0" maxOccurs="unbounded" />
-					<element name="size" type="tns:Size" minOccurs="0" maxOccurs="unbounded" />
-					<element name="validateWithMethod" type="tns:ValidateWithMethod" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assert" type="tns:Assert" />
+					<element name="assertConstraintSet" type="tns:AssertConstraintSet" />
+					<element name="assertFalse" type="tns:AssertFalse" />
+					<element name="assertFieldConstraints" type="tns:AssertFieldConstraints" />
+					<element name="assertNull" type="tns:AssertNull" />
+					<element name="assertTrue" type="tns:AssertTrue" />
+					<element name="assertURL" type="tns:AssertURL" />
+					<element name="assertValid" type="tns:AssertValid" />
+					<element name="checkWith" type="tns:CheckWith" />
+					<element name="dateRange" type="tns:DateRange" />
+					<element name="digits" type="tns:Digits" />
+					<element name="equalToField" type="tns:EqualToField" />
+					<element name="email" type="tns:Email" />
+					<element name="future" type="tns:Future" />
+					<element name="hasSubstring" type="tns:HasSubstring" />
+					<element name="instanceOf" type="tns:InstanceOf" />
+					<element name="instanceOfAny" type="tns:InstanceOfAny" />
+					<element name="length" type="tns:Length" />
+					<element name="matchPattern" type="tns:MatchPattern" />
+					<element name="max" type="tns:Max" />
+					<element name="maxLength" type="tns:MaxLength" />
+					<element name="maxSize" type="tns:MaxSize" />
+					<element name="memberOf" type="tns:MemberOf" />
+					<element name="min" type="tns:Min" />
+					<element name="minLength" type="tns:MinLength" />
+					<element name="minSize" type="tns:MinSize" />
+					<element name="noSelfReference" type="tns:NoSelfReference" />
+					<element name="notEmpty" type="tns:NotEmpty" />
+					<element name="notEqual" type="tns:NotEqual" />
+					<element name="notEqualToField" type="tns:NotEqualToField" />
+					<element name="notMatchPattern" type="tns:NotMatchPattern" />
+					<element name="notMemberOf" type="tns:NotMemberOf" />
+					<element name="notNegative" type="tns:NotNegative" />
+					<element name="notNull" type="tns:NotNull" />
+					<element name="past" type="tns:Past" />
+					<element name="range" type="tns:Range" />
+					<element name="size" type="tns:Size" />
+					<element name="validateWithMethod" type="tns:ValidateWithMethod" />
 				</choice>
 			</extension>
 		</complexContent>
@@ -84,8 +86,8 @@
 	<complexType name="Constraint" mixed="true" abstract="true">
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles">
-				<choice>
-					<element name="appliesTo" minOccurs="0" maxOccurs="unbounded">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="appliesTo">
 						<annotation>
 							<documentation>
 								In case the constraint is declared for an array, collection or map this controls how
@@ -396,6 +398,16 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	<complexType name="AssertNull" mixed="true">
+		<annotation>
+			<documentation>
+				Check if null.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
 	<complexType name="AssertTrue" mixed="true">
 		<annotation>
 			<documentation>
@@ -488,13 +500,29 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	<complexType name="Digits" mixed="true">
+		<annotation>
+			<documentation>
+				Check if the String representation has the given max/min number of integral and fractional digits.
+				Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare
+				the NotNull constraint.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="maxInteger" type="integer" use="optional" />
+				<attribute name="minInteger" type="integer" use="optional" />
+				<attribute name="maxFraction" type="integer" use="optional" />
+				<attribute name="minFraction" type="integer" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
 	<complexType name="Email" mixed="true">
 		<annotation>
 			<documentation>
 				Check if the string representation is a valid e-mail address.
 				Note: This constraint is also satisfied
-				when the value to validate is null,
-				therefore you might also need to declare the NotNull constraint.
+				when the value to validate is null, therefore you might also need to declare the NotNull constraint.
             </documentation>
 		</annotation>
 		<complexContent>
