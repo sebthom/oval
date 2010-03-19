@@ -15,6 +15,7 @@ package net.sf.oval.internal.util;
 import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -148,9 +149,10 @@ public final class ReflectionUtils
 		}
 	}
 
-	public static Method getGetter(final Class< ? > clazz, final String fieldName)
+	public static Method getGetter(final Class< ? > clazz, final String propertyName)
 	{
-		final String appendix = fieldName.substring(0, 1).toUpperCase(Locale.getDefault()) + fieldName.substring(1);
+		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
+				+ propertyName.substring(1);
 		try
 		{
 			return clazz.getDeclaredMethod("get" + appendix);
@@ -163,21 +165,22 @@ public final class ReflectionUtils
 		{
 			return clazz.getDeclaredMethod("is" + appendix);
 		}
-		catch (final NoSuchMethodException e)
+		catch (final NoSuchMethodException ex)
 		{
+			LOG.trace("isXXX method not found.", ex);
 			return null;
 		}
 	}
 
-	public static Method getGetterRecursive(final Class< ? > clazz, final String fieldName)
+	public static Method getGetterRecursive(final Class< ? > clazz, final String propertyName)
 	{
-		final Method m = getGetter(clazz, fieldName);
+		final Method m = getGetter(clazz, propertyName);
 		if (m != null) return m;
 
 		final Class< ? > superclazz = clazz.getSuperclass();
 		if (superclazz == null) return null;
 
-		return getGetterRecursive(superclazz, fieldName);
+		return getGetterRecursive(superclazz, propertyName);
 	}
 
 	public static List<Method> getInterfaceMethods(final Method method)
@@ -231,6 +234,31 @@ public final class ReflectionUtils
 		if (superclazz == null) return null;
 
 		return getMethodRecursive(superclazz, methodName, parameterTypes);
+	}
+
+	public static Method getSetter(final Class< ? > clazz, final String propertyName)
+	{
+		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
+				+ propertyName.substring(1);
+
+		final Method[] declaredMethods = clazz.getDeclaredMethods();
+		for (final Method method : declaredMethods)
+		{
+			if (methodName.equals(method.getName()) && method.getParameterTypes().length == 1) return method;
+		}
+		LOG.trace("No setter for {} not found on class {}.", propertyName, clazz);
+		return null;
+	}
+
+	public static Method getSetterRecursive(final Class< ? > clazz, final String propertyName)
+	{
+		final Method m = getSetter(clazz, propertyName);
+		if (m != null) return m;
+
+		final Class< ? > superclazz = clazz.getSuperclass();
+		if (superclazz == null) return null;
+
+		return getSetterRecursive(superclazz, propertyName);
 	}
 
 	public static Method getSuperMethod(final Method method)
@@ -406,6 +434,36 @@ public final class ReflectionUtils
 	public static boolean isVoidMethod(final Method method)
 	{
 		return method.getReturnType() == void.class;
+	}
+
+	public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue)
+	{
+		assert target != null;
+		assert propertyName != null;
+		final Method setter = getSetterRecursive(target.getClass(), propertyName);
+		if (setter != null)
+		{
+			try
+			{
+				setter.invoke(target, propertyValue);
+			}
+			catch (final IllegalArgumentException ex)
+			{
+				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+				return false;
+			}
+			catch (final IllegalAccessException ex)
+			{
+				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+				return false;
+			}
+			catch (final InvocationTargetException ex)
+			{
+				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+				return false;
+			}
+		}
+		return false;
 	}
 
 	private ReflectionUtils()
