@@ -107,6 +107,11 @@ import com.thoughtworks.xstream.mapper.Mapper;
  */
 public class XMLConfigurer implements Configurer
 {
+	/**
+	 * The converter is needed to allow the rendering of Assert's expr attribute value as an XML node value and not an XML attribute
+	 * <code>&lt;assert&gt;&lt;expr&gt;...&lt;/expr&gt;&lt;/assert&gt;</code> instead of <code>&lt;assert expr="..."&gt;</code>
+	 * This allows users to write complex, multi-line expressions. 
+	 */
 	protected static final class AssertCheckConverter implements Converter
 	{
 		/**
