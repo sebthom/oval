@@ -40,8 +40,8 @@ public abstract class AbstractCheck implements Check
 	private int severity;
 	private ConstraintTarget[] appliesTo;
 	private String when;
-	private String whenFormula;
-	private String whenLang;
+	private transient String whenFormula;
+	private transient String whenLang;
 
 	protected Map<String, ? > createMessageVariables()
 	{
@@ -170,7 +170,7 @@ public abstract class AbstractCheck implements Check
 	 */
 	public String getWhen()
 	{
-		return when == null ? null : whenLang + ":" + when;
+		return when;
 	}
 
 	/**
@@ -179,6 +179,12 @@ public abstract class AbstractCheck implements Check
 	public boolean isActive(final Object validatedObject, final Object valueToValidate, final Validator validator)
 	{
 		if (when == null) return true;
+
+		if (whenLang == null)
+		{
+			// this triggers parsing of when, happens when this check instance was deserialized
+			setWhen(when);
+		}
 
 		final Map<String, Object> values = getCollectionFactory().createMap();
 		values.put("_value", valueToValidate);
@@ -250,20 +256,23 @@ public abstract class AbstractCheck implements Check
 	 */
 	public void setWhen(final String when)
 	{
-		if (when == null || when.length() == 0)
+		synchronized (this)
 		{
-			this.when = null;
-			whenFormula = null;
-			whenLang = null;
-		}
-		else
-		{
-			this.when = when;
-			final String[] parts = when.split(":", 2);
-			if (parts.length == 0)
-				throw new IllegalArgumentException("[when] is missing the scripting language declaration");
-			whenLang = parts[0];
-			whenFormula = parts[1];
+			if (when == null || when.length() == 0)
+			{
+				this.when = null;
+				whenFormula = null;
+				whenLang = null;
+			}
+			else
+			{
+				final String[] parts = when.split(":", 2);
+				if (parts.length == 0)
+					throw new IllegalArgumentException("[when] is missing the scripting language declaration");
+				this.when = when;
+				whenLang = parts[0];
+				whenFormula = parts[1];
+			}
 		}
 	}
 }
