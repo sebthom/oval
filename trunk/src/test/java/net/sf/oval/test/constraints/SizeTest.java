@@ -43,7 +43,7 @@ public class SizeTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, new Object[3], null, null));
 		assertFalse(check.isSatisfied(null, new Object[4], null, null));
 
-		List<Object> list = new ArrayList<Object>();
+		final List<Object> list = new ArrayList<Object>();
 		assertFalse(check.isSatisfied(null, list, null, null));
 		list.add(1);
 		assertFalse(check.isSatisfied(null, list, null, null));
@@ -54,7 +54,7 @@ public class SizeTest extends AbstractContraintsTest
 		list.add(4);
 		assertFalse(check.isSatisfied(null, list, null, null));
 
-		Set<Object> set = new HashSet<Object>();
+		final Set<Object> set = new HashSet<Object>();
 		assertFalse(check.isSatisfied(null, set, null, null));
 		set.add(1);
 		assertFalse(check.isSatisfied(null, set, null, null));
@@ -65,7 +65,7 @@ public class SizeTest extends AbstractContraintsTest
 		set.add(4);
 		assertFalse(check.isSatisfied(null, set, null, null));
 
-		Map<Object, Object> map = new HashMap<Object, Object>();
+		final Map<Object, Object> map = new HashMap<Object, Object>();
 		assertFalse(check.isSatisfied(null, map, null, null));
 		map.put(1, 1);
 		assertFalse(check.isSatisfied(null, map, null, null));
@@ -76,6 +76,7 @@ public class SizeTest extends AbstractContraintsTest
 		map.put(4, 4);
 		assertFalse(check.isSatisfied(null, map, null, null));
 
-		assertFalse(check.isSatisfied(null, "bla", null, null));
+		assertTrue(check.isSatisfied(null, "bla", null, null));
+		assertFalse(check.isSatisfied(null, "blabla", null, null));
 	}
 }
