@@ -197,7 +197,7 @@ public class Guard extends Validator
 			}
 			if (!skip)
 			{
-				checkConstraint(violations, check, validatedObject, valueToValidate, context, null);
+				checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
 			}
 		}
 	}
@@ -1603,7 +1603,7 @@ public class Guard extends Validator
 
 			for (final Check check : returnValueChecks)
 			{
-				checkConstraint(violations, check, validatedObject, returnValue, context, null);
+				checkConstraint(violations, check, validatedObject, returnValue, context, null, false);
 			}
 		}
 		catch (final OValException ex)
