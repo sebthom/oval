@@ -37,12 +37,15 @@ public class CollectionTest extends TestCase
 		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
 		public List<String> members = new ArrayList<String>();
 
+		@NotNull(appliesTo = {ConstraintTarget.VALUES}, message = "NOT_NULL2")
+		public String[] secondaryMembers;
+
 	}
 
 	public void testCollection()
 	{
-		Validator validator = new Validator();
-		Group group = new Group();
+		final Validator validator = new Validator();
+		final Group group = new Group();
 
 		// test min size
 		List<ConstraintViolation> violations = validator.validate(group);
@@ -68,14 +71,14 @@ public class CollectionTest extends TestCase
 		violations = validator.validate(group);
 		assertEquals(1, violations.size());
 		assertEquals("NOT_NULL", violations.get(0).getMessage());
-		
+
 		// test elements not null
 		group.members = new ArrayList<String>();
 		group.members.add(null);
 		violations = validator.validate(group);
 		assertEquals(1, violations.size());
 		assertEquals("NOT_NULL", violations.get(0).getMessage());
-		
+
 		// test elements length
 		group.members = new ArrayList<String>();
 		group.members.add("");
@@ -84,5 +87,13 @@ public class CollectionTest extends TestCase
 		assertEquals(2, violations.size());
 		assertEquals("LENGTH", violations.get(0).getMessage());
 		assertEquals("LENGTH", violations.get(1).getMessage());
+
+		// test string array elements not null
+		group.members = new ArrayList<String>();
+		group.members.add("1234");
+		group.secondaryMembers = new String[]{"foo", null, "bar"};
+		violations = validator.validate(group);
+		assertEquals(1, violations.size());
+		assertEquals("NOT_NULL2", violations.get(0).getMessage());
 	}
 }
