@@ -106,7 +106,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 	@Guarded
 	protected static class PersonService
 	{
-		public Person[] findPersonsByZipCode(@AssertFieldConstraints(declaringClass = Person.class) String zipCode)
+		public Person[] findPersonsByZipCode(@AssertFieldConstraints(declaringClass = Person.class) final String zipCode)
 		{
 			return null;
 		}
@@ -121,20 +121,20 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 			ps.findPersonsByZipCode(null);
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(1, ex.getConstraintViolations().length);
 			assertEquals("NOT_NULL", ex.getMessage());
 			assertEquals(MethodParameterContext.class, ex.getConstraintViolations()[0].getContext().getClass());
-			assertEquals(FieldContext.class, ex.getConstraintViolations()[0].getCheckDeclaringContext().getClass());		
+			assertEquals(FieldContext.class, ex.getConstraintViolations()[0].getCheckDeclaringContext().getClass());
 		}
-		
+
 		try
 		{
 			ps.findPersonsByZipCode("foobar");
 			fail();
 		}
-		catch (ConstraintsViolatedException ex)
+		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals("REG_EX", ex.getMessage());
 		}

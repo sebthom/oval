@@ -40,8 +40,7 @@ public class StaticMethodsTest extends TestCase
 		//
 		}
 
-		public static void setValue(@AssertFieldConstraints
-		final String value)
+		public static void setValue(@AssertFieldConstraints final String value)
 		{
 			TestEntity.value = value;
 		}

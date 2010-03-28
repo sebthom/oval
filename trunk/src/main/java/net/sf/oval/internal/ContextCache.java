@@ -28,77 +28,77 @@ import net.sf.oval.context.MethodReturnValueContext;
  */
 public final class ContextCache
 {
-	private final static Map<Class< ? >, ClassContext> classContexts = new WeakHashMap<Class< ? >, ClassContext>();
-	private final static Map<Field, FieldContext> fieldContexts = new WeakHashMap<Field, FieldContext>();
-	private final static Map<Method, MethodEntryContext> methodEntryContexts = new WeakHashMap<Method, MethodEntryContext>();
-	private final static Map<Method, MethodExitContext> methodExitContexts = new WeakHashMap<Method, MethodExitContext>();
-	private final static Map<Method, MethodReturnValueContext> methodReturnValueContexts = new WeakHashMap<Method, MethodReturnValueContext>();
+	private static final Map<Class< ? >, ClassContext> CLASS_CONTEXTS = new WeakHashMap<Class< ? >, ClassContext>();
+	private static final Map<Field, FieldContext> FIELD_CONTEXTS = new WeakHashMap<Field, FieldContext>();
+	private static final Map<Method, MethodEntryContext> METHOD_ENTRY_CONTEXTS = new WeakHashMap<Method, MethodEntryContext>();
+	private static final Map<Method, MethodExitContext> METHOD_EXIT_CONTEXTS = new WeakHashMap<Method, MethodExitContext>();
+	private static final Map<Method, MethodReturnValueContext> METHOD_RETURN_VALUE_CONTEXTS = new WeakHashMap<Method, MethodReturnValueContext>();
 
-	public static ClassContext getClassContext(Class< ? > clazz)
+	public static ClassContext getClassContext(final Class< ? > clazz)
 	{
-		synchronized (classContexts)
+		synchronized (CLASS_CONTEXTS)
 		{
-			ClassContext ctx = classContexts.get(clazz);
+			ClassContext ctx = CLASS_CONTEXTS.get(clazz);
 			if (ctx == null)
 			{
 				ctx = new ClassContext(clazz);
-				classContexts.put(clazz, ctx);
+				CLASS_CONTEXTS.put(clazz, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static FieldContext getFieldContext(Field field)
+	public static FieldContext getFieldContext(final Field field)
 	{
-		synchronized (fieldContexts)
+		synchronized (FIELD_CONTEXTS)
 		{
-			FieldContext ctx = fieldContexts.get(field);
+			FieldContext ctx = FIELD_CONTEXTS.get(field);
 			if (ctx == null)
 			{
 				ctx = new FieldContext(field);
-				fieldContexts.put(field, ctx);
+				FIELD_CONTEXTS.put(field, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static MethodEntryContext getMethodEntryContext(Method method)
+	public static MethodEntryContext getMethodEntryContext(final Method method)
 	{
-		synchronized (methodEntryContexts)
+		synchronized (METHOD_ENTRY_CONTEXTS)
 		{
-			MethodEntryContext ctx = methodEntryContexts.get(method);
+			MethodEntryContext ctx = METHOD_ENTRY_CONTEXTS.get(method);
 			if (ctx == null)
 			{
 				ctx = new MethodEntryContext(method);
-				methodEntryContexts.put(method, ctx);
+				METHOD_ENTRY_CONTEXTS.put(method, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static MethodExitContext getMethodExitContext(Method method)
+	public static MethodExitContext getMethodExitContext(final Method method)
 	{
-		synchronized (methodExitContexts)
+		synchronized (METHOD_EXIT_CONTEXTS)
 		{
-			MethodExitContext ctx = methodExitContexts.get(method);
+			MethodExitContext ctx = METHOD_EXIT_CONTEXTS.get(method);
 			if (ctx == null)
 			{
 				ctx = new MethodExitContext(method);
-				methodExitContexts.put(method, ctx);
+				METHOD_EXIT_CONTEXTS.put(method, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static MethodReturnValueContext getMethodReturnValueContext(Method method)
+	public static MethodReturnValueContext getMethodReturnValueContext(final Method method)
 	{
-		synchronized (methodReturnValueContexts)
+		synchronized (METHOD_RETURN_VALUE_CONTEXTS)
 		{
-			MethodReturnValueContext ctx = methodReturnValueContexts.get(method);
+			MethodReturnValueContext ctx = METHOD_RETURN_VALUE_CONTEXTS.get(method);
 			if (ctx == null)
 			{
 				ctx = new MethodReturnValueContext(method);
-				methodReturnValueContexts.put(method, ctx);
+				METHOD_RETURN_VALUE_CONTEXTS.put(method, ctx);
 			}
 			return ctx;
 		}

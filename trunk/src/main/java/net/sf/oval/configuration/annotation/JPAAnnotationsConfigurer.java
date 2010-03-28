@@ -134,7 +134,10 @@ public class JPAAnnotationsConfigurer implements Configurer
 		for (final Method method : config.type.getDeclaredMethods())
 		{
 			// consider getters only 
-			if (!ReflectionUtils.isGetter(method)) continue;
+			if (!ReflectionUtils.isGetter(method))
+			{
+				continue;
+			}
 
 			final List<Check> checks = getCollectionFactory().createList(2);
 
@@ -209,7 +212,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 	}
 
 	protected void initializeChecks(final Column annotation, final Collection<Check> checks,
-			AccessibleObject fieldOrMethod)
+			final AccessibleObject fieldOrMethod)
 	{
 		assert annotation != null;
 		assert checks != null;
