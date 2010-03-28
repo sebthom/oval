@@ -1664,7 +1664,7 @@ v.validate(p);
     <title>API documentation</title>
 
     <para>You can browse OVal's Javadoc <ulink
-    url="apidocs/index.html">here</ulink> .</para>
+    url="api/index.html">here</ulink> .</para>
   </section>
 
   <section>
