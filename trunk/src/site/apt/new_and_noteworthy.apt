@@ -1,5 +1,45 @@
 New and Noteworthy
 
+* Version 1.50 (2010-03-28)
+
+** New Features and Improvements
+
+ * JPAAnnotationsConfigurer now also interprets annotated getter methods
+
+ * @Size now checks the length of the value's String representation if the value is not a map, a list, or an array
+ 
+ * added @AssertNull, @Digits constraints
+ 
+ * added BeanValidationAnnotationsConfigurer that allows validation of JSR303 built-in constraint annotations
+
+ * implemented [ oval-Bugs-2907399] added MessageValueFormatter and Validator.setMessageValueFormatter()
+
+
+** Issues solved
+
+ * added missing violation message for @AssertValid (thanks to Eric Lewis)
+
+ * fixed [ oval-Bugs-2894631 ] ClassCastException when validating arrays
+  
+ * fixed [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
+
+ * fixed [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
+ 
+ * fixed [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
+ 
+ * fixed [ oval-Bugs-2973323 ] XSD scheme is not complete
+ 
+ * fixed [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
+ 
+ * fixed [ oval-Bugs-2973339 ] Defaults are not applied to checks
+ 
+ * fixed [ oval-Bugs-2973334 ] XMLConfigurer doesn't allow to parse when expressions
+ 
+ * fixed [ oval-Bugs-2973344 ] NotNull checks for container values
+
+ * changed @EMail regex pattern to support some rare email names [ oval-Bugs-2910553 ] 
+
+  
 * Version 1.40 (2009-09-27)
 
 ** New Features and Improvements
