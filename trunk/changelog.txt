@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2010-??-?? v1.50
+2010-03-28 v1.50
 ================
 * upgraded to AspectJ 1.6.8, JUnit 4.8.1, SLF4J 1.5.11, MVEL 2.0.16, Paranamer 2.2, JRuby 1.4.0
 - fixed [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
@@ -33,6 +33,7 @@
 - fixed [ oval-Bugs-2973339 ] Defaults are not applied to checks
 - fixed [ oval-Bugs-2973334 ] XMLConfigurer doesn't allow to parse when expressions
 - fixed [ oval-Bugs-2973344 ] NotNull checks for container values
+* changed @EMail regex pattern to support some rare email names [ oval-Bugs-2910553 ]
 
 2009-09-27 v1.40
 ================
