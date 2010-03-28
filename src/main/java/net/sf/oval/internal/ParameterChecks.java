@@ -35,16 +35,16 @@ public class ParameterChecks
 
 	public final OValContext context;
 
-	public ParameterChecks(Constructor< ? > ctor, int paramIndex, String paramName)
+	public ParameterChecks(final Constructor< ? > ctor, final int paramIndex, final String paramName)
 	{
 		context = new ConstructorParameterContext(ctor, paramIndex, paramName);
-		this.parameterIndex = paramIndex;
+		parameterIndex = paramIndex;
 	}
 
-	public ParameterChecks(Method method, int paramIndex, String paramName)
+	public ParameterChecks(final Method method, final int paramIndex, final String paramName)
 	{
 		context = new MethodParameterContext(method, paramIndex, paramName);
-		this.parameterIndex = paramIndex;
+		parameterIndex = paramIndex;
 	}
 
 	public boolean hasChecks()

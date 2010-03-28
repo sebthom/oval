@@ -67,10 +67,7 @@ public final class ReflectionUtils
 		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field
 		// name)
 		String fieldName = methodName.substring(3, 4).toLowerCase(Locale.getDefault());
-		if (methodName.length() > 4)
-		{
-			fieldName += methodName.substring(4);
-		}
+		if (methodName.length() > 4) fieldName += methodName.substring(4);
 
 		Field field = null;
 		try
@@ -95,7 +92,7 @@ public final class ReflectionUtils
 		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() =>
 		// field isEnabled)
 		if (field == null
-				&& (methodParameterTypes[0].equals(boolean.class) || methodParameterTypes[0].equals(Boolean.class)))
+				&& (boolean.class.equals(methodParameterTypes[0]) || Boolean.class.equals(methodParameterTypes[0])))
 		{
 			fieldName = "is" + methodName.substring(3);
 
@@ -104,7 +101,7 @@ public final class ReflectionUtils
 				field = clazz.getDeclaredField(fieldName);
 
 				// check if found field is of boolean or Boolean
-				if (!field.getType().equals(boolean.class) && field.getType().equals(Boolean.class))
+				if (!boolean.class.equals(field.getType()) && Boolean.class.equals(field.getType()))
 				{
 					LOG
 							.warn(
@@ -137,10 +134,7 @@ public final class ReflectionUtils
 	{
 		try
 		{
-			if (!field.isAccessible())
-			{
-				AccessController.doPrivileged(new SetAccessibleAction(field));
-			}
+			if (!field.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(field));
 			return field.get(obj);
 		}
 		catch (final Exception ex)
@@ -198,10 +192,7 @@ public final class ReflectionUtils
 		for (final Class< ? > iface : interfaces)
 		{
 			final Method m = getMethod(iface, methodName, parameterTypes);
-			if (m != null)
-			{
-				methods.add(m);
-			}
+			if (m != null) methods.add(m);
 		}
 		return methods;
 	}
@@ -243,9 +234,7 @@ public final class ReflectionUtils
 
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
 		for (final Method method : declaredMethods)
-		{
 			if (methodName.equals(method.getName()) && method.getParameterTypes().length == 1) return method;
-		}
 		LOG.trace("No setter for {} not found on class {}.", propertyName, clazz);
 		return null;
 	}
@@ -289,25 +278,17 @@ public final class ReflectionUtils
 		{
 			fieldName = fieldName.substring(3);
 			if (fieldName.length() == 1)
-			{
 				fieldName = fieldName.toLowerCase(Locale.getDefault());
-			}
 			else
-			{
 				fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
-			}
 		}
 		else if (fieldName.startsWith("is") && fieldName.length() > 2)
 		{
 			fieldName = fieldName.substring(2);
 			if (fieldName.length() == 1)
-			{
 				fieldName = fieldName.toLowerCase(Locale.getDefault());
-			}
 			else
-			{
 				fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
-			}
 		}
 
 		return fieldName;
@@ -336,10 +317,7 @@ public final class ReflectionUtils
 	{
 		try
 		{
-			if (!method.isAccessible())
-			{
-				AccessController.doPrivileged(new SetAccessibleAction(method));
-			}
+			if (!method.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(method));
 			return method.invoke(obj, args);
 		}
 		catch (final Exception ex)
@@ -441,27 +419,24 @@ public final class ReflectionUtils
 		assert target != null;
 		assert propertyName != null;
 		final Method setter = getSetterRecursive(target.getClass(), propertyName);
-		if (setter != null)
+		if (setter != null) try
 		{
-			try
-			{
-				setter.invoke(target, propertyValue);
-			}
-			catch (final IllegalArgumentException ex)
-			{
-				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-				return false;
-			}
-			catch (final IllegalAccessException ex)
-			{
-				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-				return false;
-			}
-			catch (final InvocationTargetException ex)
-			{
-				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-				return false;
-			}
+			setter.invoke(target, propertyValue);
+		}
+		catch (final IllegalArgumentException ex)
+		{
+			LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+			return false;
+		}
+		catch (final IllegalAccessException ex)
+		{
+			LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+			return false;
+		}
+		catch (final InvocationTargetException ex)
+		{
+			LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+			return false;
 		}
 		return false;
 	}

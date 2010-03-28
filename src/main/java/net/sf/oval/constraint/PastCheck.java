@@ -32,15 +32,16 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 	private long tolerance;
 
 	@Override
-	public void configure(Past constraintAnnotation)
+	public void configure(final Past constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setTolerance(constraintAnnotation.tolerance());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
@@ -63,7 +64,7 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 		if (valueToValidate == null) return true;
 
 		final long now = System.currentTimeMillis() + tolerance;
-		
+
 		// check if the value is a Date
 		if (valueToValidate instanceof Date) // return ((Date) value).before(new Date());
 			return ((Date) valueToValidate).getTime() < now;
@@ -88,7 +89,7 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 	/**
 	 * @param tolerance the tolerance to set
 	 */
-	public void setTolerance(long tolerance)
+	public void setTolerance(final long tolerance)
 	{
 		this.tolerance = tolerance;
 	}

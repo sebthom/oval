@@ -17,7 +17,7 @@ package net.sf.oval.localization.value;
  */
 public class ToStringMessageValueFormatter implements MessageValueFormatter
 {
-	public final static ToStringMessageValueFormatter INSTANCE = new ToStringMessageValueFormatter();
+	public static final ToStringMessageValueFormatter INSTANCE = new ToStringMessageValueFormatter();
 
 	/**
 	 * {@inheritDoc}

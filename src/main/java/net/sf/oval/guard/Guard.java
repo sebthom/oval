@@ -62,7 +62,7 @@ public class Guard extends Validator
 	/**
 	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions 
 	 */
-	protected final static class GuardMethodPreResult
+	protected static final class GuardMethodPreResult
 	{
 		protected final boolean checkInvariants;
 		protected final Method method;
@@ -89,7 +89,7 @@ public class Guard extends Validator
 	/**
 	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions 
 	 */
-	protected final static GuardMethodPreResult DO_NOT_PROCEED = new GuardMethodPreResult(null, null, null, null,
+	protected static final GuardMethodPreResult DO_NOT_PROCEED = new GuardMethodPreResult(null, null, null, null,
 			false, null, null);
 
 	private static final Log LOG = Log.getLog(Guard.class);
@@ -111,9 +111,7 @@ public class Guard extends Validator
 
 	private boolean isActivated = true;
 	private boolean isInvariantsEnabled = true;
-
 	private boolean isPreConditionsEnabled = true;
-
 	private boolean isPostConditionsEnabled = true;
 
 	/**
@@ -124,6 +122,7 @@ public class Guard extends Validator
 	 * Flag that indicates if exception suppressing was used at any time. Used for improved performance.
 	 */
 	private boolean isProbeModeFeatureUsed = false;
+
 	private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(4);
 
 	private final Map<Class< ? >, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class< ? >, Set<ConstraintsViolatedListener>>(
@@ -162,10 +161,7 @@ public class Guard extends Validator
 		for (final Iterator<CheckExclusion> it = activeExclusions.iterator(); it.hasNext();)
 		{
 			final CheckExclusion exclusion = it.next();
-			if (!isAnyProfileEnabled(exclusion.getProfiles(), null))
-			{
-				it.remove();
-			}
+			if (!isAnyProfileEnabled(exclusion.getProfiles(), null)) it.remove();
 		}
 		return activeExclusions.size() == 0 ? null : activeExclusions;
 	}
@@ -183,9 +179,7 @@ public class Guard extends Validator
 			boolean skip = false;
 
 			if (activeExclusions != null)
-			{
 				for (final CheckExclusion exclusion : activeExclusions)
-				{
 					if (exclusion.isActive(validatedObject, valueToValidate, this)
 							&& exclusion.isCheckExcluded(check, validatedObject, valueToValidate, context, this))
 					{
@@ -193,12 +187,7 @@ public class Guard extends Validator
 						skip = true;
 						continue;
 					}
-				}
-			}
-			if (!skip)
-			{
-				checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
-			}
+			if (!skip) checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
 		}
 	}
 
@@ -403,6 +392,9 @@ public class Guard extends Validator
 	/**
 	 * Evaluates the old expression
 	 * 
+	 * @param validatedObject
+	 * @param method
+	 * @param args
 	 * @return null if no violation, otherwise a list
 	 * @throws ValidationFailedException
 	 */
@@ -423,7 +415,6 @@ public class Guard extends Validator
 			final Map<PostCheck, Object> oldValues = getCollectionFactory().createMap(postChecks.size());
 
 			for (final PostCheck check : postChecks)
-			{
 				if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null
 						&& check.getOld().length() > 0)
 				{
@@ -434,18 +425,13 @@ public class Guard extends Validator
 					{
 						values.put("_args", args);
 						for (int i = 0; i < args.length; i++)
-						{
 							values.put(parameterNames[i], args[i]);
-						}
 					}
 					else
-					{
 						values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
-					}
 
 					oldValues.put(check, eng.evaluate(check.getOld(), values));
 				}
-			}
 
 			return oldValues;
 		}
@@ -486,9 +472,7 @@ public class Guard extends Validator
 		Assert.notNull("guardedObject", guardedObject);
 
 		if (guardedObject instanceof Class< ? >)
-		{
 			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {1}", guardedObject);
-		}
 		isProbeModeFeatureUsed = true;
 
 		if (objectsInProbeMode.get().get(guardedObject) != null)
@@ -586,10 +570,7 @@ public class Guard extends Validator
 			if (violations.size() > 0)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-				if (isListenersFeatureUsed)
-				{
-					notifyListeners(guardedObject, violationException);
-				}
+				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 				throw translateException(violationException);
 			}
@@ -623,10 +604,7 @@ public class Guard extends Validator
 			if (violations != null)
 			{
 				final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-				if (isListenersFeatureUsed)
-				{
-					notifyListeners(guardedObject, violationException);
-				}
+				if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 				throw translateException(violationException);
 			}
@@ -641,11 +619,11 @@ public class Guard extends Validator
 	 * @param args
 	 * @param invocable
 	 * @return The method return value or null if the guarded object is in probe mode.
-	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
-	 *             mode.
+	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe mode.
+	 * @throws ValidationFailedException
 	 */
 	protected Object guardMethod(Object guardedObject, final Method method, final Object[] args,
-			final Invocable invocable) throws ConstraintsViolatedException, ValidationFailedException, Throwable
+			final Invocable invocable) throws Throwable
 	{
 		if (!isActivated) return invocable.invoke();
 
@@ -657,32 +635,22 @@ public class Guard extends Validator
 		final List<ConstraintViolation> violations = getCollectionFactory().createList();
 
 		// if static method use the declaring class as guardedObject
-		if (guardedObject == null && ReflectionUtils.isStatic(method))
-		{
-			guardedObject = method.getDeclaringClass();
-		}
+		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
 
 		try
 		{
 			// check invariants
 			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
-			{
 				validateInvariants(guardedObject, violations, null);
-			}
 
 			if (isPreConditionsEnabled)
 			{
 				// method parameter validation
 				if (violations.size() == 0 && args.length > 0)
-				{
 					validateMethodParameters(guardedObject, method, args, violations);
-				}
 
 				// @Pre validation
-				if (violations.size() == 0)
-				{
-					validateMethodPre(guardedObject, method, args, violations);
-				}
+				if (violations.size() == 0) validateMethodPre(guardedObject, method, args, violations);
 			}
 		}
 		catch (final ValidationFailedException ex)
@@ -691,18 +659,12 @@ public class Guard extends Validator
 		}
 
 		final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
-		if (pml != null)
-		{
-			pml.onMethodCall(method, args);
-		}
+		if (pml != null) pml.onMethodCall(method, args);
 
 		if (violations.size() > 0)
 		{
 			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-			if (isListenersFeatureUsed)
-			{
-				notifyListeners(guardedObject, violationException);
-			}
+			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 			// don't throw an exception if the method is a setter and suppressing for precondition is enabled
 			if (pml != null)
@@ -725,24 +687,17 @@ public class Guard extends Validator
 		{
 			// check invariants if executed method is not private
 			if (checkInvariants || cc.methodsWithCheckInvariantsPost.contains(method))
-			{
 				validateInvariants(guardedObject, violations, null);
-			}
 
 			if (isPostConditionsEnabled)
 			{
 
 				// method return value
-				if (violations.size() == 0)
-				{
-					validateMethodReturnValue(guardedObject, method, returnValue, violations);
-				}
+				if (violations.size() == 0) validateMethodReturnValue(guardedObject, method, returnValue, violations);
 
 				// @Post
 				if (violations.size() == 0)
-				{
 					validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
-				}
 			}
 		}
 		catch (final ValidationFailedException ex)
@@ -753,10 +708,7 @@ public class Guard extends Validator
 		if (violations.size() > 0)
 		{
 			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-			if (isListenersFeatureUsed)
-			{
-				notifyListeners(guardedObject, violationException);
-			}
+			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 			throw translateException(violationException);
 		}
@@ -765,7 +717,8 @@ public class Guard extends Validator
 	}
 
 	/**
-	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions, then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead 
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions, 
+	 * then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead 
 	 * 
 	 * This method is provided for use by guard aspects.
 	 * 
@@ -783,26 +736,20 @@ public class Guard extends Validator
 		{
 			// check invariants if executed method is not private
 			if (preResult.checkInvariants || preResult.cc.methodsWithCheckInvariantsPost.contains(preResult.method))
-			{
 				validateInvariants(preResult.guardedObject, preResult.violations, null);
-			}
 
 			if (isPostConditionsEnabled)
 			{
 
 				// method return value
 				if (preResult.violations.size() == 0)
-				{
 					validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue,
 							preResult.violations);
-				}
 
 				// @Post
 				if (preResult.violations.size() == 0)
-				{
 					validateMethodPost(preResult.guardedObject, preResult.method, preResult.args, returnValue,
 							preResult.postCheckOldValues, preResult.violations);
-				}
 			}
 		}
 		catch (final ValidationFailedException ex)
@@ -814,10 +761,7 @@ public class Guard extends Validator
 		{
 			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
 					preResult.violations);
-			if (isListenersFeatureUsed)
-			{
-				notifyListeners(preResult.guardedObject, violationException);
-			}
+			if (isListenersFeatureUsed) notifyListeners(preResult.guardedObject, violationException);
 
 			throw translateException(violationException);
 		}
@@ -848,32 +792,22 @@ public class Guard extends Validator
 		final List<ConstraintViolation> violations = getCollectionFactory().createList();
 
 		// if static method use the declaring class as guardedObject
-		if (guardedObject == null && ReflectionUtils.isStatic(method))
-		{
-			guardedObject = method.getDeclaringClass();
-		}
+		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
 
 		try
 		{
 			// check invariants
 			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
-			{
 				validateInvariants(guardedObject, violations, null);
-			}
 
 			if (isPreConditionsEnabled)
 			{
 				// method parameter validation
 				if (violations.size() == 0 && args.length > 0)
-				{
 					validateMethodParameters(guardedObject, method, args, violations);
-				}
 
 				// @Pre validation
-				if (violations.size() == 0)
-				{
-					validateMethodPre(guardedObject, method, args, violations);
-				}
+				if (violations.size() == 0) validateMethodPre(guardedObject, method, args, violations);
 			}
 		}
 		catch (final ValidationFailedException ex)
@@ -882,18 +816,12 @@ public class Guard extends Validator
 		}
 
 		final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
-		if (pml != null)
-		{
-			pml.onMethodCall(method, args);
-		}
+		if (pml != null) pml.onMethodCall(method, args);
 
 		if (violations.size() > 0)
 		{
 			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
-			if (isListenersFeatureUsed)
-			{
-				notifyListeners(guardedObject, violationException);
-			}
+			if (isListenersFeatureUsed) notifyListeners(guardedObject, violationException);
 
 			// don't throw an exception if the method is a setter and suppressing for precondition is enabled
 			if (pml != null)
@@ -1039,19 +967,13 @@ public class Guard extends Validator
 		// get the object listeners
 		{
 			final Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
-			if (objectListeners != null)
-			{
-				listenersToNotify.addAll(objectListeners);
-			}
+			if (objectListeners != null) listenersToNotify.addAll(objectListeners);
 		}
 
 		// get the class listeners
 		{
 			final Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedObject.getClass());
-			if (classListeners != null)
-			{
-				listenersToNotify.addAll(classListeners);
-			}
+			if (classListeners != null) listenersToNotify.addAll(classListeners);
 		}
 
 		// get the interface listeners
@@ -1059,10 +981,7 @@ public class Guard extends Validator
 			for (final Class< ? > interfaze : guardedObject.getClass().getInterfaces())
 			{
 				final Set<ConstraintsViolatedListener> interfaceListeners = listenersByClass.get(interfaze);
-				if (interfaceListeners != null)
-				{
-					listenersToNotify.addAll(interfaceListeners);
-				}
+				if (interfaceListeners != null) listenersToNotify.addAll(interfaceListeners);
 			}
 		}
 
@@ -1071,7 +990,6 @@ public class Guard extends Validator
 
 		// notify the listeners
 		for (final ConstraintsViolatedListener listener : listenersToNotify)
-		{
 			try
 			{
 				listener.onConstraintsViolatedException(ex);
@@ -1080,7 +998,6 @@ public class Guard extends Validator
 			{
 				LOG.warn("Notifying listener '{1}' failed.", listener, rex);
 			}
-		}
 
 	}
 
@@ -1392,19 +1309,16 @@ public class Guard extends Validator
 			/*
 			 * parameter constraints validation
 			 */
-			if (parameterNames.length > 0)
+			if (parameterNames.length > 0) for (int i = 0; i < args.length; i++)
 			{
-				for (int i = 0; i < args.length; i++)
+				final ParameterChecks checks = parameterChecks.get(i);
+
+				if (checks != null && checks.checks.size() > 0)
 				{
-					final ParameterChecks checks = parameterChecks.get(i);
+					final Object valueToValidate = args[i];
+					final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
 
-					if (checks != null && checks.checks.size() > 0)
-					{
-						final Object valueToValidate = args[i];
-						final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
-
-						_validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
-					}
+					_validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
 				}
 			}
 		}
@@ -1451,10 +1365,7 @@ public class Guard extends Validator
 
 			for (final PostCheck check : postChecks)
 			{
-				if (!isAnyProfileEnabled(check.getProfiles(), null))
-				{
-					continue;
-				}
+				if (!isAnyProfileEnabled(check.getProfiles(), null)) continue;
 
 				final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
 				final Map<String, Object> values = getCollectionFactory().createMap();
@@ -1465,14 +1376,10 @@ public class Guard extends Validator
 				{
 					values.put("_args", args);
 					for (int i = 0; i < args.length; i++)
-					{
 						values.put(parameterNames[i], args[i]);
-					}
 				}
 				else
-				{
 					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
-				}
 
 				if (!eng.evaluateAsBoolean(check.getExpression(), values))
 				{
@@ -1525,10 +1432,7 @@ public class Guard extends Validator
 
 			for (final PreCheck check : preChecks)
 			{
-				if (!isAnyProfileEnabled(check.getProfiles(), null))
-				{
-					continue;
-				}
+				if (!isAnyProfileEnabled(check.getProfiles(), null)) continue;
 
 				final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
 				final Map<String, Object> values = getCollectionFactory().createMap();
@@ -1537,14 +1441,10 @@ public class Guard extends Validator
 				{
 					values.put("_args", args);
 					for (int i = 0; i < args.length; i++)
-					{
 						values.put(parameterNames[i], args[i]);
-					}
 				}
 				else
-				{
 					values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
-				}
 
 				if (!eng.evaluateAsBoolean(check.getExpression(), values))
 				{
@@ -1602,9 +1502,7 @@ public class Guard extends Validator
 			final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
 			for (final Check check : returnValueChecks)
-			{
 				checkConstraint(violations, check, validatedObject, returnValue, context, null, false);
-			}
 		}
 		catch (final OValException ex)
 		{

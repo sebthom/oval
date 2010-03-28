@@ -23,7 +23,6 @@ import java.util.List;
  */
 public final class ArrayUtils
 {
-	public static final Object[] EMPTY_CLASS_ARRAY = new Class[0];
 	public static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -48,13 +47,93 @@ public final class ArrayUtils
 		return count;
 	}
 
-	public static <T> boolean containsSame(final T[] theArray, final T theItem)
+	public static List<Object> arrayToList(final Object array)
 	{
-		for (final T t : theArray)
+		Assert.notNull("array", array);
+
+		if (array instanceof Object[]) return Arrays.asList((Object[]) array);
+		if (array instanceof byte[])
 		{
-			if (t == theItem) return true;
+			final byte[] arrayCasted = (byte[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final byte i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
 		}
-		return false;
+		if (array instanceof char[])
+		{
+			final char[] arrayCasted = (char[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final char i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+		if (array instanceof short[])
+		{
+			final short[] arrayCasted = (short[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final short i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+		if (array instanceof int[])
+		{
+			final int[] arrayCasted = (int[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final int i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+		if (array instanceof long[])
+		{
+			final long[] arrayCasted = (long[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final long i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+		if (array instanceof double[])
+		{
+			final double[] arrayCasted = (double[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final double i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+		if (array instanceof float[])
+		{
+			final float[] arrayCasted = (float[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final float i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+		if (array instanceof boolean[])
+		{
+			final boolean[] arrayCasted = (boolean[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			for (final boolean i : arrayCasted)
+			{
+				result.add(i);
+			}
+			return result;
+		}
+
+		throw new IllegalArgumentException("Parameter [array] must be an array");
 	}
 
 	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
@@ -67,77 +146,13 @@ public final class ArrayUtils
 		return false;
 	}
 
-	public static List<Object> arrayToList(Object array)
+	public static <T> boolean containsSame(final T[] theArray, final T theItem)
 	{
-		Assert.notNull("array", array);
-
-		if (array instanceof Object[]) return Arrays.asList((Object[]) array);
-		if (array instanceof byte[])
+		for (final T t : theArray)
 		{
-			byte[] arrayCasted = (byte[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (byte i : arrayCasted)
-				result.add(i);
-			return result;
+			if (t == theItem) return true;
 		}
-		if (array instanceof char[])
-		{
-			char[] arrayCasted = (char[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (char i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof short[])
-		{
-			short[] arrayCasted = (short[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (short i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof int[])
-		{
-			int[] arrayCasted = (int[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (int i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof long[])
-		{
-			long[] arrayCasted = (long[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (long i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof double[])
-		{
-			double[] arrayCasted = (double[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (double i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof float[])
-		{
-			float[] arrayCasted = (float[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (float i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof boolean[])
-		{
-			boolean[] arrayCasted = (boolean[]) array;
-			List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			for (boolean i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-
-		throw new IllegalArgumentException("Parameter [array] must be an array");
+		return false;
 	}
 
 	private ArrayUtils()

@@ -32,7 +32,7 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 	private long tolerance;
 
 	@Override
-	public void configure(Future constraintAnnotation)
+	public void configure(final Future constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setTolerance(constraintAnnotation.tolerance());
@@ -41,11 +41,12 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * @return the tolerance
 	 */
@@ -88,7 +89,7 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 	/**
 	 * @param tolerance the tolerance to set
 	 */
-	public void setTolerance(long tolerance)
+	public void setTolerance(final long tolerance)
 	{
 		this.tolerance = tolerance;
 	}
