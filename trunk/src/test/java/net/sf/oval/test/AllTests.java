@@ -178,6 +178,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.BeanValidationAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CollectionTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
