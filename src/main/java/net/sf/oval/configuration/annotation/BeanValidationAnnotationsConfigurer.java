@@ -180,7 +180,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			groups = ((NotNull) annotation).groups();
 			check = new NotNullCheck();
 		}
-		if (annotation instanceof Null)
+		else if (annotation instanceof Null)
 		{
 			groups = ((Null) annotation).groups();
 			check = new AssertNullCheck();
@@ -263,7 +263,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 		}
 		else
 		{
-			LOG.debug("Ignoring unsupported JSR303 constraint annotation {}", annotation);
+			LOG.warn("Ignoring unsupported JSR303 constraint annotation {1}", annotation);
 			return;
 		}
 
