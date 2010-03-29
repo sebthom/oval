@@ -56,10 +56,11 @@ import net.sf.oval.constraint.MinCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.SizeCheck;
+import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
- * Constraints configurer that interprets certain JSR303 Java Bean Validation annotations:
+ * Constraints configurer that interprets the JSR303 built-in Java Bean Validation annotations:
  * <ul>
  * <li>javax.validation.constraints.AssertFalse    => net.sf.oval.constraint.AssertFalseCheck
  * <li>javax.validation.constraints.AssertTrue     => net.sf.oval.constraint.AssertTrueCheck
@@ -79,6 +80,8 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class BeanValidationAnnotationsConfigurer implements Configurer
 {
+	private static final Log LOG = Log.getLog(BeanValidationAnnotationsConfigurer.class);
+
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;
 
@@ -109,16 +112,12 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
-			{
 				initializeChecks(annotation, checks);
-			}
 
 			if (checks.size() > 0)
 			{
 				if (config.fieldConfigurations == null)
-				{
 					config.fieldConfigurations = getCollectionFactory().createSet(8);
-				}
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
@@ -133,26 +132,19 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 		for (final Method method : config.type.getDeclaredMethods())
 		{
 			// consider getters only 
-			if (!ReflectionUtils.isGetter(method))
-			{
-				continue;
-			}
+			if (!ReflectionUtils.isGetter(method)) continue;
 
 			final List<Check> checks = getCollectionFactory().createList(2);
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
-			{
 				initializeChecks(annotation, checks);
-			}
 
 			// check if anything has been configured for this method at all
 			if (checks.size() > 0)
 			{
 				if (config.methodConfigurations == null)
-				{
 					config.methodConfigurations = getCollectionFactory().createSet(2);
-				}
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
@@ -194,62 +186,68 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			check = new AssertNullCheck();
 		}
 		else if (annotation instanceof Valid)
-		{
 			check = new AssertValidCheck();
-		}
 		else if (annotation instanceof AssertTrue)
 		{
+			groups = ((AssertTrue) annotation).groups();
 			check = new AssertTrueCheck();
 		}
 		else if (annotation instanceof AssertFalse)
 		{
+			groups = ((AssertFalse) annotation).groups();
 			check = new AssertFalseCheck();
 		}
 		else if (annotation instanceof DecimalMax)
 		{
+			groups = ((DecimalMax) annotation).groups();
 			final MaxCheck maxCheck = new MaxCheck();
 			maxCheck.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
 			check = maxCheck;
 		}
 		else if (annotation instanceof DecimalMin)
 		{
+			groups = ((DecimalMin) annotation).groups();
 			final MinCheck minCheck = new MinCheck();
 			minCheck.setMin(Double.parseDouble(((DecimalMin) annotation).value()));
 			check = minCheck;
 		}
 		else if (annotation instanceof Max)
 		{
+			groups = ((Max) annotation).groups();
 			final MaxCheck maxCheck = new MaxCheck();
 			maxCheck.setMax(((Max) annotation).value());
 			check = maxCheck;
 		}
 		else if (annotation instanceof Min)
 		{
+			groups = ((Min) annotation).groups();
 			final MinCheck minCheck = new MinCheck();
 			minCheck.setMin(((Min) annotation).value());
 			check = minCheck;
 		}
 		else if (annotation instanceof Future)
 		{
+			groups = ((Future) annotation).groups();
 			check = new FutureCheck();
 		}
 		else if (annotation instanceof Past)
 		{
+			groups = ((Past) annotation).groups();
 			check = new PastCheck();
 		}
 		else if (annotation instanceof Pattern)
 		{
+			groups = ((Pattern) annotation).groups();
 			final MatchPatternCheck matchPatternCheck = new MatchPatternCheck();
 			int iflag = 0;
 			for (final Flag flag : ((Pattern) annotation).flags())
-			{
 				iflag = iflag | flag.getValue();
-			}
 			matchPatternCheck.setPattern(((Pattern) annotation).regexp(), iflag);
 			check = matchPatternCheck;
 		}
 		else if (annotation instanceof Digits)
 		{
+			groups = ((Digits) annotation).groups();
 			final DigitsCheck digitsCheck = new DigitsCheck();
 			digitsCheck.setMaxFraction(((Digits) annotation).fraction());
 			digitsCheck.setMaxInteger(((Digits) annotation).integer());
@@ -257,10 +255,16 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 		}
 		else if (annotation instanceof Size)
 		{
+			groups = ((Size) annotation).groups();
 			final SizeCheck sizeCheck = new SizeCheck();
 			sizeCheck.setMax(((Size) annotation).max());
 			sizeCheck.setMin(((Size) annotation).min());
 			check = sizeCheck;
+		}
+		else
+		{
+			LOG.debug("Ignoring unsupported JSR303 constraint annotation {}", annotation);
+			return;
 		}
 
 		if (check != null)
@@ -269,9 +273,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			{
 				final String[] profiles = new String[groups.length];
 				for (int i = 0, l = groups.length; i < l; i++)
-				{
 					profiles[i] = groups.getClass().getName();
-				}
 				check.setProfiles(profiles);
 			}
 			checks.add(check);
@@ -280,65 +282,33 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 
 		Annotation[] list = null;
 		if (annotation instanceof AssertFalse.List)
-		{
 			list = ((AssertFalse.List) annotation).value();
-		}
 		else if (annotation instanceof AssertTrue.List)
-		{
 			list = ((AssertTrue.List) annotation).value();
-		}
 		else if (annotation instanceof DecimalMax.List)
-		{
 			list = ((DecimalMax.List) annotation).value();
-		}
 		else if (annotation instanceof DecimalMin.List)
-		{
 			list = ((DecimalMin.List) annotation).value();
-		}
 		else if (annotation instanceof Digits.List)
-		{
 			list = ((Digits.List) annotation).value();
-		}
 		else if (annotation instanceof Future.List)
-		{
 			list = ((Future.List) annotation).value();
-		}
 		else if (annotation instanceof Max.List)
-		{
 			list = ((Max.List) annotation).value();
-		}
 		else if (annotation instanceof Min.List)
-		{
 			list = ((Min.List) annotation).value();
-		}
 		else if (annotation instanceof NotNull.List)
-		{
 			list = ((NotNull.List) annotation).value();
-		}
 		else if (annotation instanceof Null.List)
-		{
 			list = ((Null.List) annotation).value();
-		}
 		else if (annotation instanceof Past.List)
-		{
 			list = ((Past.List) annotation).value();
-		}
 		else if (annotation instanceof Pattern.List)
-		{
 			list = ((Pattern.List) annotation).value();
-		}
-		else if (annotation instanceof Size.List)
-		{
-			list = ((Size.List) annotation).value();
-		}
+		else if (annotation instanceof Size.List) list = ((Size.List) annotation).value();
 
-		if (list != null)
-		{
-			for (final Annotation anno : list)
-			{
-				initializeChecks(anno, checks);
-			}
-		}
+		if (list != null) for (final Annotation anno : list)
+			initializeChecks(anno, checks);
 	}
 
 	/**
