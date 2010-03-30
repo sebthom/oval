@@ -1,0 +1,31 @@
+<!-- 
+
+<!DOCTYPE FindBugsFilter SYSTEM "findbugs-filter.dtd">
+
+-->
+
+<!-- generated with http://www.hitsw.com/xml_utilites/ -->
+
+<!ELEMENT Bug EMPTY >
+<!ATTLIST Bug code CDATA #IMPLIED >
+<!ATTLIST Bug pattern CDATA #IMPLIED >
+
+<!ELEMENT Class EMPTY >
+<!ATTLIST Class name NMTOKEN #REQUIRED >
+
+<!ELEMENT FindBugsFilter ( Match+ ) >
+
+<!ELEMENT Match ( Bug | Or | Method | Class | Package | Priority )* >
+
+<!ELEMENT Method EMPTY >
+<!ATTLIST Method name CDATA #REQUIRED >
+<!ATTLIST Method params CDATA #IMPLIED >
+<!ATTLIST Method returns NMTOKEN #IMPLIED >
+
+<!ELEMENT Or ( Class | Method | Package )* >
+
+<!ELEMENT Package EMPTY >
+<!ATTLIST Package name NMTOKEN #REQUIRED >
+
+<!ELEMENT Priority EMPTY >
+<!ATTLIST Priority value NMTOKEN #REQUIRED >
