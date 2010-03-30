@@ -3,12 +3,11 @@
 	@author Holger Riegel
 	@author Sebastian Thomschke 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.50-SNAPSHOT</version>
+	<version>1.50</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -66,10 +65,10 @@ Besides field/property validation OVal implements Programming by Contract featur
 	</contributors>
 
 	<scm>
-		<url>http://oval.svn.sourceforge.net/viewvc/oval/trunk</url>
-		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk
+		<url>http://oval.svn.sourceforge.net/viewvc/oval/tags/oval-1.50</url>
+		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/tags/oval-1.50
 		</connection>
-		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk
+		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/tags/oval-1.50
 		</developerConnection>
 	</scm>
 
