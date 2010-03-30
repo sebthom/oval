@@ -74,6 +74,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * <li>javax.validation.constraints.Null           => net.sf.oval.constraint.AssertNullCheck
  * <li>javax.validation.constraints.Past           => net.sf.oval.constraint.PastCheck
  * <li>javax.validation.constraints.Pattern        => net.sf.oval.constraint.PatternCheck
+ * <li>javax.validation.constraints.Size           => net.sf.oval.constraint.SizeCheck
  * <li>javax.validation.Valid                      => net.sf.oval.constraint.AssertValidCheck
  * </ul>
  * @author Sebastian Thomschke

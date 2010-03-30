@@ -456,7 +456,104 @@ entity.parent = null; // violation - cannot be null
 // collect the constraint violations 
 List&lt;ConstraintViolation&gt; violations = validator.validate(entity);
 </programlisting>
+      </section>
+
+      <section>
+      <title>Interpreting JSR303 annotations</title>
+
+      <para>OVal itself is not a JSR303 compliant bean validation framework. However it now comes with 
+      a configurer that can translate the JSR303 built-in standard constraints into equivalent OVal constraints. The
+      <command>net.sf.oval.configuration.annotation.BeanValidationAnnotationsConfigurer</command>
+      interprets the JSR303 annotations as follows:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>@javax.validation.constraints.AssertFalse =&gt; @net.sf.oval.constraint.AssertTrue</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.AssertTrue =&gt; @net.sf.oval.constraint.AssertTrue </command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.DecimalMax =&gt; @net.sf.oval.constraint.Max</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.DecimalMin =&gt; @net.sf.oval.constraint.Min</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Digits =&gt; @net.sf.oval.constraint.Digits </command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Future =&gt; @net.sf.oval.constraint.Future</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Max =&gt; @net.sf.oval.constraint.Max</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Min =&gt; @net.sf.oval.constraint.Min</command></para>
+        </listitem>
+        
+        <listitem>
+          <para><command>@javax.validation.constraints.NotNull =&gt; @net.sf.oval.constraint.NotNull</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Null =&gt; @net.sf.oval.constraint.Null</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Past =&gt; @net.sf.oval.constraint.Past</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Pattern =&gt; @net.sf.oval.constraint.Pattern</command></para>
+        </listitem>
+
+        <listitem>
+          <para><command>@javax.validation.constraints.Size =&gt; @net.sf.oval.constraint.Size</command></para>
+        </listitem>       
+        
+        <listitem>
+          <para><command>@javax.validation.constraints.Valid =&gt; @net.sf.oval.constraint.AssertValid</command></para>
+        </listitem>                        
+      </itemizedlist>
+
+      <programlisting>public class MyEntity 
+{
+  @javax.validation.constraints.NotNull
+  @javax.validation.constraints.Size(max = 4)
+  public String id;
+
+  @javax.validation.constraints.NotNull
+  public String descr;
+
+  @javax.validation.constraints.NotNull
+  public MyEntity parent;
+}
+</programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting>// configure OVal to interprete OVal constraint annotations as well as built-in JSR303 annotations
+Validator validator = new Validator(new AnnotationsConfigurer(), new BeanValidationAnnotationsConfigurer());
+
+MyEntity entity = new MyEntity();
+
+entity.id = "12345"; // violation - the max length is 4 
+entity.descr = null; // violation - cannot be null 
+entity.parent = null; // violation - cannot be null
+
+// collect the constraint violations 
+List&lt;ConstraintViolation&gt; violations = validator.validate(entity);
+</programlisting>
     </section>
+    
   </section>
 
   <section>
@@ -1224,9 +1321,9 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
 {
   public boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator)
   {
-    if (value == null) return true;
+    if (valueToValidate == null) return true;
 
-    String val = value.toString();
+    String val = valueToValidate.toString();
     
     return val.equals(val.toUpperCase());
   }
@@ -1236,12 +1333,12 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
 
       <listitem>
         <para>Create an annotation for your constraint and annotated it with
-        <command>@net.sf.oval.Constraint</command> . Specify your check class
+        <command>@net.sf.oval.configuration.annotation.Constraint</command> . Specify your check class
         as value for parameter "check".</para>
 
         <programlisting>@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@net.sf.oval.Constraint(check = UpperCaseCheck.class)
+@net.sf.oval.configuration.annotation.Constraint(check = UpperCaseCheck.class)
 public @interface UpperCase
 {
   /**
@@ -1278,7 +1375,7 @@ public @interface UpperCase
 
         <programlisting>@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@net.sf.oval.Constraint(check = UpperCaseCheck.class)
+@net.sf.oval.configuration.annotation.Constraint(check = UpperCaseCheck.class)
 public @interface UpperCase
 {
   /**
