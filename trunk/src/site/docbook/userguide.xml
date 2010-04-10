@@ -1842,6 +1842,12 @@ v.validate(p);
     referencing OVal:</para>
 
     <itemizedlist>
+	
+	  <listitem>
+	    <para>The Developer Information Resource - OVal Learning Roadmap (2009)</para>
+        <para><ulink url="http://www.thedevinfo.com/Home/validation-frameworks/oval/oval-learning-roadmap">http://www.thedevinfo.com/Home/validation-frameworks/oval/oval-learning-roadmap</ulink></para>
+	  </listitem>
+	  
       <listitem>
         <para>Diseño por Contrato con OVal y Spring [Design by Contract with OVal and Spring] (2009)</para>
 
@@ -1970,7 +1976,21 @@ v.validate(p);
     <para>The following projects are using OVal:</para>
 
     <itemizedlist>
-    
+
+	  <listitem>
+        <para>gdv.xport</para>
+
+        <para><ulink
+        url="http://repository.agentes.de/gdv/gdv-xport/site/">http://repository.agentes.de/gdv/gdv-xport/site/</ulink></para>
+      </listitem>  
+	  
+	  <listitem>
+        <para>suz-lab-gae</para>
+
+        <para><ulink
+        url="http://code.google.com/p/suz-lab-gae/">http://code.google.com/p/suz-lab-gae/</ulink></para>
+      </listitem>  
+	  
       <listitem>
         <para>Cubby Simple Web Application Framework</para>
 
