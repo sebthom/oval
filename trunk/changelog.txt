@@ -2,6 +2,10 @@
 [+] Feature added.
 [*] Change.
 
+2010-??-?? v1.51
+================
+- [ oval-Bugs-2994748 ] added missing French translations (thanks to Patrice Lachance)
+
 2010-03-29 v1.50
 ================
 * upgraded to AspectJ 1.6.8, JUnit 4.8.1, SLF4J 1.5.11, MVEL 2.0.16, Paranamer 2.2, JRuby 1.4.0
