@@ -558,6 +558,7 @@ public class Guard extends Validator
 		if (isInvariantsEnabled && cc.isCheckInvariants || cc.methodsWithCheckInvariantsPost.contains(ctor))
 		{
 			final List<ConstraintViolation> violations = getCollectionFactory().createList();
+			currentViolations.get().add(violations);
 			try
 			{
 				validateInvariants(guardedObject, violations, null);
@@ -565,6 +566,10 @@ public class Guard extends Validator
 			catch (final ValidationFailedException ex)
 			{
 				throw translateException(ex);
+			}
+			finally
+			{
+				currentViolations.get().removeLast();
 			}
 
 			if (violations.size() > 0)
@@ -632,10 +637,11 @@ public class Guard extends Validator
 		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants
 				&& !ReflectionUtils.isPrivate(method) && !ReflectionUtils.isProtected(method);
 
-		final List<ConstraintViolation> violations = getCollectionFactory().createList();
-
 		// if static method use the declaring class as guardedObject
 		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
+
+		final List<ConstraintViolation> violations = getCollectionFactory().createList();
+		currentViolations.get().add(violations);
 
 		try
 		{
@@ -656,6 +662,10 @@ public class Guard extends Validator
 		catch (final ValidationFailedException ex)
 		{
 			throw translateException(ex);
+		}
+		finally
+		{
+			currentViolations.get().removeLast();
 		}
 
 		final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
@@ -683,6 +693,8 @@ public class Guard extends Validator
 
 		final Object returnValue = invocable.invoke();
 
+		currentViolations.get().add(violations);
+
 		try
 		{
 			// check invariants if executed method is not private
@@ -703,6 +715,10 @@ public class Guard extends Validator
 		catch (final ValidationFailedException ex)
 		{
 			throw translateException(ex);
+		}
+		finally
+		{
+			currentViolations.get().removeLast();
 		}
 
 		if (violations.size() > 0)
@@ -789,10 +805,11 @@ public class Guard extends Validator
 		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants
 				&& !ReflectionUtils.isPrivate(method) && !ReflectionUtils.isProtected(method);
 
-		final List<ConstraintViolation> violations = getCollectionFactory().createList();
-
 		// if static method use the declaring class as guardedObject
 		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
+
+		final List<ConstraintViolation> violations = getCollectionFactory().createList();
+		currentViolations.get().add(violations);
 
 		try
 		{
@@ -813,6 +830,10 @@ public class Guard extends Validator
 		catch (final ValidationFailedException ex)
 		{
 			throw translateException(ex);
+		}
+		finally
+		{
+			currentViolations.get().removeLast();
 		}
 
 		final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
@@ -1225,8 +1246,11 @@ public class Guard extends Validator
 	protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
 			final Constructor< ? > constructor, final Object[] argsToValidate) throws ValidationFailedException
 	{
-		// create a new set for this validation cycle
+		// create required objects for this validation cycle
+		final List<ConstraintViolation> violations = getCollectionFactory().createList();
+		currentViolations.get().add(violations);
 		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+
 		try
 		{
 			final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -1234,8 +1258,6 @@ public class Guard extends Validator
 
 			// if no parameter checks exist just return null
 			if (parameterChecks == null) return null;
-
-			final List<ConstraintViolation> violations = getCollectionFactory().createList();
 
 			final String[] parameterNames = parameterNameResolver.getParameterNames(constructor);
 
@@ -1262,7 +1284,8 @@ public class Guard extends Validator
 		}
 		finally
 		{
-			// remove the set
+			// remove the validation cycle related objects
+			currentViolations.get().removeLast();
 			currentlyValidatedObjects.get().removeLast();
 		}
 	}
