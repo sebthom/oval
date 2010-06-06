@@ -267,6 +267,8 @@ public class Validator implements IValidator
 
 	protected final ThreadLocalLinkedList<Set<Object>> currentlyValidatedObjects = new ThreadLocalLinkedList<Set<Object>>();
 
+	protected final ThreadLocalLinkedList<List<ConstraintViolation>> currentViolations = new ThreadLocalLinkedList<List<ConstraintViolation>>();
+
 	private final Set<String> disabledProfiles = collectionFactory.createSet();
 
 	private final Set<String> enabledProfiles = collectionFactory.createSet();
@@ -1332,6 +1334,19 @@ public class Validator implements IValidator
 	}
 
 	/**
+	 * Reports an additional constraint violation for the current validation cycle.
+	 * This method is intended to be executed by check implementations only.
+	 * @param constraintViolation the constraint violation
+	 */
+	public void reportConstraintViolation(final ConstraintViolation constraintViolation)
+	{
+		Assert.notNull("constraintViolation", constraintViolation);
+		if (currentViolations.get().size() == 0)
+			throw new IllegalStateException("No active validation cycle found for the current thread.");
+		currentViolations.get().getLast().add(constraintViolation);
+	}
+
+	/**
 	 * @param exceptionTranslator the exceptionTranslator to set
 	 */
 	public void setExceptionTranslator(final ExceptionTranslator exceptionTranslator)
@@ -1357,17 +1372,20 @@ public class Validator implements IValidator
 	{
 		Assert.notNull("validatedObject", validatedObject);
 
-		// create a new set for this validation cycle
+		// create required objects for this validation cycle
+		final List<ConstraintViolation> violations = collectionFactory.createList();
+		currentViolations.get().add(violations);
 		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+
 		try
 		{
-			final List<ConstraintViolation> violations = collectionFactory.createList();
 			validateInvariants(validatedObject, violations, (String[]) null);
 			return violations;
 		}
 		finally
 		{
-			// remove the set
+			// remove the validation cycle related objects
+			currentViolations.get().removeLast();
 			currentlyValidatedObjects.get().removeLast();
 		}
 	}
@@ -1380,17 +1398,20 @@ public class Validator implements IValidator
 	{
 		Assert.notNull("validatedObject", validatedObject);
 
-		// create a new set for this validation cycle
+		// create required objects for this validation cycle
+		final List<ConstraintViolation> violations = collectionFactory.createList();
+		currentViolations.get().add(violations);
 		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+
 		try
 		{
-			final List<ConstraintViolation> violations = collectionFactory.createList();
 			validateInvariants(validatedObject, violations, profiles);
 			return violations;
 		}
 		finally
 		{
-			// remove the set
+			// remove the validation cycle related objects
+			currentViolations.get().removeLast();
 			currentlyValidatedObjects.get().removeLast();
 		}
 	}
@@ -1404,14 +1425,15 @@ public class Validator implements IValidator
 		Assert.notNull("validatedObject", validatedObject);
 		Assert.notNull("validatedField", validatedField);
 
-		// create a new set for this validation cycle
+		// create required objects for this validation cycle
+		final List<ConstraintViolation> violations = collectionFactory.createList();
+		currentViolations.get().add(violations);
 		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+
 		try
 		{
 			final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());
 			final Collection<Check> checks = cc.checksForFields.get(validatedField);
-
-			final List<ConstraintViolation> violations = collectionFactory.createList();
 
 			if (checks == null || checks.size() == 0) return violations;
 
@@ -1428,10 +1450,10 @@ public class Validator implements IValidator
 		}
 		finally
 		{
-			// remove the set
+			// remove the validation cycle related objects
+			currentViolations.get().removeLast();
 			currentlyValidatedObjects.get().removeLast();
 		}
-
 	}
 
 	/**

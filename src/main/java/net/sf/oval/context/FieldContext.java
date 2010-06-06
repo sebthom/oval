@@ -14,6 +14,7 @@ package net.sf.oval.context;
 
 import java.lang.reflect.Field;
 
+import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.SerializableField;
 
 /**
@@ -26,12 +27,23 @@ public class FieldContext extends OValContext
 	private final SerializableField field;
 
 	/**
+	 * @param declaringClass
+	 * @param fieldName
+	 */
+	public FieldContext(final Class< ? > declaringClass, final String fieldName)
+	{
+		final Field field = ReflectionUtils.getField(declaringClass, fieldName);
+		this.field = SerializableField.getInstance(field);
+		compileTimeType = field.getType();
+	}
+
+	/**
 	 * @param field
 	 */
 	public FieldContext(final Field field)
 	{
 		this.field = SerializableField.getInstance(field);
-		this.compileTimeType = field.getType();
+		compileTimeType = field.getType();
 	}
 
 	/**

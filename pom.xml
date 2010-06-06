@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.51-SNAPSHOT</version>
+	<version>1.60-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 	<url>http://oval.sf.net</url>
@@ -146,7 +146,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
+			<version>1.2.16</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -182,7 +182,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.11</version>
+			<version>1.6.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -206,7 +206,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.jruby</groupId>
 			<artifactId>jruby</artifactId>
-			<version>1.4.0</version>
+			<version>1.5.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -242,7 +242,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>1.6.4</version>
+			<version>1.7.2</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -379,7 +379,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.3</version>
+				<version>1.4</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -413,7 +413,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				-->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
-				<version>2.0.9</version>
+				<version>2.0.10</version>
 				<executions>
 					<execution>
 						<goals>
@@ -509,7 +509,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.1</version>
+				<version>2.3.1</version>
 				<configuration>
 					<source>${version.java}</source>
 					<target>${version.java}</target>
@@ -559,7 +559,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.4.3</version>
+				<version>2.5</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TestGuardAspect*</exclude>
@@ -578,7 +578,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.3.1</version>
 				<configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile>-->
 					<archive>
@@ -620,7 +620,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				-->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>2.1</version>
+				<version>2.1.1</version>
 				<dependencies>
 					<!--
 						docbook support, unfortunately very limited <dependency> <groupId>org.apache.maven.doxia</groupId>
@@ -704,7 +704,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- Generate Javadoc for the project. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>2.7</version>
 				<configuration>
 					<stylesheetfile>${basedir}/src/site/javadoc/oval-javadoc.css
 					</stylesheetfile>
@@ -765,7 +765,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- JUnit Code Coverage report -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.4</version>
 				<configuration>
 					<instrumentation>
 						<excludes>
@@ -788,7 +788,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				-->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
 				<configuration>
 					<linkXref>true</linkXref>
 					<sourceEncoding>utf-8</sourceEncoding>
