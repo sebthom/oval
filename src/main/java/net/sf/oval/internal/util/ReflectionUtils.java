@@ -14,14 +14,18 @@ package net.sf.oval.internal.util;
 
 import static net.sf.oval.Validator.getCollectionFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import net.sf.oval.exception.AccessingFieldValueFailedException;
 import net.sf.oval.exception.ConstraintsViolatedException;
@@ -35,6 +39,52 @@ import net.sf.oval.internal.Log;
 public final class ReflectionUtils
 {
 	private static final Log LOG = Log.getLog(ReflectionUtils.class);
+
+	/**
+	 * Returns all annotations present on this class.
+	 * @param clazz the class to inspect
+	 * @param inspectInterfaces whether to also return annotations declared on interface declaration
+	 * @return all annotations present on this class.
+	 */
+	public static Annotation[] getAnnotations(final Class< ? > clazz, final boolean inspectInterfaces)
+	{
+		if (!inspectInterfaces) return clazz.getAnnotations();
+
+		final List<Annotation> annotations = Arrays.asList(clazz.getAnnotations());
+		for (final Class< ? > next : ReflectionUtils.getInterfacesRecursive(clazz))
+		{
+			final Annotation[] declaredAnnotations = next.getDeclaredAnnotations();
+			annotations.addAll(Arrays.asList(declaredAnnotations));
+		}
+		return annotations.toArray(new Annotation[annotations.size()]);
+	}
+
+	/**
+	 * Returns all annotations present on this method.
+	 * @param method the method to inspect
+	 * @param inspectInterfaces whether to also return annotations declared on interface method declaration
+	 * @return all annotations present on this method.
+	 */
+	public static Annotation[] getAnnotations(final Method method, final boolean inspectInterfaces)
+	{
+		if (!inspectInterfaces || !isPublic(method)) return method.getAnnotations();
+
+		final String methodName = method.getName();
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+
+		final List<Annotation> annotations = Arrays.asList(method.getAnnotations());
+		for (final Class< ? > nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass()))
+			try
+			{
+				annotations.addAll(Arrays.asList(nextClass.getDeclaredMethod(methodName, methodParameterTypes)
+						.getDeclaredAnnotations()));
+			}
+			catch (final NoSuchMethodException e)
+			{
+				// ignore
+			}
+		return annotations.toArray(new Annotation[annotations.size()]);
+	}
 
 	/**
 	 * @return the field or null if the field does not exist
@@ -198,6 +248,30 @@ public final class ReflectionUtils
 	}
 
 	/**
+	 * @param clazz the class to inspect
+	 * @return a set with all implemented interfaces
+	 */
+	public static Set<Class< ? >> getInterfacesRecursive(final Class< ? > clazz)
+	{
+		final Set<Class< ? >> interfaces = getCollectionFactory().createSet(2);
+		return getInterfacesRecursive(clazz, interfaces);
+	}
+
+	private static Set<Class< ? >> getInterfacesRecursive(Class< ? > clazz, final Set<Class< ? >> interfaces)
+	{
+		while (clazz != null)
+		{
+			for (final Class< ? > next : clazz.getInterfaces())
+			{
+				interfaces.add(next);
+				getInterfacesRecursive(next, interfaces);
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return interfaces;
+	}
+
+	/**
 	 * @return the method or null if the method does not exist
 	 */
 	public static Method getMethod(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
@@ -225,6 +299,62 @@ public final class ReflectionUtils
 		if (superclazz == null) return null;
 
 		return getMethodRecursive(superclazz, methodName, parameterTypes);
+	}
+
+	/**
+	 * Returns an array of arrays that represent the annotations on the formal parameters, in declaration order, 
+	 * of the method represented by this method.
+	 *  
+	 * @param method the method to inspect
+	 * @param inspectInterfaces whether to also return annotations declared on interface method declaration
+	 * @return an array of arrays that represent the annotations on the formal parameters, in declaration order, 
+	 * of the method represented by this method.
+	 */
+	public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces)
+	{
+		if (!inspectInterfaces || !isPublic(method)) return method.getParameterAnnotations();
+
+		final String methodName = method.getName();
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+		final int methodParameterTypesCount = methodParameterTypes.length;
+
+		@SuppressWarnings("unchecked")
+		final HashSet<Annotation>[] methodParameterAnnotations = new HashSet[methodParameterTypesCount];
+
+		final Class< ? > clazz = method.getDeclaringClass();
+		final Set<Class< ? >> classes = ReflectionUtils.getInterfacesRecursive(clazz);
+		classes.add(clazz);
+		for (final Class< ? > nextClass : classes)
+			try
+			{
+				final Method nextMethod = nextClass.getDeclaredMethod(methodName, methodParameterTypes);
+				for (int i = 0; i < methodParameterTypesCount; i++)
+				{
+					final Annotation[] paramAnnos = nextMethod.getParameterAnnotations()[i];
+					if (paramAnnos.length > 0)
+					{
+						HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
+						if (cummulatedParamAnnos == null)
+							methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
+						for (final Annotation anno : paramAnnos)
+							cummulatedParamAnnos.add(anno);
+					}
+				}
+			}
+			catch (final NoSuchMethodException e)
+			{
+				// ignore
+			}
+
+		final Annotation[][] result = new Annotation[methodParameterTypesCount][];
+		for (int i = 0; i < methodParameterTypesCount; i++)
+		{
+			final HashSet<Annotation> paramAnnos = methodParameterAnnotations[i];
+			result[i] = paramAnnos == null ? new Annotation[0] : methodParameterAnnotations[i]
+					.toArray(new Annotation[methodParameterAnnotations[i].size()]);
+
+		}
+		return result;
 	}
 
 	public static Method getSetter(final Class< ? > clazz, final String propertyName)
@@ -329,6 +459,37 @@ public final class ReflectionUtils
 		}
 	}
 
+	/**
+	 * Returns true if an annotation for the specified type is present on this method, else false. 
+	 *  
+	 * @param method the method to inspect
+	 * @param annotationClass the Class object corresponding to the annotation type
+	 * @param inspectInterfaces whether to also check annotations declared on interface method declaration
+	 * @return true if an annotation for the specified annotation type is present on this method, else false
+	 */
+	public static boolean isAnnotationPresent(final Method method, final Class< ? extends Annotation> annotationClass,
+			final boolean inspectInterfaces)
+	{
+		if (method.isAnnotationPresent(annotationClass)) return true;
+
+		if (!inspectInterfaces || !isPublic(method)) return false;
+
+		final String methodName = method.getName();
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+
+		for (final Class< ? > next : getInterfacesRecursive(method.getDeclaringClass()))
+			try
+			{
+				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass))
+					return true;
+			}
+			catch (final NoSuchMethodException e)
+			{
+				// ignore
+			}
+		return false;
+	}
+
 	public static boolean isClassPresent(final String className)
 	{
 		try
@@ -375,6 +536,11 @@ public final class ReflectionUtils
 	public static boolean isProtected(final Member member)
 	{
 		return (member.getModifiers() & Modifier.PROTECTED) != 0;
+	}
+
+	public static boolean isPublic(final Member member)
+	{
+		return (member.getModifiers() & Modifier.PUBLIC) != 0;
 	}
 
 	/**

@@ -30,8 +30,7 @@ public class InheritanceTest extends TestCase
 		/**
 		 * @param name the name to set
 		 */
-		public void setName2(@AssertFieldConstraints
-		final String name)
+		public void setName2(@AssertFieldConstraints final String name)
 		{
 			this.name = name;
 		}
@@ -60,6 +59,55 @@ public class InheritanceTest extends TestCase
 		}
 	}
 
+	@Guarded
+	public static class EntityWithInterfaceButUnapplied implements EntityInterface
+	{
+		protected String name = "";
+
+		/**
+		 * @return the name
+		 */
+		public String getName()
+		{
+			return name;
+		}
+
+		/**
+		 * @param name the name to set
+		 */
+		public void setName(final String name)
+		{
+			this.name = name;
+		}
+	}
+
+	@Guarded(inspectInterfaces = true)
+	public static class EntityWithInterface implements EntityInterface
+	{
+		protected String name = "";
+
+		/**
+		 * @return the name
+		 */
+		public String getName()
+		{
+			return name;
+		}
+
+		/**
+		 * @param name the name to set
+		 */
+		public void setName(final String name)
+		{
+			this.name = name;
+		}
+	}
+
+	public static interface EntityInterface
+	{
+		public void setName(final @NotNull String name);
+	}
+
 	public void testInheritance()
 	{
 		final Guard guard = new Guard();
@@ -85,6 +133,41 @@ public class InheritanceTest extends TestCase
 		catch (final ConstraintsViolatedException ex)
 		{
 			// expected
+		}
+	}
+
+	public void testInterface()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final EntityWithInterface e = new EntityWithInterface();
+
+		try
+		{
+			e.setName(null);
+			fail("ConstraintViolationException should have been thrown");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			// expected
+		}
+	}
+
+	public void testInterfaceNotApplied()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final EntityWithInterfaceButUnapplied e = new EntityWithInterfaceButUnapplied();
+
+		try
+		{
+			e.setName(null);
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			fail("ConstraintViolationException should not have been thrown");
 		}
 	}
 }

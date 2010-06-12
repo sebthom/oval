@@ -9,6 +9,7 @@
  * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
+ *     Chris Pheby - inspectInterfaces
  *******************************************************************************/
 package net.sf.oval.guard;
 
@@ -58,4 +59,10 @@ public @interface Guarded
 	 * prior and after calls to non-private methods.
 	 */
 	boolean checkInvariants() default true;
+
+	/**
+	 * Declares if annotations can be applied to interfaces that this class implements - supporting a documentation
+	 * function
+	 */
+	boolean inspectInterfaces() default false;
 }

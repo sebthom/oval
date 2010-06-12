@@ -9,6 +9,7 @@
  * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
+ *     Chris Pheby - inspectInterfaces
  *******************************************************************************/
 package net.sf.oval.configuration.pojo.elements;
 
@@ -72,4 +73,10 @@ public class ClassConfiguration extends ConfigurationElement
 	 * non-private methods and constructors.
 	 */
 	public Boolean checkInvariants;
+
+	/**
+	 * Specifies whether annotations can be applied to interfaces that this class implements,
+	 * supporting a documentation function
+	 */
+	public Boolean inspectInterfaces;
 }
