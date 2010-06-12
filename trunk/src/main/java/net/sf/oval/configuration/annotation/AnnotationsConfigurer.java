@@ -9,6 +9,7 @@
  * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
+ *     Chris Pheby - interface based method parameter validation (inspectInterfaces)
  *******************************************************************************/
 package net.sf.oval.configuration.annotation;
 
@@ -42,6 +43,7 @@ import net.sf.oval.guard.PostValidateThis;
 import net.sf.oval.guard.Pre;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.guard.PreValidateThis;
+import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * Configurer that configures constraints based on annotations tagged with {@link Constraint}
@@ -146,7 +148,8 @@ public class AnnotationsConfigurer implements Configurer
 			boolean postValidateThis = false;
 
 			// loop over all annotations
-			for (final Annotation annotation : method.getAnnotations())
+			for (final Annotation annotation : ReflectionUtils.getAnnotations(method, Boolean.TRUE
+					.equals(classCfg.inspectInterfaces)))
 				if (annotation instanceof Pre)
 				{
 					final PreCheck pc = new PreCheck();
@@ -171,8 +174,9 @@ public class AnnotationsConfigurer implements Configurer
 			/*
 			 * determine parameter checks
 			 */
-			final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(method
-					.getParameterAnnotations(), method.getParameterTypes());
+			final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ReflectionUtils
+					.getParameterAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces)), method
+					.getParameterTypes());
 
 			// check if anything has been configured for this method at all
 			if (paramCfg.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0 || postChecks.size() > 0
@@ -184,7 +188,8 @@ public class AnnotationsConfigurer implements Configurer
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
 				mc.parameterConfigurations = paramCfg;
-				mc.isInvariant = method.isAnnotationPresent(IsInvariant.class);
+				mc.isInvariant = ReflectionUtils.isAnnotationPresent(method, IsInvariant.class, Boolean.TRUE
+						.equals(classCfg.inspectInterfaces));
 				mc.preCheckInvariants = preValidateThis;
 				mc.postCheckInvariants = postValidateThis;
 				if (returnValueChecks.size() > 0)
@@ -210,7 +215,9 @@ public class AnnotationsConfigurer implements Configurer
 	protected void configureObjectLevelChecks(final ClassConfiguration classCfg)
 	{
 		final List<Check> checks = getCollectionFactory().createList(2);
-		for (final Annotation annotation : classCfg.type.getAnnotations())
+
+		for (final Annotation annotation : ReflectionUtils.getAnnotations(classCfg.type, Boolean.TRUE
+				.equals(classCfg.inspectInterfaces)))
 			// check if the current annotation is a constraint annotation
 			if (annotation.annotationType().isAnnotationPresent(Constraint.class))
 				checks.add(initializeCheck(annotation));
@@ -237,6 +244,7 @@ public class AnnotationsConfigurer implements Configurer
 		classCfg.applyFieldConstraintsToSetters = guarded != null && guarded.applyFieldConstraintsToSetters();
 		classCfg.assertParametersNotNull = guarded != null && guarded.assertParametersNotNull();
 		classCfg.checkInvariants = guarded != null && guarded.checkInvariants();
+		classCfg.inspectInterfaces = guarded != null && guarded.inspectInterfaces();
 
 		configureObjectLevelChecks(classCfg);
 		configureFieldChecks(classCfg);

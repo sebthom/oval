@@ -188,10 +188,39 @@
 						<element name="method" type="tns:Method" />
 					</choice>
 				</sequence>
-				<attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false" />
-				<attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false" />
-				<attribute name="assertParametersNotNull" use="optional" type="boolean" default="false" />
-				<attribute name="checkInvariants" use="optional" type="boolean" default="false" />
+				<attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false">
+					<annotation>
+						<documentation>Automatically apply field constraints to the corresponding parameters of constructors declared
+							within the same class. A corresponding parameter is a parameter with the same name and type as the field.
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false">
+					<annotation>
+						<documentation>Automatically apply field constraints to the single parameter of the corresponding setter methods
+							declared within the same class. A corresponding setter method is a method following the JavaBean convention and
+							its parameter has as the same type as the field.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="assertParametersNotNull" use="optional" type="boolean" default="false">
+					<annotation>
+						<documentation>Declares if parameter values of constructors and methods are expected to be not null. This can be
+							weakened by using the @net.sf.oval.constraint.exclusion.Nullable annotation on specific parameters.
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="checkInvariants" use="optional" type="boolean" default="false">
+					<annotation>
+						<documentation>Declares if invariants are automatically checked after constructor execution and prior and after
+							calls to non-private methods.</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="inspectInterfaces" use="optional" type="boolean" default="false">
+					<annotation>
+						<documentation>Declares if annotations can be applied to interfaces that this class implements - supporting a
+							documentation function</documentation>
+					</annotation>
+				</attribute>
 				<attribute name="type" use="required" type="string">
 					<annotation>
 						<documentation source="java:java.lang.Class">The fully qualified name of the class</documentation>
