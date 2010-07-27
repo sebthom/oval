@@ -468,7 +468,7 @@ List&lt;ConstraintViolation&gt; violations = validator.validate(entity);
 
       <itemizedlist>
         <listitem>
-          <para><command>@javax.validation.constraints.AssertFalse =&gt; @net.sf.oval.constraint.AssertTrue</command></para>
+          <para><command>@javax.validation.constraints.AssertFalse =&gt; @net.sf.oval.constraint.AssertFalse</command></para>
         </listitem>
 
         <listitem>
