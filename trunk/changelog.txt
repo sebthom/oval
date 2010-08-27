@@ -9,6 +9,7 @@
 * upgraded to Groovy 1.7.2, JRuby 1.5.0, SLF4J 1.6.0, log4j 1.2.16 
 + added overridable method AnnotationsConfigurer.newCheckInstance to allow implementation of custom check instantiation strategies 
 + [ oval-Bugs-2922034 ] added support for constraints specified for method parameters at interface level: @Guard(inspectInterfaces=true) (thanks to Chris Pheby) 
+- fixed a potential null reference (thanks to jacky163com)
 
 2010-03-29 v1.50
 ================

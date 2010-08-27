@@ -43,6 +43,7 @@ import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.AssertFieldConstraintsCheck;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.NotNullCheck;
+import net.sf.oval.constraint.ValidCheck;
 import net.sf.oval.context.ClassContext;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -145,7 +146,7 @@ public class Validator implements IValidator
 	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
 	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
 
-	private static MessageResolver messageResolver = ResourceBundleMessageResolver.INSTANCE;
+	private static MessageResolver messageResolver;
 	private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
 
 	private static CollectionFactory _createDefaultCollectionFactory()
@@ -201,6 +202,11 @@ public class Validator implements IValidator
 	 */
 	public static MessageResolver getMessageResolver()
 	{
+		/*
+		 * since ResourceBundleMessageResolver references getCollectionFactory() of this class
+		 * we are lazy referencing the resolvers shared instance.
+		 */
+		if (messageResolver == null) messageResolver = ResourceBundleMessageResolver.INSTANCE;
 		return messageResolver;
 	}
 
@@ -552,6 +558,15 @@ public class Validator implements IValidator
 		}
 
 		/*
+		 * special handling of the Valid constraint
+		 */
+		if (check instanceof ValidCheck)
+		{
+			checkConstraintValid(violations, (ValidCheck) check, validatedObject, valueToValidate, context, profiles);
+			return;
+		}
+
+		/*
 		 * special handling of the FieldConstraints constraint
 		 */
 		if (check instanceof AssertConstraintSetCheck)
@@ -576,8 +591,8 @@ public class Validator implements IValidator
 		 */
 		if (!check.isSatisfied(validatedObject, valueToValidate, context, this))
 		{
-			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check
-					.getMessageVariables());
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageVariables());
 			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context));
 		}
 	}
@@ -587,8 +602,8 @@ public class Validator implements IValidator
 		// JavaScript support
 		if (("javascript".equals(languageId) || "js".equals(languageId))
 				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
-			return _addExpressionLanguage("js", _addExpressionLanguage("javascript",
-					new ExpressionLanguageJavaScriptImpl()));
+			return _addExpressionLanguage("js",
+					_addExpressionLanguage("javascript", new ExpressionLanguageJavaScriptImpl()));
 
 		// Groovy support
 		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
@@ -597,8 +612,8 @@ public class Validator implements IValidator
 		// BeanShell support
 		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
 				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
-			return _addExpressionLanguage("beanshell", _addExpressionLanguage("bsh",
-					new ExpressionLanguageBeanShellImpl()));
+			return _addExpressionLanguage("beanshell",
+					_addExpressionLanguage("bsh", new ExpressionLanguageBeanShellImpl()));
 
 		// OGNL support
 		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
@@ -973,8 +988,34 @@ public class Validator implements IValidator
 
 		if (additionalViolations.size() != 0)
 		{
-			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check
-					.getMessageVariables());
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageVariables());
+
+			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context,
+					additionalViolations));
+		}
+	}
+
+	protected void checkConstraintValid(final List<ConstraintViolation> violations, final ValidCheck check,
+			final Object validatedObject, final Object valueToValidate, final OValContext context,
+			final String[] profiles) throws OValException
+	{
+		if (valueToValidate == null) return;
+
+		// ignore circular dependencies
+		if (isCurrentlyValidated(valueToValidate)) return;
+
+		final List<ConstraintViolation> additionalViolations = collectionFactory.createList();
+		final Set<javax.validation.ConstraintViolation<Object>> jsrViolations = ValidCheck.VALIDATOR_FACTORY
+				.getValidator().validate(valueToValidate, check.getGroups());
+		for (final javax.validation.ConstraintViolation<Object> nextViolation : jsrViolations)
+			additionalViolations.add(new ConstraintViolation(check, nextViolation.getMessage(), validatedObject,
+					nextViolation.getInvalidValue(), context));
+
+		if (additionalViolations.size() != 0)
+		{
+			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
+					check.getMessageVariables());
 
 			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context,
 					additionalViolations));
