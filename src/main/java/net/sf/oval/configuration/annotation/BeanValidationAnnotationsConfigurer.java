@@ -34,8 +34,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.validation.constraints.Pattern.Flag;
+import javax.validation.constraints.Size;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.Configurer;
@@ -85,14 +85,6 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;
-
-	/**
-	 * @return the applyFieldConstraintsToConstructors
-	 */
-	public Boolean getApplyFieldConstraintsToConstructors()
-	{
-		return applyFieldConstraintsToConstructors;
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -262,11 +254,6 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			sizeCheck.setMin(((Size) annotation).min());
 			check = sizeCheck;
 		}
-		else
-		{
-			LOG.warn("Ignoring unsupported JSR303 constraint annotation {1}", annotation);
-			return;
-		}
 
 		if (check != null)
 		{
@@ -308,8 +295,22 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			list = ((Pattern.List) annotation).value();
 		else if (annotation instanceof Size.List) list = ((Size.List) annotation).value();
 
-		if (list != null) for (final Annotation anno : list)
-			initializeChecks(anno, checks);
+		if (list != null)
+			for (final Annotation anno : list)
+				initializeChecks(anno, checks);
+		else
+		{
+			LOG.warn("Ignoring unsupported JSR303 constraint annotation {1}", annotation);
+			return;
+		}
+	}
+
+	/**
+	 * @return the applyFieldConstraintsToConstructors
+	 */
+	public Boolean isApplyFieldConstraintsToConstructors()
+	{
+		return applyFieldConstraintsToConstructors;
 	}
 
 	/**
@@ -335,5 +336,4 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 	{
 		this.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
 	}
-
 }
