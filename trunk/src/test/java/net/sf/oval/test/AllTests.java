@@ -186,6 +186,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationMessagesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.DefaultInstancesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.FieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
