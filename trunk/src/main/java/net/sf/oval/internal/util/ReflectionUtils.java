@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import java.util.Set;
 import net.sf.oval.exception.AccessingFieldValueFailedException;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.InvokingMethodFailedException;
+import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.internal.ContextCache;
 import net.sf.oval.internal.Log;
 
@@ -39,6 +41,28 @@ import net.sf.oval.internal.Log;
 public final class ReflectionUtils
 {
 	private static final Log LOG = Log.getLog(ReflectionUtils.class);
+
+	private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission(
+			"suppressAccessChecks");
+
+	/**
+	 * @throws SecurityException
+	 */
+	public static void assertPrivateAccessAllowed()
+	{
+		final SecurityManager manager = System.getSecurityManager();
+		if (manager != null)
+			try
+			{
+				manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+			}
+			catch (final SecurityException ex)
+			{
+				throw new ReflectionException(
+						"Current security manager configuration does not allow access to private fields and methods.",
+						ex);
+			}
+	}
 
 	/**
 	 * Returns all annotations present on this class.
@@ -127,10 +151,9 @@ public final class ReflectionUtils
 			// check if field and method parameter are of the same type
 			if (!field.getType().equals(methodParameterTypes[0]))
 			{
-				LOG
-						.warn(
-								"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
-								fieldName, clazz.getName(), methodName);
+				LOG.warn(
+						"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
+						fieldName, clazz.getName(), methodName);
 				field = null;
 			}
 		}
@@ -153,10 +176,9 @@ public final class ReflectionUtils
 				// check if found field is of boolean or Boolean
 				if (!boolean.class.equals(field.getType()) && Boolean.class.equals(field.getType()))
 				{
-					LOG
-							.warn(
-									"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
-									fieldName, clazz.getName(), methodName);
+					LOG.warn(
+							"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
+							fieldName, clazz.getName(), methodName);
 					field = null;
 				}
 			}
@@ -531,6 +553,20 @@ public final class ReflectionUtils
 	public static boolean isPrivate(final Member member)
 	{
 		return (member.getModifiers() & Modifier.PRIVATE) != 0;
+	}
+
+	public static boolean isPrivateAccessAllowed()
+	{
+		final SecurityManager manager = System.getSecurityManager();
+		if (manager != null) try
+		{
+			manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+		}
+		catch (final SecurityException ex)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static boolean isProtected(final Member member)

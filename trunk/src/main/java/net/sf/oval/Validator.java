@@ -299,6 +299,7 @@ public class Validator implements IValidator
 	 */
 	public Validator()
 	{
+		ReflectionUtils.assertPrivateAccessAllowed();
 		configurers.add(new AnnotationsConfigurer());
 	}
 
@@ -309,6 +310,7 @@ public class Validator implements IValidator
 	 */
 	public Validator(final Collection<Configurer> configurers)
 	{
+		ReflectionUtils.assertPrivateAccessAllowed();
 		if (configurers != null) this.configurers.addAll(configurers);
 	}
 
@@ -319,11 +321,11 @@ public class Validator implements IValidator
 	 */
 	public Validator(final Configurer... configurers)
 	{
+		ReflectionUtils.assertPrivateAccessAllowed();
 		if (configurers != null) for (final Configurer configurer : configurers)
 			this.configurers.add(configurer);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void _addChecks(final ClassChecks cc, final ClassConfiguration classCfg)
 			throws InvalidConfigurationException, ReflectionException
 	{
@@ -378,7 +380,7 @@ public class Validator implements IValidator
 					for (int i = 0, l = ctorCfg.parameterConfigurations.size(); i < l; i++)
 						paramTypes[i] = ctorCfg.parameterConfigurations.get(i).type;
 
-					final Constructor ctor = classCfg.type.getDeclaredConstructor(paramTypes);
+					final Constructor< ? > ctor = classCfg.type.getDeclaredConstructor(paramTypes);
 
 					if (TRUE.equals(ctorCfg.overwrite)) cc.clearConstructorChecks(ctor);
 
