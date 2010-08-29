@@ -43,7 +43,6 @@ import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.AssertFieldConstraintsCheck;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.NotNullCheck;
-import net.sf.oval.constraint.ValidCheck;
 import net.sf.oval.context.ClassContext;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -98,6 +97,7 @@ import net.sf.oval.logging.LoggerFactory;
  * <p>This class is thread-safe.</p>
  * 
  * @author Sebastian Thomschke
+ * 
  * @see AnnotationsConfigurer
  * @see JPAAnnotationsConfigurer
  * @see POJOConfigurer
@@ -560,15 +560,6 @@ public class Validator implements IValidator
 		}
 
 		/*
-		 * special handling of the Valid constraint
-		 */
-		if (check instanceof ValidCheck)
-		{
-			checkConstraintValid(violations, (ValidCheck) check, validatedObject, valueToValidate, context, profiles);
-			return;
-		}
-
-		/*
 		 * special handling of the FieldConstraints constraint
 		 */
 		if (check instanceof AssertConstraintSetCheck)
@@ -898,7 +889,7 @@ public class Validator implements IValidator
 					for (final Object item : ((Map< ? , ? >) valueToValidate).values())
 						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
 			}
-			else if (valueToValidate != null && ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+			else if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
 				for (final Object item : ArrayUtils.arrayToList(valueToValidate))
 					checkConstraint(violations, check, validatedObject, item, context, profiles, true);
 		if (isContainerValue || !isContainer || isContainer
@@ -987,32 +978,6 @@ public class Validator implements IValidator
 
 		final List<ConstraintViolation> additionalViolations = collectionFactory.createList();
 		validateInvariants(valueToValidate, additionalViolations, profiles);
-
-		if (additionalViolations.size() != 0)
-		{
-			final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(),
-					check.getMessageVariables());
-
-			violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context,
-					additionalViolations));
-		}
-	}
-
-	protected void checkConstraintValid(final List<ConstraintViolation> violations, final ValidCheck check,
-			final Object validatedObject, final Object valueToValidate, final OValContext context,
-			final String[] profiles) throws OValException
-	{
-		if (valueToValidate == null) return;
-
-		// ignore circular dependencies
-		if (isCurrentlyValidated(valueToValidate)) return;
-
-		final List<ConstraintViolation> additionalViolations = collectionFactory.createList();
-		final Set<javax.validation.ConstraintViolation<Object>> jsrViolations = ValidCheck.VALIDATOR_FACTORY
-				.getValidator().validate(valueToValidate, check.getGroups());
-		for (final javax.validation.ConstraintViolation<Object> nextViolation : jsrViolations)
-			additionalViolations.add(new ConstraintViolation(check, nextViolation.getMessage(), validatedObject,
-					nextViolation.getInvalidValue(), context));
 
 		if (additionalViolations.size() != 0)
 		{
