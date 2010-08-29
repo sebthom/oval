@@ -23,7 +23,7 @@ import net.sf.oval.constraint.DateRangeCheck;
  */
 public class DateRangeTest extends AbstractContraintsTest
 {
-	public void testDateRange() throws InterruptedException
+	public void testDateRange()
 	{
 		final DateRangeCheck check = new DateRangeCheck();
 		super.testCheck(check);

@@ -23,12 +23,14 @@ import net.sf.oval.configuration.annotation.Constraints;
 /**
  * Check the value with the given CheckWith constraints.
  * 
+ * @deprecated use {@link CheckWith.List}
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Constraints
+@Deprecated
 public @interface CheckWithMultiple
 {
 	/**
