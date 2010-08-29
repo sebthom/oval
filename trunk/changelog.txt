@@ -12,6 +12,7 @@
 - fixed a potential null reference (thanks to jacky163com)
 * upgraded to Paranamer 2.2.1, MVEL 2.0.18, Groovy 1.7.4, Spring 3.0.4.RELEASE, JRuby 1.5.2, AspectJ 1.6.9, SLF4J 1.6.1
 + Validator now eagerly checks Java SecurityManager configuration for suppressAccessChecks ReflectionPermission during instantiation
++ added @<Constraint>.List annotations that can hold multiple constraint annotations of the same type
 
 2010-03-29 v1.50
 ================

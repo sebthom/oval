@@ -180,6 +180,8 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.BeanValidationAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CheckWithListConstraintTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CheckWithMultipleConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CollectionTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConditionalConstraintsTest.class);

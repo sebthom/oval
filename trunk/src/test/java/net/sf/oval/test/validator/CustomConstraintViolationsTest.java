@@ -55,7 +55,7 @@ public class CustomConstraintViolationsTest extends TestCase
 		String message;
 	}
 
-	public void testMessages() throws ClassNotFoundException, InstantiationException, IllegalAccessException
+	public void testMessages()
 	{
 		final Validator val = new Validator();
 		val.addChecks(Entity.class, new CustomCheck());

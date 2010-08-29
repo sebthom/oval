@@ -86,8 +86,7 @@ public class SpringAOPAllianceTest extends TestCase
 	{
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
 				"SpringAOPAllianceTestJDKProxy.xml", SpringAOPAllianceTest.class);
-		final TestJDKProxyService testService = (TestJDKProxyService) ctx.getBean("testService",
-				TestJDKProxyService.class);
+		final TestJDKProxyService testService = ctx.getBean("testService", TestJDKProxyService.class);
 
 		try
 		{

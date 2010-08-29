@@ -19,14 +19,12 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.CheckWith;
 import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
-import net.sf.oval.constraint.CheckWithMultiple;
 import net.sf.oval.constraint.NotNull;
 
 /**
  * @author Sebastian Thomschke
  */
-@SuppressWarnings("deprecation")
-public class CheckWithMultipleConstraintTest extends TestCase
+public class CheckWithListConstraintTest extends TestCase
 {
 	protected static class TestEntity1
 	{
@@ -45,7 +43,7 @@ public class CheckWithMultipleConstraintTest extends TestCase
 			}
 		}
 
-		@CheckWithMultiple(@CheckWith(value = NameCheck1.class, ignoreIfNull = false))
+		@CheckWith.List(@CheckWith(value = NameCheck1.class, ignoreIfNull = false))
 		public String name;
 	}
 
