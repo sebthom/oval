@@ -24,7 +24,7 @@ import net.sf.oval.internal.Log;
  * 
  * @author Sebastian Thomschke
  */
-public class SerializableField implements Serializable
+public final class SerializableField implements Serializable
 {
 	private static final Log LOG = Log.getLog(SerializableField.class);
 
@@ -50,7 +50,7 @@ public class SerializableField implements Serializable
 	private transient Field field;
 	private final String name;
 
-	protected SerializableField(final Field field)
+	private SerializableField(final Field field)
 	{
 		this.field = field;
 		name = field.getName();

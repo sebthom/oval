@@ -17,7 +17,7 @@ import java.util.LinkedList;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalLinkedList<T> extends ThreadLocal<LinkedList<T>>
+public final class ThreadLocalLinkedList<T> extends ThreadLocal<LinkedList<T>>
 {
 	/**
 	 * {@inheritDoc}

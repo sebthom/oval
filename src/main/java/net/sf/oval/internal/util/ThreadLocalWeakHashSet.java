@@ -15,7 +15,7 @@ package net.sf.oval.internal.util;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalWeakHashSet<T> extends ThreadLocal<WeakHashSet<T>>
+public final class ThreadLocalWeakHashSet<T> extends ThreadLocal<WeakHashSet<T>>
 {
 	/**
 	 * {@inheritDoc}

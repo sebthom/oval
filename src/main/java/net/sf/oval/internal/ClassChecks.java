@@ -41,7 +41,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * 
  * @author Sebastian Thomschke
  */
-public class ClassChecks
+public final class ClassChecks
 {
 	private static final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = //
 	" Class does not implement IsGuarded interface. This indicates, " + // 
@@ -140,9 +140,7 @@ public class ClassChecks
 			checksOfConstructorParameter.checkExclusions.addAll(exclusionsColl);
 		}
 		else
-		{
 			ArrayUtils.addAll(checksOfConstructorParameter.checkExclusions, (CheckExclusion[]) exclusions);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,13 +154,13 @@ public class ClassChecks
 				parameterIndex);
 
 		if (checks instanceof Collection)
-			for (Check check : (Collection<Check>) checks)
+			for (final Check check : (Collection<Check>) checks)
 			{
 				checksOfConstructorParameter.checks.add(check);
 				if (check.getContext() == null) check.setContext(checksOfConstructorParameter.context);
 			}
 		else
-			for (Check check : (Check[]) checks)
+			for (final Check check : (Check[]) checks)
 			{
 				checksOfConstructorParameter.checks.add(check);
 				if (check.getContext() == null) check.setContext(checksOfConstructorParameter.context);
@@ -186,13 +184,13 @@ public class ClassChecks
 			}
 
 			if (checks instanceof Collection)
-				for (Check check : (Collection<Check>) checks)
+				for (final Check check : (Collection<Check>) checks)
 				{
 					checksOfField.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getFieldContext(field));
 				}
 			else
-				for (Check check : (Check[]) checks)
+				for (final Check check : (Check[]) checks)
 				{
 					checksOfField.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getFieldContext(field));
@@ -212,9 +210,7 @@ public class ClassChecks
 			checksOfMethodParameter.checkExclusions.addAll(exclusionsColl);
 		}
 		else
-		{
 			ArrayUtils.addAll(checksOfMethodParameter.checkExclusions, (CheckExclusion[]) exclusions);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -222,28 +218,22 @@ public class ClassChecks
 			throws InvalidConfigurationException
 	{
 		if (LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz))
-		{
 			LOG.warn("Method parameter constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
-		}
 
 		final ParameterChecks checksOfMethodParameter = _getChecksOfMethodParameter(method, parameterIndex);
 
 		if (checks instanceof Collection)
-		{
-			for (Check check : (Collection<Check>) checks)
+			for (final Check check : (Collection<Check>) checks)
 			{
 				if (check.getContext() == null) check.setContext(checksOfMethodParameter.context);
 				checksOfMethodParameter.checks.add(check);
 			}
-		}
 		else
-		{
-			for (Check check : (Check[]) checks)
+			for (final Check check : (Check[]) checks)
 			{
 				if (check.getContext() == null) check.setContext(checksOfMethodParameter.context);
 				checksOfMethodParameter.checks.add(check);
 			}
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -262,13 +252,13 @@ public class ClassChecks
 			}
 
 			if (checks instanceof Collection)
-				for (PostCheck check : (Collection<PostCheck>) checks)
+				for (final PostCheck check : (Collection<PostCheck>) checks)
 				{
 					postChecks.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getMethodExitContext(method));
 				}
 			else
-				for (PostCheck check : (PostCheck[]) checks)
+				for (final PostCheck check : (PostCheck[]) checks)
 				{
 					postChecks.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getMethodExitContext(method));
@@ -292,13 +282,13 @@ public class ClassChecks
 			}
 
 			if (checks instanceof Collection)
-				for (PreCheck check : (Collection<PreCheck>) checks)
+				for (final PreCheck check : (Collection<PreCheck>) checks)
 				{
 					preChecks.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getMethodEntryContext(method));
 				}
 			else
-				for (PreCheck check : (PreCheck[]) checks)
+				for (final PreCheck check : (PreCheck[]) checks)
 				{
 					preChecks.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getMethodEntryContext(method));
@@ -334,25 +324,14 @@ public class ClassChecks
 			if (!hasParameters && isInvariant2)
 			{
 				if (ReflectionUtils.isStatic(method))
-				{
 					constrainedStaticMethods.add(method);
-				}
 				else
-				{
 					constrainedMethods.add(method);
-				}
 			}
+			else if (ReflectionUtils.isStatic(method))
+				constrainedStaticMethods.remove(method);
 			else
-			{
-				if (ReflectionUtils.isStatic(method))
-				{
-					constrainedStaticMethods.remove(method);
-				}
-				else
-				{
-					constrainedMethods.remove(method);
-				}
-			}
+				constrainedMethods.remove(method);
 
 			Set<Check> methodChecks = checksForMethodReturnValues.get(method);
 			if (methodChecks == null)
@@ -362,13 +341,13 @@ public class ClassChecks
 			}
 
 			if (checks instanceof Collection)
-				for (Check check : (Collection<Check>) checks)
+				for (final Check check : (Collection<Check>) checks)
 				{
 					methodChecks.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getMethodReturnValueContext(method));
 				}
 			else
-				for (Check check : (Check[]) checks)
+				for (final Check check : (Check[]) checks)
 				{
 					methodChecks.add(check);
 					if (check.getContext() == null) check.setContext(ContextCache.getMethodReturnValueContext(method));
@@ -398,8 +377,8 @@ public class ClassChecks
 			ParameterChecks checksOfConstructorParameter = checksOfConstructorByParameter.get(paramIndex);
 			if (checksOfConstructorParameter == null)
 			{
-				checksOfConstructorParameter = new ParameterChecks(ctor, paramIndex, parameterNameResolver
-						.getParameterNames(ctor)[paramIndex]);
+				checksOfConstructorParameter = new ParameterChecks(ctor, paramIndex,
+						parameterNameResolver.getParameterNames(ctor)[paramIndex]);
 				checksOfConstructorByParameter.put(paramIndex, checksOfConstructorParameter);
 			}
 
@@ -429,8 +408,8 @@ public class ClassChecks
 			ParameterChecks checksOfMethodParameter = checksOfMethodByParameter.get(paramIndex);
 			if (checksOfMethodParameter == null)
 			{
-				checksOfMethodParameter = new ParameterChecks(method, paramIndex, parameterNameResolver
-						.getParameterNames(method)[paramIndex]);
+				checksOfMethodParameter = new ParameterChecks(method, paramIndex,
+						parameterNameResolver.getParameterNames(method)[paramIndex]);
 				checksOfMethodByParameter.put(paramIndex, checksOfMethodParameter);
 			}
 
@@ -650,7 +629,7 @@ public class ClassChecks
 	{
 		synchronized (checksForObject)
 		{
-			for (Check check : checks)
+			for (final Check check : checks)
 			{
 				if (check.getContext() == null) check.setContext(ContextCache.getClassContext(clazz));
 				checksForObject.add(check);
@@ -667,7 +646,7 @@ public class ClassChecks
 	{
 		synchronized (checksForObject)
 		{
-			for (Check check : checks)
+			for (final Check check : checks)
 			{
 				if (check.getContext() == null) check.setContext(ContextCache.getClassContext(clazz));
 				checksForObject.add(check);
@@ -813,14 +792,9 @@ public class ClassChecks
 			if (checksOfConstructorParameter == null) return;
 
 			for (final CheckExclusion exclusion : exclusions)
-			{
 				checksOfConstructorParameter.checkExclusions.remove(exclusion);
-			}
 
-			if (checksOfConstructorParameter.isEmpty())
-			{
-				checksOfConstructorByParameter.remove(parameterIndex);
-			}
+			if (checksOfConstructorParameter.isEmpty()) checksOfConstructorByParameter.remove(parameterIndex);
 		}
 	}
 
@@ -839,14 +813,9 @@ public class ClassChecks
 			if (checksOfConstructorParameter == null) return;
 
 			for (final Check check : checks)
-			{
 				checksOfConstructorParameter.checks.remove(check);
-			}
 
-			if (checksOfConstructorParameter.isEmpty())
-			{
-				checksOfConstructorByParameter.remove(parameterIndex);
-			}
+			if (checksOfConstructorParameter.isEmpty()) checksOfConstructorByParameter.remove(parameterIndex);
 		}
 	}
 
@@ -859,9 +828,7 @@ public class ClassChecks
 			if (checksOfField == null) return;
 
 			for (final Check check : checks)
-			{
 				checksOfField.remove(check);
-			}
 
 			if (checksOfField.size() == 0)
 			{
@@ -889,14 +856,9 @@ public class ClassChecks
 			if (checksOfMethodParameter == null) return;
 
 			for (final CheckExclusion exclusion : exclusions)
-			{
 				checksOfMethodParameter.checkExclusions.remove(exclusion);
-			}
 
-			if (checksOfMethodParameter.isEmpty())
-			{
-				checksOfMethodByParameter.remove(parameterIndex);
-			}
+			if (checksOfMethodParameter.isEmpty()) checksOfMethodByParameter.remove(parameterIndex);
 		}
 	}
 
@@ -917,14 +879,9 @@ public class ClassChecks
 			if (checksOfMethodParameter == null) return;
 
 			for (final Check check : checks)
-			{
 				checksOfMethodParameter.checks.remove(check);
-			}
 
-			if (checksOfMethodParameter.isEmpty())
-			{
-				checksOfMethodByParameter.remove(parameterIndex);
-			}
+			if (checksOfMethodParameter.isEmpty()) checksOfMethodByParameter.remove(parameterIndex);
 		}
 	}
 
@@ -937,14 +894,9 @@ public class ClassChecks
 			if (checksforMethod == null) return;
 
 			for (final PostCheck check : checks)
-			{
 				checksforMethod.remove(check);
-			}
 
-			if (checksforMethod.size() == 0)
-			{
-				checksForMethodsPostExcecution.remove(method);
-			}
+			if (checksforMethod.size() == 0) checksForMethodsPostExcecution.remove(method);
 		}
 	}
 
@@ -957,14 +909,9 @@ public class ClassChecks
 			if (checksforMethod == null) return;
 
 			for (final PreCheck check : checks)
-			{
 				checksforMethod.remove(check);
-			}
 
-			if (checksforMethod.size() == 0)
-			{
-				checksForMethodsPreExecution.remove(method);
-			}
+			if (checksforMethod.size() == 0) checksForMethodsPreExecution.remove(method);
 		}
 	}
 
@@ -977,9 +924,7 @@ public class ClassChecks
 			if (checksOfMethod == null) return;
 
 			for (final Check check : checks)
-			{
 				checksOfMethod.remove(check);
-			}
 
 			if (checksOfMethod.size() == 0)
 			{
@@ -995,9 +940,7 @@ public class ClassChecks
 		synchronized (checksForObject)
 		{
 			for (final Check check : checks)
-			{
 				checksForObject.remove(check);
-			}
 		}
 	}
 }

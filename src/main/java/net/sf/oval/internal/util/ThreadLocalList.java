@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalList<T> extends ThreadLocal<List<T>>
+public final class ThreadLocalList<T> extends ThreadLocal<List<T>>
 {
 	/**
 	 * {@inheritDoc}

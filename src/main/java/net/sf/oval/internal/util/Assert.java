@@ -50,6 +50,6 @@ public final class Assert
 	 */
 	private Assert()
 	{
-	// do nothing
+		super();
 	}
 }

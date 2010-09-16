@@ -26,7 +26,7 @@ import net.sf.oval.internal.util.LinkedSet;
 /**
  * @author Sebastian Thomschke
  */
-public class ParameterChecks
+public final class ParameterChecks
 {
 	public final Set<Check> checks = new LinkedSet<Check>(2);
 	public final Set<CheckExclusion> checkExclusions = new LinkedSet<CheckExclusion>(2);
