@@ -9,7 +9,7 @@
 + added overridable method AnnotationsConfigurer.newCheckInstance to allow implementation of custom check instantiation strategies 
 + [ oval-Bugs-2922034 ] added support for constraints specified for method parameters at interface level: @Guard(inspectInterfaces=true) (thanks to Chris Pheby) 
 - fixed a potential null reference (thanks to jacky163com)
-* upgraded to Paranamer 2.2.1, MVEL 2.0.18, Groovy 1.7.4, Spring 3.0.4.RELEASE, JRuby 1.5.2, AspectJ 1.6.9, SLF4J 1.6.1, log4j 1.2.16 
+* upgraded to OGNL 3.0, Paranamer 2.2.1, MVEL 2.0.18, Groovy 1.7.4, Spring 3.0.4.RELEASE, JRuby 1.5.2, AspectJ 1.6.9, SLF4J 1.6.1, log4j 1.2.16 
 + Validator now eagerly checks Java SecurityManager configuration for suppressAccessChecks ReflectionPermission during instantiation
 + added @<Constraint>.List annotations that can hold multiple constraint annotations of the same type
 

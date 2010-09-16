@@ -23,15 +23,16 @@ import net.sf.oval.context.OValContext;
 public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

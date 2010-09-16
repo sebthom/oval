@@ -60,11 +60,12 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * @return the substring
 	 */
@@ -76,9 +77,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	private String getSubstringLowerCase()
 	{
 		if (substringLowerCase == null && substring != null)
-		{
 			substringLowerCase = substring.toLowerCase(Locale.getDefault());
-		}
 		return substringLowerCase;
 	}
 

@@ -23,15 +23,16 @@ import net.sf.oval.context.OValContext;
 public class AssertFalseCheck extends AbstractAnnotationCheck<AssertFalse>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

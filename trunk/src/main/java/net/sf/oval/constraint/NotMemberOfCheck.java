@@ -62,11 +62,12 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * @return the members
 	 */
@@ -83,9 +84,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		{
 			membersLowerCase = getCollectionFactory().createList(members.size());
 			for (final String val : members)
-			{
 				membersLowerCase.add(val.toLowerCase(Locale.getDefault()));
-			}
 		}
 		return membersLowerCase;
 	}

@@ -27,11 +27,12 @@ public class NotBlankCheck extends AbstractAnnotationCheck<NotEmpty>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
