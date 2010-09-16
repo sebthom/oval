@@ -64,6 +64,12 @@ public @interface Email
 	}
 
 	/**
+	 * The e-mail address can contain a personal name as defined in RFC822, e.g. "Personal Name <user@host.domain>". 
+	 * @return
+	 */
+	boolean allowPersonalName() default true;
+
+	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
 	 * 
 	 * <p><b>Default:</b> ConstraintTarget.VALUES
