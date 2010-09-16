@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 /**
  * @author Sebastian Thomschke
  */
-public class WeakHashSet<E> implements Set<E>, Serializable
+public final class WeakHashSet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -64,12 +64,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 	{
 		int count = 0;
 		for (final E e : c)
-		{
-			if (add(e))
-			{
-				count++;
-			}
-		}
+			if (add(e)) count++;
 		return count > 0;
 	}
 
@@ -105,7 +100,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		if (!(o instanceof Set< ? >)) return false;
 
 		final Set< ? > set = (Set< ? >) o;
-		
+
 		if (set.size() != size()) return false;
 
 		return containsAll(set);
@@ -119,9 +114,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 	{
 		int hash = 0;
 		for (final E e : map.keySet())
-		{
 			if (e != null) hash += e.hashCode();
-		}
 		return hash;
 	}
 
@@ -156,9 +149,7 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 		// materialize the elements
 		map = new WeakHashMap<E, Object>(size);
 		for (int i = 0; i < size; i++)
-		{
 			map.put((E) ois.readObject(), TRUE);
-		}
 	}
 
 	/**
@@ -222,8 +213,6 @@ public class WeakHashSet<E> implements Set<E>, Serializable
 
 		// serialize the set's elements
 		for (final E e : map.keySet())
-		{
 			oos.writeObject(e);
-		}
 	}
 }

@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  *  @author Sebastian Thomschke
  */
-public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
+public final class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 {
 	private final List<E> list;
 
@@ -58,10 +58,7 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	 */
 	public void add(final int index, final E e)
 	{
-		if (!list.contains(e))
-		{
-			list.add(index, e);
-		}
+		if (!list.contains(e)) list.add(index, e);
 	}
 
 	/**
@@ -71,13 +68,11 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	{
 		boolean itemAdded = false;
 		for (final E o : c)
-		{
 			if (!list.contains(o))
 			{
 				add(o);
 				itemAdded = true;
 			}
-		}
 		return itemAdded;
 	}
 
@@ -88,12 +83,7 @@ public class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	{
 		final List<E> tmp = getCollectionFactory().createList(c.size());
 		for (final E o : c)
-		{
-			if (!list.contains(o))
-			{
-				tmp.add(o);
-			}
-		}
+			if (!list.contains(o)) tmp.add(o);
 		return list.addAll(index, tmp);
 	}
 

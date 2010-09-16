@@ -38,12 +38,7 @@ public final class ArrayUtils
 
 		int count = 0;
 		for (final T elem : elements)
-		{
-			if (collection.add(elem))
-			{
-				count++;
-			}
-		}
+			if (collection.add(elem)) count++;
 		return count;
 	}
 
@@ -57,9 +52,7 @@ public final class ArrayUtils
 			final byte[] arrayCasted = (byte[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final byte i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof char[])
@@ -67,9 +60,7 @@ public final class ArrayUtils
 			final char[] arrayCasted = (char[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final char i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof short[])
@@ -77,9 +68,7 @@ public final class ArrayUtils
 			final short[] arrayCasted = (short[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final short i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof int[])
@@ -87,9 +76,7 @@ public final class ArrayUtils
 			final int[] arrayCasted = (int[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final int i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof long[])
@@ -97,9 +84,7 @@ public final class ArrayUtils
 			final long[] arrayCasted = (long[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final long i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof double[])
@@ -107,9 +92,7 @@ public final class ArrayUtils
 			final double[] arrayCasted = (double[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final double i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof float[])
@@ -117,9 +100,7 @@ public final class ArrayUtils
 			final float[] arrayCasted = (float[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final float i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 		if (array instanceof boolean[])
@@ -127,9 +108,7 @@ public final class ArrayUtils
 			final boolean[] arrayCasted = (boolean[]) array;
 			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
 			for (final boolean i : arrayCasted)
-			{
 				result.add(i);
-			}
 			return result;
 		}
 
@@ -149,14 +128,12 @@ public final class ArrayUtils
 	public static <T> boolean containsSame(final T[] theArray, final T theItem)
 	{
 		for (final T t : theArray)
-		{
 			if (t == theItem) return true;
-		}
 		return false;
 	}
 
 	private ArrayUtils()
 	{
-	// do nothing
+		super();
 	}
 }

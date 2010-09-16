@@ -24,7 +24,7 @@ import net.sf.oval.internal.Log;
  * 
  * @author Sebastian Thomschke
  */
-public class SerializableMethod implements Serializable
+public final class SerializableMethod implements Serializable
 {
 	private static final Log LOG = Log.getLog(SerializableMethod.class);
 
@@ -52,7 +52,7 @@ public class SerializableMethod implements Serializable
 
 	private final Class< ? >[] parameterTypes;
 
-	protected SerializableMethod(final Method method)
+	private SerializableMethod(final Method method)
 	{
 		this.method = method;
 		name = method.getName();

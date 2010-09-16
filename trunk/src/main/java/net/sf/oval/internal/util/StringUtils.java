@@ -41,8 +41,7 @@ public final class StringUtils
 	/**
 	 * high-performance case-sensitive string replacement
 	 */
-	public static String replaceAll(final String searchIn, final String searchFor,
-			final String replaceWith)
+	public static String replaceAll(final String searchIn, final String searchFor, final String replaceWith)
 	{
 		final StringBuilder out = new StringBuilder();
 
@@ -63,6 +62,6 @@ public final class StringUtils
 	 */
 	private StringUtils()
 	{
-	// do nothing
+		super();
 	}
 }

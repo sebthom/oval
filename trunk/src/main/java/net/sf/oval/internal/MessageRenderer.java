@@ -28,10 +28,7 @@ public final class MessageRenderer
 	public static String renderMessage(final String messageKey, final Map<String, ? > messageValues)
 	{
 		String message = Validator.getMessageResolver().getMessage(messageKey);
-		if (message == null)
-		{
-			message = messageKey;
-		}
+		if (message == null) message = messageKey;
 
 		final MessageValueFormatter formatter = Validator.getMessageValueFormatter();
 
@@ -39,23 +36,16 @@ public final class MessageRenderer
 		if (message.indexOf('{') == -1) return message;
 
 		if (messageValues != null && messageValues.size() > 0)
-		{
 			for (final Entry<String, ? > entry : messageValues.entrySet())
-			{
-				message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", formatter
-						.format(entry.getValue()));
-			}
-		}
+				message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}",
+						formatter.format(entry.getValue()));
 		return message;
 	}
 
 	public static String renderMessage(final String messageKey, final String messageValueName, final String messageValue)
 	{
 		String message = Validator.getMessageResolver().getMessage(messageKey);
-		if (message == null)
-		{
-			message = messageKey;
-		}
+		if (message == null) message = messageKey;
 
 		// if there are no place holders in the message simply return it
 		if (message.indexOf('{') == -1) return message;
@@ -67,6 +57,6 @@ public final class MessageRenderer
 
 	private MessageRenderer()
 	{
-	// do nothing
+		super();
 	}
 }

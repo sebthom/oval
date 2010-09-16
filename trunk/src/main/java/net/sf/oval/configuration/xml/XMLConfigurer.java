@@ -53,8 +53,10 @@ import net.sf.oval.constraint.AssertFieldConstraintsCheck;
 import net.sf.oval.constraint.AssertNullCheck;
 import net.sf.oval.constraint.AssertTrueCheck;
 import net.sf.oval.constraint.AssertURLCheck;
+import net.sf.oval.constraint.AssertURLCheck.URIScheme;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.CheckWithCheck;
+import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 import net.sf.oval.constraint.DateRangeCheck;
 import net.sf.oval.constraint.DigitsCheck;
 import net.sf.oval.constraint.EmailCheck;
@@ -85,8 +87,6 @@ import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.RangeCheck;
 import net.sf.oval.constraint.SizeCheck;
 import net.sf.oval.constraint.ValidateWithMethodCheck;
-import net.sf.oval.constraint.AssertURLCheck.URIScheme;
-import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 import net.sf.oval.constraint.exclusion.NullableExclusion;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.PostCheck;
@@ -258,10 +258,10 @@ public class XMLConfigurer implements Configurer
 				final ParameterizedType genericSuperclass = (ParameterizedType) type.getGenericSuperclass();
 				for (final Type genericType : genericSuperclass.getActualTypeArguments())
 				{
-					final Class genericClass = (Class) genericType;
+					final Class< ? > genericClass = (Class< ? >) genericType;
 					if (genericClass.isAnnotation() && genericClass.isAnnotationPresent(Constraint.class))
 					{
-						constraintAnnotation = genericClass;
+						constraintAnnotation = (Class<Annotation>) genericClass;
 						break;
 					}
 				}
@@ -402,9 +402,7 @@ public class XMLConfigurer implements Configurer
 					xStream.addImplicitCollection(ObjectConfiguration.class, "checks");
 				}
 				// <field> -> net.sf.oval.configuration.elements.FieldConfiguration
-				xStream
-						.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations",
-								FieldConfiguration.class);
+				xStream.addImplicitCollection(ClassConfiguration.class, "fieldConfigurations", FieldConfiguration.class);
 				xStream.alias("field", FieldConfiguration.class);
 				xStream.addImplicitCollection(FieldConfiguration.class, "checks");
 

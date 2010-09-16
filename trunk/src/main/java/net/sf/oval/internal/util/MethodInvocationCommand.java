@@ -20,7 +20,7 @@ import net.sf.oval.exception.InvokingMethodFailedException;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodInvocationCommand
+public final class MethodInvocationCommand
 {
 	private final Object target;
 	private final Method method;

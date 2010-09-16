@@ -24,7 +24,7 @@ import net.sf.oval.internal.Log;
  * 
  * @author Sebastian Thomschke
  */
-public class SerializableConstructor implements Serializable
+public final class SerializableConstructor implements Serializable
 {
 	private static final Log LOG = Log.getLog(SerializableConstructor.class);
 
@@ -53,7 +53,7 @@ public class SerializableConstructor implements Serializable
 
 	private final Class< ? >[] parameterTypes;
 
-	protected SerializableConstructor(final Constructor< ? > constructor)
+	private SerializableConstructor(final Constructor< ? > constructor)
 	{
 		this.constructor = constructor;
 		parameterTypes = constructor.getParameterTypes();

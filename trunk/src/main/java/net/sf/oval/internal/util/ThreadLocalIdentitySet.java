@@ -15,7 +15,7 @@ package net.sf.oval.internal.util;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>>
+public final class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>>
 {
 	/**
 	 * {@inheritDoc}

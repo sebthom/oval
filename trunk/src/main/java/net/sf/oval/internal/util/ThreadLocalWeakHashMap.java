@@ -17,7 +17,7 @@ import java.util.WeakHashMap;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalWeakHashMap<K, V> extends ThreadLocal<WeakHashMap<K, V>>
+public final class ThreadLocalWeakHashMap<K, V> extends ThreadLocal<WeakHashMap<K, V>>
 {
 	/**
 	 * {@inheritDoc}

@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
+public final class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
 {
 	/**
 	 * {@inheritDoc}

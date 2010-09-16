@@ -18,7 +18,7 @@ import java.security.PrivilegedAction;
 /**
  * @author Sebastian Thomschke
  */
-public class SetAccessibleAction implements PrivilegedAction<Object>
+public final class SetAccessibleAction implements PrivilegedAction<Object>
 {
 	private final AccessibleObject ao;
 

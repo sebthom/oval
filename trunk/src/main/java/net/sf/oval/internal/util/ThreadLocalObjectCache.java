@@ -15,7 +15,7 @@ package net.sf.oval.internal.util;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalObjectCache<K, V> extends ThreadLocal<ObjectCache<K, V>>
+public final class ThreadLocalObjectCache<K, V> extends ThreadLocal<ObjectCache<K, V>>
 {
 	private final int maxElementsToKeep;
 

@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * @author Sebastian Thomschke
  */
-public class IdentitySet<E> implements Set<E>, Serializable
+public final class IdentitySet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -65,12 +65,7 @@ public class IdentitySet<E> implements Set<E>, Serializable
 	{
 		int count = 0;
 		for (final E e : c)
-		{
-			if (add(e))
-			{
-				count++;
-			}
-		}
+			if (add(e)) count++;
 		return count > 0;
 	}
 
@@ -153,12 +148,7 @@ public class IdentitySet<E> implements Set<E>, Serializable
 	{
 		boolean modified = false;
 		for (final Object e : c)
-		{
-			if (remove(e))
-			{
-				modified = true;
-			}
-		}
+			if (remove(e)) modified = true;
 		return modified;
 	}
 
@@ -207,8 +197,6 @@ public class IdentitySet<E> implements Set<E>, Serializable
 
 		// serialize the set's elements
 		for (final E e : map.values())
-		{
 			oos.writeObject(e);
-		}
 	}
 }
