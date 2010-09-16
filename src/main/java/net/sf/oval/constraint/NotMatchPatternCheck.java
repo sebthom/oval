@@ -55,10 +55,22 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
+		return messageVariables;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
@@ -84,9 +96,7 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 		if (valueToValidate == null) return true;
 
 		for (final Pattern p : patterns)
-		{
 			if (p.matcher(valueToValidate.toString()).matches()) return false;
-		}
 		return true;
 	}
 
@@ -140,16 +150,5 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 			ArrayUtils.addAll(this.patterns, patterns);
 		}
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
-		return messageVariables;
 	}
 }

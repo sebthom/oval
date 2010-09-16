@@ -63,11 +63,12 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * @return the methodName
 	 */

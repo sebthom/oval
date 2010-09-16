@@ -39,10 +39,22 @@ public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength>
 		super.configure(constraintAnnotation);
 		setMax(constraintAnnotation.value());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		return messageVariables;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
@@ -75,16 +87,5 @@ public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength>
 	{
 		this.max = max;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Integer.toString(max));
-		return messageVariables;
 	}
 }

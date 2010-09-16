@@ -59,11 +59,12 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * @return the testString
 	 */
@@ -75,9 +76,7 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	private String getTestStringLowerCase()
 	{
 		if (testStringLowerCase == null && testString != null)
-		{
 			testStringLowerCase = testString.toLowerCase(Locale.getDefault());
-		}
 		return testStringLowerCase;
 	}
 

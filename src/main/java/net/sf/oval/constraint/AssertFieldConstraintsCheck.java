@@ -42,6 +42,7 @@ public class AssertFieldConstraintsCheck extends AbstractAnnotationCheck<AssertF
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.CONTAINER};

@@ -40,6 +40,15 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected ConstraintTarget[] getAppliesToDefault()
+	{
+		return new ConstraintTarget[]{ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+	}
+
+	/**
 	 * @return true if all elements of a collection must be valid
 	 * @deprecated use appliesTo instead
 	 */
@@ -49,15 +58,6 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 		return ArrayUtils.containsSame(this.getAppliesTo(), ConstraintTarget.VALUES);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected ConstraintTarget[] getAppliesToDefault()
-	{
-		return new ConstraintTarget[]{ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
-	}
-	
-	
 	/**
 	 *  <b>This method is not used.</b><br>
 	 *  The validation of this special constraint is directly performed by the Validator class
@@ -76,26 +76,23 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid>
 	@Deprecated
 	public void setRequireValidElements(final boolean requireValidElements)
 	{
-		ConstraintTarget[] targets = getAppliesTo();
+		final ConstraintTarget[] targets = getAppliesTo();
 		if (requireValidElements)
 		{
 			if (!ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
 			{
-				List<ConstraintTarget> targetsList = Validator.getCollectionFactory().createList(4);
+				final List<ConstraintTarget> targetsList = Validator.getCollectionFactory().createList(4);
 				ArrayUtils.addAll(targetsList, targets);
 				targetsList.add(ConstraintTarget.VALUES);
 				setAppliesTo(targetsList.toArray(new ConstraintTarget[targetsList.size()]));
 			}
 		}
-		else
+		else if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
 		{
-			if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
-			{
-				List<ConstraintTarget> targetsList = Validator.getCollectionFactory().createList(4);
-				ArrayUtils.addAll(targetsList, targets);
-				targetsList.remove(ConstraintTarget.VALUES);
-				setAppliesTo(targetsList.toArray(new ConstraintTarget[targetsList.size()]));
-			}
+			final List<ConstraintTarget> targetsList = Validator.getCollectionFactory().createList(4);
+			ArrayUtils.addAll(targetsList, targets);
+			targetsList.remove(ConstraintTarget.VALUES);
+			setAppliesTo(targetsList.toArray(new ConstraintTarget[targetsList.size()]));
 		}
 	}
 }

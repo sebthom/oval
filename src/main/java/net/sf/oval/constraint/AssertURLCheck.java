@@ -119,15 +119,16 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		setConnect(constraintAnnotation.connect());
 		setPermittedURISchemes(constraintAnnotation.permittedURISchemes());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-	
+
 	/**
 	 * Gets the allowed URL schemes.
 	 * @return the permittedURISchemes
@@ -190,9 +191,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	private boolean isURISchemeValid(final String url)
 	{
 		for (final URIScheme scheme : permittedURISchemes)
-		{
 			if (url.startsWith(scheme.getScheme())) return true;
-		}
 		return false;
 	}
 
