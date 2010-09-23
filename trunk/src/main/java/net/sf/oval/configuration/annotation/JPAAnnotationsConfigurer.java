@@ -32,6 +32,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
 import net.sf.oval.Check;
+import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
@@ -74,56 +75,42 @@ public class JPAAnnotationsConfigurer implements Configurer
 	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
+		final CollectionFactory cf = getCollectionFactory();
+
 		final ClassConfiguration config = new ClassConfiguration();
 		config.type = clazz;
 		config.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
 		config.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
+
+		List<Check> checks = cf.createList(2);
 
 		/*
 		 * determine field checks
 		 */
 		for (final Field field : config.type.getDeclaredFields())
 		{
-			final List<Check> checks = getCollectionFactory().createList(4);
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
-			{
 				if (annotation instanceof Basic)
-				{
 					initializeChecks((Basic) annotation, checks);
-				}
 				else if (annotation instanceof Column)
-				{
 					initializeChecks((Column) annotation, checks, field);
-				}
 				else if (annotation instanceof OneToOne)
-				{
 					initializeChecks((OneToOne) annotation, checks);
-				}
 				else if (annotation instanceof ManyToOne)
-				{
 					initializeChecks((ManyToOne) annotation, checks);
-				}
 				else if (annotation instanceof ManyToMany)
-				{
 					initializeChecks((ManyToMany) annotation, checks);
-				}
-				else if (annotation instanceof OneToMany)
-				{
-					initializeChecks((OneToMany) annotation, checks);
-				}
-			}
+				else if (annotation instanceof OneToMany) initializeChecks((OneToMany) annotation, checks);
 			if (checks.size() > 0)
 			{
-				if (config.fieldConfigurations == null)
-				{
-					config.fieldConfigurations = getCollectionFactory().createSet(8);
-				}
+				if (config.fieldConfigurations == null) config.fieldConfigurations = cf.createSet(8);
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
 				fc.checks = checks;
+				checks = cf.createList(); // create a new list for the next field with checks
 				config.fieldConfigurations.add(fc);
 			}
 		}
@@ -134,58 +121,33 @@ public class JPAAnnotationsConfigurer implements Configurer
 		for (final Method method : config.type.getDeclaredMethods())
 		{
 			// consider getters only 
-			if (!ReflectionUtils.isGetter(method))
-			{
-				continue;
-			}
-
-			final List<Check> checks = getCollectionFactory().createList(2);
+			if (!ReflectionUtils.isGetter(method)) continue;
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
-			{
 				if (annotation instanceof Basic)
-				{
 					initializeChecks((Basic) annotation, checks);
-				}
 				else if (annotation instanceof Column)
-				{
 					initializeChecks((Column) annotation, checks, method);
-				}
 				else if (annotation instanceof OneToOne)
-				{
 					initializeChecks((OneToOne) annotation, checks);
-				}
 				else if (annotation instanceof ManyToOne)
-				{
 					initializeChecks((ManyToOne) annotation, checks);
-				}
 				else if (annotation instanceof ManyToMany)
-				{
 					initializeChecks((ManyToMany) annotation, checks);
-				}
-				else if (annotation instanceof OneToMany)
-				{
-					initializeChecks((OneToMany) annotation, checks);
-				}
-			}
+				else if (annotation instanceof OneToMany) initializeChecks((OneToMany) annotation, checks);
 
 			// check if anything has been configured for this method at all
 			if (checks.size() > 0)
 			{
-				if (config.methodConfigurations == null)
-				{
-					config.methodConfigurations = getCollectionFactory().createSet(2);
-				}
+				if (config.methodConfigurations == null) config.methodConfigurations = cf.createSet(2);
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
 				mc.isInvariant = true;
-				if (checks.size() > 0)
-				{
-					mc.returnValueConfiguration = new MethodReturnValueConfiguration();
-					mc.returnValueConfiguration.checks = checks;
-				}
+				mc.returnValueConfiguration = new MethodReturnValueConfiguration();
+				mc.returnValueConfiguration.checks = checks;
+				checks = cf.createList(); // create a new list for the next method having return value checks
 				config.methodConfigurations.add(mc);
 			}
 		}
@@ -205,10 +167,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		assert annotation != null;
 		assert checks != null;
 
-		if (!annotation.optional())
-		{
-			checks.add(new NotNullCheck());
-		}
+		if (!annotation.optional()) checks.add(new NotNullCheck());
 	}
 
 	protected void initializeChecks(final Column annotation, final Collection<Check> checks,
@@ -224,10 +183,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		 * has been persisted already, a not-null check will not be performed for such fields. 
 		 */
 		if (!annotation.nullable() && !fieldOrMethod.isAnnotationPresent(GeneratedValue.class)
-				&& !fieldOrMethod.isAnnotationPresent(Version.class))
-		{
-			checks.add(new NotNullCheck());
-		}
+				&& !fieldOrMethod.isAnnotationPresent(Version.class)) checks.add(new NotNullCheck());
 
 		// only consider length parameter if @Lob is not present
 		if (!fieldOrMethod.isAnnotationPresent(Lob.class))
@@ -267,10 +223,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		assert annotation != null;
 		assert checks != null;
 
-		if (!annotation.optional())
-		{
-			checks.add(new NotNullCheck());
-		}
+		if (!annotation.optional()) checks.add(new NotNullCheck());
 		checks.add(new AssertValidCheck());
 	}
 
@@ -287,10 +240,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		assert annotation != null;
 		assert checks != null;
 
-		if (!annotation.optional())
-		{
-			checks.add(new NotNullCheck());
-		}
+		if (!annotation.optional()) checks.add(new NotNullCheck());
 		checks.add(new AssertValidCheck());
 	}
 
