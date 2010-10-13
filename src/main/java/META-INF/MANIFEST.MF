@@ -46,6 +46,7 @@ Export-Package: net.sf.oval,
  net.sf.oval.localization,
  net.sf.oval.localization.context;uses:="net.sf.oval.context",
  net.sf.oval.localization.message,
+ net.sf.oval.localization.value,
  net.sf.oval.logging
 Eclipse-BuddyPolicy: registered
 Eclipse-LazyStart: true
