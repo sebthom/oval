@@ -2,18 +2,20 @@
 [+] Feature added.
 [*] Change.
 
-2010-??-?? v1.60
+2010-10-13 v1.60
 ================
 - [ oval-Bugs-2994748 ] added missing French translations (thanks to Patrice Lachance)
 + added Validator.reportConstraintViolation allowing check implementations to generate more than one constraint violation
 + added overridable method AnnotationsConfigurer.newCheckInstance to allow implementation of custom check instantiation strategies 
 + [ oval-Bugs-2922034 ] added support for constraints specified for method parameters at interface level: @Guard(inspectInterfaces=true) (thanks to Chris Pheby) 
 - fixed a potential null reference (thanks to jacky163com)
-* upgraded to OGNL 3.0, Paranamer 2.2.1, MVEL 2.0.18, Groovy 1.7.4, Spring 3.0.4.RELEASE, JRuby 1.5.2, AspectJ 1.6.9, SLF4J 1.6.1, log4j 1.2.16 
+* upgraded to OGNL 3.0, Paranamer 2.2.1, MVEL 2.0.18, Groovy 1.7.5, Spring 3.0.4.RELEASE, JRuby 1.5.3, AspectJ 1.6.9, SLF4J 1.6.1, log4j 1.2.16 
 + Validator now eagerly checks Java SecurityManager configuration for suppressAccessChecks ReflectionPermission during instantiation
 + added @<Constraint>.List annotations that can hold multiple constraint annotations of the same type
 + added @Email(allowPersonalName=true/false) (thanks to Eric Lewis)
 + added SimpleCheckWithMessageVariables (thanks to Eric Lewis)
++ added add/remove CheckInitializationListener methods to AnnotationsConfigurer and XMLConfigurer
++ added BeanInjectingCheckInitializationListener allowing Spring dependencies being injected into Check instances
 
 2010-03-29 v1.50
 ================
