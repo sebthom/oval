@@ -51,7 +51,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> createMessageVariables()
+	protected Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
 		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));

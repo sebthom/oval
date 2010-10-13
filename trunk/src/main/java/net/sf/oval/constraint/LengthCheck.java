@@ -46,7 +46,7 @@ public class LengthCheck extends AbstractAnnotationCheck<Length>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> createMessageVariables()
+	protected Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("max", Integer.toString(max));

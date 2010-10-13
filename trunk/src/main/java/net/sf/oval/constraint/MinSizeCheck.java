@@ -42,6 +42,17 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("min", Integer.toString(min));
+		return messageVariables;
+	}
+
+	/**
 	 * @return the min
 	 */
 	public int getMin()
@@ -82,16 +93,5 @@ public class MinSizeCheck extends AbstractAnnotationCheck<MinSize>
 	{
 		this.min = min;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("min", Integer.toString(min));
-		return messageVariables;
 	}
 }

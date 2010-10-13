@@ -53,6 +53,20 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("fieldName", fieldName);
+		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
+				: declaringClass.getName());
+		messageVariables.put("useGetter", Boolean.toString(useGetter));
+		return messageVariables;
+	}
+
+	/**
 	 * @return the declaringClass
 	 */
 	public Class< ? > getDeclaringClass()
@@ -145,19 +159,5 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	{
 		this.useGetter = useGetter;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("fieldName", fieldName);
-		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
-				: declaringClass.getName());
-		messageVariables.put("useGetter", Boolean.toString(useGetter));
-		return messageVariables;
 	}
 }

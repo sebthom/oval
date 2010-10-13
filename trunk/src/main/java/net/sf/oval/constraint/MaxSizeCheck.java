@@ -42,6 +42,17 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		return messageVariables;
+	}
+
+	/**
 	 * @return the max
 	 */
 	public int getMax()
@@ -82,16 +93,5 @@ public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize>
 	{
 		this.max = max;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Integer.toString(max));
-		return messageVariables;
 	}
 }

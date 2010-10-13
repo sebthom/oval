@@ -34,6 +34,11 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		boolean isSatisfied(Object validatedObject, Object value);
 	}
 
+	public interface SimpleCheckWithMessageVariables extends SimpleCheck
+	{
+		Map<String, String> createMessageVariables();
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	private boolean ignoreIfNull;
@@ -48,6 +53,25 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		super.configure(constraintAnnotation);
 		setSimpleCheck(constraintAnnotation.value());
 		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+
+		if (simpleCheck instanceof SimpleCheckWithMessageVariables)
+		{
+			final Map<String, String> simpleCheckMessageVariables = ((SimpleCheckWithMessageVariables) simpleCheck)
+					.createMessageVariables();
+			if (simpleCheckMessageVariables != null) messageVariables.putAll(simpleCheckMessageVariables);
+		}
+		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
+		return messageVariables;
 	}
 
 	/**
@@ -119,17 +143,5 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 
 		this.simpleCheck = simpleCheck;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
-		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
-		return messageVariables;
 	}
 }
