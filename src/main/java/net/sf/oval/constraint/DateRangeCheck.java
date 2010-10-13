@@ -62,7 +62,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> createMessageVariables()
+	protected Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
 		messageVariables.put("min", min == null ? ".." : min);

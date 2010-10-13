@@ -41,6 +41,25 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		if (types.length == 1)
+			messageVariables.put("types", types[0].getName());
+		else
+		{
+			final String[] classNames = new String[types.length];
+			for (int i = 0, l = classNames.length; i < l; i++)
+				classNames[i] = types[i].getName();
+			messageVariables.put("types", StringUtils.implode(classNames, ","));
+		}
+		return messageVariables;
+	}
+
+	/**
 	 * @return the type
 	 */
 	public Class< ? >[] getTypes()
@@ -57,9 +76,7 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 		if (valueToValidate == null) return true;
 
 		for (final Class< ? > type : types)
-		{
 			if (type.isInstance(valueToValidate)) return true;
-		}
 		return false;
 	}
 
@@ -70,28 +87,5 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny>
 	{
 		this.types = types;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		if (types.length == 1)
-		{
-			messageVariables.put("types", types[0].getName());
-		}
-		else
-		{
-			final String[] classNames = new String[types.length];
-			for (int i = 0, l = classNames.length; i < l; i++)
-			{
-				classNames[i] = types[i].getName();
-			}
-			messageVariables.put("types", StringUtils.implode(classNames, ","));
-		}
-		return messageVariables;
 	}
 }

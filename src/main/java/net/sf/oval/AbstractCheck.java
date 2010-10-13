@@ -87,13 +87,9 @@ public abstract class AbstractCheck implements Check
 		{
 			final String className = getClass().getName();
 			if (className.endsWith("Check"))
-			{
 				errorCode = className.substring(0, getClass().getName().length() - "Check".length());
-			}
 			else
-			{
 				errorCode = className;
-			}
 		}
 		return errorCode;
 	}
@@ -111,13 +107,9 @@ public abstract class AbstractCheck implements Check
 		{
 			final String className = getClass().getName();
 			if (className.endsWith("Check"))
-			{
 				message = className.substring(0, getClass().getName().length() - "Check".length()) + ".violated";
-			}
 			else
-			{
 				message = className + ".violated";
-			}
 		}
 		return message;
 	}
@@ -137,13 +129,9 @@ public abstract class AbstractCheck implements Check
 		{
 			messageVariables = createMessageVariables();
 			if (messageVariables == null)
-			{
 				messageVariablesUnmodifiable = null;
-			}
 			else
-			{
 				messageVariablesUnmodifiable = Collections.unmodifiableMap(messageVariables);
-			}
 			messageVariablesUpToDate = true;
 		}
 		return messageVariablesUnmodifiable;
@@ -180,11 +168,8 @@ public abstract class AbstractCheck implements Check
 	{
 		if (when == null) return true;
 
-		if (whenLang == null)
-		{
-			// this triggers parsing of when, happens when this check instance was deserialized
-			setWhen(when);
-		}
+		// this triggers parsing of when, happens when this check instance was deserialized
+		if (whenLang == null) setWhen(when);
 
 		final Map<String, Object> values = getCollectionFactory().createMap();
 		values.put("_value", valueToValidate);

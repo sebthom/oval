@@ -13,7 +13,8 @@
 + Validator now eagerly checks Java SecurityManager configuration for suppressAccessChecks ReflectionPermission during instantiation
 + added @<Constraint>.List annotations that can hold multiple constraint annotations of the same type
 + added @Email(allowPersonalName=true/false) (thanks to Eric Lewis)
- 
++ added SimpleCheckWithMessageVariables (thanks to Eric Lewis)
+
 2010-03-29 v1.50
 ================
 * upgraded to AspectJ 1.6.8, JUnit 4.8.1, SLF4J 1.5.11, MVEL 2.0.16, Paranamer 2.2, JRuby 1.4.0
@@ -72,7 +73,7 @@
 - fixed [ 2579897 ] xml based configuration related to post/pre checks
 - fixed [ 2723344 ] Should not call any method on not fully initialized object
 - fixed [ 2723413 ] translated JDK exception should keep the cause
-* French translation updated (thanks to  Éric Vigeant)
+* French translation updated (thanks to  ï¿½ric Vigeant)
 * upgraded Groovy 1.6.2, MVEL 2.0.8, Paranamer 1.3, JRuby 1.2.0, cglib 2.2,Spring 2.5.6SEC01
 * removed the DTD for XML Configuration, use the XSD instead
 - fixed NPE in JDK Logger implementation (thanks to Carsten Siedentop)

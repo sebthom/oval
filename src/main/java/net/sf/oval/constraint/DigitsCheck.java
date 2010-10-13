@@ -52,7 +52,7 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> createMessageVariables()
+	protected Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("maxInteger", Integer.toString(maxInteger));
@@ -114,33 +114,19 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 		final BigDecimal value;
 
 		if (valueToValidate instanceof BigDecimal)
-		{
 			value = (BigDecimal) valueToValidate;
-		}
 		else if (valueToValidate instanceof BigInteger)
-		{
 			value = new BigDecimal((BigInteger) valueToValidate);
-		}
 		else if (valueToValidate instanceof Integer)
-		{
 			value = new BigDecimal((Integer) valueToValidate);
-		}
 		else if (valueToValidate instanceof Long)
-		{
 			value = new BigDecimal((Long) valueToValidate);
-		}
 		else if (valueToValidate instanceof Short)
-		{
 			value = new BigDecimal((Short) valueToValidate);
-		}
 		else if (valueToValidate instanceof Byte)
-		{
 			value = new BigDecimal((Byte) valueToValidate);
-		}
 		else
-		{
 			value = new BigDecimal(valueToValidate.toString());
-		}
 
 		final int valueScale = value.scale();
 		final int integerLen = value.precision() - valueScale;

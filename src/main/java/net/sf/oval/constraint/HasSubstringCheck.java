@@ -49,7 +49,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> createMessageVariables()
+	protected Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
