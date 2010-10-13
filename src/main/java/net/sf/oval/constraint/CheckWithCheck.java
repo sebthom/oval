@@ -36,7 +36,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 
 	public interface SimpleCheckWithMessageVariables extends SimpleCheck
 	{
-		Map<String, String> createMessageVariables();
+		Map<String, ? extends Serializable> createMessageVariables();
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -59,13 +59,13 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, String> createMessageVariables()
+	public Map<String, ? extends Serializable> createMessageVariables()
 	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+		final Map<String, Serializable> messageVariables = getCollectionFactory().createMap(4);
 
 		if (simpleCheck instanceof SimpleCheckWithMessageVariables)
 		{
-			final Map<String, String> simpleCheckMessageVariables = ((SimpleCheckWithMessageVariables) simpleCheck)
+			final Map<String, ? extends Serializable> simpleCheckMessageVariables = ((SimpleCheckWithMessageVariables) simpleCheck)
 					.createMessageVariables();
 			if (simpleCheckMessageVariables != null) messageVariables.putAll(simpleCheckMessageVariables);
 		}
