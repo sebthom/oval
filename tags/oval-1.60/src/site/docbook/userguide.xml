@@ -1,0 +1,1711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN" "http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
+<?xml-stylesheet type="text/xsl" href="oval.xsl"?>
+<article class="specification">
+
+  <title>OVal - the object validation framework for
+  <trademark>Java</trademark> 5 or later</title>
+
+  <section>
+    <title>What is OVal?</title>
+
+    <para>OVal is a pragmatic and extensible general purpose validation framework for any kind of Java objects
+    (not only JavaBeans) and allows you:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>to easily validate objects on demand,</para>
+      </listitem>
+      <listitem>
+        <para>to specify constraints for class fields and getter methods,</para>
+      </listitem>
+      <listitem>
+        <para>to validate objects based on certain EJB3 JPA annotations (namely all field annotations that require a
+         not-null value),</para>
+      </listitem>
+      <listitem>
+        <para>to configure constraints via annotations, POJOs and/or simple XML files,</para>
+      </listitem>
+      <listitem>
+        <para>to express constraints using scripting languages such as Groovy, BeanShell, and JavaScript</para>
+      </listitem>
+      <listitem>
+        <para>to easily create custom constraints, and</para>
+      </listitem>
+      <listitem>
+        <para>to develop new constraint configuration mechanisms</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>When using AspectJ certain programming by contract (aka <trademark>Design By Contract</trademark> or DBC) 
+    features are available:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>specifying constraints for <emphasis>constructor parameters</emphasis> that are automatically checked 
+        when a constructor is called (preconditions),</para>
+      </listitem>
+
+      <listitem>
+        <para>specifying constraints for <emphasis>method parameters</emphasis> that are automatically checked when 
+        a method is called (preconditions),</para>
+      </listitem>
+
+      <listitem>
+        <para>requiring a certain object state before a method is called (preconditions)</para>
+      </listitem>
+
+      <listitem>
+        <para>enforcing object validation after an object has been created (invariants),</para>
+      </listitem>
+
+      <listitem>
+        <para>enforcing object validation before/after a method of an object is/has been called (invariants),</para>
+      </listitem>
+
+      <listitem>
+        <para>specifying constrains for a method's return value that are automatically checked after a method has been
+        executed (postconditions),</para>
+      </listitem>
+
+      <listitem>
+        <para>requiring a certain object state after a method is called (postconditions).</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Missing a useful feature? Let's discuss it in the 
+    <ulink url="http://sourceforge.net/forum/forum.php?forum_id=488109">OVal forum</ulink></para>
+  </section>
+
+  <section>
+    <title>Dependencies</title>
+
+    <para>OVal requires Java 5 or later - mainly for annotation support but other new language features (generics, for 
+    each loop, etc.) are used across the OVal source code too. Java 5 is actually the only hard requirement, depending
+    on the features you want to use additional libraries are required:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>AspectJ is required if you want to use the above mentioned programming by contract features.</para>
+      </listitem>
+      <listitem>
+        <para>Apache Commons JEXL is required if you want to define constraints via JEXL expressions.</para>
+      </listitem>
+      <listitem>
+        <para>BeanShell is required if you want to define constraints via BeanShell expressions.</para>
+      </listitem>
+      <listitem>
+        <para>Groovy is required if you want to define constraints via Groovy expressions.</para>
+      </listitem>
+      <listitem>
+        <para>JRuby is required if you want to define constraints via Ruby expressions.</para>
+      </listitem>
+      <listitem>
+        <para>Mozilla Rhino is required if you want to define constraints via JavaScript expressions.</para>
+      </listitem>
+      <listitem>
+        <para>MVEL is required if you want to define constraints via MVEL expressions.</para>
+      </listitem>
+      <listitem>
+        <para>OGNL is required if you want to define constraints via OGNL expressions.</para>
+      </listitem>
+      <listitem>
+        <para>XStream is required if you want to configure OVal via XML configuration files.</para>
+      </listitem>
+      <listitem>
+        <para>GNU Trove is required if you want to have OVal to internally use the GNU Trove high performance collections.</para>
+      </listitem>
+      <listitem>
+        <para>Javolution is required if you want to have OVal to internally use Javolution's high performance collections.</para>
+      </listitem>
+      <listitem>
+        <para>JUnit and all other libraries are required if you want to run the test cases.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Using OVal for property validation</title>
+
+    <section>
+      <title>Declaring constraints for class fields</title>
+
+      <para>You can add constraint annotations to class fields that are checked when an object validation is performed.
+      There exists a number of pre-built constraints that you can find in the package
+      <command>net.sf.oval.constraint</command> .</para>
+
+      <para>An object can be validated by using the <command>public validate(Object validatedObject)</command> method
+      of <command>net.sf.oval.Validator</command></para>
+
+      <programlisting><![CDATA[public class BusinessObject {
+
+  @NotNull
+  @NotEmpty
+  @Length(max=32)
+  private String name;
+
+  ...
+}]]></programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[Validator validator = new Validator();
+
+BusinessObject bo = new BusinessObject(); // name is null
+
+// collect the constraint violations
+List<ConstraintViolation> violations = validator.validate(bo);
+
+if(violations.size()>0)
+{
+  LOG.severe("Object " + bo + " is invalid.");
+  throw new BussinessException(violations);
+}]]></programlisting>
+    </section>
+
+    <section>
+      <title>Declaring constraints for getter methods' return value</title>
+
+      <para>You can specify constraints for the return value of getter methods. When validating the object the values
+      of all fields and the return values of the getter methods are checked against the specified constraints.</para>
+
+      <para>The methods need to be annotated with <command>@net.sf.oval.configuration.annotation.IsInvariant</command>.
+      Return value constraints specified for methods missing this annotation are ignored during validation.</para>
+
+      <para><emphasis>Important:</emphasis> To retrieve the return value of the getter method OVal invokes the getter
+      during the validation process. Therefore you need to ensure that the getter method really is just a getter method
+      and does not change the object state.</para>
+
+      <programlisting><![CDATA[public class BusinessObject
+{
+  private String name = null;
+
+  @IsInvariant
+  @NotNull 
+  @Length(max = 4)
+  public String getName() 
+  {
+    return name;
+  }
+
+  ...
+}]]></programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[Validator validator = new Validator();
+
+BusinessObject bo = new BusinessObject("blabla");
+
+// collect the constraint violations 
+List<ConstraintViolation> violations = validator.validate(bo);
+
+if(violations.size()>0)
+{
+  LOG.severe("Object " + bo + " is invalid.");
+  throw new BussinessException(violations);
+}
+]]></programlisting>
+    </section>
+
+    <section>
+      <title>Declaring conditional constraints using expression languages</title>
+
+      <para>When you annotate a field or getter with multiple constraint annotations they are ANDed.
+      If you require other logical constructs you can use a scripting language to express them.
+      To do so annotate the field or getter with the <command>@net.sf.oval.constraint.Assert</command> 
+      annotation as shown in the following example:</para>
+
+      <programlisting><![CDATA[public class BusinessObject 
+{
+  @NotNull
+  public String deliveryAddress;
+
+  @NotNull public String invoiceAddress;
+
+  // mailingAddress must either be the delivery address or the invoice address 
+  @Assert(expr = "_value ==_this.deliveryAddress || _value == _this.invoiceAddress", lang = "groovy")
+  public String mailingAddress;
+}
+]]></programlisting>
+
+      <para>The <command>expr</command> parameter holds the script to be evaluated.  If the script returns
+      <command>true</command> the constraint is satisfied. OVal provides two special variables:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>_value</command> - contains the value to validate (field value or getter return value)</para>
+        </listitem>
+        <listitem>
+          <para><command>_this</command> - is a reference to the validated object</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The <command>lang</command> parameter specifies the scripting language you want to use. In case the required
+      libraries are loaded, OVal is aware of these languages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>bsh</command> or <command>beanshell</command> for BeanShell,</para>
+        </listitem>
+        <listitem>
+          <para><command>groovy</command> for Groovy,</para>
+        </listitem>
+        <listitem>
+          <para><command>jexl</command> for JEXL,</para>
+        </listitem>
+        <listitem>
+          <para><command>js</command> or <command>javascript</command> for JavaScript (via Mozilla Rhino),</para>
+        </listitem>
+        <listitem>
+          <para><command>mvel</command> for MVEL,</para>
+        </listitem>
+        <listitem>
+          <para><command>ognl</command> for OGNL,</para>
+        </listitem>
+        <listitem>
+          <para><command>ruby</command> or <command>jruby</command> for Ruby (via JRuby)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Additional scripting languages can be registered via <command>Validator.addExpressionLanguage(String, ExpressionLanguage)</command>.</para>
+    </section>
+
+    <section>
+      <title>Declaring activation rules for constraints</title>
+
+      <para>Besides using @Assert to declare conditional constraints it is also possible to specify a activation rules
+      for other constraints using the <command>when</command> attribute. This way you can for example turn on or off
+      constraints based on a given state of the object. The <command>when</command> attribute can hold a formula in one
+      of the supported expression languages, it is prefixed by the id of the expression language to be used.</para>
+
+      <para>In the following example <command>fieldB</command> must not be <command>null</command> only if
+      <command>fieldA</command> is not <command>null</command> as well. With the prefix <command>groovy:</command> it
+      is indicated that the formula is expressed in the Groovy language.</para>
+
+      <programlisting><![CDATA[public class BusinessObject
+{
+  private String fieldA;
+
+  @NotNull(when = "groovy:_this.fieldA != null")
+  private String fieldB;
+}]]></programlisting>
+    </section>
+
+    <section>
+      <title>Interpreting EJB3 JPA annotations</title>
+
+      <para>OVal's configuration mechanism is highly customizable. Using the 
+      <command>net.sf.oval.configuration.Configurer</command> interface you can write your own constraint configurers
+      configuring OVal based on other XML schemas, other sets of annotations or anything else you like.</para>
+
+      <para>OVal comes with a configurer that is capable of translating certain EJB3 JPA annotations into equivalent
+      OVal constraints. The <command>net.sf.oval.configuration.annotation.JPAAnnotationsConfigurer</command> interprets
+      the EJB3 JPA annotations as follows:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>@javax.persistence.Basic(optional=false) =&gt; @net.sf.oval.constraint.NotNull</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.OneToOne(optional=false) =&gt; @net.sf.oval.constraint.NotNull</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.OneToOne =&gt; @net.sf.oval.constraint.AssertValid</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.OneToMany =&gt; @net.sf.oval.constraint.AssertValid</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.ManyToOne(optional=false) =&gt; @net.sf.oval.constraint.NotNull</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.ManyToOne =&gt; @net.sf.oval.constraint.AssertValid</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.Column(nullable=false) =&gt; @net.sf.oval.constraint.NotNull
+          (only applied for fields not  annotated with @javax.persistence.GeneratedValue or @javax.persistence.Version)</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.persistence.Column(length=5) =&gt; @net.sf.oval.constraint.Length</command></para>
+        </listitem>
+      </itemizedlist>
+
+      <programlisting><![CDATA[@Entity public class MyEntity 
+{
+  @Basic(optional = false) 
+  @Column(length = 4) 
+  public String id;
+
+  @Column(nullable = false) 
+  public String descr;
+
+  @ManyToOne(optional = false) 
+  public MyEntity parent;
+}]]></programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[// configure OVal to interprete OVal constraint annotations as well as EJB3 JPA annotations
+Validator validator = new Validator(new AnnotationsConfigurer(), new JPAAnnotationsConfigurer());
+
+MyEntity entity = new MyEntity();
+
+entity.id = "12345"; // violation - the max length is 4 
+entity.descr = null; // violation - cannot be null 
+entity.parent = null; // violation - cannot be null
+
+// collect the constraint violations 
+List<ConstraintViolation> violations = validator.validate(entity);
+]]></programlisting>
+      </section>
+
+      <section>
+      <title>Interpreting JSR303 annotations</title>
+
+      <para>OVal itself is not a JSR303 compliant bean validation framework. However it now comes with a configurer 
+      that can translate the JSR303 built-in standard constraints into equivalent OVal constraints. 
+      The <command>net.sf.oval.configuration.annotation.BeanValidationAnnotationsConfigurer</command> interprets 
+      the JSR303 annotations as follows:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><command>@javax.validation.constraints.AssertFalse =&gt; @net.sf.oval.constraint.AssertFalse</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.AssertTrue =&gt; @net.sf.oval.constraint.AssertTrue</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.DecimalMax =&gt; @net.sf.oval.constraint.Max</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.DecimalMin =&gt; @net.sf.oval.constraint.Min</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Digits =&gt; @net.sf.oval.constraint.Digits </command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Future =&gt; @net.sf.oval.constraint.Future</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Max =&gt; @net.sf.oval.constraint.Max</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Min =&gt; @net.sf.oval.constraint.Min</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.NotNull =&gt; @net.sf.oval.constraint.NotNull</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Null =&gt; @net.sf.oval.constraint.Null</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Past =&gt; @net.sf.oval.constraint.Past</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Pattern =&gt; @net.sf.oval.constraint.Pattern</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Size =&gt; @net.sf.oval.constraint.Size</command></para>
+        </listitem>       
+        <listitem>
+          <para><command>@javax.validation.constraints.Valid =&gt; @net.sf.oval.constraint.AssertValid</command></para>
+        </listitem>                        
+      </itemizedlist>
+
+      <programlisting><![CDATA[public class MyEntity 
+{
+  @javax.validation.constraints.NotNull
+  @javax.validation.constraints.Size(max = 4)
+  public String id;
+
+  @javax.validation.constraints.NotNull
+  public String descr;
+
+  @javax.validation.constraints.NotNull
+  public MyEntity parent;
+}]]></programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[// configure OVal to interprete OVal constraint annotations as well as built-in JSR303 annotations
+Validator validator = new Validator(new AnnotationsConfigurer(), new BeanValidationAnnotationsConfigurer());
+
+MyEntity entity = new MyEntity();
+
+entity.id = "12345"; // violation - the max length is 4 
+entity.descr = null; // violation - cannot be null 
+entity.parent = null; // violation - cannot be null
+
+// collect the constraint violations 
+List<ConstraintViolation> violations = validator.validate(entity);]]></programlisting>
+    </section>
+    
+  </section>
+
+  <section>
+    <title>Using OVal for programming by contract</title>
+
+    <para>By utilizing AspectJ OVal provides support for several aspects of programming by contract - however it is
+    not a full blown programming by contract implementation.</para>
+
+    <para>With OVal you can</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>enforce that a parameterized constructor/method is invoked only if the given arguments satisfy prior defined constraints(precondition)</para>
+      </listitem>
+      <listitem>
+        <para>enforce that a method is invoked only if the object is in a certain state (precondition/invariant)</para>
+      </listitem>
+      <listitem>
+        <para>enforce that the return value of a method must satisfy prior defined constraints (postcondition)</para>
+      </listitem>
+      <listitem>
+        <para>enforce that the object must be in a certain state after a method has been executed (postcondition/invariant)</para>
+      </listitem>
+    </itemizedlist>
+
+    <section>
+      <title>Preparing your project</title>
+
+      <para>The easiest way to getting started is to use the 
+      <ulink url="http://www.eclipse.org/"><citetitle>Eclipse IDE</citetitle></ulink> in conjunction with the
+      <ulink url="http://www.eclipse.org/ajdt/"><citetitle>AspectJ plug-in</citetitle></ulink>.</para>
+
+      <para>Create a new AspectJ project or add AspectJ support to an existing Java project by right-clicking the project
+      in the Package Explorer and selecting <command>Convert To AspectJ Project</command></para>
+
+      <para>Add the <command>net.sf.oval_x.x.jar</command> file to your library path.</para>
+
+      <para>Create a new aspect via <command>File -&gt; New -&gt; Aspect</command> that extends the abstract aspect
+      <command>net.sf.oval.guard.GuardAspect</command>. When the new aspect is created the AspectJ builder will
+      automatically weave the validation related code into your compiled classes annotated with
+      <command>@net.sf.oval.guard.Guarded</command>.</para>
+
+      <para>Now you can create all your business classes, add the <command>@net.sf.oval.guard.Guarded</command>
+      annotation and define the required constraints using the built-in or custom constraint annotations.</para>
+    </section>
+
+    <section>
+      <title>Working with preconditions</title>
+
+      <section>
+        <title>Declaring constraints for constructor parameters</title>
+
+        <para>Constraints specified for constructor parameters are automatically checked when the constructor is invoked.
+        Invocations of the constructor will be prohibited if any of the constraints is not satisfied. In such a case a
+        <command>net.sf.oval.exception.ConstraintsViolatedException</command> will be thrown.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject 
+{
+  public BusinessObject(@NotNull String name)
+  { 
+    this.name = name;
+  }
+  
+  ... 
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[// throws a ConstraintsViolatedException because parameter name is null 
+BusinessObject bo = new  BusinessObject(null);]]></programlisting>
+      </section>
+
+      <section>
+        <title>Declaring constraints for method parameters</title>
+
+        <para>Constraints specified for method parameters are automatically checked when the method is invoked.
+        Invocations of to the method will be prohibited if any of the constraints is not satisfied. In such a case
+        a <command>net.sf.oval.exception.ConstraintsViolatedException</command> will be thrown.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject
+{
+  public void setName(@NotNull String name)
+  {
+    this.name = name;
+  }
+  ...
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[BusinessObject bo = new BusinessObject(); 
+bo.setName(null); // throws a ConstraintsViolatedException because parameter name is null]]></programlisting>
+      </section>
+
+      <section>
+        <title>Applying field constraints to constructor/method parameters</title>
+
+        <para>You can apply the constraints specified for a field in the same or a super class to any constructor or
+        method parameter by using the <command>@net.sf.oval.constraint.AssertFieldConstraints</command> annotation.</para>
+
+        <para>If you do not specify a field name within the <command>@net.sf.oval.constraint.AssertFieldConstraints</command>
+        annotation the constraints of the field with the same name as the annotated parameter are applied to the parameter.</para>
+
+        <para>If you specify a field name within the <command>@net.sf.oval.constraint.AssertFieldConstraints</command>
+        annotation the constraints of the field with the specified name are applied to the annotated parameter.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject 
+{
+  @NotNull 
+  @NotEmpty 
+  @Length(max=10)
+  private String name;
+
+  public void setName(@AssertFieldConstraints String name) 
+  {
+    this.name = name;
+  }
+
+  public void setAlternativeName(@AssertFieldConstraints("name") String altName)
+  {
+    this.alternativeName = altName;
+  }
+
+  ...
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[BusinessObject bo = new BusinessObject();
+
+bo.setName(""); // throws a ConstraintsViolatedException because parameter is empty
+
+bo.setAlternativeName(null); // throws a ConstraintsViolatedException because parameter is null]]></programlisting>
+
+        <para>If you like to apply the constraints of all fields to their corresponding setter methods you can
+        alternatively set the <command>applyFieldConstraintsToSetters</command> property of the
+        <command>Guarded</command> annotation to <command>true</command>. This is especially useful if you have
+        a lot of setter methods and you are following the JavaBean convention. <emphasis>Important:</emphasis> The setter method
+        must be declared within the same class as the property.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded(applyFieldConstraintsToSetters=true) 
+public class BusinessObject
+{
+  @NotNull 
+  @NotEmpty 
+  @Length(max=10) 
+  private String name;
+
+  public void setName(String name) 
+  {
+    this.name = name;
+  }
+  
+  ... 
+}]]></programlisting>
+
+        <para>Another convenience option is the <command>applyFieldConstraintsToConstructors</command> property of the
+        <command>Guarded</command> annotation. If set to true, OVal applies the specified field constraints to the
+        corresponding parameters of the declared constructors within the same class. In this context, a corresponding
+        parameter is a constructor parameter with the same name and type as the field.</para>
+      </section>
+
+      <section>
+        <title>Using scripted expressions for preconditions</title>
+
+        <para>Similar to the above described <command>@net.sf.constraint.Assert</command> constraint annotation for
+        fields you can annotate a method with <command>@net.sf.guard.Pre</command> allowing you to express
+        conditional constraints using a scripting language.</para>
+
+        <programlisting><![CDATA[@Guarded
+public class Transaction
+{
+  private BigDecimal amount;
+
+  // ensure that amount is not null, ensure that value2add is greater than amount
+  @Pre(expr = "_this.amount!=null && amount2add > _this.amount", lang = "groovy")
+  public void increase(BigDecimal amount2add) 
+  {
+    amount = amount.add(amount2add); 
+  }
+}]]></programlisting>
+
+        <para>The <command>expr</command> parameter holds the script to be evaluated. If the script returns 
+        <command>true</command> the constraint is satisfied. OVal provides special variables for use
+        within the expression:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><command>_args[]</command> - array holding the method arguments</para>
+          </listitem>
+          <listitem>
+            <para><command>_this</command> - is a reference to the current object</para>
+          </listitem>
+          <listitem>
+            <para>additionally variables matching the parameter names are available</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The <command>lang</command> parameter specifies the scripting language you want to use.
+        In case the required libraries are loaded, OVal is aware of these languages:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><command>bsh</command> or <command>beanshell</command> for BeanShell,</para>
+          </listitem>
+          <listitem>
+            <para><command>groovy</command> for Groovy,</para>
+          </listitem>
+          <listitem>
+            <para><command>jexl</command> for JEXL,</para>
+          </listitem>
+          <listitem>
+            <para><command>js</command> or <command>javascript</command> for JavaScript (via Mozilla Rhino),</para>
+          </listitem>
+          <listitem>
+            <para><command>mvel</command> for MVEL,</para>
+          </listitem>
+          <listitem>
+            <para><command>ognl</command> for OGNL, or</para>
+          </listitem>
+          <listitem>
+            <para><command>ruby</command> or <command>jruby</command> for Ruby (via JRuby)</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Disabling precondition checks</title>
+
+        <para>You can globally disable or enable the checking of preconditions via the 
+        <command>Guard.setPreConditionsEnabled(boolean)</command> method.</para>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[MyAspect.aspectOf().getGuard().setPreConditionsEnabled(false);]]></programlisting>
+      </section>
+    </section>
+
+    <section>
+      <title>Working with postconditions</title>
+
+      <section>
+        <title>Declaring method return value constraints</title>
+
+        <para>By adding constraint annotations to a non-void method you can specify constraints for the method's 
+        return value. When the method is invoked and the return value does not satisfy all constraints a
+        <command>ConstraintsViolatedException</command> is thrown.</para>
+
+        <para><emphasis>Note:</emphasis> Despite the thrown exception the method code still has been executed,
+        you have to rollback the changes performed by this method manually.</para>
+
+        <para>If a non-void, non-parameterized method is also annotated with <command>@IsInvariant</command>
+        it's constraints will also be checked when calling the <command>Validator.validate(Object)</command>
+        method on an object of this type.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject 
+{
+  private String name = null;
+
+  @IsInvariant 
+  @NotNull 
+  @Length(max = 4)
+  public String getName()
+  {
+    return name;
+  }
+
+  @NotNull
+  @Length(max = 4)
+  public String getNameOrDefault(String default) 
+  {
+    return name == null ? default : name;
+  }
+  
+  ...
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[BusinessObject bo = new BusinessObject();
+
+// throws a ConstraintsViolatedException because field name is null
+bo.getName();
+
+// throws a ConstraintsViolatedException because the field "name" is null and therefore the default parameter will be returned which has a length &lt; 4 characters
+bo.getNameOrDefault("abc");
+
+Validator validator = new Validator();
+
+// returns one ConstraintViolation because the getter method getName() is declared as invariant and returns an invalid value (null)
+List<ConstraintViolation> violations = validator.validate(bo);]]></programlisting>
+      </section>
+
+      <section>
+        <title>Using scripted expressions for postconditions</title>
+
+        <para>For declaring scripted postconditions you can use the <command>@net.sf.guard.Post</command> annotation 
+        which works similar to <command>@net.sf.guard.Pre</command> for preconditions.</para>
+
+        <programlisting><![CDATA[@Guarded
+public class Transaction 
+{
+  private BigDecimal amount;
+
+  // ensure that amount after calling the method is greater than it was before
+  @Post(expr = "_this.amount>_old", old = "_this.amount", lang = "groovy")
+  public void increase(BigDecimal  amount2add)
+  {
+    amount = amount.add(amount2add);
+  }
+}]]></programlisting>
+
+        <para>The <command>expr</command> parameter holds the script to be evaluated. If the script returns
+        <command>true</command> the constraint is satisfied. OVal provides special variables for use within the
+        expression:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><command>_args[]</command> - array holding the method arguments</para>
+          </listitem>
+          <listitem>
+            <para><command>_this</command> - is a reference to the current object</para>
+          </listitem>
+          <listitem>
+            <para><command>_returns</command> - the method's return value</para>
+          </listitem>
+          <listitem>
+            <para><command>_old</command> - see the description of the <command>old</command> parameter below</para>
+          </listitem>
+          <listitem>
+            <para>additionally variables matching the parameter names are available</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The <command>lang</command> parameter specifies the scripting language you want to use. 
+        In case the required libraries are loaded, OVal is aware of these languages:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><command>bsh</command> or <command>beanshell</command> for BeanShell,</para>
+          </listitem>
+          <listitem>
+            <para><command>groovy</command> for Groovy,</para>
+          </listitem>
+          <listitem>
+            <para><command>jexl</command> for Groovy,</para>
+          </listitem>
+          <listitem>
+            <para><command>js</command> or <command>javascript</command> for JavaScript (via Mozilla Rhino),</para>
+          </listitem>
+          <listitem>
+            <para><command>mvel</command> for MVEL,</para>
+          </listitem>
+          <listitem>
+            <para><command>ognl</command> for OGNL, or</para>
+          </listitem>
+          <listitem>
+            <para><command>ruby</command> or <command>jruby</command> for Ruby (via JRuby)</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The <command>old</command> parameter is optionally, it can hold another expression that is evaluated
+        before the method is executed. The result is made available in the post constraint expression as a special
+        variable called <command>_old</command>. The old expression can also return an array or a map allowing you 
+        to store multiple values. This way you can "remember" the old state of multiple properties of an object.
+        An expression like <command>old = "[amount:_this.amount, date:_this.date]"</command> in Groovy returns a map
+        with the keys <command>amount</command> and <command>date</command> holding the values of the object's properties
+        <command>amount</command> and <command>date</command>. These values then can be used in the constraint expression
+        like this: <command>expression = "_this.amount&gt;_old.amount &amp;&amp; _this.date&gt;_old.date"</command>.</para>
+      </section>
+
+      <section>
+        <title>Disabling postcondition checks</title>
+
+        <para>You can globally disable or enable the checking of postconditions via the
+        <command>Guard.setPostConditionsEnabled(boolean)</command> method.</para>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[MyAspect.aspectOf().getGuard().setPostConditionsEnabled(false);]]></programlisting>
+      </section>
+    </section>
+
+    <section>
+      <title>Working with invariants</title>
+
+      <section>
+        <title>Disabling automatic invariants checks</title>
+
+        <para>By default OVal checks class invariants before and after calls to any non-private method of guarded
+        classes and after constructor execution. If required you can globally disable the automatic checking of
+        invariants via the <command>Guard.setInvariantsEnabled(boolean)</command> method or for all objects of a
+        specific class using the <command>Guard.setInvariantsEnabled(Class&lt;?&gt;, boolean)</command> method.</para>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[MyAspect.aspectOf().getGuard().setInvariantsEnabled(false);]]></programlisting>
+      </section>
+
+      <section>
+        <title>Enforcing object validation before method execution</title>
+
+        <para>If you disabled the automatic check of class invariants you can still enable the checking of the
+        invariants prior calls to a certain method by annotating the respective method with
+        <command>@net.sf.oval.guard.PreValidateThis</command>.</para>
+
+        <para>In case of constraint violations a ConstraintsViolatedException is thrown and the method will not be executed.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject 
+{
+  @NotNull 
+  private String name = null;
+
+  @PreValidateThis 
+  public void save() 
+  {
+    // do something fancy
+  }
+
+  ...
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[// create a new business object and leaving the field name null 
+BusinessObject bo = new  BusinessObject();
+
+// the save() method will throw a ConstraintsViolatedException because field name is null
+bo.save();]]></programlisting>
+      </section>
+
+      <section>
+        <title>Enforcing object validation after constructor execution</title>
+
+        <para>If you disabled the automatic check of class invariants you can still enable the checking of the
+        invariants after an object has been instantiated by annotating the constructors of the corresponding class
+        with <command>@net.sf.oval.guard.PostValidateThis</command>.</para>
+
+        <para>In case of constraint violations the constructor will throw a <command>ConstraintsViolatedException</command>
+        which effectively means the code trying to instantiate the object cannot get hold of a reference to the object
+        being in an invalidate state and the invalid object will get garbage collected.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject 
+{
+  @NotNull
+  private String name;
+
+  /**
+   * constructor 
+   */
+  @PostValidateThis 
+  public BusinessObject() 
+  {
+  	super();
+  }
+
+  ...
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[// throws a ConstraintsViolatedException because the name field is null 
+BusinessObject bo = new  BusinessObject();]]></programlisting>
+      </section>
+
+      <section>
+        <title>Enforcing object validation after method execution</title>
+
+        <para>If you disabled the automatic check of class invariants you can still enable the checking of the 
+        invariants after a method has been executed by annotating the method with
+        <command>@net.sf.oval.guard.PostValidateThis</command>.</para>
+
+        <para>In case of constraint violations the method will throw an ConstraintsViolatedException.</para>
+
+        <para><emphasis>Note:</emphasis> Despite the thrown exception the method code still has been executed,
+        you have to manually rollback the changes performed by this method.</para>
+
+        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class BusinessObject 
+{
+  @Length(max=10)
+  private String name = "12345";
+
+  @PostValidateThis 
+  public appendToName(String appendix) 
+  {
+    name += appendix;
+  }
+  
+  ...
+}]]></programlisting>
+
+        <para>Example usage:</para>
+
+        <programlisting><![CDATA[BusinessObject bo = new BusinessObject();
+bo.appendToName("123456"); // throws a ConstraintsViolatedException because field name is now too long]]></programlisting>
+      </section>
+    </section>
+
+    <section>
+      <title>Using the probe mode to simplify UI user input validation</title>
+
+      <para>OVal provides a so called probe mode in which you can execute all methods of an object and the guard will
+      only check the preconditions (e.g. parameter constraints) and not execute the method.</para>
+
+      <para>This is especially useful if you want to test input values received from the end user in the UI layer
+      against the setter methods of a business object. You can simply pass the values to the corresponding setters and
+      have any detected violations collect by a <command>ConstraintsViolatedListener</command>. Afterwards you can
+      report all violations back to the UI layer and have them displayed to the end user.</para>
+
+      <para>Example business object:</para>
+
+      <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+public class Person 
+{
+  @NotNegative 
+  private int age;
+
+  @Min(5)
+  private String name = "";
+
+  @Length(min=5, max=5)
+  private String zipCode = "";
+
+  public void setAge(@FieldConstraints int age)
+  {
+    this.age = age;
+  }
+
+  public void setName(@FieldConstraints String name) 
+  {
+    this.name = name;
+  }
+
+  public void setZipCode(@FieldConstraints String zipCode) 
+  {
+    this.zipCode = zipCode;
+  }
+  
+  ...
+}]]></programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[/* *****************************************************
+ * somewhere in the UI layer
+ * *****************************************************/
+ inputForm.setName("1234");
+ inputForm.setAge(-4);
+ inputForm.setZipCode("123");
+
+...
+
+/* *****************************************************
+ * later in the business layer
+ * *****************************************************/
+public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolatedException
+{
+  Person person = new Person();
+
+  Guard guard = MyGuardAspect.aspectOf().getGuard();
+
+  // enable the probe mode in the current thread for the person object
+  guard.enableProbeMode(person);
+
+  // simulate applying the values to the person bean
+  person.setName(inputForm.getName());
+  person.setAge(inputForm.getAge());
+  person.setZipCode(inputForm.getZipCode());
+
+  // disable the probe mode in the current thread for the person object
+  ProbeModeListener result = guard.disableProbeMode(person);
+
+  // check if any constraint violations occured
+  if(result.getConstraintViolations().size() > 0)
+  {
+     // report the collected constraint violations to the UI layer
+     throw new ConstraintsViolatedException(result.getConstraintViolations());
+  }
+  else
+  {
+    // apply the values to the person bean
+    result.commit();
+
+    dao.save(person);
+    return person;
+  }
+}
+]]></programlisting>
+    </section>
+
+    <section>
+      <title>Converting ConstraintsViolatedExceptions</title>
+
+      <para>When calling methods on guarded objects these methods will throw
+      <command>ConstraintsViolatedException</command>s in case any pre- or postconditions are violated. Their might be
+      good reasons why you may want to have other exceptions thrown instead of OVal's proprietary exceptions, e.g. JRE
+      standard exceptions such as <command>IllegalArgumentException</command> or <command>IllegalStateException</command>.</para>
+
+      <para>OVal's Guard class allows you to register an exception translator. The exception translator defines a
+      <command>translateException()</command> method that is executed for all occurring exceptions during runtime validation.
+      This allows you to translate any <command>OValException</command> thrown during validation into another
+      <command>RuntimeException</command> which will be thrown instead. As an example have a look at the
+      <command>net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl</command> class how an implementation could look like.</para>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[public aspect MyAspect extends GuardAspect 
+{
+  public MyAspect()
+  {
+    super();
+
+    // specify an exception translator
+    getGuard().setExceptionTranslator(new net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl()); 
+  }
+}]]></programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>Creating custom annotation based constraints</title>
+
+    <para>Developing custom annotation based constraints is fairly easy. All you need to do is:</para>
+
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>Create a constraint check class that implements <command>net.sf.oval.AnnotationCheck</command> or extends
+        <command>net.sf.oval.AbstractAnnotationCheck</command>.</para>
+
+        <programlisting><![CDATA[public class UpperCaseCheck extends AbstractAnnotationCheck<UpperCase>
+{
+  public boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator)
+  {
+    if (valueToValidate == null) return true;
+
+    String val = valueToValidate.toString();
+    
+    return val.equals(val.toUpperCase());
+  }
+}]]></programlisting>
+      </listitem>
+
+      <listitem>
+        <para>Create an annotation for your constraint and annotated it with <command>@net.sf.oval.configuration.annotation.Constraint</command>.
+        Specify your check class as value for parameter "check".</para>
+
+        <programlisting><![CDATA[@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@net.sf.oval.configuration.annotation.Constraint(check = UpperCaseCheck.class)
+public @interface UpperCase
+{
+  /**
+  * message to be used for the ConstraintsViolatedException 
+  *
+  * @see ConstraintsViolatedException
+  */
+  String message() default "must be upper case";
+}]]></programlisting>
+      </listitem>
+
+      <listitem>
+        <para>Use the custom constraint annotation in your code.</para>
+
+        <programlisting><![CDATA[public class BusinessObject 
+{
+  @UpperCase 
+  private String userId;
+
+  ...
+}]]></programlisting>
+      </listitem>
+    </orderedlist>
+
+    <para>Localization of the constraint violation message can be achieved as follows:</para>
+
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>Specify a unique message key for the default message string of the constraint annotation, e.g.</para>
+
+        <programlisting><![CDATA[@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@net.sf.oval.configuration.annotation.Constraint(check = UpperCaseCheck.class)
+public @interface UpperCase
+{
+  /**
+   * message to be used for the ConstraintsViolatedException 
+   *
+   * @see ConstraintsViolatedException
+   */
+  String message() default "UpperCase.violated";
+}]]></programlisting>
+      </listitem>
+
+      <listitem>
+        <para>Create custom message bundles (one per language) and specify the translated sting in each bundle:</para>
+
+        <programlisting><![CDATA[UpperCase.violated={context} must be upper case]]></programlisting>
+
+        <para>There exist two default variables that can be used in the message string:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><command>{context}</command> = the validation context (e.g. a field, a method return value or a
+            constructor/method parameter</para>
+          </listitem>
+
+          <listitem>
+            <para><command>{invalidValue}</command> = the value that has been checked</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>If required, you can introduce additional variables - e.g. which reflect additional configuration
+        properties of your constraint such as {max}, {min}, {size} - by overriding the
+        <command>createMessageVariables</command> method of your custom check class:</para>
+
+        <programlisting><![CDATA[@Override
+public Map<String, String> createMessageVariables()
+{
+  Map<String, String> messageVariables = new HashMap<String, String>(2)
+  messageVariables.put("max", Integer.toString(max));
+  messageVariables.put("min", Integer.toString(min));
+  return messageVariables;
+}]]></programlisting>
+
+        <para>The message variables can then be used in the corresponding message strings.</para>
+      </listitem>
+
+      <listitem>
+        <para>Register your message bundle with OVal:</para>
+
+        <programlisting><![CDATA[ResourceBundleMessageResolver resolver = (ResourceBundleMessageResolver) Validator.getMessageResolver();
+resolver.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));]]></programlisting>
+
+        <para>If you would like to store your message strings other than in message bundles (e.g. in a database): 
+        Either implement the <command>MessageResolver</command> interface or extend the <command>ResourceBundleMessageResolver</command>
+        and then configure OVal using the static <command>Validator.setMessageResolver(...)</command> method to use an instance of 
+        your custom message resolver instead.</para>
+      </listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>Expressing complex class specific constraints</title>
+
+    <para>If you have to express a rather complex constraint that is used only within one class you might not want to 
+    implement it as a custom constraint. You have the following two alternatives expressing such class specific constraints
+    in a convenient way.</para>
+
+    <section>
+      <title>Using @ValidateWithMethod</title>
+
+      <para>You can write a method within the class that has a single parameter to receive the value to validate and that 
+      returns true if the constraint is satisfied and false if it is violated.</para>
+
+      <para>Example:</para>
+
+      <programlisting><![CDATA[private static class TestEntity
+{
+  @Min(1960)
+  private int year = 1977;
+
+  @Range(min=1, max=12)
+  private int month = 2;
+
+  @ValidateWithMethod(methodName = "isValidDay", parameterType = int.class)
+  private int day = 31;
+
+  private boolean isValidDay(int day)
+  {
+    GregorianCalendar cal = new GregorianCalendar();
+    cal.setLenient(false);
+    cal.set(GregorianCalendar.YEAR, year); 
+    cal.set(GregorianCalendar.MONTH, month - 1);
+    cal.set(GregorianCalendar.DATE, day);
+    try {
+      cal.getTimeInMillis(); // throws IllegalArgumentException
+    } catch (IllegalArgumentException e) { 
+      return false;
+    }
+    return true;
+  }
+}]]></programlisting>
+    </section>
+
+    <section>
+      <title>Using @CheckWith</title>
+
+      <para>You can write an inner static class extending
+      <command>net.sf.oval.constraint.CheckWithCheck.SimpleCheck</command> which then is referenced via
+      a <command>@net.sf.oval.constraint.CheckWith</command> constraint annotation.</para>
+
+      <para>Example:</para>
+
+      <programlisting><![CDATA[private static class DayEntity
+{
+  @Min(1960)
+  private int year;
+
+  @Range(min=1, max=12)
+  private int month;
+
+  @CheckWith(DayCheck.class)
+  private int day;
+
+  private static class DayCheck implements CheckWithCheck.SimpleCheck
+  {
+    public boolean isSatisfied(Object validatedObject, Object value)
+    {
+      try {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setLenient(false);
+        cal.set(GregorianCalendar.YEAR, ((DayEntity) validatedObject).year);
+        cal.set(GregorianCalendar.MONTH, ((DayEntity) validatedObject).month - 1);
+        cal.set(GregorianCalendar.DATE, ((DayEntity) validatedObject).day);
+        cal.getTimeInMillis(); // may throw IllegalArgumentException return true;
+      } catch (IllegalArgumentException e) {}
+      return false;
+    }
+  }
+}]]></programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>XML based configuration</title>
+
+    <para>By default the constraints configuration is done by adding annotations representing the constraints to the
+    respective locations in the source code. Alternatively constraints can also be declared via XML - either for a
+    complete configuration or to overwrite the annotations based constraint configurations for specific classes, fields, etc.</para>
+
+    <para>You can used the <command>net.sf.oval.configuration.xml.XMLConfigurer</command> for loading constraint definitions from an XML file:</para>
+
+    <programlisting><![CDATA[XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml"));
+Guard guard = new Guard(xmlConfigurer);]]></programlisting>
+
+    <para>Here is an example XML configuration:</para>
+
+	<programlisting language="xml"><![CDATA[<?xml version="1.0" ?>
+<oval
+  xmlns="http://oval.sf.net/oval-configuration"
+  xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://oval.sf.net/oval-configuration http://oval.sourceforge.net/oval-configuration.xsd"
+>
+  <!-- define a constraint set -->
+  <constraintSet id="user.userid">
+    <notNull />
+    <matchPattern>
+      <pattern pattern="^[a-z0-9]{8}$" flags="0" />
+    </matchPattern>
+  </constraintSet>
+
+  <!-- define checks for the acme.model.User class -->
+  <!-- overwrite=false means already defined checks for this class will not be removed -->
+  <class type="acme.model.User" overwrite="false" applyFieldConstraintsToSetter="true">
+
+    <field name="firstName">
+      <length min="0" max="3" />
+    </field>
+
+    <field name="lastName">
+      <length min="0" max="5" />
+    </field>
+
+    <!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
+    <field name="managerId" overwrite="true">
+      <!-- use the checks defined for the constaint set "user.userid" -->
+      <assertConstraint id="user.userid" />
+    </field>
+
+    <field name="userId" overwrite="true">
+      <!-- use the checks defined for the constaint set "user.userid" -->
+      <assertConstraintSet id="user.userid" />
+    </field>
+
+    <!-- define constructor parameter checks -->
+    <constructor>
+      <!-- parameter1 -->
+      <parameter type="java.lang.String">
+        <notNull />
+      </parameter>
+
+      <!-- parameter 2 -->
+      <!-- the types of all parameters must be listed, even if no checks are defined -->
+      <parameter type="java.lang.String" />
+    </constructor>
+
+    <!-- define method parameter checks -->
+    <method name="setPasswordExpirationDays">
+      <!-- parameter 1 -->
+      <parameter type="int">
+        <notNull />
+      </parameter>
+     </method>
+  </class>
+</oval>]]></programlisting>
+  </section>
+
+  <section>
+    <title>Additional configuration and customization options</title>
+
+    <section>
+      <title>Constraint profiles</title>
+
+      <para>You may come across the requirement to turn on or off the checking of certain constraints across your 
+      domain model, e.g. based on some global configuration settings of the application. OVal helps you to implement 
+      this by introducing constraint profiles. For each declared constraint you can specify an infinite number of
+      profiles this constraint belongs to. During runtime you then can enable or disable all constraints associated
+      with a given profile by using the <command>disableProfile</command> , and <command>enableProfile</command>
+      methods of the <command>Validator</command> instance. Constraints not having any profiles declared are 
+      automatically assigned a profile named <command>default</command>.</para>
+
+      <programlisting><![CDATA[public class Person
+{
+  @NotNull(profiles = {"profile1"})
+  public String firstName;
+
+  @NotNull(profiles = {"profile1"})
+  public String lastName;
+
+  @NotNull(profiles = {"profile2", "profile3"})
+  public String zipCode;
+}]]></programlisting>
+
+      <para>Example usage:</para>
+
+      <programlisting><![CDATA[Validator v = new Validator();
+v.disableProfile("profile1");
+
+Person p = new Person();
+v.validate(p);]]></programlisting>
+
+      <para>In this case only the null value <command>zipCode</command> property will result in a 
+      <command>ConstraintViolation</command>. The <command>@NotNull</command> constraints of <command>firstName</command>
+      and <command>lastName</command> are ignored since they are associated with <command>profile1</command>
+      and <command>profile1</command> has been disabled.</para>
+    </section>
+
+    <section>
+      <title>Collection factory</title>
+
+      <para>OVal instantiates all internally used collections indirectly via a <command>CollectionFactory</command>.
+      OVal comes with three different implementations of the collection factory (Javolution Collections, 
+      GNU Trove Collections, and JDK Collections). If the Javolution or GNU Trove collection classes are detected
+      in the classpath, OVal automatically uses the respective CollectionFactory otherwise the collection factory
+      for standard JDK collections is used.</para>
+
+      <para>The Collection Factory to be used by OVal can be configured via the static
+      <command>Validator.setCollectionFactory(factory)</command> method.</para>
+
+      <para>You can implement the <command>net.sf.oval.collection.CollectionFactory</command> interface to
+      support other collection implementations.</para>
+    </section>
+
+    <section>
+      <title>Adding additional expression languages</title>
+
+      <para>If you want to express constraints in a scripting language not supported by OVal out of the box, you need
+      to implement the <command>net.sf.oval.expression.ExpressionLanguage</command> interface  for the desired language
+      and register your implementation with OVal using the <command>Validator.addExpressionLanguage(languageId, expressionLanguage)</command> 
+      method. Then you can use the specified languageId with expression language aware constraint annotations such as
+      <command>@Assert</command>, <command>@Pre</command>, or <command>@Post</command> and start expressing constraints 
+      in the new expression language.</para>
+    </section>
+
+    <section>
+      <title>Spring integration</title>
+
+      <section>
+        <title>Spring Validation</title>
+
+        <para>The class <command>net.sf.oval.integration.spring.SpringValidator</command> OVal provides an implementation of Spring's
+        <command>org.springframework.validation.Validator</command> interface and thus can be used for 
+        <ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/validation.html">Spring Validation</ulink>.</para>
+      </section>
+
+      <section>
+        <title>Guarding Spring managed beans using Spring AOP</title>
+
+        <para>It is possible to use OVal's programming by contract feature with AOP solutions other than AspectJ. 
+        Spring for example uses the AOP Alliance API in conjunction with JDK or CGLib proxies to provide certain 
+        features of AOP to Spring managed beans.</para>
+
+        <para>With the class <command>net.sf.oval.guard.GuardInterceptor</command> we provide an AOP Alliance
+        implementation of the Guard aspect that enables you to use OVal's guarding feature in conjunction with
+        Spring managed beans without the need for AspectJ.</para>
+
+        <para>Here is an example how to configure the guarding of the methods of a Spring managed service.
+        This configuration requires CGLIB to be on the classpath.</para>
+
+        <programlisting language="xml"><![CDATA[<beans>
+  <bean id="myService" class="MyServiceImpl" />
+
+  <bean id="ovalGuardInterceptor" class="net.sf.oval.guard.GuardInterceptor" />
+
+  <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+    <property name="proxyTargetClass" value="true" />
+    <property name="beanNames" value="*Service" />
+    <property name="interceptorNames"><list><value>ovalGuardInterceptor</value></list></property>
+  </bean>
+</beans>
+]]></programlisting>
+      </section>
+      
+      <section>
+      
+        <title>Using Spring beans in Check classes</title>
+      
+        <para>To have Spring beans injected automatically into Check classes you need to:</para>
+      
+        <itemizedlist>
+		  <listitem>
+      	    <para>annotated the required fields in your Check implementation class with <command>@Autowired</command></para>
+      	  </listitem>
+      	  <listitem>
+        	<para>add an instance of <command>net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener</command> to the configurer</para>
+            <programlisting language="xml"><![CDATA[AnnotationConfigurer myConfigurer = new AnnotationConfigurer();
+
+myConfigurer.addCheckInitializationListener(BeanInjectingCheckInitializationListener.INSTANCE);
+
+Validator myValidator = new Validator(myConfigurer);]]></programlisting>
+      	  </listitem>
+      	  <listitem>
+           <para>setup an SpringInjector bean in your Spring application context configuration:</para>
+           <programlisting language="xml"><![CDATA[<beans>
+
+  <bean class="net.sf.oval.integration.spring.SpringInjector" />
+
+</beans>]]></programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
+      
+    </section>
+
+    <section>
+      <title>Apache Struts 2 integration</title>
+
+      <para>Musachy Barroso has developed an OVal Plug-in for Apache Struts 2, which is documented at 
+      <ulink url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin </ulink></para>
+    </section>
+  </section>
+
+  <section>
+    <title>API documentation</title>
+
+    <para>You can browse OVal's Javadoc <ulink url="api/index.html">here</ulink> .</para>
+  </section>
+
+  <section>
+    <title>Download</title>
+
+    <para>You can download the latest OVal binaries and source code from the project page at
+    <ulink url="http://sourceforge.net/projects/oval/">http://sourceforge.net/projects/oval/</ulink></para>
+
+    <para></para>
+
+    <para>
+      <ulink url="http://www.sourceforge.net/"><inlinemediaobject><imageobject><imagedata depth="37" fileref="images/sourceforge.png" format="PNG" width="125" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://www.junit.org/"><inlinemediaobject><imageobject><imagedata depth="40" fileref="images/junit.png" format="PNG" width="142" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://www.eclipse.org/aspectj/"><inlinemediaobject><imageobject><imagedata depth="38" fileref="images/aspectj.png" format="PNG" width="152" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://javolution.org/"><inlinemediaobject><imageobject> <imagedata depth="32" fileref="images/javolution.png" format="PNG" width="144" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://xstream.codehaus.org/"><inlinemediaobject><imageobject><imagedata depth="37" fileref="images/xstream.png" format="PNG" width="116" /></imageobject></inlinemediaobject></ulink> 
+      <ulink url="http://www.mozilla.org/rhino/"><inlinemediaobject><imageobject><imagedata depth="40" fileref="images/rhino.png" format="PNG" width="80" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://groovy.codehaus.org/"><inlinemediaobject><imageobject><imagedata depth="40" fileref="images/groovy.png" format="PNG" width="80" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://paranamer.codehaus.org/"><inlinemediaobject><imageobject><imagedata depth="38" fileref="images/paranamer.png" format="PNG" width="232" /></imageobject></inlinemediaobject></ulink> 
+      <ulink url="http://www.ognl.org/"><inlinemediaobject><imageobject><imagedata depth="50" fileref="images/ognl.png" format="PNG" width="100" /></imageobject></inlinemediaobject></ulink>
+      <ulink url="http://mvel.codehaus.org/"><inlinemediaobject><imageobject><imagedata depth="50" fileref="images/mvel.png" format="PNG" width="140" /></imageobject></inlinemediaobject></ulink>
+    </para>
+  </section>
+
+  <section>
+    <title>References</title>
+
+    <para>There exist some articles and blog entries talking about and/or referencing OVal:</para>
+
+    <itemizedlist>
+	
+	  <listitem>
+	    <para>Validaciones: Hibernate Validator vs OVal (2010)</para>
+        <para><ulink url="http://unpocodejava.wordpress.com/2010/05/07/validaciones-hibernate-validator-vs-oval">http://unpocodejava.wordpress.com/2010/05/07/validaciones-hibernate-validator-vs-oval</ulink></para>
+		<para><ulink url="http://translate.google.com/translate?sl=es&amp;tl=en&amp;u=http%3A%2F%2Funpocodejava.wordpress.com%2F2010%2F05%2F07%2Fvalidaciones-hibernate-validator-vs-oval">English Translation</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Wikipedia: OVal (Framework) (2010)</para>
+        <para><ulink url="http://de.wikipedia.org/wiki/OVal_%28Framework%29">http://de.wikipedia.org/wiki/OVal_%28Framework%29</ulink></para>
+		<para><ulink url="http://translate.google.com/translate?sl=de&amp;tl=en&amp;u=http%3A%2F%2Fde.wikipedia.org%2Fwiki%2FOVal_%28Framework%29">English Translation</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>OVal - Object Validation With POJO (2009)</para>
+        <para><ulink url="http://bitsofwizardry.wordpress.com/2009/04/14/oval-object-validation-with-pojo/">http://bitsofwizardry.wordpress.com/2009/04/14/oval-object-validation-with-pojo/</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>The Developer Information Resource - OVal Learning Roadmap (2009)</para>
+        <para><ulink url="http://www.thedevinfo.com/Home/validation-frameworks/oval/oval-learning-roadmap">http://www.thedevinfo.com/Home/validation-frameworks/oval/oval-learning-roadmap</ulink></para>
+	  </listitem>
+	  
+      <listitem>
+        <para>Diseño por Contrato con OVal y Spring [Design by Contract with OVal and Spring] (2009)</para>
+        <para><ulink url="http://www.dosideas.com/java/562-diseno-por-contrato-con-oval-y-spring.html">http://www.dosideas.com/java/562-diseno-por-contrato-con-oval-y-spring.html</ulink></para>
+        <para><ulink url="http://translate.google.com/translate?sl=es&amp;tl=en&amp;u=http%3A%2F%2Fwww.dosideas.com%2Fjava%2F562-diseno-por-contrato-con-oval-y-spring.html">English Translation</ulink></para>
+      </listitem>
+      
+      <listitem>
+        <para>OVal Blog Entry Series at the "JEE, BPEL, SOA" blog (2008)</para>
+        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/jsr-303-and-oval-validation-framework.html">JSR 303 and OVal Validation Framework</ulink></para>
+        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/oval-and-profiles.html">OVal and profiles</ulink></para>
+        <para><ulink url="http://jee-bpel-soa.blogspot.com/2008/12/springs-piecemeal-validation-and-oval.html">Spring's piecemeal validation and OVal integration</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Pre and post condition validation with OVal as intruments of software architecture (2008)</para>
+        <para><ulink url="http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/">http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>OVal: The simple validation framework for Java (2008)</para>
+        <para><ulink url="http://takezoe.blogspot.com/2008/03/oval-simple-validation-framework-for.html">http://takezoe.blogspot.com/2008/03/oval-simple-validation-framework-for.html</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Validación Java: OVal, una joya escondida (2007)</para>
+        <para><ulink url="http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html">http://brigomp.blogspot.com/2007/09/hay-veces-que-los-frameworks-menos.html</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Die Pro-Pix Homepage - Design by Contract (2007)</para>
+        <para><ulink url="http://pro-pix.de/joomla/index.php?option=com_content&amp;task=view&amp;id=39&amp;Itemid=1">http://pro-pix.de/joomla/index.php?option=com_content&amp;task=view&amp;id=39&amp;Itemid=1</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Nice library for constraint checking (2007)</para>
+        <para><ulink url="http://rmeindl.wordpress.com/2007/09/06/nice-library-for-constraint-checking/">http://rmeindl.wordpress.com/2007/09/06/nice-library-for-constraint-checking/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Validation with Aspects &amp; design by contract (2007)</para>
+        <para><ulink url="http://sameertyagi.blogspot.com/2007/05/validation-with-aspects-and-contracts_20.html">http://sameertyagi.blogspot.com/2007/05/validation-with-aspects-and-contracts_20.html</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>In pursuit of code quality: Defensive programming with AOP (2007)</para>
+        <para><ulink url="http://www-128.ibm.com/developerworks/java/library/j-cq01307/">http://www-128.ibm.com/developerworks/java/library/j-cq01307/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>OVal e la validazione degli oggetti in Java (2006)</para>
+        <para><ulink url="http://www.keepintech.it/blog/?p=52">http://www.keepintech.it/blog/?p=52</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Limiting conditional complexity with AOP (2006)</para>
+        <para><ulink url="http://testearly.findtechblogs.com/default.asp?item=412603">http://testearly.findtechblogs.com/default.asp?item=412603</ulink></para>
+        <para><ulink url="http://www.nofluffjuststuff.com/blog_detail.jsp?rssItemId=98236">http://www.nofluffjuststuff.com/blog_detail.jsp?rssItemId=98236</ulink></para>
+        <para><ulink url="http://www.testearly.com/2006/12/31/limiting-conditional-complexity-with-aop/">http://www.testearly.com/2006/12/31/limiting-conditional-complexity-with-aop/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Metadata and AOP (2005)</para>
+        <para><ulink url="http://www2.java.no/web/files/moter/nov05/yngvar_sorensen_metadata_and_aop.pdf">http://www2.java.no/web/files/moter/nov05/yngvar_sorensen_metadata_and_aop.pdf</ulink></para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The following projects are using OVal:</para>
+
+    <itemizedlist>
+
+	  <listitem>
+        <para>gdv.xport</para>
+        <para><ulink url="http://repository.agentes.de/gdv/gdv-xport/site/">http://repository.agentes.de/gdv/gdv-xport/site/</ulink></para>
+      </listitem>  
+	  
+	  <listitem>
+        <para>suz-lab-gae</para>
+        <para><ulink url="http://code.google.com/p/suz-lab-gae/">http://code.google.com/p/suz-lab-gae/</ulink></para>
+      </listitem>  
+	  
+      <listitem>
+        <para>Cubby Simple Web Application Framework</para>
+        <para><ulink url="http://cubby.seasar.org/20x/cubby-oval/index.html">http://cubby.seasar.org/20x/cubby-oval/index.html</ulink></para>
+      </listitem>   
+    
+      <listitem>
+        <para>Metawidget</para>
+        <para><ulink url="http://metawidget.org">http://metawidget.org</ulink></para>
+      </listitem>
+	  
+      <listitem>
+        <para>Struts 2 OVal Plug-in</para>
+        <para><ulink url="http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin">http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Play! Framework</para>
+        <para><ulink url="http://www.playframework.org/">http://www.playframework.org/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Cayenne annotations</para>
+        <para><ulink url="http://sourceforge.net/projects/cayannotations/">http://sourceforge.net/projects/cayannotations/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>jsfatwork</para>
+        <para><ulink url="http://code.google.com/p/jsfatwork/">http://code.google.com/p/jsfatwork/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>mtn4java</para>
+        <para><ulink url="http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/">http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Polyforms</para>
+        <para><ulink url="http://code.google.com/p/polyforms/">http://code.google.com/p/polyforms/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>rsser</para>
+        <para><ulink url="http://code.google.com/p/rsser/">http://code.google.com/p/rsser/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>saetc</para>
+        <para><ulink url="http://code.google.com/p/saetc/">http://code.google.com/p/saetc/</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>ultimate-roundtrip</para>
+        <para><ulink url="http://code.google.com/p/ultimate-roundtrip/">http://code.google.com/p/ultimate-roundtrip/</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Acknowledgements</title>
+
+    <para>YourKit is kindly supporting open source projects with its full-featured Java Profiler.</para>
+
+    <para>YourKit, LLC is creator of innovative and intelligent tools for profiling Java and .NET applications.
+    Take a look at YourKit's leading software products: <ulink url="http://www.yourkit.com/java/profiler/">YourKit Java Profiler</ulink>
+    and <ulink url="http://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</ulink>.</para>
+  </section>
+
+  <section>
+    <title>Trademark disclaimer</title>
+
+    <para><trademark>Java</trademark> and all Java-based trademarks are trademarks of Oracle Corporation in the United States, other
+    countries, or both. For more information please refer to: <ulink url="http://www.oracle.com/html/3party.html">http://www.oracle.com/html/3party.html</ulink></para>
+
+    <para>This site is independent of Oracle Corporation.</para>
+
+    <para>All other trademarks are the sole property of their respective owners.</para>
+
+    <para>
+      <ulink url="http://docbook.sourceforge.net/projects/xsl/"><inlinemediaobject><imageobject><imagedata depth="38" fileref="images/docbook.png" format="PNG" width="126" /></imageobject></inlinemediaobject></ulink>
+    </para>
+  </section>
+</article>
