@@ -26,12 +26,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
+import net.sf.oval.configuration.CheckInitializationListener;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.configuration.annotation.Constraint;
@@ -92,6 +94,8 @@ import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -99,6 +103,7 @@ import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -120,7 +125,7 @@ public class XMLConfigurer implements Configurer
 	 * <code>&lt;assert&gt;&lt;expr&gt;...&lt;/expr&gt;&lt;/assert&gt;</code> instead of <code>&lt;assert expr="..."&gt;</code>
 	 * This allows users to write complex, multi-line expressions. 
 	 */
-	protected static final class AssertCheckConverter implements Converter
+	protected final class AssertCheckConverter implements Converter
 	{
 		/**
 		 * {@inheritDoc}
@@ -217,6 +222,8 @@ public class XMLConfigurer implements Configurer
 				}
 				reader.moveUp();
 			}
+			for (final CheckInitializationListener listener : listeners)
+				listener.onCheckInitialized(assertCheck);
 			return assertCheck;
 		}
 	}
@@ -242,7 +249,7 @@ public class XMLConfigurer implements Configurer
 	/**
 	 * This reflection provider applies default values declared on constraint annotations to the corresponding check class
 	 */
-	protected static final class XStreamReflectionProvider extends Sun14ReflectionProvider
+	protected final class XStreamReflectionProvider extends Sun14ReflectionProvider
 	{
 		@Override
 		@SuppressWarnings("unchecked")
@@ -277,12 +284,12 @@ public class XMLConfigurer implements Configurer
 		}
 	}
 
-	private static final Log LOG = Log.getLog(Validator.class);
-
 	private static final long serialVersionUID = 1L;
 
-	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
+	private static final Log LOG = Log.getLog(Validator.class);
 
+	protected final Set<CheckInitializationListener> listeners = new LinkedSet<CheckInitializationListener>(2);
+	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
 	private final XStream xStream;
 
 	/**
@@ -302,8 +309,26 @@ public class XMLConfigurer implements Configurer
 		configureXStream();
 	}
 
+	public boolean addCheckInitializationListener(final CheckInitializationListener listener)
+	{
+		Assert.notNull("listener", "[listener] must not be null");
+		return listeners.add(listener);
+	}
+
 	private void configureXStream()
 	{
+		xStream.registerConverter(new ReflectionConverter(xStream.getMapper(), xStream.getReflectionProvider())
+			{
+				@Override
+				public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context)
+				{
+					final Object instance = super.unmarshal(reader, context);
+					if (instance instanceof Check) //
+						for (final CheckInitializationListener listener : listeners)
+							listener.onCheckInitialized((Check) instance);
+					return instance;
+				}
+			}, XStream.PRIORITY_VERY_LOW);
 		xStream.registerConverter(new ListConverter(xStream.getMapper()));
 		xStream.registerConverter(new AssertCheckConverter());
 
@@ -511,6 +536,11 @@ public class XMLConfigurer implements Configurer
 	public XStream getXStream()
 	{
 		return xStream;
+	}
+
+	public boolean removeCheckInitializationListener(final CheckInitializationListener listener)
+	{
+		return listeners.remove(listener);
 	}
 
 	/**

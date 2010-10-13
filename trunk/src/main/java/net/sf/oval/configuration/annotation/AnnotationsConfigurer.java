@@ -20,10 +20,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
 import net.sf.oval.collection.CollectionFactory;
+import net.sf.oval.configuration.CheckInitializationListener;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
@@ -44,6 +46,8 @@ import net.sf.oval.guard.PostValidateThis;
 import net.sf.oval.guard.Pre;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.guard.PreValidateThis;
+import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
@@ -53,6 +57,8 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class AnnotationsConfigurer implements Configurer
 {
+	protected final Set<CheckInitializationListener> listeners = new LinkedSet<CheckInitializationListener>(2);
+
 	private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations,
 			final Class< ? >[] parameterTypes)
 	{
@@ -91,6 +97,12 @@ public class AnnotationsConfigurer implements Configurer
 			}
 		}
 		return paramCfg;
+	}
+
+	public boolean addCheckInitializationListener(final CheckInitializationListener listener)
+	{
+		Assert.notNull("listener", "[listener] must not be null");
+		return listeners.add(listener);
 	}
 
 	protected void configureConstructorParameterChecks(final ClassConfiguration classCfg)
@@ -309,6 +321,9 @@ public class AnnotationsConfigurer implements Configurer
 		// instantiate the appropriate check for the found constraint
 		final AnnotationCheck<ConstraintAnnotation> check = newCheckInstance(checkClass);
 		check.configure(constraintAnnotation);
+
+		for (final CheckInitializationListener listener : listeners)
+			listener.onCheckInitialized(check);
 		return check;
 	}
 
@@ -377,5 +392,10 @@ public class AnnotationsConfigurer implements Configurer
 		{
 			throw new ReflectionException("Cannot initialize constraint check " + checkClass.getName(), ex);
 		}
+	}
+
+	public boolean removeCheckInitializationListener(final CheckInitializationListener listener)
+	{
+		return listeners.remove(listener);
 	}
 }
