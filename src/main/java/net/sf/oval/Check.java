@@ -69,7 +69,7 @@ public interface Check extends Serializable
 	 * A key "min" with a value "4" will replace the place holder {min} in an error message
 	 * like "Value cannot be smaller than {min}" with the string "4".
 	 */
-	Map<String, ? > getMessageVariables();
+	Map<String, ? extends Serializable> getMessageVariables();
 
 	/**
 	 * @return the profiles, may return null
