@@ -40,7 +40,7 @@ public class ConstraintViolation implements Serializable
 	private transient Object invalidValue;
 	private final String message;
 	private final String messageTemplate;
-	private final Map<String, ? > messageVariables;
+	private final Map<String, ? extends Serializable> messageVariables;
 
 	private final int severity;
 	private transient Object validatedObject;
@@ -167,7 +167,7 @@ public class ConstraintViolation implements Serializable
 	 * Returns the message variables provided by the corresponding check.
 	 * @return an unmodifiable map holding the message variables provided by the corresponding check.
 	 */
-	public Map<String, ? > getMessageVariables()
+	public Map<String, ? extends Serializable> getMessageVariables()
 	{
 		return messageVariables;
 	}
@@ -198,14 +198,8 @@ public class ConstraintViolation implements Serializable
 	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
-		if (in.readBoolean())
-		{
-			validatedObject = in.readObject();
-		}
-		if (in.readBoolean())
-		{
-			invalidValue = in.readObject();
-		}
+		if (in.readBoolean()) validatedObject = in.readObject();
+		if (in.readBoolean()) invalidValue = in.readObject();
 	}
 
 	/**
