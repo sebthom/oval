@@ -14,6 +14,7 @@ package net.sf.oval;
 
 import static net.sf.oval.Validator.getCollectionFactory;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -32,8 +33,8 @@ public abstract class AbstractCheck implements Check
 	private OValContext context;
 	private String errorCode;
 	private String message;
-	private Map<String, ? > messageVariables;
-	private Map<String, ? > messageVariablesUnmodifiable;
+	private Map<String, ? extends Serializable> messageVariables;
+	private Map<String, ? extends Serializable> messageVariablesUnmodifiable;
 	private boolean messageVariablesUpToDate = true;
 
 	private String[] profiles;
@@ -43,7 +44,7 @@ public abstract class AbstractCheck implements Check
 	private transient String whenFormula;
 	private transient String whenLang;
 
-	protected Map<String, ? > createMessageVariables()
+	protected Map<String, ? extends Serializable> createMessageVariables()
 	{
 		return null;
 	}
@@ -123,7 +124,7 @@ public abstract class AbstractCheck implements Check
 	 * 
 	 * @return an unmodifiable map
 	 */
-	public final Map<String, ? > getMessageVariables()
+	public final Map<String, ? extends Serializable> getMessageVariables()
 	{
 		if (!messageVariablesUpToDate)
 		{
