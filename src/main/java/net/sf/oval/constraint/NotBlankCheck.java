@@ -41,6 +41,12 @@ public class NotBlankCheck extends AbstractAnnotationCheck<NotEmpty>
 	{
 		if (valueToValidate == null) return true;
 
-		return valueToValidate.toString().trim().length() > 0;
+		final String str = valueToValidate.toString();
+
+		final int l = str.length();
+		for (int i = 0; i < l; i++)
+			if (!Character.isWhitespace(str.charAt(i))) return true;
+
+		return false;
 	}
 }
