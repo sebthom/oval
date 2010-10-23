@@ -1532,6 +1532,12 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
 	  </listitem>
 	  
 	  <listitem>
+	    <para>Enkel validering av Java-objekter med OVal (2010)</para>
+        <para><ulink url="http://open.bekk.no/2010/02/17/enkel-validering-av-java-objekter-med-oval/">http://open.bekk.no/2010/02/17/enkel-validering-av-java-objekter-med-oval/</ulink></para>
+		<para><ulink url="http://translate.google.com/translate?sl=no&tl=en&u=http%3A%2F%2Fopen.bekk.no%2F2010%2F02%2F17%2Fenkel-validering-av-java-objekter-med-oval%2F">English Translation</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
 	    <para>Wikipedia: OVal (Framework) (2010)</para>
         <para><ulink url="http://de.wikipedia.org/wiki/OVal_%28Framework%29">http://de.wikipedia.org/wiki/OVal_%28Framework%29</ulink></para>
 		<para><ulink url="http://translate.google.com/translate?sl=de&amp;tl=en&amp;u=http%3A%2F%2Fde.wikipedia.org%2Fwiki%2FOVal_%28Framework%29">English Translation</ulink></para>
@@ -1617,6 +1623,11 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
 
     <itemizedlist>
 
+	  <listitem>
+        <para>JProvocateur</para>
+        <para><ulink url="http://www.jprovocateur.org/">http://www.jprovocateur.org/</ulink></para>
+      </listitem>  
+	  
 	  <listitem>
         <para>gdv.xport</para>
         <para><ulink url="http://repository.agentes.de/gdv/gdv-xport/site/">http://repository.agentes.de/gdv/gdv-xport/site/</ulink></para>
