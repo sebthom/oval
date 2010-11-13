@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	XSD for OVal
+ -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://oval.sourceforge.net/oval-configuration"
+	xmlns:tns="http://oval.sourceforge.net/oval-configuration" elementFormDefault="qualified" version="1.3.0"
+>
+	<!--
+	*************************** 
+	top-level configuration element 
+	***************************
+	-->
+	<element name="oval">
+		<annotation>
+			<documentation>The oval element is the root of the descriptor.</documentation>
+		</annotation>
+		<complexType>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="class" type="tns:Class" minOccurs="0" />
+				<element name="constraintSet" type="tns:ConstraintSet" minOccurs="0" />
+			</choice>
+		</complexType>
+	</element>
+	
+	<!--
+	*************************** 
+	abstract types
+	***************************
+	-->
+	<complexType name="ConfigurationElement" abstract="true">
+		<attribute name="overwrite" use="optional" type="boolean" />
+	</complexType>
+	<complexType name="ConfigurationElementWithConstraints" abstract="true">
+		<annotation>
+			<documentation>
+                A super type for all types that use constraints.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="assert" type="tns:Assert" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assertConstraintSet" type="tns:AssertConstraintSet" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assertFalse" type="tns:AssertFalse" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assertFieldConstraints" type="tns:AssertFieldConstraints" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assertTrue" type="tns:AssertTrue" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assertURL" type="tns:AssertURL" minOccurs="0" maxOccurs="unbounded" />
+					<element name="assertValid" type="tns:AssertValid" minOccurs="0" maxOccurs="unbounded" />
+					<element name="checkWith" type="tns:CheckWith" minOccurs="0" maxOccurs="unbounded" />
+					<element name="equalToField" type="tns:EqualToField" minOccurs="0" maxOccurs="unbounded" />
+					<element name="future" type="tns:Future" minOccurs="0" maxOccurs="unbounded" />
+					<element name="hasSubstring" type="tns:HasSubstring" minOccurs="0" maxOccurs="unbounded" />
+					<element name="instanceOf" type="tns:InstanceOf" minOccurs="0" maxOccurs="unbounded" />
+					<element name="instanceOfAny" type="tns:InstanceOfAny" minOccurs="0" maxOccurs="unbounded" />
+					<element name="length" type="tns:Length" minOccurs="0" maxOccurs="unbounded" />
+					<element name="matchPattern" type="tns:MatchPattern" minOccurs="0" maxOccurs="unbounded" />
+					<element name="max" type="tns:Max" minOccurs="0" maxOccurs="unbounded" />
+					<element name="maxLength" type="tns:MaxLength" minOccurs="0" maxOccurs="unbounded" />
+					<element name="maxSize" type="tns:MaxSize" minOccurs="0" maxOccurs="unbounded" />
+					<element name="min" type="tns:Min" minOccurs="0" maxOccurs="unbounded" />
+					<element name="minLength" type="tns:MinLength" minOccurs="0" maxOccurs="unbounded" />
+					<element name="minSize" type="tns:MinSize" minOccurs="0" maxOccurs="unbounded" />
+					<element name="noSelfReference" type="tns:NoSelfReference" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notEmpty" type="tns:NotEmpty" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notEqual" type="tns:NotEqual" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notEqualToField" type="tns:NotEqualToField" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notNegative" type="tns:NotNegative" minOccurs="0" maxOccurs="unbounded" />
+					<element name="notNull" type="tns:NotNull" minOccurs="0" maxOccurs="unbounded" />
+					<element name="past" type="tns:Past" minOccurs="0" maxOccurs="unbounded" />
+					<element name="range" type="tns:Range" minOccurs="0" maxOccurs="unbounded" />
+					<element name="size" type="tns:Size" minOccurs="0" maxOccurs="unbounded" />
+					<element name="validateWithMethod" type="tns:ValidateWithMethod" minOccurs="0" maxOccurs="unbounded" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ElementsWithProfiles" mixed="true" abstract="true">
+		<sequence minOccurs="0" maxOccurs="1">
+			<element name="profiles" minOccurs="0" maxOccurs="1" type="tns:Profiles" />
+		</sequence>
+	</complexType>
+	<complexType name="Constraint" abstract="true">
+		<complexContent>
+			<extension base="tns:ElementsWithProfiles">
+				<attribute name="errorCode" type="string" use="optional" />
+				<attribute name="message" type="string" use="optional" />
+				<attribute name="severity" type="string" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<!--
+	*************************** 
+	basic elements
+	***************************
+	-->
+	<complexType name="ConstraintSet">
+		<annotation>
+			<documentation>
+                Defines a constraint set
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElementWithConstraints">
+				<attribute name="id" use="required" type="ID" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Profiles">
+		<sequence>
+			<element name="string" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	<simpleType name="ScriptingLanguage">
+		<restriction base="string">
+			<enumeration value="bsh" />
+			<enumeration value="beanshell" />
+			<enumeration value="js" />
+			<enumeration value="javascript" />
+			<enumeration value="groovy" />
+			<enumeration value="ognl" />
+		</restriction>
+	</simpleType>
+		
+	<!--
+	*************************** 
+	elements with constraints
+	***************************
+	-->
+	<complexType name="Class">
+		<annotation>
+			<documentation>
+                Constraints configuration for a specific class 
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence>
+					<element name="object" type="tns:Object" minOccurs="0" maxOccurs="1" />
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element name="field" type="tns:Field" />
+						<element name="constructor" type="tns:Constructor" />
+						<element name="method" type="tns:Method" />
+					</choice>
+				</sequence>
+				<attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false" />
+				<attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false" />
+				<attribute name="assertParametersNotNull" use="optional" type="boolean" default="false" />
+				<attribute name="checkInvariants" use="optional" type="boolean" default="false" />
+				<attribute name="type" use="required" type="string">
+					<annotation>
+						<documentation source="java:java.lang.Class">The fully qualified name of the class</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Field">
+		<annotation>
+			<documentation>
+                Constraints configuration for a field
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElementWithConstraints">
+				<attribute name="name" use="required" type="QName" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Constructor">
+		<annotation>
+			<documentation>
+                Constraints configuration for a constructor.
+                To identify the correct constructor you are required to list all parameters in their declared order, including parameters you are not intending to specify constraints for.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<element name="parameter" type="tns:Parameter" />
+				</sequence>
+				<attribute name="postCheckInvariants" use="optional" type="boolean" default="false" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Method">
+		<annotation>
+			<documentation>
+                Constraints configuration for a method.
+                To identify the correct method you are required to list all parameters, including parameters you are not intending to specify constraints for.
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence>
+					<element name="parameter" type="tns:Parameter" minOccurs="0" maxOccurs="unbounded" />
+					<element name="preExecution" type="tns:PreExecution" minOccurs="0" maxOccurs="1" />
+					<element name="returnValue" type="tns:ReturnValue" minOccurs="0" maxOccurs="1" />
+					<element name="postExecution" type="tns:PostExecution" minOccurs="0" maxOccurs="1" />
+				</sequence>
+				<attribute name="name" use="required" type="QName" />
+				<attribute name="isInvariant" use="optional" type="boolean" default="false" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Parameter">
+		<annotation>
+			<documentation>
+                Constraints configuration for a constructor/method parameter
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElementWithConstraints">
+				<sequence>
+					<element name="nullable" minOccurs="0" maxOccurs="unbounded" type="tns:Nullable" />
+				</sequence>
+				<attribute name="type" use="required" type="QName" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ReturnValue">
+		<annotation>
+			<documentation>
+                Constraints configuration for the return value of a method
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElementWithConstraints">
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Object">
+		<annotation>
+			<documentation>
+                Constraints configuration for constraints on object level
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="assert" type="tns:Assert" />
+					<element name="checkWith" type="tns:CheckWith" />
+					<element name="validateWithMethod" type="tns:ValidateWithMethod" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="PreExecution" mixed="true">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence minOccurs="0" maxOccurs="unbounded">
+					<element name="pre" type="tns:Pre" />
+				</sequence>
+				<attribute name="checkInvariants" type="boolean"></attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="PostExecution" mixed="true">
+		<complexContent>
+			<extension base="tns:ConfigurationElement">
+				<sequence>
+					<element name="post" minOccurs="0" maxOccurs="unbounded" type="tns:Post" />
+				</sequence>
+				<attribute name="checkInvariants" type="boolean" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+		
+	<!--
+	*************************** 
+	constraint elements
+	***************************
+	-->
+	<complexType name="Pre" mixed="true">
+		<annotation>
+			<documentation>
+                method pre condition - special programming by contract constraints
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="expr" type="string" use="required" />
+				<attribute name="lang" use="required" type="tns:ScriptingLanguage" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Post" mixed="true">
+		<annotation>
+			<documentation>
+                method post condition - special programming by contract constraints
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="expr" type="string" use="required" />
+				<attribute name="lang" use="required" type="tns:ScriptingLanguage" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Assert" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.Assert
+                The node body contains the script expression as CDATA
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="expr" type="string" />
+				</sequence>
+				<attribute name="lang" use="required" type="tns:ScriptingLanguage" />
+				
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AssertConstraintSet" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.AssertConstraintSet
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ElementsWithProfiles">
+				<attribute name="id" type="IDREF" use="required" />
+				<!-- TODO -->
+				<attribute name="source" type="string" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AssertFalse" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.AssertFalse
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="AssertFieldConstraints" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.AssertFieldConstraints
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ElementsWithProfiles">
+				<attribute name="fieldName" type="string" use="required" />
+				<attribute name="declaringClass" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AssertTrue" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.AssertTrue
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="AssertURL" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.AssertURL
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="permittedURIScheme" type="tns:permittedURIScheme" minOccurs="0" maxOccurs="unbounded" />
+				</sequence>
+				<attribute name="connect" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<simpleType name="permittedURIScheme">
+		<restriction base="string" />
+	</simpleType>
+	<complexType name="AssertValid" mixed="true">
+		<annotation>
+			<documentation>
+               built-in single value constraint, corresponds to net.sf.oval.constraint.AssertValid
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="requireValidElements" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="CheckWith" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.CheckWith
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="simpleCheck" type="tns:SimpleCheck" />
+				</sequence>
+				<attribute name="ignoreIfNull" type="boolean" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="SimpleCheck" mixed="true">
+		<annotation>
+			<documentation>
+                name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck
+            </documentation>
+		</annotation>
+		<attribute name="class" type="string" />
+	</complexType>
+	<complexType name="EqualToField" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.EqualToField
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="declaringClass" type="string" use="optional" />
+				<attribute name="fieldName" type="string" use="required" />
+				<attribute name="useGetter" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Future" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.Future
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="HasSubstring" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.HasSubstring
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="ignoreCase" type="boolean" use="required" />
+				<attribute name="substring" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="InstanceOf" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.InstanceOf
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="types" type="tns:Types" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="InstanceOfAny" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.InstanceOfAny
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="types" type="tns:Types" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Types" mixed="true">
+		<sequence>
+			<element name="types">
+				<complexType>
+					<sequence minOccurs="1" maxOccurs="unbounded">
+						<element name="java-type" type="string" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="Length" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.Length
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="max" type="integer" use="optional" />
+				<attribute name="min" type="integer" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="MatchPattern" mixed="true">
+		<annotation>
+			<documentation>
+                  built-in single value constraint, corresponds to net.sf.oval.constraint.MatchPattern
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="pattern" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<attribute name="flags" type="integer" use="optional" />
+							<attribute name="pattern" type="string" use="required" />
+						</complexType>
+					</element>
+				</sequence>
+				<attribute name="matchAll" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Max" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.Max
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="max" type="integer" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="MaxLength" mixed="true">
+		<annotation>
+			<documentation>
+                 built-in single value constraint, corresponds to net.sf.oval.constraint.MaxLength
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="max" type="integer" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="MaxSize" mixed="true">
+		<annotation>
+			<documentation>
+                  built-in single value constraint, corresponds to net.sf.oval.constraint.MaxSize
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="max" type="integer" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Members">
+		<sequence>
+			<element name="string" minOccurs="0" maxOccurs="unbounded" type="string" />
+		</sequence>
+	</complexType>
+	<complexType name="MemberOf" mixed="true">
+		<annotation>
+			<documentation>
+                 built-in single value constraint, corresponds to net.sf.oval.constraint.MemberOf
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="members" minOccurs="0" maxOccurs="unbounded" type="tns:Members" />
+				</sequence>
+				<attribute name="ignoreCase" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Min" mixed="true">
+		<annotation>
+			<documentation>
+                 built-in single value constraint, corresponds to net.sf.oval.constraint.Min
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="min" type="integer" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="MinLength" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.MinLength
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="min" type="integer" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="MinSize" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.MinSize
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="min" type="integer" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="NoSelfReference" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.NoSelfReference
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="NotBlank" mixed="true">
+		<annotation>
+			<documentation>
+               built-in single value constraint, corresponds to net.sf.oval.constraint.NotBlank
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="NotEmpty" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.NotEmpty
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="NotEqual" mixed="true">
+		<annotation>
+			<documentation>
+                  built-in single value constraint, corresponds to net.sf.oval.constraint.NotEqual
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="ignoreCase" type="boolean" use="required" />
+				<attribute name="testString" type="string" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="NotEqualToField" mixed="true">
+		<annotation>
+			<documentation>
+                  built-in single value constraint, corresponds to net.sf.oval.constraint.NotEqualToField
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="fieldName" type="string" use="required" />
+				<attribute name="declaringClass" type="string" use="optional" />
+				<attribute name="useGetter" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="NotMemberOf" mixed="true">
+		<annotation>
+			<documentation>
+               built-in single value constraint, corresponds to net.sf.oval.constraint.NotMemberOf
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<sequence>
+					<element name="members" minOccurs="0" maxOccurs="unbounded" type="tns:Members" />
+				</sequence>
+				<attribute name="ignoreCase" type="boolean" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="NotNegative" mixed="true">
+		<annotation>
+			<documentation>
+                 built-in single value constraint, corresponds to net.sf.oval.constraint.NotNegative
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="NotNull" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.NotNull
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="Past" mixed="true">
+		<annotation>
+			<documentation>
+                 built-in single value constraint, corresponds to net.sf.oval.constraint.Past
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint" />
+		</complexContent>
+	</complexType>
+	<complexType name="Range" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraint.Range
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="max" type="integer" use="optional" />
+				<attribute name="min" type="integer" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Size" mixed="true">
+		<annotation>
+			<documentation>
+               built-in single value constraint, corresponds to net.sf.oval.constraint.Size
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="max" type="integer" use="optional" />
+				<attribute name="min" type="integer" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ValidateWithMethod" mixed="true">
+		<annotation>
+			<documentation>
+                built-in single value constraint, corresponds to net.sf.oval.constraints.ValidateWithMethod
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Constraint">
+				<attribute name="ignoreIfNull" type="boolean" use="optional" />
+				<attribute name="methodName" type="string" use="required" />
+				<attribute name="parameterType" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<!--
+	*************************** 
+	constraint exclusion elements
+	***************************
+	-->
+	<complexType name="Nullable" mixed="true">
+		<annotation>
+			<documentation>
+                  built-in exclusion, corresponds to net.sf.oval.constraint.exclusion.Nullable
+            </documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:ElementsWithProfiles" />
+		</complexContent>
+	</complexType>
+</schema>
