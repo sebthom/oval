@@ -221,7 +221,8 @@ if(violations.size()>0)
   @NotNull
   public String deliveryAddress;
 
-  @NotNull public String invoiceAddress;
+  @NotNull
+  public String invoiceAddress;
 
   // mailingAddress must either be the delivery address or the invoice address 
   @Assert(expr = "_value ==_this.deliveryAddress || _value == _this.invoiceAddress", lang = "groovy")
@@ -331,7 +332,8 @@ if(violations.size()>0)
         </listitem>
       </itemizedlist>
 
-      <programlisting><![CDATA[@Entity public class MyEntity 
+      <programlisting><![CDATA[@Entity
+public class MyEntity 
 {
   @Basic(optional = false) 
   @Column(length = 4) 
@@ -497,7 +499,7 @@ List<ConstraintViolation> violations = validator.validate(entity);]]></programli
         Invocations of the constructor will be prohibited if any of the constraints is not satisfied. In such a case a
         <command>net.sf.oval.exception.ConstraintsViolatedException</command> will be thrown.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject 
 {
   public BusinessObject(@NotNull String name)
@@ -521,7 +523,7 @@ BusinessObject bo = new  BusinessObject(null);]]></programlisting>
         Invocations of to the method will be prohibited if any of the constraints is not satisfied. In such a case
         a <command>net.sf.oval.exception.ConstraintsViolatedException</command> will be thrown.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject
 {
   public void setName(@NotNull String name)
@@ -549,7 +551,7 @@ bo.setName(null); // throws a ConstraintsViolatedException because parameter nam
         <para>If you specify a field name within the <command>@net.sf.oval.constraint.AssertFieldConstraints</command>
         annotation the constraints of the field with the specified name are applied to the annotated parameter.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject 
 {
   @NotNull 
@@ -584,7 +586,7 @@ bo.setAlternativeName(null); // throws a ConstraintsViolatedException because pa
         a lot of setter methods and you are following the JavaBean convention. <emphasis>Important:</emphasis> The setter method
         must be declared within the same class as the property.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded(applyFieldConstraintsToSetters=true) 
+        <programlisting><![CDATA[@Guarded(applyFieldConstraintsToSetters=true) 
 public class BusinessObject
 {
   @NotNull 
@@ -699,7 +701,7 @@ public class Transaction
         it's constraints will also be checked when calling the <command>Validator.validate(Object)</command>
         method on an object of this type.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject 
 {
   private String name = null;
@@ -853,7 +855,7 @@ public class Transaction
 
         <para>In case of constraint violations a ConstraintsViolatedException is thrown and the method will not be executed.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject 
 {
   @NotNull 
@@ -888,7 +890,7 @@ bo.save();]]></programlisting>
         which effectively means the code trying to instantiate the object cannot get hold of a reference to the object
         being in an invalidate state and the invalid object will get garbage collected.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject 
 {
   @NotNull
@@ -924,7 +926,7 @@ BusinessObject bo = new  BusinessObject();]]></programlisting>
         <para><emphasis>Note:</emphasis> Despite the thrown exception the method code still has been executed,
         you have to manually rollback the changes performed by this method.</para>
 
-        <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+        <programlisting><![CDATA[@Guarded 
 public class BusinessObject 
 {
   @Length(max=10)
@@ -959,7 +961,7 @@ bo.appendToName("123456"); // throws a ConstraintsViolatedException because fiel
 
       <para>Example business object:</para>
 
-      <programlisting><![CDATA[@net.sf.oval.guard.Guarded 
+      <programlisting><![CDATA[@Guarded 
 public class Person 
 {
   @NotNegative 
