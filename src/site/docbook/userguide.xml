@@ -1534,7 +1534,7 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
 	  <listitem>
 	    <para>Enkel validering av Java-objekter med OVal (2010)</para>
         <para><ulink url="http://open.bekk.no/2010/02/17/enkel-validering-av-java-objekter-med-oval/">http://open.bekk.no/2010/02/17/enkel-validering-av-java-objekter-med-oval/</ulink></para>
-		<para><ulink url="http://translate.google.com/translate?sl=no&tl=en&u=http%3A%2F%2Fopen.bekk.no%2F2010%2F02%2F17%2Fenkel-validering-av-java-objekter-med-oval%2F">English Translation</ulink></para>
+		<para><ulink url="http://translate.google.com/translate?sl=no&amp;tl=en&amp;u=http%3A%2F%2Fopen.bekk.no%2F2010%2F02%2F17%2Fenkel-validering-av-java-objekter-med-oval%2F">English Translation</ulink></para>
 	  </listitem>
 	  
 	  <listitem>
