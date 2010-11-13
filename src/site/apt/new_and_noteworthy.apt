@@ -1,5 +1,15 @@
 New and Noteworthy
 
+
+* Version 1.61 (2010-11-13)
+
+** Issues solved
+
+ * [ oval-Bugs-3087277 ] @NotBlank ignores non-breaking space
+
+ * @EMail not validating addresses correct if allowPersonalName=true
+
+
 * Version 1.60 (2010-10-13)
 
 ** New Features and Improvements
@@ -24,7 +34,7 @@ New and Noteworthy
 
  * [ oval-Bugs-2994748 ] added missing French translations (thanks to Patrice Lachance)
 
- * fixed a potential null reference (thanks to jacky163com)
+ * a potential null reference (thanks to jacky163com)
 
 
 * Version 1.50 (2010-03-29)
@@ -46,23 +56,23 @@ New and Noteworthy
 
  * added missing violation message for @AssertValid (thanks to Eric Lewis)
 
- * fixed [ oval-Bugs-2894631 ] ClassCastException when validating arrays
+ * [ oval-Bugs-2894631 ] ClassCastException when validating arrays
   
- * fixed [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
+ * [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
 
- * fixed [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
+ * [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
  
- * fixed [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
+ * [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
  
- * fixed [ oval-Bugs-2973323 ] XSD scheme is not complete
+ * [ oval-Bugs-2973323 ] XSD scheme is not complete
  
- * fixed [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
+ * [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
  
- * fixed [ oval-Bugs-2973339 ] Defaults are not applied to checks
+ * [ oval-Bugs-2973339 ] Defaults are not applied to checks
  
- * fixed [ oval-Bugs-2973334 ] XMLConfigurer doesn't allow to parse when expressions
+ * [ oval-Bugs-2973334 ] XMLConfigurer doesn't allow to parse when expressions
  
- * fixed [ oval-Bugs-2973344 ] NotNull checks for container values
+ * [ oval-Bugs-2973344 ] NotNull checks for container values
 
  * changed @EMail regex pattern to support some rare email names [ oval-Bugs-2910553 ] 
 
@@ -85,11 +95,11 @@ New and Noteworthy
 
  * parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
  
- * fixed [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
+ * [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
 
  * corrected checking of BigDecimal by @NotNegative constraint (thanks to Saleem)
  
- * fixed [ 2799870 ] Wrong escaped unicode sequences in Messages_de.properties
+ * [ 2799870 ] Wrong escaped unicode sequences in Messages_de.properties
  
 * Version 1.32 (2009-05-10)
 
@@ -107,19 +117,19 @@ New and Noteworthy
 
 ** Issues solved 
 
- * fixed [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
+ * [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
  
- * fixed [ 2495825 ] The profile feature of Validator is not thread safe
+ * [ 2495825 ] The profile feature of Validator is not thread safe
  
- * fixed [ 2493379 ] array types in xml based configuration
+ * [ 2493379 ] array types in xml based configuration
  
- * fixed [ 2579897 ] xml based configuration related to post/pre checks
+ * [ 2579897 ] xml based configuration related to post/pre checks
  
- * fixed [ 2723344 ] Should not call any method on not fully initialized object
+ * [ 2723344 ] Should not call any method on not fully initialized object
  
- * fixed [ 2723413 ] translated JDK exception should keep the cause
+ * [ 2723413 ] translated JDK exception should keep the cause
 
- * fixed NPE in JDK Logger implementation (thanks to Carsten Siedentop)
+ * NPE in JDK Logger implementation (thanks to Carsten Siedentop)
 
 
 * Version 1.31 (2008-21-27)
@@ -132,21 +142,21 @@ New and Noteworthy
     
 ** Issues solved
 
-  * fixed Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
+  * Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
   
-  * fixed [ 2063142 ] doc typo
+  * [ 2063142 ] doc typo
   
-  * fixed prefix of default constraint message codes (changed from net.sf.oval.constraints to net.sf.oval.constraint)
+  * prefix of default constraint message codes (changed from net.sf.oval.constraints to net.sf.oval.constraint)
   
-  * fixed an issue where OVal was translating exception thrown by guarded methods into ValidationFailedException
+  * an issue where OVal was translating exception thrown by guarded methods into ValidationFailedException
   
-  * fixed bug [ 2164438 ] SerializableField bug when dealing with private fields
+  * bug [ 2164438 ] SerializableField bug when dealing with private fields
   
-  * fixed bug [ 2166232 ] JPAAnnotationsConfigurer should use AssertValidCheck for @ManyToMany
+  * bug [ 2166232 ] JPAAnnotationsConfigurer should use AssertValidCheck for @ManyToMany
   
-  * fixed bug [ 2192175 ] Validator.validate checks the same object multiple times
+  * bug [ 2192175 ] Validator.validate checks the same object multiple times
   
-  * fixed [ oval-Bugs-2406574 ] wrong scripting language enumerations in xsd and dtd
+  * [ oval-Bugs-2406574 ] wrong scripting language enumerations in xsd and dtd
 
 
 * Version 1.30 (2008-08-10)
@@ -176,11 +186,11 @@ New and Noteworthy
 
 ** Issues solved
 
-  * fixed an StackOverflowError that occurs when referencing the same property via _this.<property_name> in scripted pre/post conditions
+  * an StackOverflowError that occurs when referencing the same property via _this.<property_name> in scripted pre/post conditions
  
-  * fixed some issues in the DTD
+  * some issues in the DTD
  
-  * fixed bug [ 2023617 ] <<<@ValidateWithMethod>>> in super classes do not work
+  * bug [ 2023617 ] <<<@ValidateWithMethod>>> in super classes do not work
  
 
 ** Migration Notes (1.20 to 1.30)
@@ -213,19 +223,19 @@ New and Noteworthy
  
 ** Issues solved
  
-  * fixed bug [ 1885645 ] <<<Validator.validateFieldValue>>> should not return null
+  * [ 1885645 ] <<<Validator.validateFieldValue>>> should not return null
    
-  * fixed bug [ 1834537 ] NullPointerException in <<<constraintViolation.getCauses()>>>
+  * [ 1834537 ] NullPointerException in <<<constraintViolation.getCauses()>>>
    
-  * fixed bug [ 1852088 ] Incorrect default message for NotEqual validation
+  * [ 1852088 ] Incorrect default message for NotEqual validation
    
-  * fixed bug [ 1852087 ] Corrupt default localized messages
+  * [ 1852087 ] Corrupt default localized messages
    
-  * fixed bug [ 1868301 ] OVal with groovy - Performance Evaluation
+  * [ 1868301 ] OVal with groovy - Performance Evaluation
    
-  * fixed bug [ 1917978 ] Length of @Column should be ignored if @Lob is present
+  * [ 1917978 ] Length of @Column should be ignored if @Lob is present
    
-  * fixed bug [ 1934263 ] Versionconflict with WLS10.0 Clientlib 
+  * [ 1934263 ] Version conflict with WLS10.0 Clientlib 
 
 
 * Version 1.10 (2007-11-02)

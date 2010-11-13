@@ -2,9 +2,10 @@
 [+] Feature added.
 [*] Change.
 
-2010-??-?? v1.70
+2010-11-13 v1.61
 ================
 - fixed [ oval-Bugs-3087277 ] @NotBlank ignores non-breaking space
+- fixed @EMail not validating addresses correct if allowPersonalName=true
 
 2010-10-13 v1.60
 ================
