@@ -2,6 +2,10 @@
 [+] Feature added.
 [*] Change.
 
+2010-??-?? v1.70
+================
+* upgraded to Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, 
+
 2010-11-13 v1.61
 ================
 - fixed [ oval-Bugs-3087277 ] @NotBlank ignores non-breaking space
