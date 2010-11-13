@@ -3,15 +3,15 @@ body {
 	font-family: verdana, arial, sans-serif;
 } 
 
-hr { display: none }
+hr { 
+	display: none 
+}
 
-a:link, a:visited
-{
+a:link, a:visited {
 	color:blue;
 }
 
-img 
-{
+img {
 	border:none;
 }
 
@@ -24,25 +24,21 @@ img
 	padding-bottom:0.2em;
 }
 
-.author
-{
+.author {
 	
 }
 
-.revhistory
-{
+.revhistory {
 	padding-top:0.5em;
 	padding-bottom:0.5em;
 }
 
-.revhistory td,
-{
+.revhistory td {
 	border: 1px solid black;
 }
 
 /* toc title */
-.toc p
-{
+.toc p {
 	color:green;
 	font-size: 1.5em;
 	border-bottom: 1px solid black;
@@ -50,15 +46,13 @@ img
 }
 
 /* toc entry */
-dt
-{
+dt {
 	margin-left: 1em;
 	margin-bottom: 0.5em;
 }
 
 /* section title */
-.article .section .titlepage .title
-{
+.article .section .titlepage .title {
 	color:green;
 	font-size: 1.5em;
 	border-bottom: 1px solid black;
@@ -66,8 +60,7 @@ dt
 }
 
 /* sub section title */
-.article .section .section .titlepage .title
-{
+.article .section .section .titlepage .title {
 	font-size: 1.3em;
 }
 
@@ -78,6 +71,9 @@ dt
 	border: 2px gray dotted;
 }
 
+/*
+ * syntax highlighing
+ */
 .hl-comment {
 	color: #3F5FBF !important;
 }

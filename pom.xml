@@ -429,11 +429,19 @@ Besides field/property validation OVal implements Programming by Contract featur
 						and http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html -->
 					<sourceDirectory>${basedir}/src/site/docbook</sourceDirectory>
 					<targetDirectory>${project.build.directory}/site</targetDirectory>
+
+					<xincludeSupported>true</xincludeSupported>
+					<useExtensions>1</useExtensions>
+					<calloutsExtension>1</calloutsExtension>
+
+					<graphicDefaultExtension>png</graphicDefaultExtension>
+					<tocSectionDepth>2</tocSectionDepth>
+
+					<!-- configure syntax highlighting -->
 					<highlightDefaultLanguage>java</highlightDefaultLanguage>
 					<highlightSource>1</highlightSource>
-					<graphicDefaultExtension>png</graphicDefaultExtension>
-					<useExtensions>1</useExtensions>
-					<tocSectionDepth>2</tocSectionDepth>
+					<htmlCustomization>${basedir}/src/site/docbook/highlight.xsl</htmlCustomization>
+					<xhtmlCustomization>${basedir}/src/site/docbook/highlight.xsl</xhtmlCustomization> 
 
 					<!-- Enable auto numbering of section labels -->
 					<sectionAutolabel>1</sectionAutolabel>
@@ -451,8 +459,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<makeGraphicViewport>1</makeGraphicViewport>
 					<ignoreImageScaling>1</ignoreImageScaling>
 
-					<!-- Make external links stay within window (don't let them take over
-						entire frame) -->
+					<!-- Make external links stay within window (don't let them take over entire frame) -->
 					<ulinkTarget>'_self'</ulinkTarget>
 
 					<!-- Spend extra CPU time to try and produce valid and pretty HTML -->
