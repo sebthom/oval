@@ -621,9 +621,8 @@ public class Validator implements IValidator
 				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
 			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
-		// JEXL support
-		else if ("jexl".equals(languageId)
-				&& ReflectionUtils.isClassPresent("org.apache.commons.jexl.ExpressionFactory"))
+		// JEXL2 support
+		else if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl2.JexlEngine"))
 			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
 		return null;
