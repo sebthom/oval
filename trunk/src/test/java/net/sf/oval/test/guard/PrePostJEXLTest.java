@@ -49,22 +49,20 @@ public class PrePostJEXLTest extends TestCase
 		}
 
 		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "jexl", message = "PRE")
-		public void increase1(@Assert(expr = "_value!=null", lang = "jexl", message = "ASSERT")
-		final BigDecimal value2add)
+		public void increase1(
+				@Assert(expr = "_value!=null", lang = "jexl", message = "ASSERT") final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
-		@Post(expr = "_this.value>_old.value", old = "[\"value\" => _this.value]", lang = "jexl", message = "POST")
-		public void increase2(@NotNull
-		final BigDecimal value2add)
+		@Post(expr = "_this.value>_old.value", old = "{\"value\" : _this.value}", lang = "jexl", message = "POST")
+		public void increase2(@NotNull final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
-		@Post(expr = "_this.value>_old.value", old = "[\"value\" => _this.value]", lang = "jexl", message = "POST")
-		public void increase2buggy(@NotNull
-		final BigDecimal value2add)
+		@Post(expr = "_this.value>_old.value", old = "{\"value\" : _this.value}", lang = "jexl", message = "POST")
+		public void increase2buggy(@NotNull final BigDecimal value2add)
 		{
 			value = value.subtract(value2add);
 		}

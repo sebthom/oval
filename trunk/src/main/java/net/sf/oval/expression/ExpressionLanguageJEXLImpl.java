@@ -18,17 +18,19 @@ import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ObjectCache;
 
-import org.apache.commons.jexl.Expression;
-import org.apache.commons.jexl.ExpressionFactory;
-import org.apache.commons.jexl.JexlContext;
-import org.apache.commons.jexl.JexlHelper;
+import org.apache.commons.jexl2.Expression;
+import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.jexl2.JexlEngine;
+import org.apache.commons.jexl2.MapContext;
 
 /**
  * @author Sebastian Thomschke
  */
 public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 {
-	private static final Log  LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
+	private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
+
+	private static final JexlEngine jexl = new JexlEngine();
 
 	private final ObjectCache<String, Expression> expressionCache = new ObjectCache<String, Expression>();
 
@@ -42,11 +44,12 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 			Expression expr = expressionCache.get(expression);
 			if (expr == null)
 			{
-				expr = ExpressionFactory.createExpression(expression);
+				expr = jexl.createExpression(expression);
 				expressionCache.put(expression, expr);
 			}
-			final JexlContext ctx = JexlHelper.createContext();
-			ctx.setVars(values);
+
+			@SuppressWarnings("unchecked")
+			final JexlContext ctx = new MapContext((Map<String, Object>) values);
 
 			LOG.debug("Evaluating JEXL expression: {1}", expression);
 			return expr.evaluate(ctx);
@@ -66,9 +69,7 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }
