@@ -973,17 +973,17 @@ public class Person
   @Length(min=5, max=5)
   private String zipCode = "";
 
-  public void setAge(@FieldConstraints int age)
+  public void setAge(@AssertFieldConstraints int age)
   {
     this.age = age;
   }
 
-  public void setName(@FieldConstraints String name) 
+  public void setName(@AssertFieldConstraints String name) 
   {
     this.name = name;
   }
 
-  public void setZipCode(@FieldConstraints String zipCode) 
+  public void setZipCode(@AssertFieldConstraints String zipCode) 
   {
     this.zipCode = zipCode;
   }
