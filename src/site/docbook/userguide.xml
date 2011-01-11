@@ -1626,6 +1626,11 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     <itemizedlist>
 
 	  <listitem>
+        <para>Pinky</para>
+        <para><ulink url="https://github.com/pk11/pinky">https://github.com/pk11/pinky</ulink></para>
+      </listitem>  
+      
+	  <listitem>
         <para>JProvocateur</para>
         <para><ulink url="http://www.jprovocateur.org/">http://www.jprovocateur.org/</ulink></para>
       </listitem>  
