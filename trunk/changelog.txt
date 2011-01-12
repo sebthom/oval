@@ -5,6 +5,7 @@
 2010-??-?? v1.70
 ================
 * upgraded to Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, Commons JEXL 2.0.1, OGNL 3.0.1, Groovy 1.7.6
+- fixed [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
 
 2010-11-13 v1.61
 ================
