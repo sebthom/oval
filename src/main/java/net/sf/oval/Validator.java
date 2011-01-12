@@ -889,7 +889,7 @@ public class Validator implements IValidator
 						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
 			}
 			else if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
-				for (final Object item : ArrayUtils.arrayToList(valueToValidate))
+				for (final Object item : ArrayUtils.asList(valueToValidate))
 					checkConstraint(violations, check, validatedObject, item, context, profiles, true);
 		if (isContainerValue || !isContainer || isContainer
 				&& ArrayUtils.containsSame(targets, ConstraintTarget.CONTAINER))
