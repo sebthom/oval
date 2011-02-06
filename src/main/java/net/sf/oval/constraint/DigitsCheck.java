@@ -129,8 +129,13 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 			value = new BigDecimal(valueToValidate.toString());
 
 		final int valueScale = value.scale();
-		final int integerLen = value.precision() - valueScale;
+		final int integerLen;
+		if (BigDecimal.ZERO.compareTo(value) == 0)
+			integerLen = 1;
+		else
+			integerLen = value.precision() - valueScale;
 		final int fractionLen = valueScale > 0 ? valueScale : 0;
+
 		return integerLen <= maxInteger && integerLen >= minInteger && fractionLen <= maxFraction
 				&& fractionLen >= minFraction;
 	}
