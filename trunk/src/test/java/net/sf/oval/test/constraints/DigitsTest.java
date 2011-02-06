@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.oval.test.constraints;
 
+import java.math.BigDecimal;
+
 import net.sf.oval.constraint.DigitsCheck;
 
 /**
@@ -34,5 +36,7 @@ public class DigitsTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, 12.12, null, null));
 		assertFalse(check.isSatisfied(null, "12.123", null, null));
 		assertFalse(check.isSatisfied(null, 12.123, null, null));
+		assertTrue(check.isSatisfied(null, new BigDecimal("0.00"), null, null));
+		assertFalse(check.isSatisfied(null, new BigDecimal("0.000"), null, null));
 	}
 }
