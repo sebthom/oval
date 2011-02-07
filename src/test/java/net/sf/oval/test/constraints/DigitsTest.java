@@ -38,5 +38,7 @@ public class DigitsTest extends AbstractContraintsTest
 		assertFalse(check.isSatisfied(null, 12.123, null, null));
 		assertTrue(check.isSatisfied(null, new BigDecimal("0.00"), null, null));
 		assertFalse(check.isSatisfied(null, new BigDecimal("0.000"), null, null));
+		assertTrue(check.isSatisfied(null, new BigDecimal("0.10"), null, null));
+		assertFalse(check.isSatisfied(null, new BigDecimal("0.100"), null, null));
 	}
 }
