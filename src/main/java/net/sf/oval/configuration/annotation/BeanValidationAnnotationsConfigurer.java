@@ -261,7 +261,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			{
 				final String[] profiles = new String[groups.length];
 				for (int i = 0, l = groups.length; i < l; i++)
-					profiles[i] = groups.getClass().getName();
+					profiles[i] = groups[i].getName();
 				check.setProfiles(profiles);
 			}
 			checks.add(check);
