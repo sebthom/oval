@@ -196,7 +196,7 @@ public class XMLConfigurationTest extends TestCase
 		validateUser(new Validator(x));
 	}
 
-	private void validateUser(final Validator validator)
+	public void validateUser(final Validator validator)
 	{
 		final User usr = new User();
 
@@ -252,8 +252,8 @@ public class XMLConfigurationTest extends TestCase
 		usr.managerId = "%$$e3";
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$", violations.get(
-				0).getMessage());
+		assertEquals(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$",
+				violations.get(0).getMessage());
 
 		/*
 		 * check object constraints

@@ -8,6 +8,7 @@
 - fixed [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
 - fixed [ oval-Bugs-3173470 ] Bug in DigitsCheck
 - fixed [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
++ added convenience constructors to XMLConfigurer for easier Spring-based configuration
 
 2010-11-13 v1.61
 ================

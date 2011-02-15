@@ -309,6 +309,30 @@ public class XMLConfigurer implements Configurer
 		configureXStream();
 	}
 
+	public XMLConfigurer(final File xmlConfigFile) throws IOException
+	{
+		this();
+		fromXML(xmlConfigFile);
+	}
+
+	public XMLConfigurer(final InputStream xmlConfigStream)
+	{
+		this();
+		fromXML(xmlConfigStream);
+	}
+
+	public XMLConfigurer(final Reader xmlConfigReader)
+	{
+		this();
+		fromXML(xmlConfigReader);
+	}
+
+	public XMLConfigurer(final String xmlConfigAsString)
+	{
+		this();
+		fromXML(xmlConfigAsString);
+	}
+
 	public boolean addCheckInitializationListener(final CheckInitializationListener listener)
 	{
 		Assert.notNull("listener", "[listener] must not be null");
