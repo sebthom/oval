@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sf.oval.AbstractCheck;
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
 import net.sf.oval.ConstraintTarget;
@@ -355,6 +356,8 @@ public class XMLConfigurer implements Configurer
 			}, XStream.PRIORITY_VERY_LOW);
 		xStream.registerConverter(new ListConverter(xStream.getMapper()));
 		xStream.registerConverter(new AssertCheckConverter());
+
+		xStream.omitField(AbstractCheck.class, "messageVariablesUpToDate");
 
 		xStream.useAttributeFor(Class.class);
 		xStream.useAttributeFor(boolean.class);
