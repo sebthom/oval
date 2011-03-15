@@ -1472,6 +1472,14 @@ myConfigurer.addCheckInitializationListener(BeanInjectingCheckInitializationList
 Validator myValidator = new Validator(myConfigurer);]]></programlisting>
       	  </listitem>
       	  <listitem>
+           <para>enable annotation-based configuration in your Spring application context configuration:</para>
+           <programlisting language="xml"><![CDATA[<beans>
+
+  <context:annotation-config />
+
+</beans>]]></programlisting>
+          </listitem>
+      	  <listitem>
            <para>setup an SpringInjector bean in your Spring application context configuration:</para>
            <programlisting language="xml"><![CDATA[<beans>
 
