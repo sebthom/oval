@@ -14,6 +14,7 @@ package net.sf.oval.integration.spring;
 
 import net.sf.oval.Check;
 import net.sf.oval.configuration.CheckInitializationListener;
+import net.sf.oval.constraint.CheckWithCheck;
 
 /**
  * Injects Spring bean dependencies into {@link Check} instances.
@@ -34,5 +35,11 @@ public class BeanInjectingCheckInitializationListener implements CheckInitializa
 	public void onCheckInitialized(final Check check)
 	{
 		SpringInjector.get().inject(check);
+
+		if (check instanceof CheckWithCheck)
+		{
+			final CheckWithCheck checkWith = (CheckWithCheck) check;
+			SpringInjector.get().inject(checkWith.getSimpleCheck());
+		}
 	}
 }
