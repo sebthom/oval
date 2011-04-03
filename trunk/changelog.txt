@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2010-??-?? v1.70
+2011-04-?? v1.70
 ================
 * upgraded to AspectJ 1.6.10, Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, Commons JEXL 2.0.1, OGNL 3.0.1, Groovy 1.7.6
 - fixed [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
