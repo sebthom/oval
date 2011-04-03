@@ -10,6 +10,7 @@
 - fixed [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
 + added convenience constructors to XMLConfigurer for easier Spring-based configuration
 + added support for Spring dependencies being injected into SimpleCheck instances 
+- fixed [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
 
 2010-11-13 v1.61
 ================
