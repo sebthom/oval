@@ -9,7 +9,7 @@
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.70-SNAPSHOT</version>
+	<version>1.70</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 
