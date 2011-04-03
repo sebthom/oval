@@ -271,7 +271,7 @@ if(violations.size()>0)
 
       <para>Additional scripting languages can be registered via <command>Validator.addExpressionLanguage(String, ExpressionLanguage)</command>.</para>
     </section>
-
+    
     <section>
       <title>Declaring activation rules for constraints</title>
 
@@ -293,6 +293,20 @@ if(violations.size()>0)
 }]]></programlisting>
     </section>
 
+    <section>
+      <title>Recursive validation</title>
+
+      <para>By specifying the special constraint annotation @AssertValid you instruct OVal to ensure that all constraints
+      declared on the referenced object are satisfied too.</para>
+
+      <programlisting><![CDATA[public class BusinessObject
+{
+  @NotNull
+  @AssertValid
+  private Address address;
+}]]></programlisting>
+    </section>
+    
     <section>
       <title>Interpreting EJB3 JPA annotations</title>
 
@@ -1415,14 +1429,14 @@ v.validate(p);]]></programlisting>
     </section>
 
     <section>
-      <title>Spring integration</title>
+      <title>Spring framework integration</title>
 
       <section>
         <title>Spring Validation</title>
 
-        <para>The class <command>net.sf.oval.integration.spring.SpringValidator</command> OVal provides an implementation of Spring's
+        <para>The class <command>net.sf.oval.integration.spring.SpringValidator</command> provides an implementation of Spring's
         <command>org.springframework.validation.Validator</command> interface and thus can be used for 
-        <ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/validation.html">Spring Validation</ulink>.</para>
+        <ulink url="http://static.springsource.org/spring/docs/3.0.x/reference/validation.html">Spring Validation</ulink>.</para>
       </section>
 
       <section>
@@ -1455,7 +1469,7 @@ v.validate(p);]]></programlisting>
       
       <section>
       
-        <title>Using Spring beans in Check classes</title>
+        <title>Injecting Spring beans into constraint check classes</title>
       
         <para>To have Spring beans injected automatically into Check classes you need to:</para>
       
@@ -1488,6 +1502,27 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
 </beans>]]></programlisting>
           </listitem>
         </itemizedlist>
+      </section>
+      
+      <section>
+      
+        <title>Configuring OVal validator instances with Spring</title>
+      
+        <para>You can instantiate OVal validators with Spring like any other Spring managed bean.
+        Here is an example setting up a validator with XML based constraint configuration:</para>
+
+        <programlisting language="xml"><![CDATA[<beans>        
+  <bean id="validator" class="net.sf.oval.Validator"> 
+    <constructor-arg>
+      <list>
+        <bean class="net.sf.oval.configuration.xml.XMLConfigurer">
+           <constructor-arg type="java.io.InputStream" value="classpath:com/acme/OValConfiguration.xml" />
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+</beans>]]></programlisting>
       </section>
       
     </section>
