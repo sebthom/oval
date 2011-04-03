@@ -128,7 +128,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.java>1.5</version.java>
-		<version.aspectj>1.6.9</version.aspectj>
+		<version.aspectj>1.6.10</version.aspectj>
 	</properties>
 
 	<dependencies>
@@ -317,7 +317,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
-				<version>2.2.3</version>
+				<version>2.3</version>
 				<configuration>
 					<minSeverity>info</minSeverity>
 					<!--
