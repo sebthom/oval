@@ -21,6 +21,7 @@ import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.internal.util.ReflectionUtils;
 
@@ -102,6 +103,10 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 		if (valueToValidate == null && ignoreIfNull) return true;
 
 		final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName, parameterType);
+		if (method == null)
+			throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName
+					+ "(" + parameterType + ") not found. Is [" + parameterType
+					+ "] the correct value for [parameterType]?");
 		return ((Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate)).booleanValue();
 	}
 
