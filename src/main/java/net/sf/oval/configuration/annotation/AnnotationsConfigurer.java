@@ -101,7 +101,7 @@ public class AnnotationsConfigurer implements Configurer
 
 	public boolean addCheckInitializationListener(final CheckInitializationListener listener)
 	{
-		Assert.notNull("listener", "[listener] must not be null");
+		Assert.argumentNotNull("listener", "[listener] must not be null");
 		return listeners.add(listener);
 	}
 

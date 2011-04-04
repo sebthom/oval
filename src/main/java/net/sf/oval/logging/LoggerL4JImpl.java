@@ -32,7 +32,7 @@ public class LoggerL4JImpl implements Logger
 	 */
 	public LoggerL4JImpl(final String name) throws IllegalArgumentException
 	{
-		Assert.notNull("name", name);
+		Assert.argumentNotNull("name", name);
 		log4jLogger = org.apache.log4j.Logger.getLogger(name);
 	}
 

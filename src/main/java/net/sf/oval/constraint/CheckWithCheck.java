@@ -117,7 +117,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	public void setSimpleCheck(final Class< ? extends SimpleCheck> simpleCheckType) throws ReflectionException,
 			IllegalArgumentException
 	{
-		Assert.notNull("simpleCheckType", simpleCheckType);
+		Assert.argumentNotNull("simpleCheckType", simpleCheckType);
 
 		try
 		{
@@ -139,7 +139,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	 */
 	public void setSimpleCheck(final SimpleCheck simpleCheck) throws IllegalArgumentException
 	{
-		Assert.notNull("simpleCheck", simpleCheck);
+		Assert.argumentNotNull("simpleCheck", simpleCheck);
 
 		this.simpleCheck = simpleCheck;
 		requireMessageVariablesRecreation();

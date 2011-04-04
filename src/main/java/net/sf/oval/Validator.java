@@ -224,7 +224,7 @@ public class Validator implements IValidator
 	 */
 	public static void setCollectionFactory(final CollectionFactory factory) throws IllegalArgumentException
 	{
-		Assert.notNull("factory", factory);
+		Assert.argumentNotNull("factory", factory);
 		Validator.collectionFactory = factory;
 	}
 
@@ -233,7 +233,7 @@ public class Validator implements IValidator
 	 */
 	public static void setContextRenderer(final OValContextRenderer contextRenderer)
 	{
-		Assert.notNull("contextRenderer", contextRenderer);
+		Assert.argumentNotNull("contextRenderer", contextRenderer);
 		Validator.contextRenderer = contextRenderer;
 	}
 
@@ -242,7 +242,7 @@ public class Validator implements IValidator
 	 */
 	public static void setLoggerFactory(final LoggerFactory loggerFactory)
 	{
-		Assert.notNull("loggerFactory", loggerFactory);
+		Assert.argumentNotNull("loggerFactory", loggerFactory);
 		Log.setLoggerFactory(loggerFactory);
 	}
 
@@ -252,7 +252,7 @@ public class Validator implements IValidator
 	 */
 	public static void setMessageResolver(final MessageResolver messageResolver) throws IllegalArgumentException
 	{
-		Assert.notNull("messageResolver", messageResolver);
+		Assert.argumentNotNull("messageResolver", messageResolver);
 		Validator.messageResolver = messageResolver;
 	}
 
@@ -261,7 +261,7 @@ public class Validator implements IValidator
 	 */
 	public static void setMessageValueFormatter(final MessageValueFormatter formatter)
 	{
-		Assert.notNull("formatter", formatter);
+		Assert.argumentNotNull("formatter", formatter);
 		Validator.messageValueFormatter = formatter;
 	}
 
@@ -536,8 +536,8 @@ public class Validator implements IValidator
 	private ExpressionLanguage _addExpressionLanguage(final String languageId,
 			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
 	{
-		Assert.notNull("languageId", languageId);
-		Assert.notNull("expressionLanguage", expressionLanguage);
+		Assert.argumentNotNull("languageId", languageId);
+		Assert.argumentNotNull("expressionLanguage", expressionLanguage);
 
 		LOG.info("Expression language '{1}' registered: {2}", languageId, expressionLanguage);
 
@@ -745,8 +745,8 @@ public class Validator implements IValidator
 	 */
 	public void addChecks(final Class< ? > clazz, final Check... checks) throws IllegalArgumentException
 	{
-		Assert.notNull("clazz", clazz);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("clazz", clazz);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(clazz).addObjectChecks(checks);
 	}
@@ -760,8 +760,8 @@ public class Validator implements IValidator
 	 */
 	public void addChecks(final Field field, final Check... checks) throws IllegalArgumentException
 	{
-		Assert.notNull("field", field);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("field", field);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(field.getDeclaringClass()).addFieldChecks(field, checks);
 	}
@@ -777,8 +777,8 @@ public class Validator implements IValidator
 	public void addChecks(final Method invariantMethod, final Check... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		Assert.notNull("invariantMethod", invariantMethod);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("invariantMethod", invariantMethod);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(invariantMethod.getDeclaringClass()).addMethodReturnValueChecks(invariantMethod, TRUE, checks);
 	}
@@ -798,8 +798,8 @@ public class Validator implements IValidator
 	public void addConstraintSet(final ConstraintSet constraintSet, final boolean overwrite)
 			throws ConstraintSetAlreadyDefinedException, IllegalArgumentException
 	{
-		Assert.notNull("constraintSet", constraintSet);
-		Assert.notEmpty("constraintSet.id", constraintSet.getId());
+		Assert.argumentNotNull("constraintSet", constraintSet);
+		Assert.argumentNotEmpty("constraintSet.id", constraintSet.getId());
 
 		synchronized (constraintSetsById)
 		{
@@ -1048,7 +1048,7 @@ public class Validator implements IValidator
 	 */
 	public Check[] getChecks(final Class< ? > clazz) throws IllegalArgumentException
 	{
-		Assert.notNull("clazz", clazz);
+		Assert.argumentNotNull("clazz", clazz);
 
 		final ClassChecks cc = getClassChecks(clazz);
 
@@ -1064,7 +1064,7 @@ public class Validator implements IValidator
 	 */
 	public Check[] getChecks(final Field field) throws IllegalArgumentException
 	{
-		Assert.notNull("field", field);
+		Assert.argumentNotNull("field", field);
 
 		final ClassChecks cc = getClassChecks(field.getDeclaringClass());
 
@@ -1080,7 +1080,7 @@ public class Validator implements IValidator
 	 */
 	public Check[] getChecks(final Method method) throws IllegalArgumentException
 	{
-		Assert.notNull("method", method);
+		Assert.argumentNotNull("method", method);
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -1099,7 +1099,7 @@ public class Validator implements IValidator
 	protected ClassChecks getClassChecks(final Class< ? > clazz) throws IllegalArgumentException,
 			InvalidConfigurationException, ReflectionException
 	{
-		Assert.notNull("clazz", clazz);
+		Assert.argumentNotNull("clazz", clazz);
 
 		synchronized (checksByClass)
 		{
@@ -1141,7 +1141,7 @@ public class Validator implements IValidator
 	public ConstraintSet getConstraintSet(final String constraintSetId) throws InvalidConfigurationException,
 			IllegalArgumentException
 	{
-		Assert.notNull("constraintSetsById", constraintSetsById);
+		Assert.argumentNotNull("constraintSetsById", constraintSetsById);
 		synchronized (constraintSetsById)
 		{
 			ConstraintSet cs = constraintSetsById.get(constraintSetId);
@@ -1179,7 +1179,7 @@ public class Validator implements IValidator
 	public ExpressionLanguage getExpressionLanguage(final String languageId) throws IllegalArgumentException,
 			ExpressionLanguageNotAvailableException
 	{
-		Assert.notNull("languageId", languageId);
+		Assert.argumentNotNull("languageId", languageId);
 
 		ExpressionLanguage el = expressionLanguages.get(languageId);
 
@@ -1227,7 +1227,7 @@ public class Validator implements IValidator
 	 */
 	protected boolean isCurrentlyValidated(final Object object)
 	{
-		Assert.notNull("object", object);
+		Assert.argumentNotNull("object", object);
 		return currentlyValidatedObjects.get().getLast().contains(object);
 	}
 
@@ -1239,7 +1239,7 @@ public class Validator implements IValidator
 	 */
 	public boolean isProfileEnabled(final String profileId)
 	{
-		Assert.notNull("profileId", profileId);
+		Assert.argumentNotNull("profileId", profileId);
 		if (isProfilesFeatureUsed)
 		{
 			if (isAllProfilesEnabledByDefault) return !disabledProfiles.contains(profileId);
@@ -1274,8 +1274,8 @@ public class Validator implements IValidator
 	 */
 	public void removeChecks(final Class< ? > clazz, final Check... checks) throws IllegalArgumentException
 	{
-		Assert.notNull("clazz", clazz);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("clazz", clazz);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(clazz).removeObjectChecks(checks);
 	}
@@ -1289,8 +1289,8 @@ public class Validator implements IValidator
 	 */
 	public void removeChecks(final Field field, final Check... checks) throws IllegalArgumentException
 	{
-		Assert.notNull("field", field);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("field", field);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(field.getDeclaringClass()).removeFieldChecks(field, checks);
 	}
@@ -1304,8 +1304,8 @@ public class Validator implements IValidator
 	 */
 	public void removeChecks(final Method getter, final Check... checks) throws IllegalArgumentException
 	{
-		Assert.notNull("getter", getter);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("getter", getter);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(getter.getDeclaringClass()).removeMethodReturnValueChecks(getter, checks);
 	}
@@ -1318,7 +1318,7 @@ public class Validator implements IValidator
 	 */
 	public ConstraintSet removeConstraintSet(final String id) throws IllegalArgumentException
 	{
-		Assert.notNull("id", id);
+		Assert.argumentNotNull("id", id);
 
 		synchronized (constraintSetsById)
 		{
@@ -1347,7 +1347,7 @@ public class Validator implements IValidator
 	 */
 	public void reportConstraintViolation(final ConstraintViolation constraintViolation)
 	{
-		Assert.notNull("constraintViolation", constraintViolation);
+		Assert.argumentNotNull("constraintViolation", constraintViolation);
 		if (currentViolations.get().size() == 0)
 			throw new IllegalStateException("No active validation cycle found for the current thread.");
 		currentViolations.get().getLast().add(constraintViolation);
@@ -1377,7 +1377,7 @@ public class Validator implements IValidator
 	public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException,
 			ValidationFailedException
 	{
-		Assert.notNull("validatedObject", validatedObject);
+		Assert.argumentNotNull("validatedObject", validatedObject);
 
 		// create required objects for this validation cycle
 		final List<ConstraintViolation> violations = collectionFactory.createList();
@@ -1403,7 +1403,7 @@ public class Validator implements IValidator
 	public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles)
 			throws IllegalArgumentException, ValidationFailedException
 	{
-		Assert.notNull("validatedObject", validatedObject);
+		Assert.argumentNotNull("validatedObject", validatedObject);
 
 		// create required objects for this validation cycle
 		final List<ConstraintViolation> violations = collectionFactory.createList();
@@ -1429,8 +1429,8 @@ public class Validator implements IValidator
 	public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException
 	{
-		Assert.notNull("validatedObject", validatedObject);
-		Assert.notNull("validatedField", validatedField);
+		Assert.argumentNotNull("validatedObject", validatedObject);
+		Assert.argumentNotNull("validatedField", validatedField);
 
 		// create required objects for this validation cycle
 		final List<ConstraintViolation> violations = collectionFactory.createList();
@@ -1475,7 +1475,7 @@ public class Validator implements IValidator
 	protected void validateInvariants(final Object validatedObject, final List<ConstraintViolation> violations,
 			final String[] profiles) throws IllegalArgumentException, ValidationFailedException
 	{
-		Assert.notNull("validatedObject", validatedObject);
+		Assert.argumentNotNull("validatedObject", validatedObject);
 
 		currentlyValidatedObjects.get().getLast().add(validatedObject);
 		if (validatedObject instanceof Class< ? >)

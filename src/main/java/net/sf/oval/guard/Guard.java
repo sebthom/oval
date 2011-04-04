@@ -203,8 +203,8 @@ public class Guard extends Validator
 	public void addCheckExclusions(final Constructor< ? > ctor, final int paramIndex,
 			final CheckExclusion... exclusions) throws IllegalArgumentException, InvalidConfigurationException
 	{
-		Assert.notNull("ctor", ctor);
-		Assert.notEmpty("exclusions", exclusions);
+		Assert.argumentNotNull("ctor", ctor);
+		Assert.argumentNotEmpty("exclusions", exclusions);
 
 		getClassChecks(ctor.getDeclaringClass()).addConstructorParameterCheckExclusions(ctor, paramIndex, exclusions);
 	}
@@ -221,8 +221,8 @@ public class Guard extends Validator
 	public void addCheckExclusions(final Method method, final int paramIndex, final CheckExclusion... exclusions)
 			throws IllegalArgumentException, InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("exclusions", exclusions);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("exclusions", exclusions);
 
 		getClassChecks(method.getDeclaringClass()).addMethodParameterCheckExclusions(method, paramIndex, exclusions);
 	}
@@ -240,8 +240,8 @@ public class Guard extends Validator
 	public void addChecks(final Constructor< ? > ctor, final int paramIndex, final Check... checks)
 			throws IllegalArgumentException, InvalidConfigurationException
 	{
-		Assert.notNull("ctor", ctor);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("ctor", ctor);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(ctor.getDeclaringClass()).addConstructorParameterChecks(ctor, paramIndex, checks);
 	}
@@ -259,8 +259,8 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final Check... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).addMethodReturnValueChecks(method, null, checks);
 	}
@@ -277,8 +277,8 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final int paramIndex, final Check... checks)
 			throws IllegalArgumentException, InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).addMethodParameterChecks(method, paramIndex, checks);
 	}
@@ -294,8 +294,8 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final PostCheck... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).addMethodPostChecks(method, checks);
 	}
@@ -311,8 +311,8 @@ public class Guard extends Validator
 	public void addChecks(final Method method, final PreCheck... checks) throws IllegalArgumentException,
 			InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).addMethodPreChecks(method, checks);
 	}
@@ -326,7 +326,7 @@ public class Guard extends Validator
 	 */
 	public boolean addListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
+		Assert.argumentNotNull("listener", listener);
 
 		isListenersFeatureUsed = true;
 		return listeners.add(listener);
@@ -343,8 +343,8 @@ public class Guard extends Validator
 	public boolean addListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
-		Assert.notNull("guardedClass", guardedClass);
+		Assert.argumentNotNull("listener", listener);
+		Assert.argumentNotNull("guardedClass", guardedClass);
 
 		isListenersFeatureUsed = true;
 
@@ -371,8 +371,8 @@ public class Guard extends Validator
 	 */
 	public boolean addListener(final ConstraintsViolatedListener listener, final Object guardedObject)
 	{
-		Assert.notNull("listener", listener);
-		Assert.notNull("guardedObject", guardedObject);
+		Assert.argumentNotNull("listener", listener);
+		Assert.argumentNotNull("guardedObject", guardedObject);
 
 		isListenersFeatureUsed = true;
 
@@ -452,7 +452,7 @@ public class Guard extends Validator
 	public ProbeModeListener disableProbeMode(final Object guardedObject) throws IllegalArgumentException,
 			IllegalStateException
 	{
-		Assert.notNull("guardedObject", guardedObject);
+		Assert.argumentNotNull("guardedObject", guardedObject);
 
 		return objectsInProbeMode.get().remove(guardedObject);
 	}
@@ -469,7 +469,7 @@ public class Guard extends Validator
 	 */
 	public void enableProbeMode(final Object guardedObject) throws IllegalArgumentException, IllegalStateException
 	{
-		Assert.notNull("guardedObject", guardedObject);
+		Assert.argumentNotNull("guardedObject", guardedObject);
 
 		if (guardedObject instanceof Class< ? >)
 			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {1}", guardedObject);
@@ -490,7 +490,7 @@ public class Guard extends Validator
 	 */
 	public Check[] getChecks(final Method method, final int paramIndex) throws InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
+		Assert.argumentNotNull("method", method);
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -509,7 +509,7 @@ public class Guard extends Validator
 	 */
 	public PostCheck[] getChecksPost(final Method method) throws IllegalArgumentException
 	{
-		Assert.notNull("method", method);
+		Assert.argumentNotNull("method", method);
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -525,7 +525,7 @@ public class Guard extends Validator
 	 */
 	public PreCheck[] getChecksPre(final Method method) throws IllegalArgumentException
 	{
-		Assert.notNull("method", method);
+		Assert.argumentNotNull("method", method);
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
@@ -870,7 +870,7 @@ public class Guard extends Validator
 	 */
 	public boolean hasListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
+		Assert.argumentNotNull("listener", listener);
 
 		return listeners.contains(listener);
 	}
@@ -884,8 +884,8 @@ public class Guard extends Validator
 	public boolean hasListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
-		Assert.notNull("guardedClass", guardedClass);
+		Assert.argumentNotNull("listener", listener);
+		Assert.argumentNotNull("guardedClass", guardedClass);
 
 		final Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedClass);
 
@@ -903,8 +903,8 @@ public class Guard extends Validator
 	public boolean hasListener(final ConstraintsViolatedListener listener, final Object guardedObject)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
-		Assert.notNull("guardedObject", guardedObject);
+		Assert.argumentNotNull("listener", listener);
+		Assert.argumentNotNull("guardedObject", guardedObject);
 
 		final Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
 
@@ -1033,8 +1033,8 @@ public class Guard extends Validator
 	public void removeCheckExclusions(final Constructor< ? > ctor, final int paramIndex,
 			final CheckExclusion... exclusions) throws InvalidConfigurationException
 	{
-		Assert.notNull("ctor", ctor);
-		Assert.notEmpty("exclusions", exclusions);
+		Assert.argumentNotNull("ctor", ctor);
+		Assert.argumentNotEmpty("exclusions", exclusions);
 
 		getClassChecks(ctor.getDeclaringClass())
 				.removeConstructorParameterCheckExclusions(ctor, paramIndex, exclusions);
@@ -1051,8 +1051,8 @@ public class Guard extends Validator
 	public void removeCheckExclusions(final Method method, final int paramIndex, final CheckExclusion... exclusions)
 			throws InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("exclusions", exclusions);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("exclusions", exclusions);
 
 		getClassChecks(method.getDeclaringClass()).removeMethodParameterCheckExclusions(method, paramIndex, exclusions);
 	}
@@ -1068,8 +1068,8 @@ public class Guard extends Validator
 	public void removeChecks(final Constructor< ? > ctor, final int paramIndex, final Check... checks)
 			throws InvalidConfigurationException
 	{
-		Assert.notNull("ctor", ctor);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("ctor", ctor);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(ctor.getDeclaringClass()).removeConstructorParameterChecks(ctor, paramIndex, checks);
 	}
@@ -1087,8 +1087,8 @@ public class Guard extends Validator
 	public void removeChecks(final Method method, final int paramIndex, final Check... checks)
 			throws InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).removeMethodParameterChecks(method, paramIndex, checks);
 	}
@@ -1103,8 +1103,8 @@ public class Guard extends Validator
 	 */
 	public void removeChecks(final Method method, final PostCheck... checks) throws InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).removeMethodPostChecks(method, checks);
 	}
@@ -1119,8 +1119,8 @@ public class Guard extends Validator
 	 */
 	public void removeChecks(final Method method, final PreCheck... checks) throws InvalidConfigurationException
 	{
-		Assert.notNull("method", method);
-		Assert.notEmpty("checks", checks);
+		Assert.argumentNotNull("method", method);
+		Assert.argumentNotEmpty("checks", checks);
 
 		getClassChecks(method.getDeclaringClass()).removeMethodPreChecks(method, checks);
 	}
@@ -1134,7 +1134,7 @@ public class Guard extends Validator
 	 */
 	public boolean removeListener(final ConstraintsViolatedListener listener) throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
+		Assert.argumentNotNull("listener", listener);
 
 		return listeners.remove(listener);
 	}
@@ -1150,8 +1150,8 @@ public class Guard extends Validator
 	public boolean removeListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
-		Assert.notNull("guardedClass", guardedClass);
+		Assert.argumentNotNull("listener", listener);
+		Assert.argumentNotNull("guardedClass", guardedClass);
 
 		final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(guardedClass);
 
@@ -1169,8 +1169,8 @@ public class Guard extends Validator
 	public boolean removeListener(final ConstraintsViolatedListener listener, final Object guardedObject)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("listener", listener);
-		Assert.notNull("guardedObject", guardedObject);
+		Assert.argumentNotNull("listener", listener);
+		Assert.argumentNotNull("guardedObject", guardedObject);
 
 		final Set<ConstraintsViolatedListener> currentListeners = listenersByObject.get(guardedObject);
 
@@ -1216,7 +1216,7 @@ public class Guard extends Validator
 	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
 			throws IllegalArgumentException
 	{
-		Assert.notNull("parameterNameResolver", parameterNameResolver);
+		Assert.argumentNotNull("parameterNameResolver", parameterNameResolver);
 
 		this.parameterNameResolver.setDelegate(parameterNameResolver);
 	}

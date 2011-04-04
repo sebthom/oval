@@ -28,7 +28,7 @@ public class LoggerSLF4JImpl implements Logger
 	 */
 	public LoggerSLF4JImpl(final String name) throws IllegalArgumentException
 	{
-		Assert.notNull("name", name);
+		Assert.argumentNotNull("name", name);
 		slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
 	}
 
