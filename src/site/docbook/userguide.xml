@@ -1304,7 +1304,7 @@ Guard guard = new Guard(xmlConfigurer);]]></programlisting>
 	<programlisting language="xml"><![CDATA[<?xml version="1.0" ?>
 <oval
   xmlns="http://oval.sf.net/oval-configuration"
-  xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://oval.sf.net/oval-configuration http://oval.sourceforge.net/oval-configuration.xsd"
 >
   <!-- define a constraint set -->
