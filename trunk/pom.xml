@@ -388,12 +388,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<execution>
 						<phase>generate-sources</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<copy todir="${project.build.directory}">
 									<fileset dir="${basedir}" includes="README.txt" />
 								</copy>
 								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
