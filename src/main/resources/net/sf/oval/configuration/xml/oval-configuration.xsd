@@ -24,12 +24,22 @@
 		***************************
 	-->
 	<simpleType name="javaIdentifier">
+		<annotation>
+			<documentation>
+				http://stackoverflow.com/questions/5205339/regular-expression-matching-fully-qualified-java-classes
+			</documentation>
+		</annotation>
 		<restriction base="string">
 			<pattern value="[\p{L}_$]+[\p{L}\p{N}_$]*" />
 		</restriction>
 	</simpleType>
 
 	<simpleType name="javaFQIdentifier">
+		<annotation>
+			<documentation>
+				http://stackoverflow.com/questions/5205339/regular-expression-matching-fully-qualified-java-classes
+			</documentation>
+		</annotation>
 		<restriction base="string">
 			<pattern value="([\p{L}_$][\p{L}\p{N}_$]*\.)*[\p{L}_$][\p{L}\p{N}_$]*" />
 		</restriction>
