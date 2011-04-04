@@ -1,28 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!-- XSD for OVal -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://oval.sourceforge.net/oval-configuration"
-	xmlns:tns="http://oval.sourceforge.net/oval-configuration">
+<!-- XSD for OVal -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://oval.sf.net/oval-configuration"
+	xmlns:tns="http://oval.sf.net/oval-configuration">
 	<!--
-	*************************** 
-	top-level configuration element 
-	***************************
+		***************************
+		top-level configuration element
+		***************************
 	-->
 	<element name="oval">
 		<annotation>
 			<documentation>The oval element is the root of the descriptor.</documentation>
-		</annotation>
-		<complexType>
-			<choice minOccurs="0" maxOccurs="unbounded">
-				<element name="class" type="tns:Class" />
-				<element name="constraintSet" type="tns:ConstraintSet" />
-			</choice>
-		</complexType>
+			<complexType>
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="class" type="tns:Class" />
+					<element name="constraintSet" type="tns:ConstraintSet" />
+				</choice>
+			</complexType>
 	</element>
 
 	<!--
-	*************************** 
-	abstract types
-	***************************
+		***************************
+		supporting types
+		***************************
+	-->
+	<simpleType name="javaIdentifier">
+		<restriction base="string">
+			<pattern value="[\p{L}_$]+[\p{L}\p{N}_$]*" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="javaFQIdentifier">
+		<restriction base="string">
+			<pattern value="([\p{L}_$][\p{L}\p{N}_$]*\.)*[\p{L}_$][\p{L}\p{N}_$]*" />
+		</restriction>
+	</simpleType>
+
+	<!--
+		***************************
+		abstract types
+		***************************
 	-->
 	<complexType name="ConfigurationElement" abstract="true">
 		<attribute name="overwrite" use="optional" type="boolean" />
@@ -131,9 +147,9 @@
 	</complexType>
 
 	<!--
-	*************************** 
-	shared elements
-	***************************
+		***************************
+		shared elements
+		***************************
 	-->
 	<complexType name="ConstraintSet">
 		<annotation>
@@ -168,9 +184,9 @@
 	</simpleType>
 
 	<!--
-	*************************** 
-	elements with constraints
-	***************************
+		***************************
+		elements with constraints
+		***************************
 	-->
 	<complexType name="Class">
 		<annotation>
@@ -221,7 +237,7 @@
 							documentation function</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="type" use="required" type="string">
+				<attribute name="type" use="required" type="tns:javaFQIdentifier">
 					<annotation>
 						<documentation source="java:java.lang.Class">The fully qualified name of the class</documentation>
 					</annotation>
@@ -237,7 +253,7 @@
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElementWithConstraints">
-				<attribute name="name" use="required" type="QName" />
+				<attribute name="name" use="required" type="tns:javaIdentifier" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -262,10 +278,8 @@
 	<complexType name="Method">
 		<annotation>
 			<documentation>
-				Constraints configuration for a method.
-				To identify the correct method you are required to list all
-				parameters,
-				including parameters you are not intending to specify constraints for.
+				Constraints configuration for a method. To identify the correct method you are required to list all
+				parameters, including parameters you are not intending to specify constraints for.
             </documentation>
 		</annotation>
 		<complexContent>
@@ -276,7 +290,7 @@
 					<element name="returnValue" type="tns:ReturnValue" minOccurs="0" maxOccurs="1" />
 					<element name="postExecution" type="tns:PostExecution" minOccurs="0" maxOccurs="1" />
 				</sequence>
-				<attribute name="name" use="required" type="QName" />
+				<attribute name="name" use="required" type="tns:javaIdentifier" />
 				<attribute name="isInvariant" use="optional" type="boolean" default="false" />
 			</extension>
 		</complexContent>
@@ -292,7 +306,7 @@
 				<sequence>
 					<element name="nullable" minOccurs="0" maxOccurs="unbounded" type="tns:Nullable" />
 				</sequence>
-				<attribute name="type" use="required" type="string" />
+				<attribute name="type" use="required" type="tns:javaFQIdentifier" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -345,9 +359,9 @@
 	</complexType>
 
 	<!--
-	*************************** 
-	constraint elements
-	***************************
+		***************************
+		constraint elements
+		***************************
 	-->
 	<complexType name="Pre" mixed="true">
 		<annotation>
@@ -458,8 +472,8 @@
 		</annotation>
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles">
-				<attribute name="fieldName" type="string" use="required" />
-				<attribute name="declaringClass" type="string" use="required" />
+				<attribute name="fieldName" type="tns:javaIdentifier" use="required" />
+				<attribute name="declaringClass" type="tns:javaFQIdentifier" use="required" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -544,7 +558,7 @@
 				Name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck
             </documentation>
 		</annotation>
-		<attribute name="class" type="string" />
+		<attribute name="class" type="tns:javaFQIdentifier" />
 	</complexType>
 	<complexType name="DateRange" mixed="true">
 		<annotation>
@@ -605,8 +619,8 @@
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
-				<attribute name="declaringClass" type="string" use="optional" />
-				<attribute name="fieldName" type="string" use="required" />
+				<attribute name="declaringClass" type="tns:javaFQIdentifier" use="optional" />
+				<attribute name="fieldName" type="tns:javaIdentifier" use="required" />
 				<attribute name="useGetter" type="boolean" use="required" />
 			</extension>
 		</complexContent>
@@ -687,7 +701,7 @@
 			<element name="types">
 				<complexType>
 					<sequence minOccurs="1" maxOccurs="unbounded">
-						<element name="java-type" type="string" />
+						<element name="java-type" type="tns:javaFQIdentifier" />
 					</sequence>
 				</complexType>
 			</element>
@@ -910,8 +924,8 @@
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
-				<attribute name="fieldName" type="string" use="required" />
-				<attribute name="declaringClass" type="string" use="optional" />
+				<attribute name="fieldName" type="tns:javaIdentifier" use="required" />
+				<attribute name="declaringClass" type="tns:javaFQIdentifier" use="optional" />
 				<attribute name="useGetter" type="boolean" use="required" />
 			</extension>
 		</complexContent>
@@ -1037,16 +1051,16 @@
 		<complexContent>
 			<extension base="tns:Constraint">
 				<attribute name="ignoreIfNull" type="boolean" use="optional" />
-				<attribute name="methodName" type="string" use="required" />
-				<attribute name="parameterType" type="string" use="required" />
+				<attribute name="methodName" type="tns:javaIdentifier" use="required" />
+				<attribute name="parameterType" type="tns:javaFQIdentifier" use="required" />
 			</extension>
 		</complexContent>
 	</complexType>
 
 	<!--
-	*************************** 
-	constraint exclusion elements
-	***************************
+		***************************
+		constraint exclusion elements
+		***************************
 	-->
 	<complexType name="Nullable" mixed="true">
 		<annotation>
