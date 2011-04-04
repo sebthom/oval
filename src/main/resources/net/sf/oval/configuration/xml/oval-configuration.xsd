@@ -10,12 +10,13 @@
 	<element name="oval">
 		<annotation>
 			<documentation>The oval element is the root of the descriptor.</documentation>
-			<complexType>
-				<choice minOccurs="0" maxOccurs="unbounded">
-					<element name="class" type="tns:Class" />
-					<element name="constraintSet" type="tns:ConstraintSet" />
-				</choice>
-			</complexType>
+		</annotation>
+		<complexType>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="class" type="tns:Class" />
+				<element name="constraintSet" type="tns:ConstraintSet" />
+			</choice>
+		</complexType>
 	</element>
 
 	<!--
