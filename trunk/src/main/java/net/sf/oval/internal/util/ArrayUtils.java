@@ -32,8 +32,6 @@ public final class ArrayUtils
 	 */
 	public static <T> int addAll(final Collection<T> collection, final T... elements) throws IllegalArgumentException
 	{
-		Assert.notNull("collection", collection);
-
 		if (elements == null) return 0;
 
 		int count = 0;
@@ -44,8 +42,6 @@ public final class ArrayUtils
 
 	public static List< ? > asList(final Object array)
 	{
-		Assert.notNull("array", array);
-
 		if (array instanceof Object[])
 		{
 			final Object[] arrayCasted = (Object[]) array;
@@ -123,8 +119,6 @@ public final class ArrayUtils
 
 	public static <T> List<T> asList(final T[] array)
 	{
-		Assert.notNull("array", array);
-
 		final List<T> result = new ArrayList<T>(array.length);
 		Collections.addAll(result, array);
 		return result;
@@ -132,8 +126,6 @@ public final class ArrayUtils
 
 	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
 	{
-		Assert.notNull("theArray", theArray);
-
 		for (final T t : theArray)
 		{
 			if (t == theItem) return true;
@@ -144,8 +136,6 @@ public final class ArrayUtils
 
 	public static <T> boolean containsSame(final T[] theArray, final T theItem)
 	{
-		Assert.notNull("theArray", theArray);
-
 		for (final T t : theArray)
 			if (t == theItem) return true;
 		return false;

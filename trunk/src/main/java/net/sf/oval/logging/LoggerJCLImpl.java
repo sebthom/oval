@@ -31,7 +31,7 @@ public class LoggerJCLImpl implements Logger
 	 */
 	public LoggerJCLImpl(final String name) throws IllegalArgumentException
 	{
-		Assert.notNull("name", name);
+		Assert.argumentNotNull("name", name);
 
 		jclLoggger = LogFactory.getLog(name);
 	}

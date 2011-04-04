@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.logging.Logger;
 import net.sf.oval.logging.LoggerFactory;
@@ -34,19 +33,11 @@ public final class Log
 	 */
 	private static final Map<String, Log> LOG_REGISTRY = new HashMap<String, Log>(32);
 
-	public static Log getLog(final Class< ? > clazz) throws IllegalArgumentException
+	public static synchronized Log getLog(final Class< ? > clazz) throws IllegalArgumentException
 	{
-		Assert.notNull("clazz", clazz);
-
-		return getLog(clazz.getName());
-	}
-
-	public static synchronized Log getLog(final String name) throws IllegalArgumentException
-	{
-		Assert.notNull("name", name);
-
-		Log log = LOG_REGISTRY.get(name);
-		if (log == null) log = new Log(loggerFactory.createLogger(name));
+		final String name = clazz.getName();
+		final Log log = LOG_REGISTRY.get(name);
+		if (log == null) return new Log(loggerFactory.createLogger(name));
 		return log;
 	}
 
@@ -66,8 +57,6 @@ public final class Log
 	 */
 	public static void setLoggerFactory(final LoggerFactory loggerFactory) throws IllegalArgumentException
 	{
-		Assert.notNull("loggerFactory", loggerFactory);
-
 		synchronized (LOG_REGISTRY)
 		{
 			Log.loggerFactory = loggerFactory;
@@ -281,8 +270,6 @@ public final class Log
 
 	private void setLogger(final Logger logger)
 	{
-		Assert.notNull("logger", logger);
-
 		this.logger = logger;
 	}
 

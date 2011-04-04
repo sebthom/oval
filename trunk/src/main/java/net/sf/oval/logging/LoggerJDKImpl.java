@@ -32,7 +32,7 @@ public class LoggerJDKImpl implements Logger
 	 */
 	public LoggerJDKImpl(final String name) throws IllegalArgumentException
 	{
-		Assert.notNull("name", name);
+		Assert.argumentNotNull("name", name);
 
 		this.name = name;
 		jdkLogger = java.util.logging.Logger.getLogger(name);
