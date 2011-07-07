@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.ObjectCache;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -27,7 +28,9 @@ import ognl.OgnlException;
  */
 public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 {
-	private static final Log  LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
+	private static final Log LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
+
+	private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>();
 
 	/**
 	 * {@inheritDoc}
@@ -39,12 +42,17 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 			final OgnlContext ctx = (OgnlContext) Ognl.createDefaultContext(null);
 
 			for (final Entry<String, ? > entry : values.entrySet())
-			{
 				ctx.put(entry.getKey(), entry.getValue());
-			}
 
 			LOG.debug("Evaluating OGNL expression: {1}", expression);
-			return Ognl.getValue(expression, ctx);
+
+			Object expr = expressionCache.get(expression);
+			if (expr == null)
+			{
+				expr = Ognl.parseExpression(expression);
+				expressionCache.put(expression, expr);
+			}
+			return Ognl.getValue(expr, ctx);
 		}
 		catch (final OgnlException ex)
 		{
@@ -61,9 +69,7 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }
