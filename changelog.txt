@@ -4,8 +4,8 @@
 
 2011-??-?? v1.71
 ================
-
 * upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.2, Groovy 1.8.0
++ added caching of compiled OGNL expressions
 
 2011-04-05 v1.70
 ================
