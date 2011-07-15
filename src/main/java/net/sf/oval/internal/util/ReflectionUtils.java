@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -464,13 +464,14 @@ public final class ReflectionUtils
 	 * @return the return value of the invoked method
 	 * @throws InvokingMethodFailedException
 	 */
-	public static Object invokeMethod(final Method method, final Object obj, final Object... args)
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args)
 			throws InvokingMethodFailedException, ConstraintsViolatedException
 	{
 		try
 		{
 			if (!method.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(method));
-			return method.invoke(obj, args);
+			return (T) method.invoke(obj, args);
 		}
 		catch (final Exception ex)
 		{
