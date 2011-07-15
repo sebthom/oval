@@ -13,7 +13,7 @@
  *******************************************************************************/
 package net.sf.oval.configuration.annotation;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -257,6 +257,13 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 
 		if (check != null)
 		{
+			final Method getMessage = ReflectionUtils.getMethod(annotation.getClass(), "message", (Class< ? >[]) null);
+			if (getMessage != null)
+			{
+				final String message = ReflectionUtils.invokeMethod(getMessage, annotation, (Object[]) null);
+				if (message != null && !message.startsWith("javax.validation.constraints.")) check.setMessage(message);
+			}
+
 			if (groups != null && groups.length > 0)
 			{
 				final String[] profiles = new String[groups.length];
