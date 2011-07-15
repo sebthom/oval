@@ -71,8 +71,12 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 
 		// check if the value is a Calendar
 		if (valueToValidate instanceof Calendar) // return ((Calendar) value).getTime().after(new Date());
+		{
+			System.out.println("****************");
+			System.out.println(now);
+			System.out.println(((Calendar) valueToValidate).getTime().getTime());
 			return ((Calendar) valueToValidate).getTime().getTime() > now;
-
+		}
 		// see if we can extract a date based on the object's String representation
 		final String stringValue = valueToValidate.toString();
 		try

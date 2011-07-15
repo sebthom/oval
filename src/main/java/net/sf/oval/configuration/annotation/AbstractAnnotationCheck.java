@@ -47,7 +47,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		final Method getMessage = ReflectionUtils.getMethod(constraintClazz, "message", (Class< ? >[]) null);
 		if (getMessage == null)
-			LOG.debug("Cannot determine constraint error message based on annotation {1} since attribtue message() is not defined.", constraintClazz.getName());
+			LOG.debug(
+					"Cannot determine constraint error message based on annotation {1} since attribtue message() is not defined.",
+					constraintClazz.getName());
 		else
 			try
 			{
@@ -73,7 +75,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		final Method getAppliesTo = ReflectionUtils.getMethod(constraintClazz, "appliesTo", (Class< ? >[]) null);
 		if (getAppliesTo == null)
-			LOG.debug("Cannot determine constraint targets based on annotation {1} since attribtue appliesTo() is not defined.", constraintClazz.getName());
+			LOG.debug(
+					"Cannot determine constraint targets based on annotation {1} since attribtue appliesTo() is not defined.",
+					constraintClazz.getName());
 		else
 			try
 			{
@@ -89,7 +93,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		final Method getErrorCode = ReflectionUtils.getMethod(constraintClazz, "errorCode", (Class< ? >[]) null);
 		if (getErrorCode == null)
-			LOG.debug("Cannot determine constraint error code based on annotation {1} since attribtue errorCode() is not defined.", constraintClazz.getName());
+			LOG.debug(
+					"Cannot determine constraint error code based on annotation {1} since attribtue errorCode() is not defined.",
+					constraintClazz.getName());
 		else
 			try
 			{
@@ -114,7 +120,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		final Method getSeverity = ReflectionUtils.getMethod(constraintClazz, "severity", (Class< ? >[]) null);
 		if (getSeverity == null)
-			LOG.debug("Cannot determine constraint severity based on annotation {1} since attribtue severity() is not defined.", constraintClazz.getName());
+			LOG.debug(
+					"Cannot determine constraint severity based on annotation {1} since attribtue severity() is not defined.",
+					constraintClazz.getName());
 		else
 			try
 			{
@@ -130,7 +138,9 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 		 */
 		final Method getProfiles = ReflectionUtils.getMethod(constraintClazz, "profiles", (Class< ? >[]) null);
 		if (getProfiles == null)
-			LOG.debug("Cannot determine constraint profiles based on annotation {1} since attribtue profiles() is not defined.", constraintClazz.getName());
+			LOG.debug(
+					"Cannot determine constraint profiles based on annotation {1} since attribtue profiles() is not defined.",
+					constraintClazz.getName());
 		else
 			try
 			{
@@ -142,11 +152,31 @@ public abstract class AbstractAnnotationCheck<ConstraintAnnotation extends Annot
 			}
 
 		/*
+		 * Retrieve the profiles value from the constraint annotation via reflection.
+		 */
+		final Method getTarget = ReflectionUtils.getMethod(constraintClazz, "target", (Class< ? >[]) null);
+		if (getTarget == null)
+			LOG.debug(
+					"Cannot determine constraint target based on annotation {1} since attribtue target() is not defined.",
+					constraintClazz.getName());
+		else
+			try
+			{
+				setTarget((String) getTarget.invoke(constraintAnnotation, (Object[]) null));
+			}
+			catch (final Exception ex)
+			{
+				LOG.warn("Cannot determine constraint target based on annotation {1}", constraintClazz.getName(), ex);
+			}
+
+		/*
 		 * Retrieve the when formula from the constraint annotation via reflection.
 		 */
 		final Method getWhen = ReflectionUtils.getMethod(constraintClazz, "when", (Class< ? >[]) null);
 		if (getWhen == null)
-			LOG.debug("Cannot determine constraint when formula based on annotation {1} since attribtue when() is not defined.", constraintClazz.getName());
+			LOG.debug(
+					"Cannot determine constraint when formula based on annotation {1} since attribtue when() is not defined.",
+					constraintClazz.getName());
 		else
 			try
 			{

@@ -9,7 +9,7 @@
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.71-SNAPSHOT</version>
+	<version>1.80-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 
@@ -215,6 +215,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
 			<version>1.7R2</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-jxpath</groupId>
+			<artifactId>commons-jxpath</artifactId>
+			<version>1.3</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

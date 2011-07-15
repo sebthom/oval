@@ -187,7 +187,8 @@ public class Guard extends Validator
 						skip = true;
 						continue;
 					}
-			if (!skip) checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
+			if (!skip)
+				checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false, false);
 		}
 	}
 
@@ -1526,7 +1527,7 @@ public class Guard extends Validator
 			final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
 			for (final Check check : returnValueChecks)
-				checkConstraint(violations, check, validatedObject, returnValue, context, null, false);
+				checkConstraint(violations, check, validatedObject, returnValue, context, null, false, false);
 		}
 		catch (final OValException ex)
 		{

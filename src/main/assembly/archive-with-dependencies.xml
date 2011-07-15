@@ -50,7 +50,7 @@
 			<unpack>false</unpack>
 			<scope>runtime</scope>
 			<excludes>
-				<exclude>oval*</exclude>
+				<exclude>*:oval-*</exclude>
 			</excludes>
 		</dependencySet>
 	</dependencySets>

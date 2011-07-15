@@ -91,6 +91,8 @@ public @interface NotNull
 	 */
 	int severity() default 0;
 
+	String target() default "";
+
 	/**
 	 * Formula returning <code>true</code> if this constraint shall be evaluated and
 	 * <code>false</code> if it shall be ignored for the current validation.

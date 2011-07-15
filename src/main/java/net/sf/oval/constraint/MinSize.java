@@ -94,6 +94,8 @@ public @interface MinSize
 	 */
 	int severity() default 0;
 
+	String target() default "";
+
 	int value();
 
 	/**
