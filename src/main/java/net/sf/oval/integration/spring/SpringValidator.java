@@ -69,8 +69,7 @@ public class SpringValidator implements org.springframework.validation.Validator
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public boolean supports(final Class clazz)
+	public boolean supports(@SuppressWarnings("rawtypes") final Class clazz)
 	{
 		return true;
 	}
@@ -94,9 +93,7 @@ public class SpringValidator implements org.springframework.validation.Validator
 					errors.rejectValue(fieldName, errorCode, errorMessage);
 				}
 				else
-				{
 					errors.reject(errorCode, errorMessage);
-				}
 			}
 		}
 		catch (final ValidationFailedException ex)
