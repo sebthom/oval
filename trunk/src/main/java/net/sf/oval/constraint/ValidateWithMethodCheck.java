@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -107,7 +107,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 			throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName
 					+ "(" + parameterType + ") not found. Is [" + parameterType
 					+ "] the correct value for [parameterType]?");
-		return ((Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate)).booleanValue();
+		return ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
 	}
 
 	/**
