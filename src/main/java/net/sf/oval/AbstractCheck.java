@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -176,7 +176,7 @@ public abstract class AbstractCheck implements Check
 		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 
-		final ExpressionLanguage el = validator.getExpressionLanguage(whenLang);
+		final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
 		return el.evaluateAsBoolean(whenFormula, values);
 	}
 

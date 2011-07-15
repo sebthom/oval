@@ -418,7 +418,8 @@ public class Guard extends Validator
 				if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null
 						&& check.getOld().length() > 0)
 				{
-					final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
+					final ExpressionLanguage eng = expressionLanguageRegistry
+							.getExpressionLanguage(check.getLanguage());
 					final Map<String, Object> values = getCollectionFactory().createMap();
 					values.put("_this", validatedObject);
 					if (hasParameters)
@@ -1390,7 +1391,7 @@ public class Guard extends Validator
 			{
 				if (!isAnyProfileEnabled(check.getProfiles(), null)) continue;
 
-				final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
+				final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLanguage());
 				final Map<String, Object> values = getCollectionFactory().createMap();
 				values.put("_this", validatedObject);
 				values.put("_returns", returnValue);
@@ -1457,7 +1458,7 @@ public class Guard extends Validator
 			{
 				if (!isAnyProfileEnabled(check.getProfiles(), null)) continue;
 
-				final ExpressionLanguage eng = getExpressionLanguage(check.getLanguage());
+				final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLanguage());
 				final Map<String, Object> values = getCollectionFactory().createMap();
 				values.put("_this", validatedObject);
 				if (hasParameters)
