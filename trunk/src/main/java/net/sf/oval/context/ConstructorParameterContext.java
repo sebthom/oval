@@ -73,7 +73,9 @@ public class ConstructorParameterContext extends OValContext
 	@Override
 	public String toString()
 	{
-		return constructor.getDeclaringClass().getName()
+		return getClass().getSimpleName()
+				+ ": "
+				+ constructor.getDeclaringClass().getName()
 				+ "("
 				+ StringUtils.implode(constructor.getParameterTypes(), ",")
 				+ ") "

@@ -45,6 +45,6 @@ public class MethodReturnValueContext extends OValContext
 	@Override
 	public String toString()
 	{
-		return method.getDeclaringClass().getName() + "." + method.getName() + "()";
+		return getClass().getSimpleName() + ": " + method.getDeclaringClass().getName() + "." + method.getName() + "()";
 	}
 }
