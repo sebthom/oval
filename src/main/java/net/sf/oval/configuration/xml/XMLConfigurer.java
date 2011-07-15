@@ -131,8 +131,7 @@ public class XMLConfigurer implements Configurer
 		/**
 		 * {@inheritDoc}
 		 */
-		@SuppressWarnings("unchecked")
-		public boolean canConvert(final Class clazz)
+		public boolean canConvert(@SuppressWarnings("rawtypes") final Class clazz)
 		{
 			return clazz.equals(AssertCheck.class);
 		}
@@ -239,9 +238,8 @@ public class XMLConfigurer implements Configurer
 		/**
 		 * {@inheritDoc}
 		 */
-		@SuppressWarnings("unchecked")
 		@Override
-		public boolean canConvert(final Class type)
+		public boolean canConvert(@SuppressWarnings("rawtypes") final Class type)
 		{
 			return List.class.isAssignableFrom(type);
 		}
@@ -252,9 +250,9 @@ public class XMLConfigurer implements Configurer
 	 */
 	protected final class XStreamReflectionProvider extends Sun14ReflectionProvider
 	{
-		@Override
 		@SuppressWarnings("unchecked")
-		public Object newInstance(final Class type)
+		@Override
+		public Object newInstance(@SuppressWarnings("rawtypes") final Class type)
 		{
 			final Object instance = super.newInstance(type);
 
@@ -284,8 +282,6 @@ public class XMLConfigurer implements Configurer
 			return instance;
 		}
 	}
-
-	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = Log.getLog(Validator.class);
 
