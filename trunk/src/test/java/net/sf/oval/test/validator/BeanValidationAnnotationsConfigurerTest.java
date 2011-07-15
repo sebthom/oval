@@ -35,13 +35,13 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase
 	@Entity
 	protected static class TestEntity
 	{
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		@Size(max = 4)
 		public String code;
 
 		public String description;
 
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		@Valid
 		public TestEntity ref1;
 
@@ -51,7 +51,7 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase
 		@Valid
 		public Collection<TestEntity> refs;
 
-		@NotNull
+		@NotNull(message = "NOT_NULL")
 		public String getDescription()
 		{
 			return description;
@@ -60,7 +60,7 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase
 
 	public void testBeanValidationAnnotationsConfigurer()
 	{
-		Validator v = new Validator(new BeanValidationAnnotationsConfigurer());
+		final Validator v = new Validator(new BeanValidationAnnotationsConfigurer());
 		List<ConstraintViolation> violations;
 
 		TestEntity entity;
@@ -76,6 +76,9 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase
 			assertNull(violations.get(0).getInvalidValue());
 			assertNull(violations.get(1).getInvalidValue());
 			assertNull(violations.get(2).getInvalidValue());
+			assertEquals("NOT_NULL", violations.get(0).getMessage());
+			assertEquals("NOT_NULL", violations.get(1).getMessage());
+			assertEquals("NOT_NULL", violations.get(2).getMessage());
 		}
 
 		{
@@ -127,7 +130,7 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase
 		// Valid test
 		{
 			entity.refs = new ArrayList<TestEntity>();
-			TestEntity d = new TestEntity();
+			final TestEntity d = new TestEntity();
 			entity.refs.add(d);
 
 			violations = v.validate(entity);
