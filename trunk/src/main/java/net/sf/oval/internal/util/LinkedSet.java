@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -132,7 +132,7 @@ public final class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"rawtypes"})
 		final LinkedSet other = (LinkedSet) obj;
 		if (list == null)
 		{
