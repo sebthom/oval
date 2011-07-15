@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -95,6 +95,17 @@ public @interface NotMemberOf
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
+
+	/**
+	 * An expression to specify where in the object graph relative from this object the expression
+	 * should be applied.
+	 * <p>
+	 * Examples:
+	 * <li>"owner" would apply this constraint to the current object's property <code>owner</code>
+	 * <li>"owner.id" would apply this constraint to the current object's <code>owner</code>'s property <code>id</code>
+	 * <li>"jxpath:owner/id" would use the JXPath implementation to traverse the object graph to locate the object where this constraint should be applied.
+	 */
+	String target() default "";
 
 	String[] value();
 

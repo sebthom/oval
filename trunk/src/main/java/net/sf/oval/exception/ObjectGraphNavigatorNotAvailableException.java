@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -10,37 +10,20 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.context;
+package net.sf.oval.exception;
+
+import net.sf.oval.internal.MessageRenderer;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ClassContext extends OValContext
+public class ObjectGraphNavigatorNotAvailableException extends InvalidConfigurationException
 {
 	private static final long serialVersionUID = 1L;
 
-	private final Class< ? > clazz;
-
-	public ClassContext(final Class< ? > clazz)
+	public ObjectGraphNavigatorNotAvailableException(final String id)
 	{
-		this.clazz = clazz;
-		this.compileTimeType = clazz;
-	}
-
-	/**
-	 * @return the clazz
-	 */
-	public Class< ? > getClazz()
-	{
-		return clazz;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return clazz.getName();
+		super(MessageRenderer.renderMessage("net.sf.oval.exception.ObjectGraphNavigatorNotAvailableException.message",
+				"id", id));
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -14,7 +14,6 @@ package net.sf.oval.exception;
 
 /**
  * @author Sebastian Thomschke
- * @version $Revision: 1.0 $
  */
 public class InvalidConfigurationException extends OValException
 {
@@ -28,5 +27,10 @@ public class InvalidConfigurationException extends OValException
 	public InvalidConfigurationException(final String message, final Throwable cause)
 	{
 		super(message, cause);
+	}
+
+	public InvalidConfigurationException(final Throwable cause)
+	{
+		super(cause);
 	}
 }

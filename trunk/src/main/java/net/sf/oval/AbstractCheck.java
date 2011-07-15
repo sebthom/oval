@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -36,10 +36,10 @@ public abstract class AbstractCheck implements Check
 	private Map<String, ? extends Serializable> messageVariables;
 	private Map<String, ? extends Serializable> messageVariablesUnmodifiable;
 	private boolean messageVariablesUpToDate = true;
-
 	private String[] profiles;
 	private int severity;
 	private ConstraintTarget[] appliesTo;
+	private String target;
 	private String when;
 	private transient String whenFormula;
 	private transient String whenLang;
@@ -155,6 +155,14 @@ public abstract class AbstractCheck implements Check
 	}
 
 	/**
+	 * @return the target
+	 */
+	public String getTarget()
+	{
+		return target;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public String getWhen()
@@ -235,6 +243,14 @@ public abstract class AbstractCheck implements Check
 	public void setSeverity(final int severity)
 	{
 		this.severity = severity;
+	}
+
+	/**
+	 * @param target the target to set
+	 */
+	public void setTarget(final String target)
+	{
+		this.target = target;
 	}
 
 	/**

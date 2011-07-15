@@ -2,11 +2,15 @@
 [+] Feature added.
 [*] Change.
 
-2011-??-?? v1.71
+2011-??-?? v1.80
 ================
 * upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.2, Groovy 1.8.0
 + added caching of compiled OGNL expressions
++ added caching of compiled MVEL expressions
 - fixed message attribute on JSR303 annotations being ignored
+* removed deprecated AssertValid.requireValidElements attribute
+* removed deprecated class CheckWithMultiple
++ added support for target attribute on constraint annotations
 
 2011-04-05 v1.70
 ================

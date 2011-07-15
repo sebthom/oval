@@ -60,6 +60,6 @@ public class FieldContext extends OValContext
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + ": " + field.getDeclaringClass().getName() + "." + field.getName();
+		return field.getDeclaringClass().getName() + "." + field.getName();
 	}
 }

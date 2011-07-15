@@ -30,8 +30,8 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String lang;
 	private String expr;
+	private String lang;
 
 	/**
 	 * {@inheritDoc}
@@ -103,5 +103,4 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		lang = language;
 		requireMessageVariablesRecreation();
 	}
-
 }

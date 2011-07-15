@@ -87,16 +87,20 @@ public @interface AssertValid
 	String[] profiles() default {};
 
 	/**
-	 * Specifies if the keys and values of a collection/map must be valid too.
-	 * @deprecated use applyTo instead
-	 */
-	@Deprecated
-	boolean requireValidElements() default true;
-
-	/**
 	 * severity passed to the ConstraintViolation object
 	 */
 	int severity() default 0;
+
+	/**
+	 * An expression to specify where in the object graph relative from this object the expression
+	 * should be applied.
+	 * <p>
+	 * Examples:
+	 * <li>"owner" would apply this constraint to the current object's property <code>owner</code>
+	 * <li>"owner.id" would apply this constraint to the current object's <code>owner</code>'s property <code>id</code>
+	 * <li>"jxpath:owner/id" would use the JXPath implementation to traverse the object graph to locate the object where this constraint should be applied.
+	 */
+	String target() default "";
 
 	/**
 	 * Formula returning <code>true</code> if this constraint shall be evaluated and

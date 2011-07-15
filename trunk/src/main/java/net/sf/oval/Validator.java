@@ -79,6 +79,8 @@ import net.sf.oval.localization.message.ResourceBundleMessageResolver;
 import net.sf.oval.localization.value.MessageValueFormatter;
 import net.sf.oval.localization.value.ToStringMessageValueFormatter;
 import net.sf.oval.logging.LoggerFactory;
+import net.sf.oval.ogn.ObjectGraphNavigationResult;
+import net.sf.oval.ogn.ObjectGraphNavigatorRegistry;
 
 /**
  * <p>Instances of this class can validate objects based on declared constraints.
@@ -270,9 +272,9 @@ public class Validator implements IValidator
 
 	private final Set<String> enabledProfiles = collectionFactory.createSet();
 
-	private ExceptionTranslator exceptionTranslator;
-
 	protected final ExpressionLanguageRegistry expressionLanguageRegistry = new ExpressionLanguageRegistry();
+
+	private ExceptionTranslator exceptionTranslator;
 
 	private boolean isAllProfilesEnabledByDefault = true;
 
@@ -281,6 +283,8 @@ public class Validator implements IValidator
 	 * Used for performance improvements.
 	 */
 	private boolean isProfilesFeatureUsed = false;
+
+	protected final ObjectGraphNavigatorRegistry objectGraphNavigatorRegistry = new ObjectGraphNavigatorRegistry();
 
 	protected final DelegatingParameterNameResolver parameterNameResolver = new DelegatingParameterNameResolver(
 			new ParameterNameResolverEnumerationImpl());
@@ -597,7 +601,8 @@ public class Validator implements IValidator
 					final OValContext ctx = ContextCache.getFieldContext(field);
 
 					for (final Check check : checks)
-						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false);
+						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false,
+								false);
 				}
 			}
 
@@ -612,7 +617,8 @@ public class Validator implements IValidator
 					final OValContext ctx = ContextCache.getMethodReturnValueContext(getter);
 
 					for (final Check check : checks)
-						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false);
+						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false,
+								false);
 				}
 			}
 
@@ -621,7 +627,7 @@ public class Validator implements IValidator
 			{
 				final OValContext ctx = ContextCache.getClassContext(clazz);
 				for (final Check check : cc.checksForObject)
-					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles, false);
+					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles, false, false);
 			}
 
 			// if the super class is annotated to be validatable also validate it against the object
@@ -657,7 +663,7 @@ public class Validator implements IValidator
 				final OValContext context = ContextCache.getFieldContext(field);
 
 				for (final Check check : checks)
-					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles, false);
+					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles, false, false);
 			}
 		}
 
@@ -672,7 +678,7 @@ public class Validator implements IValidator
 				final OValContext context = ContextCache.getMethodReturnValueContext(getter);
 
 				for (final Check check : checks)
-					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles, false);
+					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles, false, false);
 			}
 		}
 	}
@@ -776,14 +782,48 @@ public class Validator implements IValidator
 	}
 
 	protected void checkConstraint(final List<ConstraintViolation> violations, final Check check,
-			final Object validatedObject, final Object valueToValidate, final OValContext context,
-			final String[] profiles, final boolean isContainerValue) throws OValException
+			Object validatedObject, Object valueToValidate, OValContext context, final String[] profiles,
+			final boolean isContainerValue, final boolean ignoreTarget) throws OValException
 	{
 		if (!isAnyProfileEnabled(check.getProfiles(), profiles)) return;
 
 		if (!check.isActive(validatedObject, valueToValidate, this)) return;
 
 		final ConstraintTarget[] targets = check.getAppliesTo();
+
+		if (!ignoreTarget)
+		{
+			String target = check.getTarget();
+			if (target != null)
+			{
+				target = target.trim();
+				if (target.length() > 0)
+				{
+					if (valueToValidate == null) return;
+					final String[] chunks = target.split(":", 2);
+					final String ognId, path;
+					if (chunks.length == 1)
+					{
+						ognId = "";
+						path = chunks[0];
+					}
+					else
+					{
+						ognId = chunks[0];
+						path = chunks[1];
+					}
+					final ObjectGraphNavigationResult result = objectGraphNavigatorRegistry.getObjectGraphNavigator(
+							ognId).navigateTo(valueToValidate, path);
+					if (result == null) return;
+					validatedObject = result.targetParent;
+					valueToValidate = result.target;
+					if (result.targetAccessor instanceof Field)
+						context = ContextCache.getFieldContext((Field) result.targetAccessor);
+					else
+						context = ContextCache.getMethodReturnValueContext((Method) result.targetAccessor);
+				}
+			}
+		}
 
 		final Class< ? > compileTimeType = context.getCompileTimeType();
 
@@ -805,21 +845,21 @@ public class Validator implements IValidator
 			{
 				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
 					for (final Object item : (Collection< ? >) valueToValidate)
-						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true, true);
 			}
 			else if (isMap)
 			{
 				if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS))
 					for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
-						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true, true);
 
 				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
 					for (final Object item : ((Map< ? , ? >) valueToValidate).values())
-						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true, true);
 			}
 			else if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
 				for (final Object item : ArrayUtils.asList(valueToValidate))
-					checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					checkConstraint(violations, check, validatedObject, item, context, profiles, true, true);
 		if (isContainerValue || !isContainer || isContainer
 				&& ArrayUtils.containsSame(targets, ConstraintTarget.CONTAINER))
 			_checkConstraint(violations, check, validatedObject, valueToValidate, context, profiles);
@@ -837,7 +877,8 @@ public class Validator implements IValidator
 
 		if (referencedChecks != null && referencedChecks.size() > 0)
 			for (final Check referencedCheck : referencedChecks)
-				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
+				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles,
+						false, false);
 	}
 
 	protected void checkConstraintAssertFieldConstraints(final List<ConstraintViolation> violations,
@@ -892,7 +933,8 @@ public class Validator implements IValidator
 		final Collection<Check> referencedChecks = cc.checksForFields.get(field);
 		if (referencedChecks != null && referencedChecks.size() > 0)
 			for (final Check referencedCheck : referencedChecks)
-				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
+				checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles,
+						false, false);
 	}
 
 	protected void checkConstraintAssertValid(final List<ConstraintViolation> violations, final AssertValidCheck check,
@@ -1104,6 +1146,14 @@ public class Validator implements IValidator
 	public ExpressionLanguageRegistry getExpressionLanguageRegistry()
 	{
 		return expressionLanguageRegistry;
+	}
+
+	/**
+	 * @return the objectGraphNavigatorRegistry
+	 */
+	public ObjectGraphNavigatorRegistry getObjectGraphNavigatorRegistry()
+	{
+		return objectGraphNavigatorRegistry;
 	}
 
 	/**
@@ -1363,7 +1413,7 @@ public class Validator implements IValidator
 			final FieldContext context = ContextCache.getFieldContext(validatedField);
 
 			for (final Check check : checks)
-				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context, null, false);
+				checkConstraint(violations, check, validatedObject, fieldValueToValidate, context, null, false, false);
 			return violations;
 		}
 		catch (final OValException ex)

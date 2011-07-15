@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -80,6 +80,8 @@ public interface Check extends Serializable
 	 * @return the severity
 	 */
 	int getSeverity();
+
+	String getTarget();
 
 	/**
 	 * Formula returning <code>true</code> if this constraint shall be evaluated and
