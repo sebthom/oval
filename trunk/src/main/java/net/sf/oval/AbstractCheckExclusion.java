@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public abstract class AbstractCheckExclusion implements CheckExclusion
 		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 
-		final ExpressionLanguage el = validator.getExpressionLanguage(whenLang);
+		final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
 		return el.evaluateAsBoolean(whenFormula, values);
 	}
 

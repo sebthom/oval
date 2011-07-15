@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import static java.lang.Boolean.TRUE;
+import static java.lang.Boolean.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -43,7 +43,6 @@ import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.AssertFieldConstraintsCheck;
 import net.sf.oval.constraint.AssertValidCheck;
 import net.sf.oval.constraint.NotNullCheck;
-import net.sf.oval.context.ClassContext;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodParameterContext;
@@ -52,7 +51,6 @@ import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ConstraintSetAlreadyDefinedException;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.ExceptionTranslator;
-import net.sf.oval.exception.ExpressionLanguageNotAvailableException;
 import net.sf.oval.exception.FieldNotFoundException;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.exception.MethodNotFoundException;
@@ -60,14 +58,7 @@ import net.sf.oval.exception.OValException;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.exception.UndefinedConstraintSetException;
 import net.sf.oval.exception.ValidationFailedException;
-import net.sf.oval.expression.ExpressionLanguage;
-import net.sf.oval.expression.ExpressionLanguageBeanShellImpl;
-import net.sf.oval.expression.ExpressionLanguageGroovyImpl;
-import net.sf.oval.expression.ExpressionLanguageJEXLImpl;
-import net.sf.oval.expression.ExpressionLanguageJRubyImpl;
-import net.sf.oval.expression.ExpressionLanguageJavaScriptImpl;
-import net.sf.oval.expression.ExpressionLanguageMVELImpl;
-import net.sf.oval.expression.ExpressionLanguageOGNLImpl;
+import net.sf.oval.expression.ExpressionLanguageRegistry;
 import net.sf.oval.guard.ParameterNameResolver;
 import net.sf.oval.guard.ParameterNameResolverEnumerationImpl;
 import net.sf.oval.internal.ClassChecks;
@@ -281,7 +272,7 @@ public class Validator implements IValidator
 
 	private ExceptionTranslator exceptionTranslator;
 
-	private final Map<String, ExpressionLanguage> expressionLanguages = collectionFactory.createMap(4);
+	protected final ExpressionLanguageRegistry expressionLanguageRegistry = new ExpressionLanguageRegistry();
 
 	private boolean isAllProfilesEnabledByDefault = true;
 
@@ -533,18 +524,6 @@ public class Validator implements IValidator
 		}
 	}
 
-	private ExpressionLanguage _addExpressionLanguage(final String languageId,
-			final ExpressionLanguage expressionLanguage) throws IllegalArgumentException
-	{
-		Assert.argumentNotNull("languageId", languageId);
-		Assert.argumentNotNull("expressionLanguage", expressionLanguage);
-
-		LOG.info("Expression language '{1}' registered: {2}", languageId, expressionLanguage);
-
-		expressionLanguages.put(languageId, expressionLanguage);
-		return expressionLanguage;
-	}
-
 	private void _checkConstraint(final List<ConstraintViolation> violations, final Check check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context,
 			final String[] profiles)
@@ -590,44 +569,6 @@ public class Validator implements IValidator
 		}
 	}
 
-	private ExpressionLanguage _initializeDefaultEL(final String languageId)
-	{
-		// JavaScript support
-		if (("javascript".equals(languageId) || "js".equals(languageId))
-				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
-			return _addExpressionLanguage("js",
-					_addExpressionLanguage("javascript", new ExpressionLanguageJavaScriptImpl()));
-
-		// Groovy support
-		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
-			return _addExpressionLanguage("groovy", new ExpressionLanguageGroovyImpl());
-
-		// BeanShell support
-		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
-				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
-			return _addExpressionLanguage("beanshell",
-					_addExpressionLanguage("bsh", new ExpressionLanguageBeanShellImpl()));
-
-		// OGNL support
-		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
-			return _addExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
-
-		// MVEL2 support
-		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel2.MVEL"))
-			return _addExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
-
-		// JRuby support
-		else if (("jruby".equals(languageId) || "ruby".equals(languageId))
-				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
-			return _addExpressionLanguage("jruby", _addExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
-
-		// JEXL2 support
-		else if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl2.JexlEngine"))
-			return _addExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
-
-		return null;
-	}
-
 	/**
 	 * validate validatedObject based on the constraints of the given class 
 	 */
@@ -653,7 +594,7 @@ public class Validator implements IValidator
 				if (checks != null && checks.size() > 0)
 				{
 					final Object valueToValidate = ReflectionUtils.getFieldValue(field, validatedObject);
-					final FieldContext ctx = ContextCache.getFieldContext(field);
+					final OValContext ctx = ContextCache.getFieldContext(field);
 
 					for (final Check check : checks)
 						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false);
@@ -668,7 +609,7 @@ public class Validator implements IValidator
 				if (checks != null && checks.size() > 0)
 				{
 					final Object valueToValidate = ReflectionUtils.invokeMethod(getter, validatedObject);
-					final MethodReturnValueContext ctx = ContextCache.getMethodReturnValueContext(getter);
+					final OValContext ctx = ContextCache.getMethodReturnValueContext(getter);
 
 					for (final Check check : checks)
 						checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false);
@@ -678,7 +619,7 @@ public class Validator implements IValidator
 			// validate object constraints
 			if (cc.checksForObject.size() > 0)
 			{
-				final ClassContext ctx = ContextCache.getClassContext(clazz);
+				final OValContext ctx = ContextCache.getClassContext(clazz);
 				for (final Check check : cc.checksForObject)
 					checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles, false);
 			}
@@ -713,7 +654,7 @@ public class Validator implements IValidator
 			if (checks != null && checks.size() > 0)
 			{
 				final Object valueToValidate = ReflectionUtils.getFieldValue(field, null);
-				final FieldContext context = ContextCache.getFieldContext(field);
+				final OValContext context = ContextCache.getFieldContext(field);
 
 				for (final Check check : checks)
 					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles, false);
@@ -728,7 +669,7 @@ public class Validator implements IValidator
 			if (checks != null && checks.size() > 0)
 			{
 				final Object valueToValidate = ReflectionUtils.invokeMethod(getter, null);
-				final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(getter);
+				final OValContext context = ContextCache.getMethodReturnValueContext(getter);
 
 				for (final Check check : checks)
 					checkConstraint(violations, check, validatedClass, valueToValidate, context, profiles, false);
@@ -808,18 +749,6 @@ public class Validator implements IValidator
 
 			constraintSetsById.put(constraintSet.getId(), constraintSet);
 		}
-	}
-
-	/**
-	 * 
-	 * @param languageId the expression language identifier
-	 * @param expressionLanguage the expression language implementation
-	 * @throws IllegalArgumentException if <code>languageId == null || expressionLanguage == null</code>
-	 */
-	public void addExpressionLanguage(final String languageId, final ExpressionLanguage expressionLanguage)
-			throws IllegalArgumentException
-	{
-		_addExpressionLanguage(languageId, expressionLanguage);
 	}
 
 	/**
@@ -1170,24 +1099,11 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * 
-	 * @param languageId the id of the language, cannot be null
-	 * 
-	 * @throws IllegalArgumentException if <code>languageName == null</code>
-	 * @throws ExpressionLanguageNotAvailableException
+	 * @return the expressionLanguageRegistry
 	 */
-	public ExpressionLanguage getExpressionLanguage(final String languageId) throws IllegalArgumentException,
-			ExpressionLanguageNotAvailableException
+	public ExpressionLanguageRegistry getExpressionLanguageRegistry()
 	{
-		Assert.argumentNotNull("languageId", languageId);
-
-		ExpressionLanguage el = expressionLanguages.get(languageId);
-
-		if (el == null) el = _initializeDefaultEL(languageId);
-
-		if (el == null) throw new ExpressionLanguageNotAvailableException(languageId);
-
-		return el;
+		return expressionLanguageRegistry;
 	}
 
 	/**

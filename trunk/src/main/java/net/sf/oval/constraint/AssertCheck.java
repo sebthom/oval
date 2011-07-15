@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.util.Map;
 
@@ -45,6 +45,18 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("expression", expr);
+		messageVariables.put("language", lang);
+		return messageVariables;
+	}
+
+	/**
 	 * @return the expression
 	 */
 	public String getExpr()
@@ -70,7 +82,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 
-		final ExpressionLanguage el = validator.getExpressionLanguage(lang);
+		final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(lang);
 		return el.evaluateAsBoolean(expr, values);
 	}
 
@@ -90,18 +102,6 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 	{
 		lang = language;
 		requireMessageVariablesRecreation();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("expression", expr);
-		messageVariables.put("language", lang);
-		return messageVariables;
 	}
 
 }
