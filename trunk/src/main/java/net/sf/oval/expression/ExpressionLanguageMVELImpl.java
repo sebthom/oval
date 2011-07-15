@@ -16,13 +16,18 @@ import java.util.Map;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.ObjectCache;
+
+import org.mvel2.MVEL;
 
 /**
  * @author Sebastian Thomschke
  */
 public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 {
-	private static final Log  LOG = Log.getLog(ExpressionLanguageMVELImpl.class);
+	private static final Log LOG = Log.getLog(ExpressionLanguageMVELImpl.class);
+
+	private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>();
 
 	/**
 	 * {@inheritDoc}
@@ -32,7 +37,13 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 		try
 		{
 			LOG.debug("Evaluating MVEL expression: {1}", expression);
-			return org.mvel2.MVEL.eval(expression, values);
+			Object expr = expressionCache.get(expression);
+			if (expr == null)
+			{
+				expr = MVEL.compileExpression(expression);
+				expressionCache.put(expression, expr);
+			}
+			return MVEL.executeExpression(expr, values);
 		}
 		catch (final Exception ex)
 		{
@@ -49,9 +60,7 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 		final Object result = evaluate(expression, values);
 
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }
