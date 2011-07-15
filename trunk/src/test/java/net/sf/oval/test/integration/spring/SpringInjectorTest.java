@@ -36,6 +36,7 @@ public class SpringInjectorTest extends TestCase
 {
 	public static class Entity
 	{
+		@SuppressWarnings("unused")
 		@SpringNullContraint
 		private String field;
 	}
@@ -62,6 +63,7 @@ public class SpringInjectorTest extends TestCase
 		}
 	}
 
+	@SuppressWarnings("synthetic-access")
 	public void testSpringInjector()
 	{
 		@SuppressWarnings("unused")
