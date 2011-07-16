@@ -189,6 +189,7 @@ public class XMLConfigurer implements Configurer
 			assertCheck.setErrorCode(reader.getAttribute("errorCode"));
 			if (reader.getAttribute("severity") != null)
 				assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
+			assertCheck.setTarget(reader.getAttribute("target"));
 			assertCheck.setWhen(reader.getAttribute("when"));
 
 			reader.moveDown();

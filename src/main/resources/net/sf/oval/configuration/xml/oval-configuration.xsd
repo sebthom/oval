@@ -58,7 +58,7 @@
 		<annotation>
 			<documentation>
 				A super type for all types that use constraints.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElement">
@@ -119,7 +119,8 @@
 							<documentation>
 								In case the constraint is declared for an array, collection or map this controls how
 								the constraint
-								is applied to it and it's child objects.</documentation>
+								is applied to it and it's child objects.
+							</documentation>
 						</annotation>
 						<complexType>
 							<sequence>
@@ -139,7 +140,8 @@
 											<enumeration value="VALUES">
 												<annotation>
 													<documentation>apply the constraint to the values of a the map / the items of the collection / the elements
-														of the array</documentation>
+														of the array
+													</documentation>
 												</annotation>
 											</enumeration>
 										</restriction>
@@ -152,7 +154,21 @@
 				<attribute name="errorCode" type="string" use="optional" />
 				<attribute name="message" type="string" use="optional" />
 				<attribute name="severity" type="string" use="optional" />
-				<attribute name="when" type="string" use="optional" />
+				<attribute name="target" type="string" use="optional">
+					<annotation>
+						<documentation>An expression to specify where in the object graph relative from this object the expression should
+							be applied.
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="when" type="string" use="optional">
+					<annotation>
+						<documentation>
+							Sets the formula returning true if this constraint shall be evaluated and false if it shall be
+							ignored for the current validation.
+						</documentation>
+					</annotation>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -166,7 +182,7 @@
 		<annotation>
 			<documentation>
 				Defines a constraint set
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElementWithConstraints">
@@ -202,8 +218,8 @@
 	<complexType name="Class">
 		<annotation>
 			<documentation>
-				Constraints configuration for a specific class 
-            </documentation>
+				Constraints configuration for a specific class
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElement">
@@ -226,7 +242,8 @@
 					<annotation>
 						<documentation>Automatically apply field constraints to the single parameter of the corresponding setter methods
 							declared within the same class. A corresponding setter method is a method following the JavaBean convention and
-							its parameter has as the same type as the field.</documentation>
+							its parameter has as the same type as the field.
+						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="assertParametersNotNull" use="optional" type="boolean" default="false">
@@ -239,13 +256,15 @@
 				<attribute name="checkInvariants" use="optional" type="boolean" default="false">
 					<annotation>
 						<documentation>Declares if invariants are automatically checked after constructor execution and prior and after
-							calls to non-private methods.</documentation>
+							calls to non-private methods.
+						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="inspectInterfaces" use="optional" type="boolean" default="false">
 					<annotation>
 						<documentation>Declares if annotations can be applied to interfaces that this class implements - supporting a
-							documentation function</documentation>
+							documentation function
+						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="type" use="required" type="tns:javaFQIdentifier">
@@ -260,7 +279,7 @@
 		<annotation>
 			<documentation>
 				Constraints configuration for a field
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElementWithConstraints">
@@ -291,7 +310,7 @@
 			<documentation>
 				Constraints configuration for a method. To identify the correct method you are required to list all
 				parameters, including parameters you are not intending to specify constraints for.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElement">
@@ -310,7 +329,7 @@
 		<annotation>
 			<documentation>
 				Constraints configuration for a constructor/method parameter
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElementWithConstraints">
@@ -325,7 +344,7 @@
 		<annotation>
 			<documentation>
 				Constraints configuration for the return value of a method
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElementWithConstraints">
@@ -336,7 +355,7 @@
 		<annotation>
 			<documentation>
 				Constraints configuration for constraints on object level
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ConfigurationElement">
@@ -402,7 +421,7 @@
 				Check if evaluating the expression in the specified expression language returns true.
 				The node body
 				contains the script expression as CDATA.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -417,7 +436,7 @@
 		<annotation>
 			<documentation>
 				Check if the value satisfies the all constraints of specified constraint set
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles">
@@ -427,7 +446,8 @@
 							<documentation>
 								In case the constraint is declared for an array, collection or map this controls how
 								the constraint
-								is applied to it and it's child objects.</documentation>
+								is applied to it and it's child objects.
+							</documentation>
 						</annotation>
 						<complexType>
 							<sequence>
@@ -447,7 +467,8 @@
 											<enumeration value="VALUES">
 												<annotation>
 													<documentation>apply the constraint to the values of a the map / the items of the collection / the elements
-														of the array</documentation>
+														of the array
+													</documentation>
 												</annotation>
 											</enumeration>
 										</restriction>
@@ -469,7 +490,7 @@
 				Check if the value is false.
 				Note: This constraint is also satisfied when the value to validate is
 				null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -479,7 +500,7 @@
 		<annotation>
 			<documentation>
 				Check if the value satisfies the constraints defined for the specified field.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:ElementsWithProfiles">
@@ -492,7 +513,7 @@
 		<annotation>
 			<documentation>
 				Check if null.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -504,7 +525,7 @@
 				Check if the value is true.
 				Note: This constraint is also satisfied when the value to validate is null,
 				therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -517,7 +538,7 @@
 				Note: This constraint is also satisfied when the value to validate
 				is null,
 				therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -535,7 +556,7 @@
 		<annotation>
 			<documentation>
 				Check if the value passes a validation by Validator.validate().
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -552,7 +573,7 @@
 			<documentation>
 				Check the value by a method of the same class that takes the value as argument and returns true if
 				valid and false if invalid.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -567,7 +588,7 @@
 		<annotation>
 			<documentation>
 				Name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck
-            </documentation>
+			</documentation>
 		</annotation>
 		<attribute name="class" type="tns:javaFQIdentifier" />
 	</complexType>
@@ -579,7 +600,7 @@
 				validate is
 				null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -596,7 +617,7 @@
 				Check if the String representation has the given max/min number of integral and fractional digits.
 				Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare
 				the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -613,7 +634,7 @@
 				Check if the string representation is a valid e-mail address.
 				Note: This constraint is also satisfied
 				when the value to validate is null, therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -626,7 +647,7 @@
 				Note: This constraint is also satisfied when
 				the value to validate is null,
 				therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -643,7 +664,7 @@
 				Note: This constraint is also satisfied when the value to validate
 				is null,
 				therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -658,7 +679,7 @@
 				Note: This constraint is also satisfied when the
 				value to validate is null,
 				therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -692,7 +713,7 @@
 				Check if the value is an instance of the specified class or implements
 				<u>
 					one
-			</u>
+				</u>
 				of the specified interfaces.
 				Note: This constraint is also satisfied when the value to validate is null, therefore
 				you might also need to declare the
@@ -725,7 +746,7 @@
 				Note: This constraint is also satisfied when the
 				value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -741,7 +762,7 @@
 				Note: This constraint is also satisfied
 				when the value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -764,7 +785,7 @@
 				Note: This constraint is also satisfied when the
 				value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -794,7 +815,7 @@
 				Note: This constraint is also satisfied
 				when the value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -832,7 +853,7 @@
 				Note: This constraint is also satisfied when the
 				value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -876,7 +897,7 @@
 				Check that the value is not a reference to the validated object itself.
 				This is e.g. useful to avoid
 				circular references.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -889,7 +910,7 @@
 				Note: This
 				constraint is also satisfied when the value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -902,7 +923,7 @@
 				Note: This constraint is also satisfied when the
 				value to validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -989,7 +1010,7 @@
 				Note: This constraint is also satisfied when the value to
 				validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -999,7 +1020,7 @@
 		<annotation>
 			<documentation>
 				Check if not null.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint" />
@@ -1012,7 +1033,7 @@
 				Note: This constraint is also satisfied when the value to validate is
 				null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -1027,7 +1048,7 @@
 				Note: This constraint is also satisfied when the value to
 				validate is null, therefore you might also need to declare the
 				NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -1043,7 +1064,7 @@
 				Note: This constraint is also satisfied when the
 				value to validate is null,
 				therefore you might also need to declare the NotNull constraint.
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
@@ -1057,7 +1078,7 @@
 			<documentation>
 				Check the value by a method of the same class that takes the value as argument and returns true if
 				valid and false if invalid
-            </documentation>
+			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Constraint">
