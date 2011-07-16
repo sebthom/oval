@@ -81,6 +81,15 @@ public interface Check extends Serializable
 	 */
 	int getSeverity();
 
+	/**
+	 * An expression to specify where in the object graph relative from this object the expression
+	 * should be applied.
+	 * <p>
+	 * Examples:
+	 * <li>"owner" would apply this constraint to the current object's property <code>owner</code>
+	 * <li>"owner.id" would apply this constraint to the current object's <code>owner</code>'s property <code>id</code>
+	 * <li>"jxpath:owner/id" would use the JXPath implementation to traverse the object graph to locate the object where this constraint should be applied.
+	 */
 	String getTarget();
 
 	/**
@@ -159,6 +168,17 @@ public interface Check extends Serializable
 	void setSeverity(int severity);
 
 	/**
+	 * Sets an expression to specify where in the object graph relative from this object the expression
+	 * should be applied.
+	 * <p>
+	 * Examples:
+	 * <li>"owner" would apply this constraint to the current object's property <code>owner</code>
+	 * <li>"owner.id" would apply this constraint to the current object's <code>owner</code>'s property <code>id</code>
+	 * <li>"jxpath:owner/id" would use the JXPath implementation to traverse the object graph to locate the object where this constraint should be applied.
+	 */
+	void setTarget(String target);
+
+	/**
 	 * Sets the formula returning <code>true</code> if this constraint shall be evaluated and
 	 * <code>false</code> if it shall be ignored for the current validation.
 	 * <p>
@@ -172,5 +192,5 @@ public interface Check extends Serializable
 	 *  
 	 * @param when formula calculating if this check is active
 	 */
-	void setWhen(final String when);
+	void setWhen(String when);
 }
