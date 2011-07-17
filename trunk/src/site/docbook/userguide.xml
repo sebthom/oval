@@ -119,6 +119,9 @@
         <para>Javolution is required if you want to have OVal to internally use Javolution's high performance collections.</para>
       </listitem>
       <listitem>
+        <para>JXPath is required if you want to use JXPath expressions for the constraint target declarations.</para>
+      </listitem>
+      <listitem>
         <para>JUnit and all other libraries are required if you want to run the test cases.</para>
       </listitem>
     </itemizedlist>
@@ -1677,7 +1680,12 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
         <para>JProvocateur</para>
         <para><ulink url="http://www.jprovocateur.org/">http://www.jprovocateur.org/</ulink></para>
       </listitem>  
-	  
+
+	  <listitem>
+        <para>NexOpen</para>
+        <para><ulink url="http://nexopen.sourceforge.net/">http://nexopen.sourceforge.net/</ulink></para>
+      </listitem>  
+      
 	  <listitem>
         <para>gdv.xport</para>
         <para><ulink url="http://repository.agentes.de/gdv/gdv-xport/site/">http://repository.agentes.de/gdv/gdv-xport/site/</ulink></para>
