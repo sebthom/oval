@@ -59,6 +59,21 @@ public class ObjectGraphNavigatorJXPathImpl implements ObjectGraphNavigator
 		}
 
 		@Override
+		public boolean equals(final Object obj)
+		{
+			if (this == obj) return true;
+			if (!super.equals(obj)) return false;
+			if (getClass() != obj.getClass()) return false;
+			final BeanPointerEx other = (BeanPointerEx) obj;
+			if (beanInfo == null)
+			{
+				if (other.beanInfo != null) return false;
+			}
+			else if (!beanInfo.equals(other.beanInfo)) return false;
+			return true;
+		}
+
+		@Override
 		public boolean isValidProperty(final QName name)
 		{
 			if (!super.isValidProperty(name)) return false;

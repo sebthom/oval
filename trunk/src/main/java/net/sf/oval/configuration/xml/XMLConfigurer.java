@@ -249,7 +249,7 @@ public class XMLConfigurer implements Configurer
 	/**
 	 * This reflection provider applies default values declared on constraint annotations to the corresponding check class
 	 */
-	protected final class XStreamReflectionProvider extends Sun14ReflectionProvider
+	protected static final class XStreamReflectionProvider extends Sun14ReflectionProvider
 	{
 		@SuppressWarnings("unchecked")
 		@Override

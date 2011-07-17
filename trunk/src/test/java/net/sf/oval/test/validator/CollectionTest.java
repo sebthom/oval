@@ -29,7 +29,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class CollectionTest extends TestCase
 {
-	public class Group
+	public static class Group
 	{
 		@MinSize(value = 1, message = "MIN_SIZE")
 		@MaxSize(value = 4, message = "MAX_SIZE")
@@ -39,7 +39,6 @@ public class CollectionTest extends TestCase
 
 		@NotNull(appliesTo = {ConstraintTarget.VALUES}, message = "NOT_NULL2")
 		public String[] secondaryMembers;
-
 	}
 
 	public void testCollection()
