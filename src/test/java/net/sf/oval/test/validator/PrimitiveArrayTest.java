@@ -27,7 +27,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class PrimitiveArrayTest extends TestCase
 {
-	public class Account
+	public static class Account
 	{
 		@MinSize(value = 1, message = "MIN_SIZE")
 		@MaxSize(value = 4, message = "MAX_SIZE")
@@ -39,8 +39,8 @@ public class PrimitiveArrayTest extends TestCase
 
 	public void testPrimitiveArray()
 	{
-		Validator validator = new Validator();
-		Account account = new Account();
+		final Validator validator = new Validator();
+		final Account account = new Account();
 
 		// test min size
 		List<ConstraintViolation> violations = validator.validate(account);

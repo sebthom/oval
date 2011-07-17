@@ -26,7 +26,7 @@ import net.sf.oval.context.OValContext;
  */
 public class CustomConstraintViolationsTest extends TestCase
 {
-	public class CustomCheck extends AbstractCheck
+	public static class CustomCheck extends AbstractCheck
 	{
 		private static final long serialVersionUID = 1L;
 
