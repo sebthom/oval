@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,12 +22,15 @@ import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+import net.sf.oval.internal.Log;
 
 /**
  * @author Sebastian Thomschke
  */
 public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 {
+	private static final Log LOG = Log.getLog(DigitsCheck.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private int maxFraction = Integer.MAX_VALUE;
@@ -111,30 +114,59 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 	{
 		if (valueToValidate == null) return true;
 
-		final BigDecimal value;
-
-		if (valueToValidate instanceof BigDecimal)
-			value = (BigDecimal) valueToValidate;
-		else if (valueToValidate instanceof BigInteger)
-			value = new BigDecimal((BigInteger) valueToValidate);
-		else if (valueToValidate instanceof Integer)
-			value = new BigDecimal((Integer) valueToValidate);
+		final int fractLen, intLen;
+		if (valueToValidate instanceof Integer)
+		{
+			final int value = (Integer) valueToValidate;
+			intLen = value == 0 ? 1 : (int) Math.log10(value) + 1;
+			fractLen = 0;
+		}
 		else if (valueToValidate instanceof Long)
-			value = new BigDecimal((Long) valueToValidate);
+		{
+			final long value = (Long) valueToValidate;
+			intLen = value == 0 ? 1 : (int) Math.log10(value) + 1;
+			fractLen = 0;
+		}
 		else if (valueToValidate instanceof Short)
-			value = new BigDecimal((Short) valueToValidate);
+		{
+			final short value = (Short) valueToValidate;
+			intLen = value == 0 ? 1 : (int) Math.log10(value) + 1;
+			fractLen = 0;
+		}
 		else if (valueToValidate instanceof Byte)
-			value = new BigDecimal((Byte) valueToValidate);
+		{
+			final byte value = (Byte) valueToValidate;
+			intLen = value == 0 ? 1 : (int) Math.log10(value) + 1;
+			fractLen = 0;
+		}
+		else if (valueToValidate instanceof BigInteger)
+		{
+			final long value = ((BigInteger) valueToValidate).longValue();
+			intLen = value == 0 ? 1 : (int) Math.log10(value) + 1;
+			fractLen = 0;
+		}
 		else
-			value = new BigDecimal(valueToValidate.toString());
+		{
+			BigDecimal value = null;
+			if (valueToValidate instanceof BigDecimal)
+				value = (BigDecimal) valueToValidate;
+			else
+				try
+				{
+					value = new BigDecimal(valueToValidate.toString());
+				}
+				catch (final NumberFormatException ex)
+				{
+					LOG.debug("Failed to parse numeric value: " + valueToValidate, ex);
+					return false;
+				}
+			final int valueScale = value.scale();
+			final long longValue = value.longValue();
+			intLen = longValue == 0 ? 1 : (int) Math.log10(longValue) + 1;
+			fractLen = valueScale > 0 ? valueScale : 0;
+		}
 
-		final int valueScale = value.scale();
-		final long longValue = value.longValue();
-		final int integerLen = longValue == 0 ? 1 : (int) Math.log10(longValue) + 1;
-		final int fractionLen = valueScale > 0 ? valueScale : 0;
-
-		return integerLen <= maxInteger && integerLen >= minInteger && fractionLen <= maxFraction
-				&& fractionLen >= minFraction;
+		return intLen <= maxInteger && intLen >= minInteger && fractLen <= maxFraction && fractLen >= minFraction;
 	}
 
 	/**
