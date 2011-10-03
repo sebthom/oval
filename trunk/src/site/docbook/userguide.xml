@@ -6,7 +6,7 @@
   <title>OVal - the object validation framework for
   <trademark>Java</trademark> 5 or later</title>
 
-  <section>
+  <section id="about">
     <title>What is OVal?</title>
 
     <para>OVal is a pragmatic and extensible general purpose validation framework for any kind of Java objects
@@ -77,7 +77,7 @@
     <ulink url="http://sourceforge.net/forum/forum.php?forum_id=488109">OVal forum</ulink></para>
   </section>
 
-  <section>
+  <section id="dependencies">
     <title>Dependencies</title>
 
     <para>OVal requires Java 5 or later - mainly for annotation support but other new language features (generics, for 
@@ -127,10 +127,10 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="property-validation">
     <title>Using OVal for property validation</title>
 
-    <section>
+    <section id="declaring-field-constraints">
       <title>Declaring constraints for class fields</title>
 
       <para>You can add constraint annotations to class fields that are checked when an object validation is performed.
@@ -166,7 +166,7 @@ if(violations.size()>0)
 }]]></programlisting>
     </section>
 
-    <section>
+    <section id="declaring-getter-constraints">
       <title>Declaring constraints for getter methods' return value</title>
 
       <para>You can specify constraints for the return value of getter methods. When validating the object the values
@@ -211,7 +211,7 @@ if(violations.size()>0)
 ]]></programlisting>
     </section>
 
-    <section>
+    <section id="declaring-conditional-constraints">
       <title>Declaring conditional constraints using expression languages</title>
 
       <para>When you annotate a field or getter with multiple constraint annotations they are ANDed.
@@ -275,7 +275,7 @@ if(violations.size()>0)
       <para>Additional scripting languages can be registered via <command>Validator.addExpressionLanguage(String, ExpressionLanguage)</command>.</para>
     </section>
     
-    <section>
+    <section id="declaring-activation-rules">
       <title>Declaring activation rules for constraints</title>
 
       <para>Besides using @Assert to declare conditional constraints it is also possible to specify a activation rules
@@ -296,7 +296,34 @@ if(violations.size()>0)
 }]]></programlisting>
     </section>
 
-    <section>
+    <section id="declaring-nested-property-constraints">
+      <title>Declaring constraints for nested properties</title>
+
+      <para>Using the <command>target</command> attribute of constraints you can specify the path to an object where the constraint should be applied. 
+      In the following example the <command>@NotNull</command> constraint will be validated for the <command>customer.homeAddress.street</command> field.</para>
+
+      <programlisting><![CDATA[public class BusinessObject
+{
+  @AssertValid
+  @NotNull(target="homeAddress.street")
+  private Customer customer;
+}]]></programlisting>
+
+      <para>If JXPath is on the classpath you can also use the XPath syntax to specify the target value. In the following example the <command>@NotNull</command> constraint
+      will be checked for <command>street</command> field of the first address object in the <command>customer.addresses</command> collection.</para>
+
+      <programlisting><![CDATA[public class BusinessObject
+{
+  @AssertValid
+  @NotNull(target="jxpath:addresses[0]/street")
+  private Customer customer;
+}]]></programlisting>
+
+	  <para>To target values of maps or collections JXPath must be used, the built-in implementation does not support this yet.</para>
+	
+    </section>
+    
+    <section id="recursive-validation">
       <title>Recursive validation</title>
 
       <para>By specifying the special constraint annotation @AssertValid you instruct OVal to ensure that all constraints
@@ -310,7 +337,7 @@ if(violations.size()>0)
 }]]></programlisting>
     </section>
     
-    <section>
+    <section id="interpreting-ejb3-jpa-annotations">
       <title>Interpreting EJB3 JPA annotations</title>
 
       <para>OVal's configuration mechanism is highly customizable. Using the 
@@ -379,8 +406,8 @@ List<ConstraintViolation> violations = validator.validate(entity);
 ]]></programlisting>
       </section>
 
-      <section>
-      <title>Interpreting JSR303 annotations</title>
+      <section id="interpreting-bean-validation-annotations">
+      <title>Interpreting Bean Validation (JSR303) annotations</title>
 
       <para>OVal itself is not a JSR303 compliant bean validation framework. However it now comes with a configurer 
       that can translate the JSR303 built-in standard constraints into equivalent OVal constraints. 
@@ -462,7 +489,7 @@ List<ConstraintViolation> violations = validator.validate(entity);]]></programli
     
   </section>
 
-  <section>
+  <section id="programming-by-contract">
     <title>Using OVal for programming by contract</title>
 
     <para>By utilizing AspectJ OVal provides support for several aspects of programming by contract - however it is
@@ -485,7 +512,7 @@ List<ConstraintViolation> violations = validator.validate(entity);]]></programli
       </listitem>
     </itemizedlist>
 
-    <section>
+    <section id="project-preparation">
       <title>Preparing your project</title>
 
       <para>The easiest way to getting started is to use the 
@@ -506,10 +533,10 @@ List<ConstraintViolation> violations = validator.validate(entity);]]></programli
       annotation and define the required constraints using the built-in or custom constraint annotations.</para>
     </section>
 
-    <section>
+    <section id="preconditions">
       <title>Working with preconditions</title>
 
-      <section>
+      <section id="declaring-constructor-parameter-constraints">
         <title>Declaring constraints for constructor parameters</title>
 
         <para>Constraints specified for constructor parameters are automatically checked when the constructor is invoked.
@@ -533,7 +560,7 @@ public class BusinessObject
 BusinessObject bo = new  BusinessObject(null);]]></programlisting>
       </section>
 
-      <section>
+      <section id="declaring-method-parameter-constraints">
         <title>Declaring constraints for method parameters</title>
 
         <para>Constraints specified for method parameters are automatically checked when the method is invoked.
@@ -556,7 +583,7 @@ public class BusinessObject
 bo.setName(null); // throws a ConstraintsViolatedException because parameter name is null]]></programlisting>
       </section>
 
-      <section>
+      <section id="applying-field-constraints-to-method-parameters">
         <title>Applying field constraints to constructor/method parameters</title>
 
         <para>You can apply the constraints specified for a field in the same or a super class to any constructor or
@@ -625,7 +652,7 @@ public class BusinessObject
         parameter is a constructor parameter with the same name and type as the field.</para>
       </section>
 
-      <section>
+      <section id="scripted-preconditions">
         <title>Using scripted expressions for preconditions</title>
 
         <para>Similar to the above described <command>@net.sf.constraint.Assert</command> constraint annotation for
@@ -689,7 +716,7 @@ public class Transaction
         </itemizedlist>
       </section>
 
-      <section>
+      <section id="disabling-preconditions">
         <title>Disabling precondition checks</title>
 
         <para>You can globally disable or enable the checking of preconditions via the 
@@ -701,10 +728,10 @@ public class Transaction
       </section>
     </section>
 
-    <section>
+    <section id="declaring-postconditions">
       <title>Working with postconditions</title>
 
-      <section>
+      <section id="declaring-method-return-value-constraints">
         <title>Declaring method return value constraints</title>
 
         <para>By adding constraint annotations to a non-void method you can specify constraints for the method's 
@@ -757,7 +784,7 @@ Validator validator = new Validator();
 List<ConstraintViolation> violations = validator.validate(bo);]]></programlisting>
       </section>
 
-      <section>
+      <section id="scripted-postconditions">
         <title>Using scripted expressions for postconditions</title>
 
         <para>For declaring scripted postconditions you can use the <command>@net.sf.guard.Post</command> annotation 
@@ -835,7 +862,7 @@ public class Transaction
         like this: <command>expression = "_this.amount&gt;_old.amount &amp;&amp; _this.date&gt;_old.date"</command>.</para>
       </section>
 
-      <section>
+      <section id="disabling-postconditions">
         <title>Disabling postcondition checks</title>
 
         <para>You can globally disable or enable the checking of postconditions via the
@@ -847,10 +874,10 @@ public class Transaction
       </section>
     </section>
 
-    <section>
+    <section id="invariants">
       <title>Working with invariants</title>
 
-      <section>
+      <section id="disabling-invariants">
         <title>Disabling automatic invariants checks</title>
 
         <para>By default OVal checks class invariants before and after calls to any non-private method of guarded
@@ -863,7 +890,7 @@ public class Transaction
         <programlisting><![CDATA[MyAspect.aspectOf().getGuard().setInvariantsEnabled(false);]]></programlisting>
       </section>
 
-      <section>
+      <section id="object-validation-before-method-execution">
         <title>Enforcing object validation before method execution</title>
 
         <para>If you disabled the automatic check of class invariants you can still enable the checking of the
@@ -896,7 +923,7 @@ BusinessObject bo = new  BusinessObject();
 bo.save();]]></programlisting>
       </section>
 
-      <section>
+      <section id="object-validation-after-constructor-execution">
         <title>Enforcing object validation after constructor execution</title>
 
         <para>If you disabled the automatic check of class invariants you can still enable the checking of the
@@ -931,7 +958,7 @@ public class BusinessObject
 BusinessObject bo = new  BusinessObject();]]></programlisting>
       </section>
 
-      <section>
+      <section id="object-validation-after-method-execution">
         <title>Enforcing object validation after method execution</title>
 
         <para>If you disabled the automatic check of class invariants you can still enable the checking of the 
@@ -965,7 +992,7 @@ bo.appendToName("123456"); // throws a ConstraintsViolatedException because fiel
       </section>
     </section>
 
-    <section>
+    <section id="probe-mode">
       <title>Using the probe mode to simplify UI user input validation</title>
 
       <para>OVal provides a so called probe mode in which you can execute all methods of an object and the guard will
@@ -1057,7 +1084,7 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
 ]]></programlisting>
     </section>
 
-    <section>
+    <section id="converting-exceptions">
       <title>Converting ConstraintsViolatedExceptions</title>
 
       <para>When calling methods on guarded objects these methods will throw
@@ -1086,7 +1113,7 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
     </section>
   </section>
 
-  <section>
+  <section id="custom-constraint-annotations">
     <title>Creating custom annotation based constraints</title>
 
     <para>Developing custom annotation based constraints is fairly easy. All you need to do is:</para>
@@ -1208,14 +1235,14 @@ resolver.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
     </orderedlist>
   </section>
 
-  <section>
+  <section id="complex-class-specific-constraints">
     <title>Expressing complex class specific constraints</title>
 
     <para>If you have to express a rather complex constraint that is used only within one class you might not want to 
     implement it as a custom constraint. You have the following two alternatives expressing such class specific constraints
     in a convenient way.</para>
 
-    <section>
+    <section id="using-validatewithmethod">
       <title>Using @ValidateWithMethod</title>
 
       <para>You can write a method within the class that has a single parameter to receive the value to validate and that 
@@ -1251,7 +1278,7 @@ resolver.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
 }]]></programlisting>
     </section>
 
-    <section>
+    <section id="using-checkwith">
       <title>Using @CheckWith</title>
 
       <para>You can write an inner static class extending
@@ -1290,7 +1317,7 @@ resolver.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
     </section>
   </section>
 
-  <section>
+  <section id="xml-configuration">
     <title>XML based configuration</title>
 
     <para>By default the constraints configuration is done by adding annotations representing the constraints to the
@@ -1364,10 +1391,10 @@ Guard guard = new Guard(xmlConfigurer);]]></programlisting>
 </oval>]]></programlisting>
   </section>
 
-  <section>
+  <section id="additional-configuration">
     <title>Additional configuration and customization options</title>
 
-    <section>
+    <section id="constraint-profiles">
       <title>Constraint profiles</title>
 
       <para>You may come across the requirement to turn on or off the checking of certain constraints across your 
@@ -1404,7 +1431,7 @@ v.validate(p);]]></programlisting>
       and <command>profile1</command> has been disabled.</para>
     </section>
 
-    <section>
+    <section id="collection-factory">
       <title>Collection factory</title>
 
       <para>OVal instantiates all internally used collections indirectly via a <command>CollectionFactory</command>.
@@ -1420,7 +1447,7 @@ v.validate(p);]]></programlisting>
       support other collection implementations.</para>
     </section>
 
-    <section>
+    <section id="additiona-expression-languages">
       <title>Adding additional expression languages</title>
 
       <para>If you want to express constraints in a scripting language not supported by OVal out of the box, you need
@@ -1431,10 +1458,10 @@ v.validate(p);]]></programlisting>
       in the new expression language.</para>
     </section>
 
-    <section>
+    <section id="spring-integration">
       <title>Spring framework integration</title>
 
-      <section>
+      <section id="spring-validation">
         <title>Spring Validation</title>
 
         <para>The class <command>net.sf.oval.integration.spring.SpringValidator</command> provides an implementation of Spring's
@@ -1442,7 +1469,7 @@ v.validate(p);]]></programlisting>
         <ulink url="http://static.springsource.org/spring/docs/3.0.x/reference/validation.html">Spring Validation</ulink>.</para>
       </section>
 
-      <section>
+      <section id="spring-aop">
         <title>Guarding Spring managed beans using Spring AOP</title>
 
         <para>It is possible to use OVal's programming by contract feature with AOP solutions other than AspectJ. 
@@ -1470,7 +1497,7 @@ v.validate(p);]]></programlisting>
 ]]></programlisting>
       </section>
       
-      <section>
+      <section id="injecting-spring-beans-into-constraints">
       
         <title>Injecting Spring beans into constraint check classes</title>
       
@@ -1507,7 +1534,7 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
         </itemizedlist>
       </section>
       
-      <section>
+      <section id="configuring-oval-with-spring">
       
         <title>Configuring OVal validator instances with Spring</title>
       
@@ -1530,7 +1557,7 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
       
     </section>
 
-    <section>
+    <section id="apache-struts-integration">
       <title>Apache Struts 2 integration</title>
 
       <para>Musachy Barroso has developed an OVal Plug-in for Apache Struts 2, which is documented at 
@@ -1538,13 +1565,13 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     </section>
   </section>
 
-  <section>
+  <section id="api-documentation">
     <title>API documentation</title>
 
     <para>You can browse OVal's Javadoc <ulink url="api/index.html">here</ulink> .</para>
   </section>
 
-  <section>
+  <section id="download">
     <title>Download</title>
 
     <para>You can download the latest OVal binaries and source code from the project page at
@@ -1566,7 +1593,7 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     </para>
   </section>
 
-  <section>
+  <section id="references">
     <title>References</title>
 
     <para>There exist some articles and blog entries talking about and/or referencing OVal:</para>
@@ -1763,7 +1790,7 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="acknowledgements">
     <title>Acknowledgements</title>
 
     <para>YourKit is kindly supporting open source projects with its full-featured Java Profiler.</para>
@@ -1773,7 +1800,7 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     and <ulink url="http://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</ulink>.</para>
   </section>
 
-  <section>
+  <section id="trademark-disclaimer">
     <title>Trademark disclaimer</title>
 
     <para><trademark>Java</trademark> and all Java-based trademarks are trademarks of Oracle Corporation in the United States, other
