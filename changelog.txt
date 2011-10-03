@@ -4,7 +4,7 @@
 
 2011-??-?? v1.80
 ================
-* upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.2, Groovy 1.8.0
+* upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.4, Groovy 1.8.2, XStream 1.4.1, Rhino 1.7R3, Spring 3.0.6.RELEASE, Javolution 5.5.1
 + added caching of compiled OGNL expressions
 + added caching of compiled MVEL expressions
 - fixed message attribute on JSR303 annotations being ignored
