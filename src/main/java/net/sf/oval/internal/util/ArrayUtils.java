@@ -23,9 +23,9 @@ import java.util.List;
  */
 public final class ArrayUtils
 {
-	public static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
-	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-	public static final String[] EMPTY_STRING_ARRAY = new String[0];
+	public static final Method[] EMPTY_METHOD_ARRAY = {};
+	public static final Object[] EMPTY_OBJECT_ARRAY = {};
+	public static final String[] EMPTY_STRING_ARRAY = {};
 
 	/**
 	 * @throws IllegalArgumentException if <code>collection == null</code>
