@@ -9,7 +9,7 @@
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.80</version>
+	<version>1.81</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 
@@ -232,13 +232,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>3.0.6.RELEASE</version>
+			<version>3.1.0.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.6.RELEASE</version>
+			<version>3.1.0.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

@@ -261,7 +261,8 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			if (getMessage != null)
 			{
 				final String message = ReflectionUtils.invokeMethod(getMessage, annotation, (Object[]) null);
-				if (message != null && !message.startsWith("javax.validation.constraints.")) check.setMessage(message);
+				if (message != null && !message.startsWith("{javax.validation.constraints."))
+					check.setMessage(message);
 			}
 
 			if (groups != null && groups.length > 0)
