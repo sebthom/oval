@@ -2,7 +2,12 @@
 [+] Feature added.
 [*] Change.
 
-2011-??-?? v1.80
+2012-??-?? v1.81
+================
+- fixed default message attribute value on JSR303 annotations being misinterpreted
+* upgraded to Spring 3.1.0.RELEASE
+
+2011-10-03 v1.80
 ================
 * upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.4, Groovy 1.8.2, XStream 1.4.1, Rhino 1.7R3, Spring 3.0.6.RELEASE, Javolution 5.5.1
 + added caching of compiled OGNL expressions
