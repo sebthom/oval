@@ -5,6 +5,7 @@
 2012-??-?? v1.81
 ================
 - fixed default message attribute value on JSR303 annotations being misinterpreted
++ extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
 * upgraded to Spring 3.1.0.RELEASE
 
 2011-10-03 v1.80

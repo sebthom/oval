@@ -1,5 +1,4 @@
 /*******************************************************************************
-
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
  * 
@@ -16,6 +15,7 @@ package net.sf.oval.configuration.annotation;
 import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -38,12 +38,15 @@ import javax.validation.constraints.Pattern.Flag;
 import javax.validation.constraints.Size;
 
 import net.sf.oval.Check;
+import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
+import net.sf.oval.configuration.pojo.elements.ConstructorConfiguration;
 import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
+import net.sf.oval.configuration.pojo.elements.ParameterConfiguration;
 import net.sf.oval.constraint.AssertFalseCheck;
 import net.sf.oval.constraint.AssertNullCheck;
 import net.sf.oval.constraint.AssertTrueCheck;
@@ -56,6 +59,7 @@ import net.sf.oval.constraint.MinCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.SizeCheck;
+import net.sf.oval.guard.Guarded;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ReflectionUtils;
 
@@ -83,74 +87,155 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 {
 	private static final Log LOG = Log.getLog(BeanValidationAnnotationsConfigurer.class);
 
-	protected Boolean applyFieldConstraintsToSetters;
-	protected Boolean applyFieldConstraintsToConstructors;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
+	private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations,
+			final Class< ? >[] parameterTypes)
 	{
-		final ClassConfiguration config = new ClassConfiguration();
-		config.type = clazz;
-		config.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
-		config.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
+		final CollectionFactory cf = getCollectionFactory();
 
-		/*
-		 * determine field checks
-		 */
-		for (final Field field : config.type.getDeclaredFields())
+		final List<ParameterConfiguration> paramCfg = cf.createList(paramAnnotations.length);
+
+		List<Check> paramChecks = cf.createList(2);
+
+		// loop over all parameters of the current constructor
+		for (int i = 0; i < paramAnnotations.length; i++)
 		{
-			final List<Check> checks = getCollectionFactory().createList(4);
+			// loop over all annotations of the current constructor parameter
+			for (final Annotation annotation : paramAnnotations[i])
+				initializeChecks(annotation, paramChecks);
 
+			final ParameterConfiguration pc = new ParameterConfiguration();
+			paramCfg.add(pc);
+			pc.type = parameterTypes[i];
+			if (paramChecks.size() > 0)
+			{
+				pc.checks = paramChecks;
+				paramChecks = cf.createList(2); // create a new list for the next parameter having checks
+			}
+		}
+		return paramCfg;
+	}
+
+	protected void configureConstructorParameterChecks(final ClassConfiguration classCfg)
+	{
+		final CollectionFactory cf = getCollectionFactory();
+
+		for (final Constructor< ? > ctor : classCfg.type.getDeclaredConstructors())
+		{
+			final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(),
+					ctor.getParameterTypes());
+
+			if (paramCfg.size() > 0)
+			{
+				if (classCfg.constructorConfigurations == null) classCfg.constructorConfigurations = cf.createSet(2);
+
+				final ConstructorConfiguration cc = new ConstructorConfiguration();
+				cc.parameterConfigurations = paramCfg;
+				cc.postCheckInvariants = false;
+				classCfg.constructorConfigurations.add(cc);
+			}
+		}
+	}
+
+	protected void configureFieldChecks(final ClassConfiguration classCfg)
+	{
+		final CollectionFactory cf = getCollectionFactory();
+
+		List<Check> checks = cf.createList(2);
+
+		for (final Field field : classCfg.type.getDeclaredFields())
+		{
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
 				initializeChecks(annotation, checks);
 
 			if (checks.size() > 0)
 			{
-				if (config.fieldConfigurations == null)
-					config.fieldConfigurations = getCollectionFactory().createSet(8);
+				if (classCfg.fieldConfigurations == null) classCfg.fieldConfigurations = cf.createSet(2);
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
 				fc.checks = checks;
-				config.fieldConfigurations.add(fc);
+				classCfg.fieldConfigurations.add(fc);
+				checks = cf.createList(2); // create a new list for the next field with checks
 			}
 		}
+	}
 
-		/*
-		 * determine getter checks
-		 */
-		for (final Method method : config.type.getDeclaredMethods())
+	/**
+	 * configure method return value and parameter checks
+	 */
+	protected void configureMethodChecks(final ClassConfiguration classCfg)
+	{
+		final CollectionFactory cf = getCollectionFactory();
+
+		List<Check> returnValueChecks = cf.createList(2);
+		
+		for (final Method method : classCfg.type.getDeclaredMethods())
 		{
-			// consider getters only 
-			if (!ReflectionUtils.isGetter(method)) continue;
-
-			final List<Check> checks = getCollectionFactory().createList(2);
-
 			// loop over all annotations
-			for (final Annotation annotation : method.getAnnotations())
-				initializeChecks(annotation, checks);
+			for (final Annotation annotation : ReflectionUtils.getAnnotations(method,
+					Boolean.TRUE.equals(classCfg.inspectInterfaces)))
+				initializeChecks(annotation, returnValueChecks);
+
+			/*
+			 * determine parameter checks
+			 */
+			final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(
+					ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces)),
+					method.getParameterTypes());
 
 			// check if anything has been configured for this method at all
-			if (checks.size() > 0)
+			if (paramCfg.size() > 0 || returnValueChecks.size() > 0)
 			{
-				if (config.methodConfigurations == null)
-					config.methodConfigurations = getCollectionFactory().createSet(2);
+				if (classCfg.methodConfigurations == null) classCfg.methodConfigurations = cf.createSet(2);
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
-				mc.isInvariant = true;
-				if (checks.size() > 0)
+				mc.parameterConfigurations = paramCfg;
+				mc.isInvariant = ReflectionUtils.isGetter(method);
+				if (returnValueChecks.size() > 0)
 				{
 					mc.returnValueConfiguration = new MethodReturnValueConfiguration();
-					mc.returnValueConfiguration.checks = checks;
+					mc.returnValueConfiguration.checks = returnValueChecks;
+					returnValueChecks = cf.createList(2); // create a new list for the next method having return value checks
 				}
-				config.methodConfigurations.add(mc);
+				classCfg.methodConfigurations.add(mc);
 			}
 		}
-		return config;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
+	{
+		final ClassConfiguration classCfg = new ClassConfiguration();
+		classCfg.type = clazz;
+
+		final Guarded guarded = clazz.getAnnotation(Guarded.class);
+
+		if (guarded == null)
+		{
+			classCfg.applyFieldConstraintsToConstructors = false;
+			classCfg.applyFieldConstraintsToSetters = false;
+			classCfg.assertParametersNotNull = false;
+			classCfg.checkInvariants = false;
+			classCfg.inspectInterfaces = false;
+		}
+		else
+		{
+			classCfg.applyFieldConstraintsToConstructors = guarded.applyFieldConstraintsToConstructors();
+			classCfg.applyFieldConstraintsToSetters = guarded.applyFieldConstraintsToSetters();
+			classCfg.assertParametersNotNull = guarded.assertParametersNotNull();
+			classCfg.checkInvariants = guarded.checkInvariants();
+			classCfg.inspectInterfaces = guarded.inspectInterfaces();
+		}
+		
+		configureFieldChecks(classCfg);
+		configureConstructorParameterChecks(classCfg);
+		configureMethodChecks(classCfg);
+
+		return classCfg;
 	}
 
 	/**
@@ -311,37 +396,5 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			LOG.warn("Ignoring unsupported JSR303 constraint annotation {1}", annotation);
 			return;
 		}
-	}
-
-	/**
-	 * @return the applyFieldConstraintsToConstructors
-	 */
-	public Boolean isApplyFieldConstraintsToConstructors()
-	{
-		return applyFieldConstraintsToConstructors;
-	}
-
-	/**
-	 * @return the applyFieldConstraintsToSetter
-	 */
-	public Boolean isApplyFieldConstraintsToSetter()
-	{
-		return applyFieldConstraintsToSetters;
-	}
-
-	/**
-	 * @param applyFieldConstraintsToConstructors the applyFieldConstraintsToConstructors to set
-	 */
-	public void setApplyFieldConstraintsToConstructors(final Boolean applyFieldConstraintsToConstructors)
-	{
-		this.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
-	}
-
-	/**
-	 * @param applyFieldConstraintsToSetters the applyFieldConstraintsToSetter to set
-	 */
-	public void setApplyFieldConstraintsToSetters(final Boolean applyFieldConstraintsToSetters)
-	{
-		this.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
 	}
 }
