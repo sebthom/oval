@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -74,11 +73,11 @@ public final class ReflectionUtils
 	{
 		if (!inspectInterfaces) return clazz.getAnnotations();
 
-		final List<Annotation> annotations = Arrays.asList(clazz.getAnnotations());
+		final List<Annotation> annotations = ArrayUtils.asList(clazz.getAnnotations());
 		for (final Class< ? > next : ReflectionUtils.getInterfacesRecursive(clazz))
 		{
 			final Annotation[] declaredAnnotations = next.getDeclaredAnnotations();
-			annotations.addAll(Arrays.asList(declaredAnnotations));
+			annotations.addAll(ArrayUtils.asList(declaredAnnotations));
 		}
 		return annotations.toArray(new Annotation[annotations.size()]);
 	}
