@@ -32,10 +32,8 @@ public class PrePostRubyTest extends TestCase
 	@Guarded
 	public static class TestTransaction
 	{
-		@SuppressWarnings("unused")
 		protected Date date;
 
-		@SuppressWarnings("unused")
 		protected String description;
 
 		protected BigDecimal value;
@@ -46,22 +44,20 @@ public class PrePostRubyTest extends TestCase
 		}
 
 		@Pre(expr = "_this.value!=nil && value2add!=nil && _args[0]!=nil", lang = "ruby", message = "PRE")
-		public void increase1(@Assert(expr = "_value!=nil", lang = "ruby", message = "ASSERT")
-		final BigDecimal value2add)
+		public void increase1(
+				@Assert(expr = "_value!=nil", lang = "ruby", message = "ASSERT") final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
 		@Post(expr = "_this.value>_old['value']", old = "{ 'value' => _this.value }", lang = "ruby", message = "POST")
-		public void increase2(@NotNull
-		final BigDecimal value2add)
+		public void increase2(@NotNull final BigDecimal value2add)
 		{
 			value = value.add(value2add);
 		}
 
 		@Post(expr = "_this.value>_old['value']", old = "{ 'value' => _this.value }", lang = "ruby", message = "POST")
-		public void increase2buggy(@NotNull
-		final BigDecimal value2add)
+		public void increase2buggy(@NotNull final BigDecimal value2add)
 		{
 			value = value.subtract(value2add);
 		}
