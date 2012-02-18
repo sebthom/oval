@@ -8,7 +8,7 @@
 - fixed [ oval-Bugs-3488245 ] UnsupportedOperationException when using inspectInterfaces
 - fixed default message attribute value on JSR303 annotations being misinterpreted
 + extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
-* upgraded to Spring 3.1.0.RELEASE
+* upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6, commons-jexl 2.1.1, Paranamer 2.4.1
 
 2011-10-03 v1.80
 ================

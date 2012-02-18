@@ -128,14 +128,14 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.java>1.5</version.java>
-		<version.aspectj>1.6.11</version.aspectj>
+		<version.aspectj>1.6.12</version.aspectj>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -183,7 +183,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -195,7 +195,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
-			<version>3.0.2</version>
+			<version>3.0.4</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -232,13 +232,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>3.1.1.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>3.1.1.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -250,13 +250,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>2.2</version>
+			<version>2.2.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>1.8.2</version>
+			<version>1.8.6</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -280,7 +280,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl</artifactId>
-			<version>2.0.1</version>
+			<version>2.1.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -292,7 +292,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
-			<version>2.3</version>
+			<version>2.4.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -344,7 +344,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.0</version>
+				<version>1.0.1</version>
 				<executions>
 					<execution>
 						<id>enforce-no-snapshots</id>
@@ -388,7 +388,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -416,7 +416,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 					manual: mvn docbkx:generate-html -->
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
-				<version>2.0.13</version>
+				<version>2.0.14</version>
 				<executions>
 					<execution>
 						<goals>
@@ -517,7 +517,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<!-- 1.3 and 1.3.1 seem to be broken, getting "cannot find symbol" errors -->
+				<!-- 1.3 to 1.4 seem to be broken, getting "cannot find symbol" errors -->
 				<version>1.2</version>
 				<executions>
 					<execution>
@@ -554,7 +554,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.10</version>
+				<version>2.12</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TestGuardAspect*</exclude>
@@ -570,7 +570,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>2.4</version>
 				<configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile> -->
 					<archive>
@@ -653,7 +653,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>2.3</version>
 				<configuration>
 					<descriptors>
 						<descriptor>${basedir}/src/main/assembly/archive-with-dependencies.xml
@@ -679,7 +679,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
+				<version>2.9</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<classpathContainers>
@@ -703,7 +703,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- Generate Javadoc for the project. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
+				<version>2.8.1</version>
 				<configuration>
 					<stylesheetfile>${basedir}/src/site/javadoc/oval-javadoc.css
 					</stylesheetfile>
@@ -740,7 +740,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- Generate a report based on the results of unit tests. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.10</version>
+				<version>2.12</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -781,7 +781,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- This plugin produces a nicely formatted metrics report based on your project -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.7.1</version>
 				<configuration>
 					<linkXref>true</linkXref>
 					<sourceEncoding>utf-8</sourceEncoding>
@@ -794,7 +794,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- FindBugs looks for bugs in Java programs -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>2.4.0</version>
 				<configuration>
 					<excludeFilterFile>${basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
 					<xmlOutput>true</xmlOutput>
@@ -805,8 +805,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<!-- stick to  2.5 until 2.8 is released http://jira.codehaus.org/browse/MCHECKSTYLE-159 -->
-				<version>2.5</version>
+				<version>2.9</version>
 				<configuration>
 					<configLocation>${basedir}/src/misc/checkstyle-config.xml</configLocation>
 					<enableRSS>false</enableRSS>
