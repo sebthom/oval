@@ -1,5 +1,46 @@
 New and Noteworthy
 
+* Version 1.81 (2012-02-22)
+
+** New Features and Improvements
+
+ * extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
+
+** Issues solved
+
+ * default message attribute value on JSR303 annotations being misinterpreted
+ * [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java
+ * [ oval-Bugs-3488245 ] UnsupportedOperationException when using inspectInterfaces
+
+ 
+* Version 1.80 (2011-10-03)
+
+** New Features and Improvements
+
+ * added caching of compiled OGNL expressions
+ * added caching of compiled MVEL expressions
+ * added support for target attribute on constraint annotations 
+ 
+** Issues solved
+
+ * message attribute on JSR303 annotations being ignored
+
+ 
+* Version 1.70 (2011-04-05)
+
+** New Features and Improvements
+
+ * added convenience constructors to XMLConfigurer for easier Spring-based configuration
+ * added support for Spring dependencies being injected into SimpleCheck instances 
+
+** Issues solved
+
+ * [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
+ * [ oval-Bugs-3173470 ] Bug in DigitsCheck
+ * [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
+ * [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
+ 
+
 * Version 1.61 (2011-04-05)
 
 ** New Features and Improvements
@@ -14,6 +55,7 @@ New and Noteworthy
  * [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
  * [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
 
+ 
 * Version 1.61 (2010-11-13)
 
 ** Issues solved

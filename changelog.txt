@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2012-??-?? v1.81
+2012-02-22 v1.81
 ================
 - fixed [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java
 - fixed [ oval-Bugs-3488245 ] UnsupportedOperationException when using inspectInterfaces
