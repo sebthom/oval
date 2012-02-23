@@ -9,7 +9,7 @@
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.81</version>
+	<version>1.82</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 
@@ -105,15 +105,15 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963</downloadUrl>
 		<repository>
 			<id>oval-release</id>
-			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/mvn-repo/release</url>
+			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/release</url>
 		</repository>
 		<snapshotRepository>
 			<id>oval-snapshot</id>
-			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/mvn-repo/snapshot</url>
+			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/snapshot</url>
 		</snapshotRepository>
 		<site>
 			<id>oval-site</id>
-			<url>sftp://web.sourceforge.net/home/groups/o/ov/oval/htdocs/site</url>
+			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/site/</url>
 		</site>
 	</distributionManagement>
 
