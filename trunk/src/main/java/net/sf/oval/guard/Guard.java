@@ -1423,7 +1423,7 @@ public class Guard extends Validator
 		}
 		finally
 		{
-			currentlyCheckingPreConditions.get().remove(key);
+			currentlyCheckingPostConditions.get().remove(key);
 		}
 	}
 

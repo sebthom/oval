@@ -2,6 +2,10 @@
 [+] Feature added.
 [*] Change.
 
+2012-??-?? v1.82
+================
+- fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost
+
 2012-02-22 v1.81
 ================
 - fixed [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java
