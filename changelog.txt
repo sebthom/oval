@@ -5,6 +5,7 @@
 2012-??-?? v1.82
 ================
 - fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost
+- made requiredValidElements attribute of assertValid in XSD optional
 
 2012-02-22 v1.81
 ================
