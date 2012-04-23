@@ -6,6 +6,7 @@
 ================
 - fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost
 - made deprecated XML attribute "requireValidElements" of assertValid optional in XSD
+- fixed [ oval-Bugs-3520684 ] Wrong generic types used in Check-implementations?
 
 2012-02-22 v1.81
 ================
