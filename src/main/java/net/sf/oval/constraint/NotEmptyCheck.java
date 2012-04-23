@@ -20,7 +20,7 @@ import net.sf.oval.context.OValContext;
 /**
  * @author Sebastian Thomschke
  */
-public class NotEmptyCheck extends AbstractAnnotationCheck<NotBlank>
+public class NotEmptyCheck extends AbstractAnnotationCheck<NotEmpty>
 {
 	private static final long serialVersionUID = 1L;
 
