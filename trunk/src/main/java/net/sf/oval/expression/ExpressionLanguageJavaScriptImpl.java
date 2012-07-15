@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -58,9 +58,10 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
-		final Context ctx = ContextFactory.getGlobal().enterContext();
+		LOG.debug("Evaluating JavaScript expression: {1}", expression);
 		try
 		{
+			final Context ctx = ContextFactory.getGlobal().enterContext();
 			Script script = scriptCache.get(expression);
 			if (script == null)
 			{
@@ -68,22 +69,16 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 				script = ctx.compileString(expression, "<cmd>", 1, null);
 				scriptCache.put(expression, script);
 			}
-
 			final Scriptable scope = ctx.newObject(parentScope);
 			scope.setPrototype(parentScope);
 			scope.setParentScope(null);
-
 			for (final Entry<String, ? > entry : values.entrySet())
-			{
 				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
-			}
-
-			LOG.debug("Evaluating JavaScript expression: {1}", expression);
 			return script.exec(ctx, scope);
 		}
 		catch (final EvaluatorException ex)
 		{
-			throw new ExpressionEvaluationException("Evaluating script with Rhino failed.", ex);
+			throw new ExpressionEvaluationException("Evaluating JavaScript expression failed: " + expression, ex);
 		}
 		finally
 		{

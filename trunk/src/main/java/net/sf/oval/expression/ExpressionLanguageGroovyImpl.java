@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -40,6 +40,7 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
+		LOG.debug("Evaluating Groovy expression: {1}", expression);
 		try
 		{
 			final ObjectCache<String, Script> scriptCache = threadScriptCache.get();
@@ -52,10 +53,7 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 
 			final Binding binding = new Binding();
 			for (final Entry<String, ? > entry : values.entrySet())
-			{
 				binding.setVariable(entry.getKey(), entry.getValue());
-			}
-			LOG.debug("Evaluating Groovy expression: {1}", expression);
 			script.setBinding(binding);
 			return script.run();
 		}
@@ -72,11 +70,8 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 			throws ExpressionEvaluationException
 	{
 		final Object result = evaluate(expression, values);
-
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }

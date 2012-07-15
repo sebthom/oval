@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -34,9 +34,9 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
+		LOG.debug("Evaluating MVEL expression: {1}", expression);
 		try
 		{
-			LOG.debug("Evaluating MVEL expression: {1}", expression);
 			Object expr = expressionCache.get(expression);
 			if (expr == null)
 			{
@@ -47,7 +47,7 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 		}
 		catch (final Exception ex)
 		{
-			throw new ExpressionEvaluationException("Evaluating script with MVEL failed.", ex);
+			throw new ExpressionEvaluationException("Evaluating MVEL expression failed: " + expression, ex);
 		}
 	}
 
@@ -58,7 +58,6 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage
 			throws ExpressionEvaluationException
 	{
 		final Object result = evaluate(expression, values);
-
 		if (!(result instanceof Boolean))
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
 		return (Boolean) result;
