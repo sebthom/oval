@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -19,7 +19,9 @@ import java.util.Map.Entry;
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
 
+import org.jruby.CompatVersion;
 import org.jruby.Ruby;
+import org.jruby.RubyInstanceConfig;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
@@ -29,16 +31,19 @@ import org.jruby.runtime.builtin.IRubyObject;
  */
 public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 {
-	private static final Log  LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
+	private static final Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
+		LOG.debug("Evaluating JRuby expression: {1}", expression);
 		try
 		{
-			final Ruby runtime = JavaEmbedUtils.initialize(new ArrayList<String>());
+			final RubyInstanceConfig config = new RubyInstanceConfig();
+			config.setCompatVersion(CompatVersion.RUBY1_9);
+			final Ruby runtime = JavaEmbedUtils.initialize(new ArrayList<String>(), config);
 
 			final StringBuilder localVars = new StringBuilder();
 			for (final Entry<String, ? > entry : values.entrySet())
@@ -51,14 +56,12 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 				localVars.append("\n");
 
 			}
-			LOG.debug("Evaluating Ruby expression: {1}", expression);
 			final IRubyObject result = runtime.evalScriptlet(localVars + expression);
 			return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
 		}
 		catch (final RuntimeException ex)
 		{
-			ex.printStackTrace(System.out);
-			throw new ExpressionEvaluationException("Evaluating script with JRuby failed.", ex);
+			throw new ExpressionEvaluationException("Evaluating JRuby expression failed: " + expression, ex);
 		}
 	}
 
@@ -69,11 +72,8 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 			throws ExpressionEvaluationException
 	{
 		final Object result = evaluate(expression, values);
-
 		if (!(result instanceof Boolean))
-		{
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		}
 		return (Boolean) result;
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -187,8 +187,7 @@ public class Guard extends Validator
 						skip = true;
 						continue;
 					}
-			if (!skip)
-				checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false, false);
+			if (!skip) checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
 		}
 	}
 
@@ -1527,7 +1526,7 @@ public class Guard extends Validator
 			final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
 			for (final Check check : returnValueChecks)
-				checkConstraint(violations, check, validatedObject, returnValue, context, null, false, false);
+				checkConstraint(violations, check, validatedObject, returnValue, context, null, false);
 		}
 		catch (final OValException ex)
 		{

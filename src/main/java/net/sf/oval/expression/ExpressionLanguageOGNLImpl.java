@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -37,14 +37,13 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
+		LOG.debug("Evaluating OGNL expression: {1}", expression);
 		try
 		{
 			final OgnlContext ctx = (OgnlContext) Ognl.createDefaultContext(null);
 
 			for (final Entry<String, ? > entry : values.entrySet())
 				ctx.put(entry.getKey(), entry.getValue());
-
-			LOG.debug("Evaluating OGNL expression: {1}", expression);
 
 			Object expr = expressionCache.get(expression);
 			if (expr == null)
@@ -56,7 +55,7 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 		}
 		catch (final OgnlException ex)
 		{
-			throw new ExpressionEvaluationException("Evaluating script with OGNL failed.", ex);
+			throw new ExpressionEvaluationException("Evaluating MVEL expression failed: " + expression, ex);
 		}
 	}
 
@@ -67,7 +66,6 @@ public class ExpressionLanguageOGNLImpl implements ExpressionLanguage
 			throws ExpressionEvaluationException
 	{
 		final Object result = evaluate(expression, values);
-
 		if (!(result instanceof Boolean))
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
 		return (Boolean) result;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -29,6 +29,12 @@ import net.sf.oval.constraint.NotNull;
  */
 public class CollectionTest extends TestCase
 {
+	public static class Entity
+	{
+		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
+		public final List<List<String>> items = new ArrayList<List<String>>();
+	}
+
 	public static class Group
 	{
 		@MinSize(value = 1, message = "MIN_SIZE")
@@ -41,7 +47,7 @@ public class CollectionTest extends TestCase
 		public String[] secondaryMembers;
 	}
 
-	public void testCollection()
+	public void testListAndArray()
 	{
 		final Validator validator = new Validator();
 		final Group group = new Group();
@@ -94,5 +100,20 @@ public class CollectionTest extends TestCase
 		violations = validator.validate(group);
 		assertEquals(1, violations.size());
 		assertEquals("NOT_NULL2", violations.get(0).getMessage());
+	}
+
+	public void testListOfLists()
+	{
+		final Validator validator = new Validator();
+
+		final Entity e = new Entity();
+		e.items.add(null);
+		assertEquals(1, validator.validate(e).size());
+
+		e.items.clear();
+		e.items.add(new ArrayList<String>());
+		assertEquals(0, validator.validate(e).size());
+		e.items.get(0).add(null);
+		assertEquals(1, validator.validate(e).size());
 	}
 }

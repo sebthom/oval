@@ -7,6 +7,7 @@
 - fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost
 - made deprecated XML attribute "requireValidElements" of assertValid optional in XSD
 - fixed [ oval-Bugs-3520684 ] Wrong generic types used in Check-implementations?
++ upgraded to Log4J 1.2.17, SLF4J 1.6.6, OGNL 3.0.5, JRuby 1.6.5, Rhino 1.7R4, Spring 3.1.2.RELEASE, Paranamer 2.5, GNU Trove 3.0.3
 
 2012-02-22 v1.81
 ================

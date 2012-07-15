@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -17,7 +17,6 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 import net.sf.oval.constraint.Assert;
-import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
@@ -32,13 +31,10 @@ public class PrePostMVELTest extends TestCase
 	@Guarded
 	public static class TestTransaction
 	{
-		@SuppressWarnings("unused")
 		protected Date date;
-
-		@SuppressWarnings("unused")
 		protected String description;
-
 		protected BigDecimal value;
+		protected boolean buggyMode = false;
 
 		/**
 		 * @return the value
@@ -54,7 +50,7 @@ public class PrePostMVELTest extends TestCase
 			return value;
 		}
 
-		@Post(expr = "_this.valuePost != null && _old.valuePost != null", old = "[\"valuePost\":_this.value]", lang = "mvel", message = "POST")
+		@Post(expr = "_this.valuePostWithOld != null && _old.value != null", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
 		public BigDecimal getValuePostWithOld()
 		{
 			return value;
@@ -67,28 +63,71 @@ public class PrePostMVELTest extends TestCase
 		}
 
 		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "mvel", message = "PRE")
-		public void increase1(@Assert(expr = "_value!=null", lang = "mvel", message = "ASSERT")
-		final BigDecimal value2add)
-		{
-			value = value.add(value2add);
-		}
-
 		@Post(expr = "_this.value>_old.value", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
-		public void increase2(@NotNull
-		final BigDecimal value2add)
+		public void increase(
+				@Assert(expr = "_value!=null", lang = "mvel", message = "ASSERT") final BigDecimal value2add)
 		{
-			value = value.add(value2add);
-		}
-
-		@Post(expr = "_this.value>_old.value", old = "[\"value\":_this.value]", lang = "mvel", message = "POST")
-		public void increase2buggy(@NotNull
-		final BigDecimal value2add)
-		{
-			value = value.subtract(value2add);
+			if (buggyMode)
+				value = value.subtract(value2add);
+			else
+				value = value.add(value2add);
 		}
 	}
 
-	public void testCircularConditionsMVEL()
+	public void test1Pre()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestTransaction t = new TestTransaction();
+
+		try
+		{
+			t.increase(BigDecimal.valueOf(1));
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
+		}
+
+		t.value = BigDecimal.valueOf(2);
+		try
+		{
+			t.increase(null);
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
+		}
+
+		t.increase(BigDecimal.valueOf(1));
+	}
+
+	public void test2Post()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestTransaction t = new TestTransaction();
+		t.value = new BigDecimal(-2);
+		t.buggyMode = true;
+		try
+		{
+			t.increase(BigDecimal.valueOf(1));
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+		}
+		t.buggyMode = false;
+
+		t.increase(BigDecimal.valueOf(1));
+	}
+
+	public void test3CircularConditions()
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
@@ -98,6 +137,7 @@ public class PrePostMVELTest extends TestCase
 		{
 			// test circular pre-condition
 			t.getValuePre();
+			fail();
 		}
 		catch (final ConstraintsViolatedException ex)
 		{
@@ -108,6 +148,7 @@ public class PrePostMVELTest extends TestCase
 		{
 			// test circular post-condition
 			t.getValuePost();
+			fail();
 		}
 		catch (final ConstraintsViolatedException ex)
 		{
@@ -118,74 +159,16 @@ public class PrePostMVELTest extends TestCase
 		{
 			// test circular post-condition
 			t.getValuePostWithOld();
+			fail();
 		}
 		catch (final ConstraintsViolatedException ex)
 		{
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
 		}
 
-		t.value = new BigDecimal(0);
+		t.value = BigDecimal.valueOf(0);
 		t.getValuePre();
 		t.getValuePost();
 		t.getValuePostWithOld();
 	}
-
-	public void testPostMVEL()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		final TestTransaction t = new TestTransaction();
-
-		try
-		{
-			t.value = new BigDecimal(-2);
-			t.increase2buggy(new BigDecimal(1));
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-
-		t.increase2(new BigDecimal(1));
-	}
-
-	public void testPreMVEL()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		final TestTransaction t = new TestTransaction();
-
-		try
-		{
-			t.increase1(new BigDecimal(1));
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
-		}
-
-		try
-		{
-			t.value = new BigDecimal(2);
-			t.increase1(null);
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
-		}
-		try
-		{
-			t.increase1(new BigDecimal(1));
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			System.out.println(ex.getConstraintViolations()[0].getMessage());
-		}
-	}
-
 }
