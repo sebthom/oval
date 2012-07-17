@@ -1142,7 +1142,7 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
 
         <programlisting><![CDATA[@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@net.sf.oval.configuration.annotation.Constraint(check = UpperCaseCheck.class)
+@net.sf.oval.configuration.annotation.Constraint(checkWith = UpperCaseCheck.class)
 public @interface UpperCase
 {
   /**
@@ -1175,7 +1175,7 @@ public @interface UpperCase
 
         <programlisting><![CDATA[@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@net.sf.oval.configuration.annotation.Constraint(check = UpperCaseCheck.class)
+@net.sf.oval.configuration.annotation.Constraint(checkWith = UpperCaseCheck.class)
 public @interface UpperCase
 {
   /**
@@ -1219,6 +1219,16 @@ public Map<String, String> createMessageVariables()
 }]]></programlisting>
 
         <para>The message variables can then be used in the corresponding message strings.</para>
+        
+        <para>For performance reasons the <command>createMessageVariables</command> method is only executed once and the returned map is cached by OVal for this constraint check instance.
+        If you change one of the variables you need to invalidate the cache and require rebuilding of the variables map by calling <command>requireMessageVariablesRecreation</command>.
+        For the built-in constraints <command>requireMessageVariablesRecreation</command> is invoked in each setter on the constraint check implementations, e.g.:
+        </para>
+        <programlisting><![CDATA[public void setMax(final int max)
+{
+	this.max = max;
+	requireMessageVariablesRecreation();
+}]]></programlisting>
       </listitem>
 
       <listitem>
