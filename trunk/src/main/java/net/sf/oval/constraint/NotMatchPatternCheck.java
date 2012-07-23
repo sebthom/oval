@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,6 +53,7 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 				final Pattern p = Pattern.compile(stringPatterns[i], flag);
 				patterns.add(p);
 			}
+			requireMessageVariablesRecreation();
 		}
 	}
 
