@@ -201,16 +201,18 @@ public final class ReflectionUtils
 		return getFieldRecursive(superclazz, fieldName);
 	}
 
-	public static Object getFieldValue(final Field field, final Object obj) throws AccessingFieldValueFailedException
+	public static Object getFieldValue(final Field field, final Object target)
+			throws AccessingFieldValueFailedException
 	{
 		try
 		{
 			if (!field.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(field));
-			return field.get(obj);
+			return field.get(target);
 		}
 		catch (final Exception ex)
 		{
-			throw new AccessingFieldValueFailedException(field.getName(), obj, ContextCache.getFieldContext(field), ex);
+			throw new AccessingFieldValueFailedException(field.getName(), target, ContextCache.getFieldContext(field),
+					ex);
 		}
 	}
 
