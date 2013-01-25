@@ -60,6 +60,13 @@ public class ExpressionLanguageRegistry
 		if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl2.JexlEngine"))
 			return registerExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
+		// scripting support via JSR223
+		if (ReflectionUtils.isClassPresent("javax.script.ScriptEngineManager"))
+		{
+			final ExpressionLanguage el = ExpressionLanguageScriptEngineImpl.get(languageId);
+			if (el != null) return registerExpressionLanguage(languageId, el);
+		}
+
 		return null;
 	}
 
@@ -97,7 +104,6 @@ public class ExpressionLanguageRegistry
 		Assert.argumentNotNull("impl", impl);
 
 		LOG.info("Expression language '{1}' registered: {2}", languageId, impl);
-
 		elcache.put(languageId, impl);
 		return impl;
 	}
