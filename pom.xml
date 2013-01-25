@@ -9,7 +9,7 @@
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.82</version>
+	<version>1.82-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 
@@ -69,9 +69,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 	</contributors>
 
 	<scm>
-		<url>http://oval.svn.sourceforge.net/viewvc/oval/trunk</url>
-		<connection>scm:svn:http://oval.svn.sourceforge.net/svnroot/oval/trunk</connection>
-		<developerConnection>scm:svn:https://oval.svn.sourceforge.net/svnroot/oval/trunk</developerConnection>
+		<url>http://svn.code.sf.net/p/oval/code/trunk/</url>
+		<connection>scm:svn:http://svn.code.sf.net/p/oval/code/trunk/</connection>
+		<developerConnection>scm:svn:https://svn.code.sf.net/p/oval/code/trunk/</developerConnection>
 	</scm>
 
 	<mailingLists>
@@ -691,6 +691,28 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 
+
+			<!--*********************************************************************
+				phase: release
+				********************************************************************* -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<providerImplementations>
+						<svn>javasvn</svn>
+					</providerImplementations>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+						<artifactId>maven-scm-provider-svnjava</artifactId>
+						<version>2.0.5</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 
 			<!--*********************************************************************
 				phase: manual execution
