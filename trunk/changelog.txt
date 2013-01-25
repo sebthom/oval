@@ -9,6 +9,7 @@
 - fixed [ oval-Bugs-3520684 ] Wrong generic types used in Check-implementations?
 + upgraded to AspectJ 1.7.1, JUnit 4.11, Log4J 1.2.17, SLF4J 1.7.2, XStream 1.4.4, Groovy 2.1.0, BeanShell 2.0b5, OGNL 3.0.6, JRuby 1.6.5, Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3
 - fixed message variable cache invalidation on MatchPatternCheck NotMatchPatternCheck
++ implemented [ oval-Bugs-3386846 ] JSR223 Scripting support
 
 2012-02-22 v1.81
 ================
@@ -253,9 +254,9 @@ Annotation configuration:
  * renamed @Guarded.applyFieldConstraintsToSetter to @Guarded.applyFieldConstraintsToSetters
  + added @Guarded.applyFieldConstraintsToConstructors to @Guarded.applyFieldConstraintsToConstructors
  * JPAAnnotationsConfigurer constraint mappings extended:
-	@javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid
-	@javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid
-	@javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid
+  @javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid
+  @javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid
+  @javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid
 
 Built-in constraints:
  + added @net.sf.oval.constraint.NotBlank (thanks to Dennis Kieselhorst)
@@ -354,11 +355,11 @@ Other changes:
 2006-12-10 v0.8
 ===============
 + added JPAAnnotationsConfigurer to translate EJB3 JPA annotations into OVal constraints
-	@javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
-	@javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
-	@javax.persistence.ManyToOne(optional=false)  => @net.sf.oval.constraints.NotNull
-	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
-	@javax.persistence.Column(length=5)           => @net.sf.oval.constraints.Length
+  @javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
+  @javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
+  @javax.persistence.ManyToOne(optional=false)  => @net.sf.oval.constraints.NotNull
+  @javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
+  @javax.persistence.Column(length=5)           => @net.sf.oval.constraints.Length
 * changed the ant script to generate a maven2 bundle jar in the dist target
 - AssertConstraintSet constraint was ignored when specified for getter methods' return value
 - NPE was thrown when validating objects against an XML based configuration that uses constraint sets
@@ -388,10 +389,10 @@ Refactoring:
     + added support for POJO based constraint configuration
     + added support for XML based constraint configuration
 + added the concept of constraint sets
-	+ added @net.sf.oval.annotations.DefineConstraintSet
-	+ added @net.sf.oval.constraints.AssertConstraintSet
-	+ added net.sf.oval.exceptions.UndefinedConstraintSetException
-	+ added net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException
+  + added @net.sf.oval.annotations.DefineConstraintSet
+  + added @net.sf.oval.constraints.AssertConstraintSet
+  + added net.sf.oval.exceptions.UndefinedConstraintSetException
+  + added net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException
     + added net.sf.oval.Validator.addConstraintSet(ConstraintSetConfiguration)
 * made resolving of constraint violation messages customizable
     + added net.sf.oval.MessageResolver
