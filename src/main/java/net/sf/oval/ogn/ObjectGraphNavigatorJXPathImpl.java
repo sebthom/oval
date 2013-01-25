@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -34,7 +34,7 @@ import org.apache.commons.jxpath.ri.model.beans.NullPropertyPointer;
 import org.apache.commons.jxpath.ri.model.beans.PropertyPointer;
 
 /**
- * JXPath {@link http://commons.apache.org/jxpath/} based object graph navigator implementation.
+ * JXPath {@link "http://commons.apache.org/jxpath/"} based object graph navigator implementation.
  * @author Sebastian Thomschke
  */
 public class ObjectGraphNavigatorJXPathImpl implements ObjectGraphNavigator
@@ -45,8 +45,7 @@ public class ObjectGraphNavigatorJXPathImpl implements ObjectGraphNavigator
 
 		private final JXPathBeanInfo beanInfo;
 
-		public BeanPointerEx(final NodePointer parent, final QName name, final Object bean,
-				final JXPathBeanInfo beanInfo)
+		public BeanPointerEx(final NodePointer parent, final QName name, final Object bean, final JXPathBeanInfo beanInfo)
 		{
 			super(parent, name, bean, beanInfo);
 			this.beanInfo = beanInfo;
@@ -78,9 +77,9 @@ public class ObjectGraphNavigatorJXPathImpl implements ObjectGraphNavigator
 		{
 			if (!super.isValidProperty(name)) return false;
 
-			// JXPath's default implementation returns true, even if the given property does not exit 
+			// JXPath's default implementation returns true, even if the given property does not exit
 			if (beanInfo.getPropertyDescriptor(name.getName()) == null)
-				throw new JXPathNotFoundException("No pointer for xpath: " + this.toString() + "/" + name);
+				throw new JXPathNotFoundException("No pointer for xpath: " + toString() + "/" + name);
 
 			return true;
 		}
@@ -114,19 +113,18 @@ public class ObjectGraphNavigatorJXPathImpl implements ObjectGraphNavigator
 	static
 	{
 		/*
-		 * JXPath currently does not distinguish between invalid object graph paths, e.g. by referencing a non-existing property on a Java Bean, 
+		 * JXPath currently does not distinguish between invalid object graph paths, e.g. by referencing a non-existing property on a Java Bean,
 		 * and incomplete object graph paths because of null-values.
 		 * In both cases a JXPathNotFoundException is thrown if JXPathContext.lenient is <code>false</code>, and in both cases a NullPropertyPointer is returned if
 		 * JXPathContext.lenient is <code>true</code>.
-		 * 
+		 *
 		 * Therefore we install a patched BeanPointerFactory that checks the existence of properties and throws a JXPathNotFoundException if it does not exist, no matter
 		 * to which setting JXPathContext.lenient is set.
 		 */
 		JXPathContextReferenceImpl.addNodePointerFactory(new BeanPointerFactoryEx());
 	}
 
-	public ObjectGraphNavigationResult navigateTo(final Object root, final String xpath)
-			throws InvalidConfigurationException
+	public ObjectGraphNavigationResult navigateTo(final Object root, final String xpath) throws InvalidConfigurationException
 	{
 		Assert.argumentNotNull("root", root);
 		Assert.argumentNotNull("xpath", xpath);

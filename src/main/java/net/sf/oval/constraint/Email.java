@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -25,10 +25,10 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if the value is a valid e-mail address. The check is performed based on a regular expression.
- * 
+ *
  * <br><br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
@@ -64,16 +64,15 @@ public @interface Email
 	}
 
 	/**
-	 * The e-mail address can contain a personal name as defined in RFC822, e.g. "Personal Name <user@host.domain>". 
-	 * @return
+	 * The e-mail address can contain a personal name as defined in RFC822, e.g. "Personal Name <user@host.domain>".
 	 */
 	boolean allowPersonalName() default true;
 
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-	 * 
+	 *
 	 * <p><b>Default:</b> ConstraintTarget.VALUES
-	 * 
+	 *
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
 	ConstraintTarget[] appliesTo() default ConstraintTarget.VALUES;
@@ -85,7 +84,7 @@ public @interface Email
 
 	/**
 	 * message to be used for the ContraintsViolatedException
-	 * 
+	 *
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraint.Email.violated";

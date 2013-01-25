@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -21,18 +21,18 @@ import org.springframework.util.Assert;
 
 /**
  * Injects spring beans into unmanaged Java objects having {@link org.springframework.beans.factory.annotation.Autowired},
- * {@link org.springframework.beans.factory.annotation.Value} and  {@link javax.inject.Inject} annotations.
- * 
+ * {@link org.springframework.beans.factory.annotation.Value} and {@link javax.inject.Inject} annotations.
+ *
  * <pre>
  * &lt;bean class="net.sf.oval.integration.spring.SpringInjector" /&gt;
  * </pre>
- * 
- * or 
- * 
+ *
+ * or
+ *
  * <pre>
  * &lt;context:component-scan base-package="net.sf.oval.integration.spring" /&gt;
  * </pre>
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Component
@@ -44,9 +44,8 @@ public class SpringInjector
 
 	public static SpringInjector get()
 	{
-		Assert.notNull(INSTANCE,
-				"No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
-						+ "\" /> to your spring configuration!");
+		Assert.notNull(INSTANCE, "No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
+				+ "\" /> to your spring configuration!");
 
 		return INSTANCE;
 	}
