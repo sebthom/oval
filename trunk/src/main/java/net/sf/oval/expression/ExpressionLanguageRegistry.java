@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -34,44 +34,39 @@ public class ExpressionLanguageRegistry
 		// JavaScript support
 		if (("javascript".equals(languageId) || "js".equals(languageId))
 				&& ReflectionUtils.isClassPresent("org.mozilla.javascript.Context"))
-			return registerExpressionLanguage("js",
-					registerExpressionLanguage("javascript", new ExpressionLanguageJavaScriptImpl()));
+			return registerExpressionLanguage("js", registerExpressionLanguage("javascript", new ExpressionLanguageJavaScriptImpl()));
 
 		// Groovy support
-		else if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
+		if ("groovy".equals(languageId) && ReflectionUtils.isClassPresent("groovy.lang.Binding"))
 			return registerExpressionLanguage("groovy", new ExpressionLanguageGroovyImpl());
 
 		// BeanShell support
-		else if (("beanshell".equals(languageId) || "bsh".equals(languageId))
-				&& ReflectionUtils.isClassPresent("bsh.Interpreter"))
-			return registerExpressionLanguage("beanshell",
-					registerExpressionLanguage("bsh", new ExpressionLanguageBeanShellImpl()));
+		if (("beanshell".equals(languageId) || "bsh".equals(languageId)) && ReflectionUtils.isClassPresent("bsh.Interpreter"))
+			return registerExpressionLanguage("beanshell", registerExpressionLanguage("bsh", new ExpressionLanguageBeanShellImpl()));
 
 		// OGNL support
-		else if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
+		if ("ognl".equals(languageId) && ReflectionUtils.isClassPresent("ognl.Ognl"))
 			return registerExpressionLanguage("ognl", new ExpressionLanguageOGNLImpl());
 
 		// MVEL2 support
-		else if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel2.MVEL"))
+		if ("mvel".equals(languageId) && ReflectionUtils.isClassPresent("org.mvel2.MVEL"))
 			return registerExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
 
 		// JRuby support
-		else if (("jruby".equals(languageId) || "ruby".equals(languageId))
-				&& ReflectionUtils.isClassPresent("org.jruby.Ruby"))
-			return registerExpressionLanguage("jruby",
-					registerExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
+		else if (("jruby".equals(languageId) || "ruby".equals(languageId)) && ReflectionUtils.isClassPresent("org.jruby.Ruby"))
+			return registerExpressionLanguage("jruby", registerExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
 		// JEXL2 support
-		else if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl2.JexlEngine"))
+		if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl2.JexlEngine"))
 			return registerExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
 		return null;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param languageId the id of the language, cannot be null
-	 * 
+	 *
 	 * @throws IllegalArgumentException if <code>languageName == null</code>
 	 * @throws ExpressionLanguageNotAvailableException
 	 */
@@ -90,9 +85,9 @@ public class ExpressionLanguageRegistry
 	}
 
 	/**
-	 * 
+	 *
 	 * @param languageId the expression language identifier
-	 * @param expressionLanguage the expression language implementation
+	 * @param impl the expression language implementation
 	 * @throws IllegalArgumentException if <code>languageId == null || expressionLanguage == null</code>
 	 */
 	public ExpressionLanguage registerExpressionLanguage(final String languageId, final ExpressionLanguage impl)

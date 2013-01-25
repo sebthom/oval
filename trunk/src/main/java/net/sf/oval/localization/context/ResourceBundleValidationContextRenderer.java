@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -33,7 +33,7 @@ import net.sf.oval.internal.Log;
  * com.acme.model.Person.properties<br>
  * com.acme.model.Person_de.properties<br>
  * com.acme.model.Person_fr.properties</b>
- * 
+ *
  * <p>
  * The properties file is expected to have values following this scheme
  * <pre>
@@ -47,16 +47,14 @@ import net.sf.oval.internal.Log;
  */
 public class ResourceBundleValidationContextRenderer implements OValContextRenderer
 {
-	private static final Log  LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
+	private static final Log LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
 
 	public static final ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
 
-	private boolean containsKey(final ResourceBundle bundle, final String key)
+	private static boolean containsKey(final ResourceBundle bundle, final String key)
 	{
 		for (final Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();)
-		{
 			if (en.nextElement().equals(key)) return true;
-		}
 		return false;
 	}
 

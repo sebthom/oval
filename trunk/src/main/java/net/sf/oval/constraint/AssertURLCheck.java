@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *     Makkari - live connect support.
@@ -37,7 +37,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 {
 	/**
 	 * http://en.wikipedia.org/wiki/URI_scheme
-	 * 
+	 *
 	 * @author Sebastian Thomschke
 	 *
 	 */
@@ -73,17 +73,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 
 	private static final Log LOG = Log.getLog(AssertURLCheck.class);
 
-	/**
-	 * Specifies if a connection to the URL should be attempted to verify its validity. 
-	 */
-	private boolean connect = false;
-
-	/**
-	 * Specifies the allowed URL schemes.
-	 */
-	private final List<URIScheme> permittedURISchemes = getCollectionFactory().createList(2);
-
-	private boolean canConnect(final String url)
+	private static boolean canConnect(final String url)
 	{
 		try
 		{
@@ -102,12 +92,22 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			}
 			return true;
 		}
-		catch (final IOException e)
+		catch (final IOException ex)
 		{
-			LOG.debug("Connecting failed with exception", e);
+			LOG.debug("Connecting failed with exception", ex);
 			return false;
 		}
 	}
+
+	/**
+	 * Specifies if a connection to the URL should be attempted to verify its validity.
+	 */
+	private boolean connect = false;
+
+	/**
+	 * Specifies the allowed URL schemes.
+	 */
+	private final List<URIScheme> permittedURISchemes = getCollectionFactory().createList(2);
 
 	/**
 	 * {@inheritDoc}
@@ -135,13 +135,12 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 	 */
 	public URIScheme[] getPermittedURISchemes()
 	{
-		return permittedURISchemes.size() == 0 ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes
-				.size()]);
+		return permittedURISchemes.size() == 0 ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes.size()]);
 	}
 
 	/**
 	 * Specifies if a connection to the URL should be attempted to verify its validity.
-	 * 
+	 *
 	 * @return the connect
 	 */
 	public boolean isConnect()
@@ -197,7 +196,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 
 	/**
 	 * Specifies if a connection to the URL should be attempted to verify its validity.
-	 * 
+	 *
 	 * @param connect the connect to set
 	 */
 	public void setConnect(final boolean connect)
@@ -207,7 +206,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 
 	/**
 	 * Specifies the allowed URL schemes.
-	 * 
+	 *
 	 * @param permittedURISchemes the permittedURISchemes to set
 	 */
 	public void setPermittedURISchemes(final URIScheme[] permittedURISchemes)

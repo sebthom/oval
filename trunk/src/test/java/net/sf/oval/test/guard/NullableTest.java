@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -27,17 +27,17 @@ public class NullableTest extends TestCase
 	{
 		protected TestEntity1(final String param1, @Nullable final String param2)
 		{
-		// nothing
+			// nothing
 		}
 
 		public void setParam1(final String param1)
 		{
-		// nothing
+			// nothing
 		}
 
 		public void setParam2(@Nullable final String param2)
 		{
-		// nothing
+			// nothing
 		}
 	}
 
@@ -47,20 +47,21 @@ public class NullableTest extends TestCase
 	{
 		protected TestEntity2(final String param1, @Nullable final String param2)
 		{
-		// nothing
+			// nothing
 		}
 
 		public void setParam1(final String param1)
 		{
-		// nothing
+			// nothing
 		}
 
 		public void setParam2(@Nullable final String param2)
 		{
-		// nothing
+			// nothing
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void testNullable1()
 	{
 		try
@@ -86,6 +87,7 @@ public class NullableTest extends TestCase
 		t.setParam2(null);
 	}
 
+	@SuppressWarnings("unused")
 	public void testNullable2()
 	{
 		new TestEntity2(null, "foo");

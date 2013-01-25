@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -59,7 +59,7 @@ public class XMLConfigurationTest extends TestCase
 
 		public User()
 		{
-		// do nothing
+			// do nothing
 		}
 
 		public User(final String userId, final String managerId, final int somethingElse)
@@ -237,6 +237,7 @@ public class XMLConfigurationTest extends TestCase
 		validateUser();
 	}
 
+	@SuppressWarnings("unused")
 	private void validateUser()
 	{
 		final ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
@@ -252,13 +253,9 @@ public class XMLConfigurationTest extends TestCase
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(2, violations.length);
-			assertEquals(
-					User.class.getName()
-							+ "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
+			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
 					violations[0].getMessage());
-			assertEquals(
-					User.class.getName()
-							+ "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
+			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
 					violations[1].getMessage());
 		}
 
@@ -273,8 +270,7 @@ public class XMLConfigurationTest extends TestCase
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(1, violations.length);
-			assertEquals(User.class.getName()
-					+ ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
+			assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
 					violations[0].getMessage());
 		}
 
@@ -289,8 +285,7 @@ public class XMLConfigurationTest extends TestCase
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(1, violations.length);
-			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0]
-					.getMessage());
+			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0].getMessage());
 		}
 	}
 }

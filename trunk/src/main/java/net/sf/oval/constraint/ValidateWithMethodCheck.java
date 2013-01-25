@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -104,10 +104,10 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 
 		final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName, parameterType);
 		if (method == null)
-			throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName
-					+ "(" + parameterType + ") not found. Is [" + parameterType
-					+ "] the correct value for [parameterType]?");
-		return ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
+			throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName + "("
+					+ parameterType + ") not found. Is [" + parameterType + "] the correct value for [parameterType]?");
+		//explicit cast to avoid: type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object
+		return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
 	}
 
 	/**

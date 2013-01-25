@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -41,8 +41,7 @@ public final class ReflectionUtils
 {
 	private static final Log LOG = Log.getLog(ReflectionUtils.class);
 
-	private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission(
-			"suppressAccessChecks");
+	private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
 
 	/**
 	 * @throws SecurityException
@@ -58,8 +57,7 @@ public final class ReflectionUtils
 			catch (final SecurityException ex)
 			{
 				throw new ReflectionException(
-						"Current security manager configuration does not allow access to private fields and methods.",
-						ex);
+						"Current security manager configuration does not allow access to private fields and methods.", ex);
 			}
 	}
 
@@ -99,8 +97,7 @@ public final class ReflectionUtils
 		for (final Class< ? > nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass()))
 			try
 			{
-				ArrayUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes)
-						.getDeclaredAnnotations());
+				ArrayUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
 			}
 			catch (final NoSuchMethodException e)
 			{
@@ -126,7 +123,7 @@ public final class ReflectionUtils
 
 	/**
 	 * @param setter
-	 * @return Returns the corresponding field for a setter method. Returns null if the method is not a 
+	 * @return the corresponding field for a setter method. Returns null if the method is not a
 	 * JavaBean style setter or the field could not be located.
 	 */
 	public static Field getFieldForSetter(final Method setter)
@@ -150,9 +147,8 @@ public final class ReflectionUtils
 			// check if field and method parameter are of the same type
 			if (!field.getType().equals(methodParameterTypes[0]))
 			{
-				LOG.warn(
-						"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
-						fieldName, clazz.getName(), methodName);
+				LOG.warn("Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.", fieldName,
+						clazz.getName(), methodName);
 				field = null;
 			}
 		}
@@ -163,8 +159,7 @@ public final class ReflectionUtils
 
 		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() =>
 		// field isEnabled)
-		if (field == null
-				&& (boolean.class.equals(methodParameterTypes[0]) || Boolean.class.equals(methodParameterTypes[0])))
+		if (field == null && (boolean.class.equals(methodParameterTypes[0]) || Boolean.class.equals(methodParameterTypes[0])))
 		{
 			fieldName = "is" + methodName.substring(3);
 
@@ -175,9 +170,8 @@ public final class ReflectionUtils
 				// check if found field is of boolean or Boolean
 				if (!boolean.class.equals(field.getType()) && Boolean.class.equals(field.getType()))
 				{
-					LOG.warn(
-							"Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.",
-							fieldName, clazz.getName(), methodName);
+					LOG.warn("Found field <{1}> in class <{2}>that matches setter <{3}> name, but mismatches parameter type.", fieldName,
+							clazz.getName(), methodName);
 					field = null;
 				}
 			}
@@ -201,8 +195,7 @@ public final class ReflectionUtils
 		return getFieldRecursive(superclazz, fieldName);
 	}
 
-	public static Object getFieldValue(final Field field, final Object target)
-			throws AccessingFieldValueFailedException
+	public static Object getFieldValue(final Field field, final Object target) throws AccessingFieldValueFailedException
 	{
 		try
 		{
@@ -211,15 +204,13 @@ public final class ReflectionUtils
 		}
 		catch (final Exception ex)
 		{
-			throw new AccessingFieldValueFailedException(field.getName(), target, ContextCache.getFieldContext(field),
-					ex);
+			throw new AccessingFieldValueFailedException(field.getName(), target, ContextCache.getFieldContext(field), ex);
 		}
 	}
 
 	public static Method getGetter(final Class< ? > clazz, final String propertyName)
 	{
-		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
-				+ propertyName.substring(1);
+		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 		try
 		{
 			return clazz.getDeclaredMethod("get" + appendix);
@@ -312,8 +303,7 @@ public final class ReflectionUtils
 	/**
 	 * @return the method or null if the method does not exist
 	 */
-	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes)
+	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
 	{
 		final Method m = getMethod(clazz, methodName, parameterTypes);
 		if (m != null) return m;
@@ -325,12 +315,12 @@ public final class ReflectionUtils
 	}
 
 	/**
-	 * Returns an array of arrays that represent the annotations on the formal parameters, in declaration order, 
+	 * Returns an array of arrays that represent the annotations on the formal parameters, in declaration order,
 	 * of the method represented by this method.
-	 *  
+	 *
 	 * @param method the method to inspect
 	 * @param inspectInterfaces whether to also return annotations declared on interface method declaration
-	 * @return an array of arrays that represent the annotations on the formal parameters, in declaration order, 
+	 * @return an array of arrays that represent the annotations on the formal parameters, in declaration order,
 	 * of the method represented by this method.
 	 */
 	public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces)
@@ -357,8 +347,7 @@ public final class ReflectionUtils
 					if (paramAnnos.length > 0)
 					{
 						HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
-						if (cummulatedParamAnnos == null)
-							methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
+						if (cummulatedParamAnnos == null) methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
 						for (final Annotation anno : paramAnnos)
 							cummulatedParamAnnos.add(anno);
 					}
@@ -382,8 +371,7 @@ public final class ReflectionUtils
 
 	public static Method getSetter(final Class< ? > clazz, final String propertyName)
 	{
-		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
-				+ propertyName.substring(1);
+		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
 		for (final Method method : declaredMethods)
@@ -458,7 +446,7 @@ public final class ReflectionUtils
 	}
 
 	/**
-	 * 
+	 *
 	 * @param method the method to invoke
 	 * @param obj the object on which to invoke the method
 	 * @param args the method arguments
@@ -466,8 +454,8 @@ public final class ReflectionUtils
 	 * @throws InvokingMethodFailedException
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args)
-			throws InvokingMethodFailedException, ConstraintsViolatedException
+	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args) throws InvokingMethodFailedException,
+			ConstraintsViolatedException
 	{
 		try
 		{
@@ -476,16 +464,15 @@ public final class ReflectionUtils
 		}
 		catch (final Exception ex)
 		{
-			if (ex.getCause() instanceof ConstraintsViolatedException)
-				throw (ConstraintsViolatedException) ex.getCause();
+			if (ex.getCause() instanceof ConstraintsViolatedException) throw (ConstraintsViolatedException) ex.getCause();
 			throw new InvokingMethodFailedException("Executing method " + method.getName() + " failed.", obj,
 					ContextCache.getMethodReturnValueContext(method), ex);
 		}
 	}
 
 	/**
-	 * Returns true if an annotation for the specified type is present on this method, else false. 
-	 *  
+	 * Returns true if an annotation for the specified type is present on this method, else false.
+	 *
 	 * @param method the method to inspect
 	 * @param annotationClass the Class object corresponding to the annotation type
 	 * @param inspectInterfaces whether to also check annotations declared on interface method declaration
@@ -504,8 +491,7 @@ public final class ReflectionUtils
 		for (final Class< ? > next : getInterfacesRecursive(method.getDeclaringClass()))
 			try
 			{
-				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass))
-					return true;
+				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass)) return true;
 			}
 			catch (final NoSuchMethodException e)
 			{
@@ -537,8 +523,7 @@ public final class ReflectionUtils
 	 */
 	public static boolean isGetter(final Method method)
 	{
-		return method.getParameterTypes().length == 0
-				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+		return method.getParameterTypes().length == 0 && (method.getName().startsWith("is") || method.getName().startsWith("get"));
 	}
 
 	// public Constructor getDeclaredConstructorOfNonStaticInnerClass(Class)

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -59,12 +59,10 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values)
-			throws ExpressionEvaluationException
+	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		final Object result = evaluate(expression, values);
-		if (!(result instanceof Boolean))
-			throw new ExpressionEvaluationException("The script must return a boolean value.");
+		if (!(result instanceof Boolean)) throw new ExpressionEvaluationException("The script must return a boolean value.");
 		return (Boolean) result;
 	}
 }
