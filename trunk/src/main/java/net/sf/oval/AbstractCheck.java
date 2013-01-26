@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import net.sf.oval.expression.ExpressionLanguage;
 
 /**
  * Partial implementation of check classes.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public abstract class AbstractCheck implements Check
@@ -58,7 +58,7 @@ public abstract class AbstractCheck implements Check
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the default behavior when the constraint is validated for a array/map/collection reference.
 	 */
 	protected ConstraintTarget[] getAppliesToDefault()
@@ -119,11 +119,12 @@ public abstract class AbstractCheck implements Check
 	 * Values that are used to fill place holders when rendering the error message.
 	 * A key "min" with a value "4" will replace the place holder {min} in an error message
 	 * like "Value cannot be smaller than {min}" with the string "4".
-	 * 
+	 *
 	 * <b>Note:</b> Override {@link #createMessageVariables()} to create and fill the map
-	 * 
+	 *
 	 * @return an unmodifiable map
 	 */
+	@SuppressWarnings("javadoc")
 	public final Map<String, ? extends Serializable> getMessageVariables()
 	{
 		if (!messageVariablesUpToDate)
@@ -189,7 +190,7 @@ public abstract class AbstractCheck implements Check
 	}
 
 	/**
-	 * Calling this method indicates that the {@link #createMessageVariables()} method needs to be called before the message 
+	 * Calling this method indicates that the {@link #createMessageVariables()} method needs to be called before the message
 	 * for the next violation of this check is rendered.
 	 */
 	protected void requireMessageVariablesRecreation()
@@ -269,8 +270,7 @@ public abstract class AbstractCheck implements Check
 			else
 			{
 				final String[] parts = when.split(":", 2);
-				if (parts.length == 0)
-					throw new IllegalArgumentException("[when] is missing the scripting language declaration");
+				if (parts.length == 0) throw new IllegalArgumentException("[when] is missing the scripting language declaration");
 				this.when = when;
 				whenLang = parts[0];
 				whenFormula = parts[1];

@@ -85,6 +85,58 @@ public class XMLConfigurationTest extends TestCase
 		}
 	}
 
+	@SuppressWarnings("unused")
+	private static void validateUser()
+	{
+		final ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
+		TestGuardAspect.aspectOf().getGuard().addListener(listener, User.class);
+
+		listener.clear();
+		try
+		{
+			new User(null, null, 1);
+			fail("ConstraintViolationException expected");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(2, violations.length);
+			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
+					violations[0].getMessage());
+			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
+					violations[1].getMessage());
+		}
+
+		listener.clear();
+		try
+		{
+			final User user = new User("12345678", "12345678", 1);
+			user.setManagerId(null);
+			fail("ConstraintViolationException expected");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(1, violations.length);
+			assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
+					violations[0].getMessage());
+		}
+
+		listener.clear();
+		try
+		{
+			final User user = new User();
+			user.getManagerId();
+			fail("ConstraintViolationException expected");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(1, violations.length);
+			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0].getMessage());
+		}
+	}
+
 	public void testImportedFile()
 	{
 		try
@@ -235,57 +287,5 @@ public class XMLConfigurationTest extends TestCase
 		TestGuardAspect.aspectOf().setGuard(guard);
 
 		validateUser();
-	}
-
-	@SuppressWarnings("unused")
-	private void validateUser()
-	{
-		final ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
-		TestGuardAspect.aspectOf().getGuard().addListener(listener, User.class);
-
-		listener.clear();
-		try
-		{
-			new User(null, null, 1);
-			fail("ConstraintViolationException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(2, violations.length);
-			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
-					violations[0].getMessage());
-			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
-					violations[1].getMessage());
-		}
-
-		listener.clear();
-		try
-		{
-			final User user = new User("12345678", "12345678", 1);
-			user.setManagerId(null);
-			fail("ConstraintViolationException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(1, violations.length);
-			assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
-					violations[0].getMessage());
-		}
-
-		listener.clear();
-		try
-		{
-			final User user = new User();
-			user.getManagerId();
-			fail("ConstraintViolationException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(1, violations.length);
-			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0].getMessage());
-		}
 	}
 }
