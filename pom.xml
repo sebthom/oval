@@ -624,7 +624,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- we are generating the site in the package phase because we want to include it in the distribution -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.2</version>
+				<!-- cannot use 2.3-3.2, site:deploy fails with: Error uploading site, String index out of range: 0  https://jira.codehaus.org/browse/WAGON-354 -->
+				<version>2.2</version>
 				<dependencies>
 					<!-- docbook support, unfortunately very limited
 						<dependency>
