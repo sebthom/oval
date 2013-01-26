@@ -35,6 +35,7 @@ import org.springframework.util.Assert;
  *
  * @author Sebastian Thomschke
  */
+@SuppressWarnings("javadoc")
 @Component
 public class SpringInjector
 {
