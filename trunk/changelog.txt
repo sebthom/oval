@@ -2,7 +2,7 @@
 [+] Feature added.
 [*] Change.
 
-2012-??-?? v1.82
+2013-01-26 v1.82
 ================
 - fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost
 - made deprecated XML attribute "requireValidElements" of assertValid optional in XSD
