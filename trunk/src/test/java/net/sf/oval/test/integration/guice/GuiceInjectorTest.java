@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.test.integration.spring;
+package net.sf.oval.test.integration.guice;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,70 +24,74 @@ import net.sf.oval.configuration.annotation.AnnotationsConfigurer;
 import net.sf.oval.configuration.annotation.Constraint;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.OValException;
-import net.sf.oval.integration.spring.SpringCheckInitializationListener;
+import net.sf.oval.integration.guice.GuiceCheckInitializationListener;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 
 /**
 * @author Sebastian Thomschke
 */
-public class SpringInjectorTest extends TestCase
+public class GuiceInjectorTest extends TestCase
 {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
-	@Constraint(checkWith = SpringNullContraintCheck.class)
-	public @interface SpringNullContraint
+	@Constraint(checkWith = GuiceNullContraintCheck.class)
+	public @interface GuiceNullContraint
 	{
 		//nothing
 	}
 
 	public static class Entity
 	{
-		@SpringNullContraint
+		@GuiceNullContraint
 		protected String field;
 	}
 
 	/**
-	 * constraint check implementation requiring Spring managed beans
+	 * constraint check implementation requiring Guice injected members
 	 */
-	public static class SpringNullContraintCheck extends AbstractAnnotationCheck<SpringNullContraint>
+	public static class GuiceNullContraintCheck extends AbstractAnnotationCheck<GuiceNullContraint>
 	{
 		private static final long serialVersionUID = 1L;
 
-		@Autowired
-		@Qualifier("SPRING_MANAGED_BEAN")
-		private Integer springManagedBean;
+		@Inject
+		@Named("GUICE_MANAGED_OBJECT")
+		private Integer guiceManagedObject;
 
 		public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
 				final Validator validator) throws OValException
 		{
-			return springManagedBean == 10 && valueToValidate != null;
+			return guiceManagedObject == 10 && valueToValidate != null;
 		}
 	}
 
-	public void testWithSpringInjector()
+	public void testWithGuiceInjector()
 	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringInjectorTest.xml", SpringInjectorTest.class);
-		try
-		{
-			final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
-			myConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
-			final Validator v = new Validator(myConfigurer);
+		final Injector injector = Guice.createInjector(new Module()
+			{
+				public void configure(final Binder binder)
+				{
+					binder.bind(Integer.class).annotatedWith(Names.named("GUICE_MANAGED_OBJECT")).toInstance(10);
+				}
+			});
 
-			final Entity e = new Entity();
-			assertEquals(1, v.validate(e).size());
-			e.field = "whatever";
-			assertEquals(0, v.validate(e).size());
-		}
-		finally
-		{
-			ctx.close();
-		}
+		final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
+		myConfigurer.addCheckInitializationListener(new GuiceCheckInitializationListener(injector));
+		final Validator v = new Validator(myConfigurer);
+
+		final Entity e = new Entity();
+		assertEquals(1, v.validate(e).size());
+		e.field = "whatever";
+		assertEquals(0, v.validate(e).size());
 	}
 
-	public void testWithoutSpringInjector()
+	public void testWithoutGuiceInjector()
 	{
 		final Validator v = new Validator();
 		final Entity e = new Entity();
@@ -99,4 +103,5 @@ public class SpringInjectorTest extends TestCase
 		catch (final NullPointerException ex)
 		{}
 	}
+
 }

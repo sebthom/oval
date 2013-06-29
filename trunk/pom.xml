@@ -237,6 +237,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>3.2.3.RELEASE</version>
@@ -499,17 +505,21 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
 				<configuration>
 					<source>${version.java}</source>
 					<target>${version.java}</target>
 					<compilerVersion>${version.java}</compilerVersion>
 					<!-- disabled because of bug http://jira.codehaus.org/browse/MCOMPILER-208 -->
-					<excludes>
-						<exclude>**/*.*</exclude>
-					</excludes>
-					<testExcludes>
-						<exclude>**/*.*</exclude>
-					</testExcludes>
 					<!--
 						<compilerId>aspectj</compilerId>
 						<includes>
@@ -788,19 +798,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 									</pluginExecutionFilter>
 									<action>
 										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-compiler-plugin</artifactId>
-										<versionRange>[3.1,)</versionRange>
-										<goals>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
 									</action>
 								</pluginExecution>
 								<pluginExecution>

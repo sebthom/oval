@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -59,37 +59,74 @@ public class SpringAOPAllianceTest extends TestCase
 
 	public void testCGLIBProxying()
 	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-				"SpringAOPAllianceTestCGLIBProxy.xml", SpringAOPAllianceTest.class);
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestCGLIBProxy.xml",
+				SpringAOPAllianceTest.class);
 
+		try
 		{
-			final TestServiceWithoutInterface testServiceWithoutInterface = (TestServiceWithoutInterface) ctx
-					.getBean("testServiceWithoutInterface");
+			{
+				final TestServiceWithoutInterface testServiceWithoutInterface = (TestServiceWithoutInterface) ctx
+						.getBean("testServiceWithoutInterface");
 
-			try
-			{
-				testServiceWithoutInterface.getSomething(null);
-				fail();
-			}
-			catch (final ConstraintsViolatedException ex)
-			{
-				assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+				try
+				{
+					testServiceWithoutInterface.getSomething(null);
+					fail();
+				}
+				catch (final ConstraintsViolatedException ex)
+				{
+					assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+				}
+
+				try
+				{
+					testServiceWithoutInterface.getSomething("123456");
+					fail();
+				}
+				catch (final ConstraintsViolatedException ex)
+				{
+					assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+				}
 			}
 
-			try
 			{
-				testServiceWithoutInterface.getSomething("123456");
-				fail();
-			}
-			catch (final ConstraintsViolatedException ex)
-			{
-				assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+				final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface", TestServiceInterface.class);
+
+				try
+				{
+					testServiceWithInterface.getSomething(null);
+					fail();
+				}
+				catch (final ConstraintsViolatedException ex)
+				{
+					assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+				}
+
+				try
+				{
+					testServiceWithInterface.getSomething("123456");
+					fail();
+				}
+				catch (final ConstraintsViolatedException ex)
+				{
+					assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+				}
 			}
 		}
-
+		finally
 		{
-			final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface",
-					TestServiceInterface.class);
+			ctx.close();
+		}
+	}
+
+	public void testJDKProxying()
+	{
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestJDKProxy.xml",
+				SpringAOPAllianceTest.class);
+
+		try
+		{
+			final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface", TestServiceInterface.class);
 
 			try
 			{
@@ -111,33 +148,9 @@ public class SpringAOPAllianceTest extends TestCase
 				assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
 			}
 		}
-	}
-
-	public void testJDKProxying()
-	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-				"SpringAOPAllianceTestJDKProxy.xml", SpringAOPAllianceTest.class);
-		final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface",
-				TestServiceInterface.class);
-
-		try
+		finally
 		{
-			testServiceWithInterface.getSomething(null);
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
-		}
-
-		try
-		{
-			testServiceWithInterface.getSomething("123456");
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+			ctx.close();
 		}
 	}
 }

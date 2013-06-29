@@ -10,20 +10,38 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.integration.spring;
+package net.sf.oval.integration.guice;
 
 import net.sf.oval.Check;
+import net.sf.oval.configuration.CheckInitializationListener;
+import net.sf.oval.constraint.CheckWithCheck;
+
+import com.google.inject.Injector;
 
 /**
- * Injects Spring bean dependencies into {@link Check} instances.
+ * Injects Guice bean dependencies into {@link Check} instances.
  *
  * Required dependencies must be annotated with <code>@Autowired</code> within {@link Check} the class.
  *
- * Requires the {@link SpringInjector} be setup correctly.
- *
  * @author Sebastian Thomschke
- * @deprecated Use {@link SpringCheckInitializationListener} instead
  */
-@Deprecated
-public class BeanInjectingCheckInitializationListener extends SpringCheckInitializationListener
-{}
+public class GuiceCheckInitializationListener implements CheckInitializationListener
+{
+	private final Injector injector;
+
+	public GuiceCheckInitializationListener(final Injector injector)
+	{
+		this.injector = injector;
+	}
+
+	public void onCheckInitialized(final Check check)
+	{
+		injector.injectMembers(check);
+
+		if (check instanceof CheckWithCheck)
+		{
+			final CheckWithCheck checkWith = (CheckWithCheck) check;
+			injector.injectMembers(checkWith.getSimpleCheck());
+		}
+	}
+}
