@@ -5,7 +5,8 @@
 2013-??-?? v1.83
 ================
 + upgraded to Spring 3.2.3.RELEASE, Groovy 2.1.5, Paranamer 2.5.5,
-* added small performance improvement of annotation processing in BeanValidationAnnotationsConfigurer
+* small performance improvement in annotation processing in BeanValidationAnnotationsConfigurer
++ added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice managed objects into constraint check implementations
 
 2013-01-26 v1.82
 ================
