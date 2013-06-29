@@ -2,6 +2,11 @@
 [+] Feature added.
 [*] Change.
 
+2013-??-?? v1.83
+================
++ upgraded to Spring 3.2.3.RELEASE, Groovy 2.1.5, Paranamer 2.5.5,
+* added small performance improvement of annotation processing in BeanValidationAnnotationsConfigurer
+
 2013-01-26 v1.82
 ================
 - fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost

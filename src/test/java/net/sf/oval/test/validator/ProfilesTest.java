@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -165,8 +165,13 @@ public class ProfilesTest extends TestCase
 			final Person p = new Person();
 			final List<ConstraintViolation> violations = validator.validate(p);
 			assertEquals(2, violations.size());
-			assertEquals("NOTNULL", violations.get(0).getMessage());
-			assertEquals("NOTNULL3", violations.get(1).getMessage());
+			if ("NOTNULL".equals(violations.get(0).getMessage()))
+				assertEquals("NOTNULL3", violations.get(1).getMessage());
+			else
+			{
+				assertEquals("NOTNULL3", violations.get(0).getMessage());
+				assertEquals("NOTNULL", violations.get(1).getMessage());
+			}
 		}
 
 		assertTrue(validator.isProfileEnabled("profile4"));
