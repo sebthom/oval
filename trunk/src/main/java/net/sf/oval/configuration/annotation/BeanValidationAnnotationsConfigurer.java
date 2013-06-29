@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -169,12 +169,11 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 		final CollectionFactory cf = getCollectionFactory();
 
 		List<Check> returnValueChecks = cf.createList(2);
-		
+
 		for (final Method method : classCfg.type.getDeclaredMethods())
 		{
 			// loop over all annotations
-			for (final Annotation annotation : ReflectionUtils.getAnnotations(method,
-					Boolean.TRUE.equals(classCfg.inspectInterfaces)))
+			for (final Annotation annotation : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces)))
 				initializeChecks(annotation, returnValueChecks);
 
 			/*
@@ -230,7 +229,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			classCfg.checkInvariants = guarded.checkInvariants();
 			classCfg.inspectInterfaces = guarded.inspectInterfaces();
 		}
-		
+
 		configureFieldChecks(classCfg);
 		configureConstructorParameterChecks(classCfg);
 		configureMethodChecks(classCfg);
@@ -250,6 +249,9 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 	{
 		assert annotation != null;
 		assert checks != null;
+
+		// ignore non-bean validation annotations
+		if (!(annotation instanceof Valid) && annotation.annotationType().getAnnotation(javax.validation.Constraint.class) == null) return;
 
 		Class< ? >[] groups = null;
 		Check check = null;
@@ -346,8 +348,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 			if (getMessage != null)
 			{
 				final String message = ReflectionUtils.invokeMethod(getMessage, annotation, (Object[]) null);
-				if (message != null && !message.startsWith("{javax.validation.constraints."))
-					check.setMessage(message);
+				if (message != null && !message.startsWith("{javax.validation.constraints.")) check.setMessage(message);
 			}
 
 			if (groups != null && groups.length > 0)
@@ -393,7 +394,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer
 				initializeChecks(anno, checks);
 		else
 		{
-			LOG.warn("Ignoring unsupported JSR303 constraint annotation {1}", annotation);
+			LOG.warn("Ignoring unsupported bean validation constraint annotation {1}", annotation);
 			return;
 		}
 	}
