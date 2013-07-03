@@ -3,8 +3,8 @@
 	@author Sebastian Thomschke
 	@author Holger Riegel
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.oval</groupId>
@@ -389,7 +389,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 						<configuration>
 							<target>
 								<copy todir="${project.build.directory}">
-									<fileset dir="${basedir}" includes="README.txt" />
+									<fileset dir="${project.basedir}" includes="README.txt" />
 								</copy>
 								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
 							</target>
@@ -424,7 +424,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<configuration>
 					<!-- see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/
 						and http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html -->
-					<sourceDirectory>${basedir}/src/site/docbook</sourceDirectory>
+					<sourceDirectory>${project.basedir}/src/site/docbook</sourceDirectory>
 					<targetDirectory>${project.build.directory}/site</targetDirectory>
 
 					<xincludeSupported>true</xincludeSupported>
@@ -437,8 +437,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<!-- configure syntax highlighting -->
 					<highlightDefaultLanguage>java</highlightDefaultLanguage>
 					<highlightSource>1</highlightSource>
-					<htmlCustomization>${basedir}/src/site/docbook/highlight.xsl</htmlCustomization>
-					<xhtmlCustomization>${basedir}/src/site/docbook/highlight.xsl</xhtmlCustomization>
+					<htmlCustomization>${project.basedir}/src/site/docbook/highlight.xsl</htmlCustomization>
+					<xhtmlCustomization>${project.basedir}/src/site/docbook/highlight.xsl</xhtmlCustomization>
 
 					<!-- Enable auto numbering of section labels -->
 					<sectionAutolabel>1</sectionAutolabel>
@@ -486,7 +486,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 				<configuration>
 					<dest>${project.build.directory}/classes</dest>
-					<src>${basedir}/src/main/resources</src>
+					<src>${project.basedir}/src/main/resources</src>
 					<includes>
 						<include>**/*.properties</include>
 					</includes>
@@ -569,8 +569,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<complianceLevel>${version.java}</complianceLevel>
 					<source>${version.java}</source>
 					<target>${version.java}</target>
-					<aspectDirectory>${basedir}/src/main/java</aspectDirectory>
-					<testAspectDirectory>${basedir}/src/test/java</testAspectDirectory>
+					<aspectDirectory>${project.basedir}/src/main/java</aspectDirectory>
+					<testAspectDirectory>${project.basedir}/src/test/java</testAspectDirectory>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -612,7 +612,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile> -->
 					<archive>
-						<manifestFile>${basedir}/src/main/java/META-INF/MANIFEST.MF</manifestFile>
+						<manifestFile>${project.basedir}/src/main/java/META-INF/MANIFEST.MF</manifestFile>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<Bundle-Version>${project.version}</Bundle-Version>
@@ -690,17 +690,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
+					<!-- do not upload during deploy phase -->
+					<attach>false</attach>
 					<descriptors>
-						<descriptor>${basedir}/src/main/assembly/archive-with-dependencies.xml
-						</descriptor>
-						<descriptor>${basedir}/src/main/assembly/archive-without-dependencies.xml
-						</descriptor>
+						<descriptor>${project.basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
+						<descriptor>${project.basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
 					<execution>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 						<phase>package</phase>
 					</execution>
@@ -841,7 +841,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9</version>
 				<configuration>
-					<stylesheetfile>${basedir}/src/site/javadoc/oval-javadoc.css
+					<stylesheetfile>${project.basedir}/src/site/javadoc/oval-javadoc.css
 					</stylesheetfile>
 					<stylesheet>maven</stylesheet>
 					<linksource>true</linksource>
@@ -931,7 +931,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>2.5.2</version>
 				<configuration>
-					<excludeFilterFile>${basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
+					<excludeFilterFile>${project.basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
 					<xmlOutput>true</xmlOutput>
 					<effort>Max</effort>
 				</configuration>
@@ -942,7 +942,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.10</version>
 				<configuration>
-					<configLocation>${basedir}/src/misc/checkstyle-config.xml</configLocation>
+					<configLocation>${project.basedir}/src/misc/checkstyle-config.xml</configLocation>
 					<enableRSS>false</enableRSS>
 					<failsOnError>false</failsOnError>
 					<linkXref>true</linkXref>
