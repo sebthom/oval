@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -20,25 +20,24 @@ import net.sf.oval.exception.OValException;
 
 /**
  * interface for classes that can check/validate if a constraint is satisfied
- * 
+ *
  * @author Sebastian Thomschke
  */
 public interface Check extends Serializable
 {
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-	 * 
+	 *
 	 * <p><b>Default:</b> ConstraintTarget.CONTAINER
-	 * 
+	 *
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
 	ConstraintTarget[] getAppliesTo();
 
 	/**
 	 * @return Returns the context where the constraint was declared.
-	 * 
+	 *
 	 * @see net.sf.oval.context.ClassContext
-	 * @see net.sf.oval.context.ConstraintSetContext
 	 * @see net.sf.oval.context.FieldContext
 	 * @see net.sf.oval.context.MethodEntryContext
 	 * @see net.sf.oval.context.MethodExitContext
@@ -52,7 +51,7 @@ public interface Check extends Serializable
 	 */
 	String getErrorCode();
 
-	/** 
+	/**
 	 * gets the default message that is displayed if a corresponding message key
 	 * is not found in the messages properties file
 	 * <br>
@@ -103,13 +102,13 @@ public interface Check extends Serializable
 	 * <b>_this</b> -&gt; the validated bean<br>
 	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value,
 	 *    or the validated bean for object level constraints)
-	 *    
+	 *
 	 * @return the formula
 	 */
 	String getWhen();
 
 	/**
-	 * 
+	 *
 	 * @param validatedObject the object/bean to validate the value against, for static fields or methods this is the class
 	 * @param valueToValidate the value to validate, may be null when validating pre conditions for static methods
 	 * @param validator the calling validator
@@ -119,7 +118,7 @@ public interface Check extends Serializable
 
 	/**
 	 * This method implements the validation logic
-	 * 
+	 *
 	 * @param validatedObject the object/bean to validate the value against, for static fields or methods this is the class
 	 * @param valueToValidate the value to validate, may be null when validating pre conditions for static methods
 	 * @param context the validation context (e.g. a field, a constructor parameter or a method parameter)
@@ -147,7 +146,7 @@ public interface Check extends Serializable
 	/**
 	 * sets the default message that is displayed if a corresponding message key
 	 * is not found in the messages properties file
-	 * 
+	 *
 	 * <br>
 	 * default processed place holders are:
 	 * <ul>
@@ -189,7 +188,7 @@ public interface Check extends Serializable
 	 * <b>_this</b> -&gt; the validated bean<br>
 	 * <b>_value</b> -&gt; the value to validate (e.g. the field value, parameter value, method return value,
 	 *    or the validated bean for object level constraints)
-	 *  
+	 *
 	 * @param when formula calculating if this check is active
 	 */
 	void setWhen(String when);
