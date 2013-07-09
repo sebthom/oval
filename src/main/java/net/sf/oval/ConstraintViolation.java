@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -95,7 +95,6 @@ public class ConstraintViolation implements Serializable
 	 * @return Returns the context where the constraint was declared.
 	 *
 	 * @see net.sf.oval.context.ClassContext
-	 * @see net.sf.oval.context.ConstraintSetContext
 	 * @see net.sf.oval.context.FieldContext
 	 * @see net.sf.oval.context.MethodEntryContext
 	 * @see net.sf.oval.context.MethodExitContext
