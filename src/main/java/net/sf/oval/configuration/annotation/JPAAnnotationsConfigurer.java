@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.configuration.annotation;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -62,17 +62,11 @@ public class JPAAnnotationsConfigurer implements Configurer
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;
 
-	/**
-	 * @return the applyFieldConstraintsToConstructors
-	 */
 	public Boolean getApplyFieldConstraintsToConstructors()
 	{
 		return applyFieldConstraintsToConstructors;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		final CollectionFactory cf = getCollectionFactory();
@@ -120,7 +114,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		 */
 		for (final Method method : config.type.getDeclaredMethods())
 		{
-			// consider getters only 
+			// consider getters only
 			if (!ReflectionUtils.isGetter(method)) continue;
 
 			// loop over all annotations
@@ -154,9 +148,6 @@ public class JPAAnnotationsConfigurer implements Configurer
 		return config;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 	{
 		return null;
@@ -170,17 +161,16 @@ public class JPAAnnotationsConfigurer implements Configurer
 		if (!annotation.optional()) checks.add(new NotNullCheck());
 	}
 
-	protected void initializeChecks(final Column annotation, final Collection<Check> checks,
-			final AccessibleObject fieldOrMethod)
+	protected void initializeChecks(final Column annotation, final Collection<Check> checks, final AccessibleObject fieldOrMethod)
 	{
 		assert annotation != null;
 		assert checks != null;
 
-		/* If the value is generated (annotated with @GeneratedValue) it is allowed to be null 
+		/* If the value is generated (annotated with @GeneratedValue) it is allowed to be null
 		 * before the entity has been persisted, same is true in case of optimistic locking
 		 * when a field is annotated with @Version.
-		 * Therefore and because of the fact that there is no generic way to determine if an entity 
-		 * has been persisted already, a not-null check will not be performed for such fields. 
+		 * Therefore and because of the fact that there is no generic way to determine if an entity
+		 * has been persisted already, a not-null check will not be performed for such fields.
 		 */
 		if (!annotation.nullable() && !fieldOrMethod.isAnnotationPresent(GeneratedValue.class)
 				&& !fieldOrMethod.isAnnotationPresent(Version.class)) checks.add(new NotNullCheck());
@@ -203,8 +193,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 			 * precision = 4, scale = 1  =>   -999.9<=x<=999.9
 			 */
 			final RangeCheck rangeCheck = new RangeCheck();
-			rangeCheck.setMax(Math.pow(10, annotation.precision() - annotation.scale())
-					- Math.pow(0.1, annotation.scale()));
+			rangeCheck.setMax(Math.pow(10, annotation.precision() - annotation.scale()) - Math.pow(0.1, annotation.scale()));
 			rangeCheck.setMin(-1 * rangeCheck.getMax());
 			checks.add(rangeCheck);
 		}
@@ -244,28 +233,18 @@ public class JPAAnnotationsConfigurer implements Configurer
 		checks.add(new AssertValidCheck());
 	}
 
-	/**
-	 * @return the applyFieldConstraintsToSetter
-	 */
 	public Boolean isApplyFieldConstraintsToSetter()
 	{
 		return applyFieldConstraintsToSetters;
 	}
 
-	/**
-	 * @param applyFieldConstraintsToConstructors the applyFieldConstraintsToConstructors to set
-	 */
 	public void setApplyFieldConstraintsToConstructors(final Boolean applyFieldConstraintsToConstructors)
 	{
 		this.applyFieldConstraintsToConstructors = applyFieldConstraintsToConstructors;
 	}
 
-	/**
-	 * @param applyFieldConstraintsToSetters the applyFieldConstraintsToSetter to set
-	 */
 	public void setApplyFieldConstraintsToSetters(final Boolean applyFieldConstraintsToSetters)
 	{
 		this.applyFieldConstraintsToSetters = applyFieldConstraintsToSetters;
 	}
-
 }
