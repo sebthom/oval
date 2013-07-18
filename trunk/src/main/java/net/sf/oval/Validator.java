@@ -134,10 +134,10 @@ public class Validator implements IValidator
 		}
 	}
 
-	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
-
-	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
 	private static final Log LOG = Log.getLog(Validator.class);
+
+	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
+	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
 
 	private static MessageResolver messageResolver;
 	private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
