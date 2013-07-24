@@ -3,7 +3,8 @@
 	@author Sebastian Thomschke
 	@author Holger Riegel
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -114,10 +115,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<repository>
 			<id>oval-release</id>
 			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/release</url>
+			<!-- <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url> -->
 		</repository>
 		<snapshotRepository>
 			<id>oval-snapshot</id>
 			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/snapshot</url>
+			<!-- <url>https://oss.sonatype.org/content/repositories/snapshots</url> -->
 		</snapshotRepository>
 		<site>
 			<id>oval-site</id>
@@ -761,6 +764,19 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>org.codehaus.mojo</groupId>
