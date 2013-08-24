@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -96,7 +97,6 @@ import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.Assert;
-import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -116,7 +116,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
  * XStream (http://xstream.codehaus.org/) based XML configuration class.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public class XMLConfigurer implements Configurer
@@ -124,7 +124,7 @@ public class XMLConfigurer implements Configurer
 	/**
 	 * The converter is needed to allow the rendering of Assert's expr attribute value as an XML node value and not an XML attribute
 	 * <code>&lt;assert&gt;&lt;expr&gt;...&lt;/expr&gt;&lt;/assert&gt;</code> instead of <code>&lt;assert expr="..."&gt;</code>
-	 * This allows users to write complex, multi-line expressions. 
+	 * This allows users to write complex, multi-line expressions.
 	 */
 	protected final class AssertCheckConverter implements Converter
 	{
@@ -187,8 +187,7 @@ public class XMLConfigurer implements Configurer
 			assertCheck.setLang(reader.getAttribute("lang"));
 			assertCheck.setMessage(reader.getAttribute("message"));
 			assertCheck.setErrorCode(reader.getAttribute("errorCode"));
-			if (reader.getAttribute("severity") != null)
-				assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
+			if (reader.getAttribute("severity") != null) assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
 			assertCheck.setTarget(reader.getAttribute("target"));
 			assertCheck.setWhen(reader.getAttribute("when"));
 
@@ -204,8 +203,7 @@ public class XMLConfigurer implements Configurer
 					while (reader.hasMoreChildren())
 					{
 						reader.moveDown();
-						if ("constraintTarget".equals(reader.getNodeName()))
-							targets.add(ConstraintTarget.valueOf(reader.getValue()));
+						if ("constraintTarget".equals(reader.getNodeName())) targets.add(ConstraintTarget.valueOf(reader.getValue()));
 						reader.moveUp();
 					}
 					assertCheck.setAppliesTo(targets.toArray(new ConstraintTarget[targets.size()]));
@@ -257,7 +255,7 @@ public class XMLConfigurer implements Configurer
 		{
 			final Object instance = super.newInstance(type);
 
-			// test if a AnnotationCheck instance is requested 
+			// test if a AnnotationCheck instance is requested
 			if (instance instanceof AbstractAnnotationCheck)
 			{
 				// determine the constraint annotation
@@ -272,7 +270,7 @@ public class XMLConfigurer implements Configurer
 						break;
 					}
 				}
-				// in case we could determine the constraint annotation, read the attributes and 
+				// in case we could determine the constraint annotation, read the attributes and
 				// apply the declared default values to the check instance
 				if (constraintAnnotation != null) for (final Method m : constraintAnnotation.getMethods())
 				{
@@ -286,13 +284,13 @@ public class XMLConfigurer implements Configurer
 
 	private static final Log LOG = Log.getLog(Validator.class);
 
-	protected final Set<CheckInitializationListener> listeners = new LinkedSet<CheckInitializationListener>(2);
+	protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<CheckInitializationListener>(2);
 	private POJOConfigurer pojoConfigurer = new POJOConfigurer();
 	private final XStream xStream;
 
 	/**
-	 * creates an XMLConfigurer instance backed by a new XStream instance 
-	 * using the com.thoughtworks.xstream.io.xml.StaxDriver for XML parsing 
+	 * creates an XMLConfigurer instance backed by a new XStream instance
+	 * using the com.thoughtworks.xstream.io.xml.StaxDriver for XML parsing
 	 * if the StAX API is available
 	 * @see com.thoughtworks.xstream.io.xml.StaxDriver
 	 */
@@ -436,8 +434,7 @@ public class XMLConfigurer implements Configurer
 		xStream.alias("oval", POJOConfigurer.class);
 		{
 			// <constraintSet> -> net.sf.oval.configuration.elements.ConstraintSetConfiguration
-			xStream.addImplicitCollection(POJOConfigurer.class, "constraintSetConfigurations",
-					ConstraintSetConfiguration.class);
+			xStream.addImplicitCollection(POJOConfigurer.class, "constraintSetConfigurations", ConstraintSetConfiguration.class);
 			xStream.alias("constraintSet", ConstraintSetConfiguration.class);
 			xStream.addImplicitCollection(ConstraintSetConfiguration.class, "checks");
 
@@ -462,23 +459,19 @@ public class XMLConfigurer implements Configurer
 				xStream.addImplicitCollection(ParameterConfiguration.class, "checkExclusions", CheckExclusion.class);
 
 				// <constructor> -> net.sf.oval.configuration.elements.ConstructorConfiguration
-				xStream.addImplicitCollection(ClassConfiguration.class, "constructorConfigurations",
-						ConstructorConfiguration.class);
+				xStream.addImplicitCollection(ClassConfiguration.class, "constructorConfigurations", ConstructorConfiguration.class);
 				xStream.alias("constructor", ConstructorConfiguration.class);
 				{
 					// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
-					xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations",
-							ParameterConfiguration.class);
+					xStream.addImplicitCollection(ConstructorConfiguration.class, "parameterConfigurations", ParameterConfiguration.class);
 				}
 
 				// <method> -> net.sf.oval.configuration.elements.MethodConfiguration
-				xStream.addImplicitCollection(ClassConfiguration.class, "methodConfigurations",
-						MethodConfiguration.class);
+				xStream.addImplicitCollection(ClassConfiguration.class, "methodConfigurations", MethodConfiguration.class);
 				xStream.alias("method", MethodConfiguration.class);
 				{
 					// <parameter> -> net.sf.oval.configuration.elements.ParameterConfiguration
-					xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations",
-							ParameterConfiguration.class);
+					xStream.addImplicitCollection(MethodConfiguration.class, "parameterConfigurations", ParameterConfiguration.class);
 
 					// <returnValue> -> net.sf.oval.configuration.elements.MethodConfiguration.returnValueConfiguration
 					// -> MethodReturnValueConfiguration
@@ -540,8 +533,7 @@ public class XMLConfigurer implements Configurer
 	/**
 	 * {@inheritDoc}
 	 */
-	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
-			throws InvalidConfigurationException
+	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId) throws InvalidConfigurationException
 	{
 		return pojoConfigurer.getConstraintSetConfiguration(constraintSetId);
 	}

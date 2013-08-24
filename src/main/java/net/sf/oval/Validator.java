@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,7 +69,6 @@ import net.sf.oval.internal.MessageRenderer;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.IdentitySet;
-import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalLinkedList;
@@ -258,7 +258,7 @@ public class Validator implements IValidator
 
 	private final Map<Class< ? >, ClassChecks> checksByClass = new WeakHashMap<Class< ? >, ClassChecks>();
 
-	private final List<Configurer> configurers = new LinkedSet<Configurer>(4);
+	private final Set<Configurer> configurers = new LinkedHashSet<Configurer>(4);
 
 	private final Map<String, ConstraintSet> constraintSetsById = collectionFactory.createMap(4);
 
@@ -1065,7 +1065,7 @@ public class Validator implements IValidator
 	/**
 	 * @return the internal linked set with the registered configurers
 	 */
-	public List<Configurer> getConfigurers()
+	public Set<Configurer> getConfigurers()
 	{
 		return configurers;
 	}

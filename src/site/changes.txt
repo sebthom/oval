@@ -2,22 +2,6 @@
 [+] Feature added.
 [*] Change.
 
-2013-??-?? v1.83
-================
-+ added Validator.resolveValue methods
-+ upgraded to Spring 3.2.3.RELEASE, Groovy 2.1.5, Paranamer 2.5.5,
-* small performance improvement in annotation processing in BeanValidationAnnotationsConfigurer
-+ added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice managed objects into constraint check implementations
-
-2013-01-26 v1.82
-================
-- fixed [ oval-Bugs-3491671 ] currentlyCheckingPreConditions in Guard.validateMethodPost
-- made deprecated XML attribute "requireValidElements" of assertValid optional in XSD
-- fixed [ oval-Bugs-3520684 ] Wrong generic types used in Check-implementations?
-+ upgraded to AspectJ 1.7.1, JUnit 4.11, Log4J 1.2.17, SLF4J 1.7.2, XStream 1.4.4, Groovy 2.1.0, BeanShell 2.0b5, OGNL 3.0.6, JRuby 1.6.5, Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3
-- fixed message variable cache invalidation on MatchPatternCheck NotMatchPatternCheck
-+ implemented [ oval-Bugs-3386846 ] JSR223 Scripting support
-
 2012-02-22 v1.81
 ================
 - fixed [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java

@@ -1,24 +1,25 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.internal;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,21 +31,20 @@ import net.sf.oval.guard.ParameterNameResolver;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.internal.util.ArrayUtils;
-import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * This class holds the instantiated checks for a single class.
- * 
+ *
  * <b>Note:</b> For performance reasons the collections are made public (intended for read-access only).
  * Modifications to the collections should be done through the appropriate methods addXXX, removeXXX, clearXXX methods.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public final class ClassChecks
 {
 	private static final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = //
-	" Class does not implement IsGuarded interface. This indicates, " + // 
+	" Class does not implement IsGuarded interface. This indicates, " + //
 			"that constraints guarding may not activated for this class.";
 
 	private static final Log LOG = Log.getLog(ClassChecks.class);
@@ -52,8 +52,7 @@ public final class ClassChecks
 	/**
 	 * checks on constructors' parameter values
 	 */
-	public final Map<Constructor< ? >, Map<Integer, ParameterChecks>> checksForConstructorParameters = getCollectionFactory()
-			.createMap(2);
+	public final Map<Constructor< ? >, Map<Integer, ParameterChecks>> checksForConstructorParameters = getCollectionFactory().createMap(2);
 
 	/**
 	 * checks on fields' value
@@ -63,8 +62,7 @@ public final class ClassChecks
 	/**
 	 * checks on methods' parameter values
 	 */
-	public final Map<Method, Map<Integer, ParameterChecks>> checksForMethodParameters = getCollectionFactory()
-			.createMap();
+	public final Map<Method, Map<Integer, ParameterChecks>> checksForMethodParameters = getCollectionFactory().createMap();
 
 	/**
 	 * checks on methods' return value
@@ -78,7 +76,7 @@ public final class ClassChecks
 	/**
 	 * compound constraints / object level invariants
 	 */
-	public final Set<Check> checksForObject = new LinkedSet<Check>(2);
+	public final Set<Check> checksForObject = new LinkedHashSet<Check>(2);
 
 	public final Class< ? > clazz;
 
@@ -86,25 +84,25 @@ public final class ClassChecks
 	 * all non-static fields that have value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Field> constrainedFields = new LinkedSet<Field>();
+	public final Set<Field> constrainedFields = new LinkedHashSet<Field>();
 
 	/**
 	 * all non-static non-void, non-parameterized methods marked as invariant that have return value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Method> constrainedMethods = new LinkedSet<Method>();
+	public final Set<Method> constrainedMethods = new LinkedHashSet<Method>();
 
 	/**
 	 * all non-static fields that have value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Field> constrainedStaticFields = new LinkedSet<Field>();
+	public final Set<Field> constrainedStaticFields = new LinkedHashSet<Field>();
 
 	/**
 	 * all static non-void, non-parameterized methods marked as invariant that have return value constraints.
 	 * Validator loops over this set during validation.
 	 */
-	public final Set<Method> constrainedStaticMethods = new LinkedSet<Method>();
+	public final Set<Method> constrainedStaticMethods = new LinkedHashSet<Method>();
 
 	public boolean isCheckInvariants;
 
@@ -116,7 +114,7 @@ public final class ClassChecks
 
 	/**
 	 * package constructor used by the Validator class
-	 * 
+	 *
 	 * @param clazz
 	 */
 	public ClassChecks(final Class< ? > clazz, final ParameterNameResolver parameterNameResolver)
@@ -130,8 +128,7 @@ public final class ClassChecks
 	private void _addConstructorParameterCheckExclusions(final Constructor< ? > constructor, final int parameterIndex,
 			final Object exclusions) throws InvalidConfigurationException
 	{
-		final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor,
-				parameterIndex);
+		final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor, parameterIndex);
 
 		if (exclusions instanceof Collection< ? >)
 		{
@@ -144,14 +141,13 @@ public final class ClassChecks
 	}
 
 	@SuppressWarnings("unchecked")
-	private void _addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex,
-			final Object checks) throws InvalidConfigurationException
+	private void _addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex, final Object checks)
+			throws InvalidConfigurationException
 	{
 		if (LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz))
 			LOG.warn("Constructor parameter constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
 
-		final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor,
-				parameterIndex);
+		final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor, parameterIndex);
 
 		if (checks instanceof Collection)
 			for (final Check check : (Collection<Check>) checks)
@@ -175,7 +171,7 @@ public final class ClassChecks
 			Set<Check> checksOfField = checksForFields.get(field);
 			if (checksOfField == null)
 			{
-				checksOfField = new LinkedSet<Check>(2);
+				checksOfField = new LinkedHashSet<Check>(2);
 				checksForFields.put(field, checksOfField);
 				if (ReflectionUtils.isStatic(field))
 					constrainedStaticFields.add(field);
@@ -198,8 +194,8 @@ public final class ClassChecks
 		}
 	}
 
-	private void _addMethodParameterCheckExclusions(final Method method, final int parameterIndex,
-			final Object exclusions) throws InvalidConfigurationException
+	private void _addMethodParameterCheckExclusions(final Method method, final int parameterIndex, final Object exclusions)
+			throws InvalidConfigurationException
 	{
 		final ParameterChecks checksOfMethodParameter = _getChecksOfMethodParameter(method, parameterIndex);
 
@@ -247,7 +243,7 @@ public final class ClassChecks
 			Set<PostCheck> postChecks = checksForMethodsPostExcecution.get(method);
 			if (postChecks == null)
 			{
-				postChecks = new LinkedSet<PostCheck>(2);
+				postChecks = new LinkedHashSet<PostCheck>(2);
 				checksForMethodsPostExcecution.put(method, postChecks);
 			}
 
@@ -277,7 +273,7 @@ public final class ClassChecks
 			Set<PreCheck> preChecks = checksForMethodsPreExecution.get(method);
 			if (preChecks == null)
 			{
-				preChecks = new LinkedSet<PreCheck>(2);
+				preChecks = new LinkedHashSet<PreCheck>(2);
 				checksForMethodsPreExecution.put(method, preChecks);
 			}
 
@@ -306,8 +302,7 @@ public final class ClassChecks
 					+ " is not possible. The method is declared as void and does not return any values.");
 
 		if (ReflectionUtils.isVoidMethod(method))
-			throw new InvalidConfigurationException("Cannot apply method return value constraints for void method "
-					+ method);
+			throw new InvalidConfigurationException("Cannot apply method return value constraints for void method " + method);
 
 		final boolean hasParameters = method.getParameterTypes().length > 0;
 
@@ -336,7 +331,7 @@ public final class ClassChecks
 			Set<Check> methodChecks = checksForMethodReturnValues.get(method);
 			if (methodChecks == null)
 			{
-				methodChecks = new LinkedSet<Check>(2);
+				methodChecks = new LinkedHashSet<Check>(2);
 				checksForMethodReturnValues.put(method, methodChecks);
 			}
 
@@ -360,8 +355,7 @@ public final class ClassChecks
 		final int paramCount = ctor.getParameterTypes().length;
 
 		if (paramIndex < 0 || paramIndex >= paramCount)
-			throw new InvalidConfigurationException("Parameter Index " + paramIndex + " is out of range (0-"
-					+ (paramCount - 1) + ")");
+			throw new InvalidConfigurationException("Parameter Index " + paramIndex + " is out of range (0-" + (paramCount - 1) + ")");
 
 		synchronized (checksForConstructorParameters)
 		{
@@ -391,8 +385,7 @@ public final class ClassChecks
 		final int paramCount = method.getParameterTypes().length;
 
 		if (paramIndex < 0 || paramIndex >= paramCount)
-			throw new InvalidConfigurationException("Parameter index " + paramIndex + " is out of range (0-"
-					+ (paramCount - 1) + ")");
+			throw new InvalidConfigurationException("Parameter index " + paramIndex + " is out of range (0-" + (paramCount - 1) + ")");
 
 		synchronized (checksForMethodParameters)
 		{
@@ -418,12 +411,12 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds constraint check exclusions to a constructor parameter 
-	 *  
+	 * adds constraint check exclusions to a constructor parameter
+	 *
 	 * @param constructor
 	 * @param parameterIndex
 	 * @param exclusions
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
 	public void addConstructorParameterCheckExclusions(final Constructor< ? > constructor, final int parameterIndex,
 			final CheckExclusion... exclusions) throws InvalidConfigurationException
@@ -432,12 +425,12 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds constraint check exclusions to a constructor parameter 
-	 *  
+	 * adds constraint check exclusions to a constructor parameter
+	 *
 	 * @param constructor
 	 * @param parameterIndex
 	 * @param exclusions
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
 	public void addConstructorParameterCheckExclusions(final Constructor< ? > constructor, final int parameterIndex,
 			final Collection<CheckExclusion> exclusions) throws InvalidConfigurationException
@@ -446,38 +439,38 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds constraint checks to a constructor parameter 
-	 *  
+	 * adds constraint checks to a constructor parameter
+	 *
 	 * @param constructor
 	 * @param parameterIndex
 	 * @param checks
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex,
-			final Check... checks) throws InvalidConfigurationException
+	public void addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex, final Check... checks)
+			throws InvalidConfigurationException
 	{
 		_addConstructorParameterChecks(constructor, parameterIndex, checks);
 	}
 
 	/**
-	 * adds constraint checks to a constructor parameter 
-	 *  
+	 * adds constraint checks to a constructor parameter
+	 *
 	 * @param constructor
 	 * @param parameterIndex
 	 * @param checks
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex,
-			final Collection<Check> checks) throws InvalidConfigurationException
+	public void addConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex, final Collection<Check> checks)
+			throws InvalidConfigurationException
 	{
 		_addConstructorParameterChecks(constructor, parameterIndex, checks);
 	}
 
 	/**
-	 * adds check constraints to a field 
-	 *  
+	 * adds check constraints to a field
+	 *
 	 * @param field
-	 * @param checks 
+	 * @param checks
 	 */
 	public void addFieldChecks(final Field field, final Check... checks) throws InvalidConfigurationException
 	{
@@ -485,10 +478,10 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds check constraints to a field 
-	 *  
+	 * adds check constraints to a field
+	 *
 	 * @param field
-	 * @param checks 
+	 * @param checks
 	 */
 	public void addFieldChecks(final Field field, final Collection<Check> checks) throws InvalidConfigurationException
 	{
@@ -496,36 +489,36 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds constraint check exclusions to a method parameter 
-	 *  
+	 * adds constraint check exclusions to a method parameter
+	 *
 	 * @param method
 	 * @param parameterIndex
 	 * @param exclusions
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addMethodParameterCheckExclusions(final Method method, final int parameterIndex,
-			final CheckExclusion... exclusions) throws InvalidConfigurationException
+	public void addMethodParameterCheckExclusions(final Method method, final int parameterIndex, final CheckExclusion... exclusions)
+			throws InvalidConfigurationException
 	{
 		_addMethodParameterCheckExclusions(method, parameterIndex, exclusions);
 	}
 
 	/**
-	 * adds constraint check exclusions to a method parameter 
-	 *  
+	 * adds constraint check exclusions to a method parameter
+	 *
 	 * @param method
 	 * @param parameterIndex
 	 * @param exclusions
-	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect 
+	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addMethodParameterCheckExclusions(final Method method, final int parameterIndex,
-			final Collection<CheckExclusion> exclusions) throws InvalidConfigurationException
+	public void addMethodParameterCheckExclusions(final Method method, final int parameterIndex, final Collection<CheckExclusion> exclusions)
+			throws InvalidConfigurationException
 	{
 		_addMethodParameterCheckExclusions(method, parameterIndex, exclusions);
 	}
 
 	/**
-	 * adds constraint checks to a method parameter 
-	 *  
+	 * adds constraint checks to a method parameter
+	 *
 	 * @param method
 	 * @param parameterIndex
 	 * @param checks
@@ -538,8 +531,8 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds constraint checks to a method parameter 
-	 *  
+	 * adds constraint checks to a method parameter
+	 *
 	 * @param method
 	 * @param parameterIndex
 	 * @param checks
@@ -557,8 +550,7 @@ public final class ClassChecks
 	 * @param checks
 	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addMethodPostChecks(final Method method, final Collection<PostCheck> checks)
-			throws InvalidConfigurationException
+	public void addMethodPostChecks(final Method method, final Collection<PostCheck> checks) throws InvalidConfigurationException
 	{
 		_addMethodPostChecks(method, checks);
 	}
@@ -569,8 +561,7 @@ public final class ClassChecks
 	 * @param checks
 	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addMethodPostChecks(final Method method, final PostCheck... checks)
-			throws InvalidConfigurationException
+	public void addMethodPostChecks(final Method method, final PostCheck... checks) throws InvalidConfigurationException
 	{
 		_addMethodPostChecks(method, checks);
 	}
@@ -580,8 +571,7 @@ public final class ClassChecks
 	 * @param checks
 	 * @throws InvalidConfigurationException if the declaring class is not guarded by GuardAspect
 	 */
-	public void addMethodPreChecks(final Method method, final Collection<PreCheck> checks)
-			throws InvalidConfigurationException
+	public void addMethodPreChecks(final Method method, final Collection<PreCheck> checks) throws InvalidConfigurationException
 	{
 		_addMethodPreChecks(method, checks);
 	}
@@ -614,16 +604,16 @@ public final class ClassChecks
 	 * @param isInvariant determines if the return value should be checked when the object is validated, can be null
 	 * @param checks
 	 */
-	public void addMethodReturnValueChecks(final Method method, final Boolean isInvariant,
-			final Collection<Check> checks) throws InvalidConfigurationException
+	public void addMethodReturnValueChecks(final Method method, final Boolean isInvariant, final Collection<Check> checks)
+			throws InvalidConfigurationException
 	{
 		_addMethodReturnValueChecks(method, isInvariant, checks);
 	}
 
 	/**
-	 * adds check constraints on object level (invariants) 
-	 *  
-	 * @param checks 
+	 * adds check constraints on object level (invariants)
+	 *
+	 * @param checks
 	 */
 	public void addObjectChecks(final Check... checks)
 	{
@@ -638,9 +628,9 @@ public final class ClassChecks
 	}
 
 	/**
-	 * adds check constraints on object level (invariants) 
-	 *  
-	 * @param checks 
+	 * adds check constraints on object level (invariants)
+	 *
+	 * @param checks
 	 */
 	public void addObjectChecks(final Collection<Check> checks)
 	{
@@ -689,8 +679,7 @@ public final class ClassChecks
 		synchronized (checksForConstructorParameters)
 		{
 			// retrieve the currently registered checks for all parameters of the specified method
-			final Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters
-					.get(constructor);
+			final Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters.get(constructor);
 			if (checksOfConstructorByParameter == null) return;
 
 			// retrieve the checks for the specified parameter
@@ -783,8 +772,7 @@ public final class ClassChecks
 		synchronized (checksForConstructorParameters)
 		{
 			// retrieve the currently registered checks for all parameters of the specified method
-			final Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters
-					.get(constructor);
+			final Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters.get(constructor);
 			if (checksOfConstructorByParameter == null) return;
 
 			// retrieve the checks for the specified parameter
@@ -798,14 +786,12 @@ public final class ClassChecks
 		}
 	}
 
-	public void removeConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex,
-			final Check... checks)
+	public void removeConstructorParameterChecks(final Constructor< ? > constructor, final int parameterIndex, final Check... checks)
 	{
 		synchronized (checksForConstructorParameters)
 		{
 			// retrieve the currently registered checks for all parameters of the specified method
-			final Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters
-					.get(constructor);
+			final Map<Integer, ParameterChecks> checksOfConstructorByParameter = checksForConstructorParameters.get(constructor);
 			if (checksOfConstructorByParameter == null) return;
 
 			// retrieve the checks for the specified parameter
@@ -839,8 +825,7 @@ public final class ClassChecks
 		}
 	}
 
-	public void removeMethodParameterCheckExclusions(final Method method, final int parameterIndex,
-			final CheckExclusion... exclusions)
+	public void removeMethodParameterCheckExclusions(final Method method, final int parameterIndex, final CheckExclusion... exclusions)
 	{
 		if (parameterIndex < 0 || parameterIndex > method.getParameterTypes().length)
 			throw new InvalidConfigurationException("ParameterIndex is out of range");
