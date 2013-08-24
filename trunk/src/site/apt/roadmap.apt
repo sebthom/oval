@@ -1,14 +1,12 @@
 Roadmap
 
- We currently do not have a fixed roadmap for the next releases of OVal, 
+ We currently do not have a fixed roadmap for the next releases of OVal,
  however there are several features we would like to implement over the next time:
- 
-  * support for constraints specified for method parameters at interface level
-  
+
   * support for inherited constraints
-  
+
   * Spring 2.0 XSD configuration support
-  
+
   * implement JSR303 {{http://jcp.org/en/jsr/detail?id=303}}
-  
+
   * provide tighter integration with web-app frameworks (JSF, Struts, Wicket etc)

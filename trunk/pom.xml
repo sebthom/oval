@@ -357,7 +357,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				phase: validate
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<version>1.2</version>
 				<executions>
@@ -383,7 +382,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				phase: generate-sources
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
@@ -505,7 +503,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				********************************************************************* -->
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<executions>
@@ -532,28 +529,29 @@ Besides field/property validation OVal implements Programming by Contract featur
 					-->
 				</configuration>
 
-				<dependencies><!--
-						<dependency>
-						<groupId>org.codehaus.plexus</groupId>
-						<artifactId>plexus-compiler-aspectj</artifactId>
-						<version>2.2</version>
-						<exclusions>
-						<exclusion>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjrt</artifactId>
-						</exclusion>
-						<exclusion>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjtools</artifactId>
-						</exclusion>
-						</exclusions>
-						</dependency>
-						<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjtools</artifactId>
-						<version>${version.aspectj}</version>
-						</dependency> -->
-				</dependencies>
+				<!--
+					<dependencies>
+					<dependency>
+					<groupId>org.codehaus.plexus</groupId>
+					<artifactId>plexus-compiler-aspectj</artifactId>
+					<version>2.2</version>
+					<exclusions>
+					<exclusion>
+					<groupId>org.aspectj</groupId>
+					<artifactId>aspectjrt</artifactId>
+					</exclusion>
+					<exclusion>
+					<groupId>org.aspectj</groupId>
+					<artifactId>aspectjtools</artifactId>
+					</exclusion>
+					</exclusions>
+					</dependency>
+					<dependency>
+					<groupId>org.aspectj</groupId>
+					<artifactId>aspectjtools</artifactId>
+					<version>${version.aspectj}</version>
+					</dependency>
+					</dependencies> -->
 			</plugin>
 
 			<plugin>
@@ -572,8 +570,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<complianceLevel>${version.java}</complianceLevel>
 					<source>${version.java}</source>
 					<target>${version.java}</target>
-					<aspectDirectory>${project.basedir}/src/main/java</aspectDirectory>
-					<testAspectDirectory>${project.basedir}/src/test/java</testAspectDirectory>
+					<aspectDirectory>src/main/java</aspectDirectory>
+					<testAspectDirectory>src/test/java</testAspectDirectory>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -589,7 +587,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				phase: test
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.15</version>
 				<configuration>
@@ -605,7 +602,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				phase: package
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<!-- cannot use 2.4 because of
 					http://dev.eclipse.org/mhonarc/lists/m2e-users/msg03633.html
@@ -645,7 +641,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 			<plugin>
 				<!-- we are generating the site in the package phase because we want to include it in the distribution -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<!-- cannot use 2.3-3.2, site:deploy fails with: Error uploading site, String index out of range: 0 https://jira.codehaus.org/browse/WAGON-354 -->
 				<version>2.2</version>
@@ -676,7 +671,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.2.1</version>
 				<executions>
@@ -689,7 +683,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
@@ -715,7 +708,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 				phase: release
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.4.1</version>
 				<configuration>
@@ -733,11 +725,24 @@ Besides field/property validation OVal implements Programming by Contract featur
 				</dependencies>
 			</plugin>
 
+			<plugin>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>check-changes</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>changes-check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!--*********************************************************************
 				phase: manual execution
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
 				<configuration>
@@ -853,7 +858,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 			<plugin>
 				<!-- Generate Javadoc for the project. -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9</version>
 				<configuration>
@@ -879,7 +883,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 			<plugin>
 				<!-- Creates an html-based, cross referenced version of Java source code for a project. -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
@@ -890,7 +893,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 			<plugin>
 				<!-- Generate a report based on the results of unit tests. -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>2.15</version>
 				<reportSets>
@@ -931,7 +933,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 			<plugin>
 				<!-- This plugin produces a nicely formatted metrics report based on your project -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.0.1</version>
 				<configuration>
@@ -954,7 +955,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.10</version>
 				<configuration>
@@ -969,6 +969,21 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
 				<version>2.5</version>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>

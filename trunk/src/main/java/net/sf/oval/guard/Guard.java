@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,21 +47,20 @@ import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.Invocable;
-import net.sf.oval.internal.util.LinkedSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.ThreadLocalList;
 import net.sf.oval.internal.util.ThreadLocalWeakHashMap;
 
 /**
  * Extended version of the validator to realize programming by contract.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public class Guard extends Validator
 {
 
 	/**
-	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions 
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions
 	 */
 	protected static final class GuardMethodPreResult
 	{
@@ -72,9 +72,8 @@ public class Guard extends Validator
 		protected final Map<PostCheck, Object> postCheckOldValues;
 		protected final Object guardedObject;
 
-		public GuardMethodPreResult(final Object guardedObject, final Method method, final Object[] args,
-				final ClassChecks cc, final boolean checkInvariants, final Map<PostCheck, Object> postCheckOldValues,
-				final List<ConstraintViolation> violations)
+		public GuardMethodPreResult(final Object guardedObject, final Method method, final Object[] args, final ClassChecks cc,
+				final boolean checkInvariants, final Map<PostCheck, Object> postCheckOldValues, final List<ConstraintViolation> violations)
 		{
 			this.guardedObject = guardedObject;
 			this.method = method;
@@ -87,10 +86,9 @@ public class Guard extends Validator
 	}
 
 	/**
-	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions 
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions
 	 */
-	protected static final GuardMethodPreResult DO_NOT_PROCEED = new GuardMethodPreResult(null, null, null, null,
-			false, null, null);
+	protected static final GuardMethodPreResult DO_NOT_PROCEED = new GuardMethodPreResult(null, null, null, null, false, null, null);
 
 	private static final Log LOG = Log.getLog(Guard.class);
 
@@ -166,12 +164,11 @@ public class Guard extends Validator
 		return activeExclusions.size() == 0 ? null : activeExclusions;
 	}
 
-	private void _validateParameterChecks(final ParameterChecks checks, final Object validatedObject,
-			final Object valueToValidate, final OValContext context, final List<ConstraintViolation> violations)
+	private void _validateParameterChecks(final ParameterChecks checks, final Object validatedObject, final Object valueToValidate,
+			final OValContext context, final List<ConstraintViolation> violations)
 	{
 		// determine the active exclusions based on the active profiles
-		final List<CheckExclusion> activeExclusions = checks.hasExclusions()
-				? _getActiveExclusions(checks.checkExclusions) : null;
+		final List<CheckExclusion> activeExclusions = checks.hasExclusions() ? _getActiveExclusions(checks.checkExclusions) : null;
 
 		// check the constraints
 		for (final Check check : checks.checks)
@@ -193,15 +190,15 @@ public class Guard extends Validator
 
 	/**
 	 * Registers constraint checks for the given constructor parameter
-	 * 
+	 *
 	 * @param ctor
 	 * @param paramIndex
 	 * @param exclusions
 	 * @throws IllegalArgumentException if <code>method == null</code> or <code>exclusions == null</code> or exclusions is empty
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void addCheckExclusions(final Constructor< ? > ctor, final int paramIndex,
-			final CheckExclusion... exclusions) throws IllegalArgumentException, InvalidConfigurationException
+	public void addCheckExclusions(final Constructor< ? > ctor, final int paramIndex, final CheckExclusion... exclusions)
+			throws IllegalArgumentException, InvalidConfigurationException
 	{
 		Assert.argumentNotNull("ctor", ctor);
 		Assert.argumentNotEmpty("exclusions", exclusions);
@@ -211,7 +208,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers constraint checks for the given method parameter
-	 * 
+	 *
 	 * @param method
 	 * @param paramIndex
 	 * @param exclusions
@@ -229,7 +226,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers constraint checks for the given constructor parameter
-	 * 
+	 *
 	 * @param ctor
 	 * @param paramIndex
 	 * @param checks
@@ -237,8 +234,8 @@ public class Guard extends Validator
 	 *             empty
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void addChecks(final Constructor< ? > ctor, final int paramIndex, final Check... checks)
-			throws IllegalArgumentException, InvalidConfigurationException
+	public void addChecks(final Constructor< ? > ctor, final int paramIndex, final Check... checks) throws IllegalArgumentException,
+			InvalidConfigurationException
 	{
 		Assert.argumentNotNull("ctor", ctor);
 		Assert.argumentNotEmpty("checks", checks);
@@ -248,7 +245,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers constraint checks for the given method's return value
-	 * 
+	 *
 	 * @param method
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>getter == null</code> or <code>checks == null</code> or checks is empty
@@ -256,8 +253,7 @@ public class Guard extends Validator
 	 *             not guarded
 	 */
 	@Override
-	public void addChecks(final Method method, final Check... checks) throws IllegalArgumentException,
-			InvalidConfigurationException
+	public void addChecks(final Method method, final Check... checks) throws IllegalArgumentException, InvalidConfigurationException
 	{
 		Assert.argumentNotNull("method", method);
 		Assert.argumentNotEmpty("checks", checks);
@@ -267,15 +263,15 @@ public class Guard extends Validator
 
 	/**
 	 * Registers constraint checks for the given method parameter
-	 * 
+	 *
 	 * @param method
 	 * @param paramIndex
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>method == null</code> or <code>checks == null</code> or checks is empty
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void addChecks(final Method method, final int paramIndex, final Check... checks)
-			throws IllegalArgumentException, InvalidConfigurationException
+	public void addChecks(final Method method, final int paramIndex, final Check... checks) throws IllegalArgumentException,
+			InvalidConfigurationException
 	{
 		Assert.argumentNotNull("method", method);
 		Assert.argumentNotEmpty("checks", checks);
@@ -285,14 +281,13 @@ public class Guard extends Validator
 
 	/**
 	 * Registers post condition checks to a method's return value
-	 * 
+	 *
 	 * @param method
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>method == null</code> or <code>checks == null</code> or checks is empty
 	 * @throws InvalidConfigurationException if the declaring class is not guarded
 	 */
-	public void addChecks(final Method method, final PostCheck... checks) throws IllegalArgumentException,
-			InvalidConfigurationException
+	public void addChecks(final Method method, final PostCheck... checks) throws IllegalArgumentException, InvalidConfigurationException
 	{
 		Assert.argumentNotNull("method", method);
 		Assert.argumentNotEmpty("checks", checks);
@@ -302,14 +297,13 @@ public class Guard extends Validator
 
 	/**
 	 * Registers pre condition checks to a method's return value
-	 * 
+	 *
 	 * @param method
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>method == null</code> or <code>checks == null</code> or checks is empty
 	 * @throws InvalidConfigurationException if the declaring class is not guarded
 	 */
-	public void addChecks(final Method method, final PreCheck... checks) throws IllegalArgumentException,
-			InvalidConfigurationException
+	public void addChecks(final Method method, final PreCheck... checks) throws IllegalArgumentException, InvalidConfigurationException
 	{
 		Assert.argumentNotNull("method", method);
 		Assert.argumentNotEmpty("checks", checks);
@@ -319,7 +313,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers the given listener for <b>all</b> thrown ConstraintViolationExceptions
-	 * 
+	 *
 	 * @param listener the listener to register
 	 * @return <code>true</code> if the listener was not yet registered
 	 * @throws IllegalArgumentException if <code>listener == null</code>
@@ -334,14 +328,13 @@ public class Guard extends Validator
 
 	/**
 	 * Registers the given listener for all thrown ConstraintViolationExceptions on objects of the given class
-	 * 
+	 *
 	 * @param listener the listener to register
 	 * @param guardedClass guarded class or interface
 	 * @return <code>true</code> if the listener was not yet registered
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code>
 	 */
-	public boolean addListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
-			throws IllegalArgumentException
+	public boolean addListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass) throws IllegalArgumentException
 	{
 		Assert.argumentNotNull("listener", listener);
 		Assert.argumentNotNull("guardedClass", guardedClass);
@@ -363,7 +356,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers the given listener for all thrown ConstraintViolationExceptions on objects of the given object
-	 * 
+	 *
 	 * @param listener the listener to register
 	 * @param guardedObject
 	 * @return <code>true</code> if the listener was not yet registered
@@ -391,15 +384,15 @@ public class Guard extends Validator
 
 	/**
 	 * Evaluates the old expression
-	 * 
+	 *
 	 * @param validatedObject
 	 * @param method
 	 * @param args
 	 * @return null if no violation, otherwise a list
 	 * @throws ValidationFailedException
 	 */
-	protected Map<PostCheck, Object> calculateMethodPostOldValues(final Object validatedObject, final Method method,
-			final Object[] args) throws ValidationFailedException
+	protected Map<PostCheck, Object> calculateMethodPostOldValues(final Object validatedObject, final Method method, final Object[] args)
+			throws ValidationFailedException
 	{
 		try
 		{
@@ -415,11 +408,9 @@ public class Guard extends Validator
 			final Map<PostCheck, Object> oldValues = getCollectionFactory().createMap(postChecks.size());
 
 			for (final PostCheck check : postChecks)
-				if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null
-						&& check.getOld().length() > 0)
+				if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null && check.getOld().length() > 0)
 				{
-					final ExpressionLanguage eng = expressionLanguageRegistry
-							.getExpressionLanguage(check.getLanguage());
+					final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLanguage());
 					final Map<String, Object> values = getCollectionFactory().createMap();
 					values.put("_this", validatedObject);
 					if (hasParameters)
@@ -438,20 +429,19 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException("Method post conditions validation failed. Method: " + method
-					+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: "
+					+ validatedObject, ex);
 		}
 	}
 
 	/**
 	 * Disables the probe mode for the given object in the current thread.
-	 * 
+	 *
 	 * @param guardedObject the object to disable the probe mode for
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 * @throws IllegalStateException in case probe mode was not enabled for the given object
 	 */
-	public ProbeModeListener disableProbeMode(final Object guardedObject) throws IllegalArgumentException,
-			IllegalStateException
+	public ProbeModeListener disableProbeMode(final Object guardedObject) throws IllegalArgumentException, IllegalStateException
 	{
 		Assert.argumentNotNull("guardedObject", guardedObject);
 
@@ -463,7 +453,7 @@ public class Guard extends Validator
 	 * object are not actually executed. OVal only validates method pre-conditions and notifies
 	 * ConstraintViolationListeners but does not throw ConstraintViolationExceptions. Methods with return values will
 	 * return null.
-	 * 
+	 *
 	 * @param guardedObject the object to enable the probe mode for
 	 * @throws IllegalArgumentException if <code>guardedObject == null</code>
 	 * @throws IllegalStateException if the probe mode is already enabled
@@ -476,15 +466,14 @@ public class Guard extends Validator
 			LOG.warn("Enabling probe mode for a class looks like a programming error. Class: {1}", guardedObject);
 		isProbeModeFeatureUsed = true;
 
-		if (objectsInProbeMode.get().get(guardedObject) != null)
-			throw new IllegalStateException("The object is already in probe mode.");
+		if (objectsInProbeMode.get().get(guardedObject) != null) throw new IllegalStateException("The object is already in probe mode.");
 
 		objectsInProbeMode.get().put(guardedObject, new ProbeModeListener(guardedObject));
 	}
 
 	/**
 	 * Returns the registers constraint pre condition checks for the given method parameter
-	 * 
+	 *
 	 * @param method
 	 * @param paramIndex
 	 * @throws IllegalArgumentException if <code>method == null</code>
@@ -504,7 +493,7 @@ public class Guard extends Validator
 
 	/**
 	 * Returns the registered post condition checks for the given method
-	 * 
+	 *
 	 * @param method
 	 * @throws IllegalArgumentException if <code>method == null</code>
 	 */
@@ -520,7 +509,7 @@ public class Guard extends Validator
 
 	/**
 	 * Returns the registered pre condition checks for the given method.
-	 * 
+	 *
 	 * @param method
 	 * @throws IllegalArgumentException if <code>method == null</code>
 	 */
@@ -544,7 +533,7 @@ public class Guard extends Validator
 
 	/**
 	 * This method is provided for use by guard aspects.
-	 * 
+	 *
 	 * @throws ConstraintsViolatedException
 	 * @throws ValidationFailedException
 	 */
@@ -585,7 +574,7 @@ public class Guard extends Validator
 
 	/**
 	 * This method is provided for use by guard aspects.
-	 * 
+	 *
 	 * @throws ConstraintsViolatedException if anything precondition is not satisfied
 	 * @throws ValidationFailedException
 	 */
@@ -619,7 +608,7 @@ public class Guard extends Validator
 
 	/**
 	 * This method is provided for use by guard aspects.
-	 * 
+	 *
 	 * @param guardedObject
 	 * @param method
 	 * @param args
@@ -628,15 +617,15 @@ public class Guard extends Validator
 	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe mode.
 	 * @throws ValidationFailedException
 	 */
-	protected Object guardMethod(Object guardedObject, final Method method, final Object[] args,
-			final Invocable invocable) throws Throwable
+	protected Object guardMethod(Object guardedObject, final Method method, final Object[] args, final Invocable invocable)
+			throws Throwable
 	{
 		if (!isActivated) return invocable.invoke();
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
-		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants
-				&& !ReflectionUtils.isPrivate(method) && !ReflectionUtils.isProtected(method);
+		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants && !ReflectionUtils.isPrivate(method)
+				&& !ReflectionUtils.isProtected(method);
 
 		// if static method use the declaring class as guardedObject
 		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
@@ -647,14 +636,12 @@ public class Guard extends Validator
 		try
 		{
 			// check invariants
-			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
-				validateInvariants(guardedObject, violations, null);
+			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method)) validateInvariants(guardedObject, violations, null);
 
 			if (isPreConditionsEnabled)
 			{
 				// method parameter validation
-				if (violations.size() == 0 && args.length > 0)
-					validateMethodParameters(guardedObject, method, args, violations);
+				if (violations.size() == 0 && args.length > 0) validateMethodParameters(guardedObject, method, args, violations);
 
 				// @Pre validation
 				if (violations.size() == 0) validateMethodPre(guardedObject, method, args, violations);
@@ -699,8 +686,7 @@ public class Guard extends Validator
 		try
 		{
 			// check invariants if executed method is not private
-			if (checkInvariants || cc.methodsWithCheckInvariantsPost.contains(method))
-				validateInvariants(guardedObject, violations, null);
+			if (checkInvariants || cc.methodsWithCheckInvariantsPost.contains(method)) validateInvariants(guardedObject, violations, null);
 
 			if (isPostConditionsEnabled)
 			{
@@ -709,8 +695,7 @@ public class Guard extends Validator
 				if (violations.size() == 0) validateMethodReturnValue(guardedObject, method, returnValue, violations);
 
 				// @Post
-				if (violations.size() == 0)
-					validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
+				if (violations.size() == 0) validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
 			}
 		}
 		catch (final ValidationFailedException ex)
@@ -734,18 +719,18 @@ public class Guard extends Validator
 	}
 
 	/**
-	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions, 
-	 * then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead 
-	 * 
+	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions,
+	 * then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead
+	 *
 	 * This method is provided for use by guard aspects.
-	 * 
+	 *
 	 * @param returnValue
 	 * @param preResult
 	 * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe
 	 *             mode.
 	 */
-	protected void guardMethodPost(final Object returnValue, final GuardMethodPreResult preResult)
-			throws ConstraintsViolatedException, ValidationFailedException
+	protected void guardMethodPost(final Object returnValue, final GuardMethodPreResult preResult) throws ConstraintsViolatedException,
+			ValidationFailedException
 	{
 		if (!isActivated) return;
 
@@ -760,8 +745,7 @@ public class Guard extends Validator
 
 				// method return value
 				if (preResult.violations.size() == 0)
-					validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue,
-							preResult.violations);
+					validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue, preResult.violations);
 
 				// @Post
 				if (preResult.violations.size() == 0)
@@ -776,8 +760,7 @@ public class Guard extends Validator
 
 		if (preResult.violations.size() > 0)
 		{
-			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(
-					preResult.violations);
+			final ConstraintsViolatedException violationException = new ConstraintsViolatedException(preResult.violations);
 			if (isListenersFeatureUsed) notifyListeners(preResult.guardedObject, violationException);
 
 			throw translateException(violationException);
@@ -786,9 +769,9 @@ public class Guard extends Validator
 
 	/**
 	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions, then {@link #guardMethod(Object, Method, Object[], Invocable)} can be used instead
-	 * 
+	 *
 	 * This method is provided for use by guard aspects.
-	 * 
+	 *
 	 * @param guardedObject
 	 * @param method
 	 * @param args
@@ -803,8 +786,8 @@ public class Guard extends Validator
 
 		final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
-		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants
-				&& !ReflectionUtils.isPrivate(method) && !ReflectionUtils.isProtected(method);
+		final boolean checkInvariants = isInvariantsEnabled && cc.isCheckInvariants && !ReflectionUtils.isPrivate(method)
+				&& !ReflectionUtils.isProtected(method);
 
 		// if static method use the declaring class as guardedObject
 		if (guardedObject == null && ReflectionUtils.isStatic(method)) guardedObject = method.getDeclaringClass();
@@ -815,14 +798,12 @@ public class Guard extends Validator
 		try
 		{
 			// check invariants
-			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method))
-				validateInvariants(guardedObject, violations, null);
+			if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method)) validateInvariants(guardedObject, violations, null);
 
 			if (isPreConditionsEnabled)
 			{
 				// method parameter validation
-				if (violations.size() == 0 && args.length > 0)
-					validateMethodParameters(guardedObject, method, args, violations);
+				if (violations.size() == 0 && args.length > 0) validateMethodParameters(guardedObject, method, args, violations);
 
 				// @Pre validation
 				if (violations.size() == 0) validateMethodPre(guardedObject, method, args, violations);
@@ -860,8 +841,7 @@ public class Guard extends Validator
 
 		final Map<PostCheck, Object> postCheckOldValues = calculateMethodPostOldValues(guardedObject, method, args);
 
-		return new GuardMethodPreResult(guardedObject, method, args, cc, checkInvariants, postCheckOldValues,
-				violations);
+		return new GuardMethodPreResult(guardedObject, method, args, cc, checkInvariants, postCheckOldValues, violations);
 	}
 
 	/**
@@ -882,8 +862,7 @@ public class Guard extends Validator
 	 * @return <code>true</code> if the listener is registered
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedClass == null</code>
 	 */
-	public boolean hasListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass)
-			throws IllegalArgumentException
+	public boolean hasListener(final ConstraintsViolatedListener listener, final Class< ? > guardedClass) throws IllegalArgumentException
 	{
 		Assert.argumentNotNull("listener", listener);
 		Assert.argumentNotNull("guardedClass", guardedClass);
@@ -901,8 +880,7 @@ public class Guard extends Validator
 	 * @return <code>true</code> if the listener is registered
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedObject == null</code>
 	 */
-	public boolean hasListener(final ConstraintsViolatedListener listener, final Object guardedObject)
-			throws IllegalArgumentException
+	public boolean hasListener(final ConstraintsViolatedListener listener, final Object guardedObject) throws IllegalArgumentException
 	{
 		Assert.argumentNotNull("listener", listener);
 		Assert.argumentNotNull("guardedObject", guardedObject);
@@ -927,7 +905,7 @@ public class Guard extends Validator
 	 * methods of an object are not actually executed. OVal only validates method pre-conditions and notifies
 	 * ConstraintViolationListeners but does not throw ConstraintViolationExceptions. Methods with return values will
 	 * return null.
-	 * 
+	 *
 	 * @param guardedObject
 	 * @return true if exceptions are suppressed
 	 */
@@ -941,7 +919,7 @@ public class Guard extends Validator
 
 	/**
 	 * Determines if invariants are checked prior and after every call to a non-private method or constructor.
-	 * 
+	 *
 	 * @return the isInvariantChecksActivated
 	 */
 	public boolean isInvariantsEnabled()
@@ -951,7 +929,7 @@ public class Guard extends Validator
 
 	/**
 	 * Determines if invariants are checked prior and after every call to a non-private method or constructor.
-	 * 
+	 *
 	 * @param guardedClass the guarded class
 	 * @return the isInvariantChecksActivated
 	 */
@@ -984,7 +962,7 @@ public class Guard extends Validator
 		// happens for static methods
 		if (guardedObject == null) return;
 
-		final LinkedSet<ConstraintsViolatedListener> listenersToNotify = new LinkedSet<ConstraintsViolatedListener>();
+		final LinkedHashSet<ConstraintsViolatedListener> listenersToNotify = new LinkedHashSet<ConstraintsViolatedListener>();
 
 		// get the object listeners
 		{
@@ -1025,25 +1003,24 @@ public class Guard extends Validator
 
 	/**
 	 * Removes constraint check exclusions from the given constructor parameter
-	 * 
+	 *
 	 * @param ctor
 	 * @param paramIndex
 	 * @param exclusions
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void removeCheckExclusions(final Constructor< ? > ctor, final int paramIndex,
-			final CheckExclusion... exclusions) throws InvalidConfigurationException
+	public void removeCheckExclusions(final Constructor< ? > ctor, final int paramIndex, final CheckExclusion... exclusions)
+			throws InvalidConfigurationException
 	{
 		Assert.argumentNotNull("ctor", ctor);
 		Assert.argumentNotEmpty("exclusions", exclusions);
 
-		getClassChecks(ctor.getDeclaringClass())
-				.removeConstructorParameterCheckExclusions(ctor, paramIndex, exclusions);
+		getClassChecks(ctor.getDeclaringClass()).removeConstructorParameterCheckExclusions(ctor, paramIndex, exclusions);
 	}
 
 	/**
 	 * Removes constraint check exclusions from the given method parameter
-	 * 
+	 *
 	 * @param method
 	 * @param paramIndex
 	 * @param exclusions
@@ -1060,14 +1037,13 @@ public class Guard extends Validator
 
 	/**
 	 * Removes constraint checks from the given constructor parameter
-	 * 
+	 *
 	 * @param ctor
 	 * @param paramIndex
 	 * @param checks
 	 * @throws InvalidConfigurationException if the declaring class is not guarded or the parameterIndex is out of range
 	 */
-	public void removeChecks(final Constructor< ? > ctor, final int paramIndex, final Check... checks)
-			throws InvalidConfigurationException
+	public void removeChecks(final Constructor< ? > ctor, final int paramIndex, final Check... checks) throws InvalidConfigurationException
 	{
 		Assert.argumentNotNull("ctor", ctor);
 		Assert.argumentNotEmpty("checks", checks);
@@ -1077,7 +1053,7 @@ public class Guard extends Validator
 
 	/**
 	 * Removes constraint checks for the given method parameter
-	 * 
+	 *
 	 * @param method
 	 * @param paramIndex
 	 * @param checks
@@ -1085,8 +1061,7 @@ public class Guard extends Validator
 	 *             empty
 	 * @throws InvalidConfigurationException if the parameterIndex is out of range
 	 */
-	public void removeChecks(final Method method, final int paramIndex, final Check... checks)
-			throws InvalidConfigurationException
+	public void removeChecks(final Method method, final int paramIndex, final Check... checks) throws InvalidConfigurationException
 	{
 		Assert.argumentNotNull("method", method);
 		Assert.argumentNotEmpty("checks", checks);
@@ -1096,7 +1071,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers post condition checks to a method's return value
-	 * 
+	 *
 	 * @param method
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>method == null</code> or <code>checks == null</code> or checks is empty
@@ -1112,7 +1087,7 @@ public class Guard extends Validator
 
 	/**
 	 * Registers pre condition checks to a method's return value
-	 * 
+	 *
 	 * @param method
 	 * @param checks
 	 * @throws IllegalArgumentException if <code>method == null</code> or <code>checks == null</code> or checks is empty
@@ -1128,7 +1103,7 @@ public class Guard extends Validator
 
 	/**
 	 * Removes the given listener
-	 * 
+	 *
 	 * @param listener
 	 * @return <code>true</code> if the listener was registered
 	 * @throws IllegalArgumentException if <code>listener == null</code>
@@ -1142,7 +1117,7 @@ public class Guard extends Validator
 
 	/**
 	 * Removes the given listener
-	 * 
+	 *
 	 * @param listener
 	 * @param guardedClass guarded class or interface
 	 * @return <code>true</code> if the listener was registered
@@ -1161,14 +1136,13 @@ public class Guard extends Validator
 
 	/**
 	 * Removes the given listener
-	 * 
+	 *
 	 * @param listener
 	 * @param guardedObject
 	 * @return <code>true</code> if the listener was registered
 	 * @throws IllegalArgumentException if <code>listener == null</code> or <code>guardedObject == null</code>
 	 */
-	public boolean removeListener(final ConstraintsViolatedListener listener, final Object guardedObject)
-			throws IllegalArgumentException
+	public boolean removeListener(final ConstraintsViolatedListener listener, final Object guardedObject) throws IllegalArgumentException
 	{
 		Assert.argumentNotNull("listener", listener);
 		Assert.argumentNotNull("guardedObject", guardedObject);
@@ -1181,7 +1155,7 @@ public class Guard extends Validator
 	/**
 	 * If set to false OVal's programming by contract features are disabled and constraints are not checked
 	 * automatically during runtime.
-	 * 
+	 *
 	 * @param isActivated the isActivated to set
 	 */
 	public void setActivated(final boolean isActivated)
@@ -1191,7 +1165,7 @@ public class Guard extends Validator
 
 	/**
 	 * Specifies if invariants are checked prior and after calls to non-private methods and constructors.
-	 * 
+	 *
 	 * @param isEnabled the isInvariantsEnabled to set
 	 */
 	public void setInvariantsEnabled(final boolean isEnabled)
@@ -1201,7 +1175,7 @@ public class Guard extends Validator
 
 	/**
 	 * Specifies if invariants are checked prior and after calls to non-private methods and constructors.
-	 * 
+	 *
 	 * @param guardedClass the guarded class to turn on/off the invariant checking
 	 * @param isEnabled the isEnabled to set
 	 */
@@ -1214,8 +1188,7 @@ public class Guard extends Validator
 	 * @param parameterNameResolver the parameterNameResolver to set, cannot be null
 	 * @throws IllegalArgumentException if <code>parameterNameResolver == null</code>
 	 */
-	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver)
-			throws IllegalArgumentException
+	public void setParameterNameResolver(final ParameterNameResolver parameterNameResolver) throws IllegalArgumentException
 	{
 		Assert.argumentNotNull("parameterNameResolver", parameterNameResolver);
 
@@ -1240,12 +1213,12 @@ public class Guard extends Validator
 
 	/**
 	 * Validates the give arguments against the defined constructor parameter constraints.<br>
-	 * 
+	 *
 	 * @return null if no violation, otherwise a list
 	 * @throws ValidationFailedException
 	 */
-	protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject,
-			final Constructor< ? > constructor, final Object[] argsToValidate) throws ValidationFailedException
+	protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject, final Constructor< ? > constructor,
+			final Object[] argsToValidate) throws ValidationFailedException
 	{
 		// create required objects for this validation cycle
 		final List<ConstraintViolation> violations = getCollectionFactory().createList();
@@ -1269,8 +1242,7 @@ public class Guard extends Validator
 				if (checks != null && checks.hasChecks())
 				{
 					final Object valueToValidate = argsToValidate[i];
-					final ConstructorParameterContext context = new ConstructorParameterContext(constructor, i,
-							parameterNames[i]);
+					final ConstructorParameterContext context = new ConstructorParameterContext(constructor, i, parameterNames[i]);
 
 					_validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
 				}
@@ -1279,9 +1251,9 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException("Validation of constructor parameters failed. Constructor: "
-					+ constructor + " Validated object: " + validatedObject.getClass().getName() + "@"
-					+ Integer.toHexString(validatedObject.hashCode()), ex);
+			throw new ValidationFailedException("Validation of constructor parameters failed. Constructor: " + constructor
+					+ " Validated object: " + validatedObject.getClass().getName() + "@" + Integer.toHexString(validatedObject.hashCode()),
+					ex);
 		}
 		finally
 		{
@@ -1295,8 +1267,8 @@ public class Guard extends Validator
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations,
-			final String[] profiles) throws IllegalArgumentException, ValidationFailedException
+	protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations, final String[] profiles)
+			throws IllegalArgumentException, ValidationFailedException
 	{
 		// create a new set for this validation cycle
 		currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
@@ -1313,7 +1285,7 @@ public class Guard extends Validator
 
 	/**
 	 * Validates the pre conditions for a method call.<br>
-	 * 
+	 *
 	 * @throws ValidationFailedException
 	 */
 	protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args,
@@ -1348,8 +1320,8 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method
-					+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method + " Validated object: "
+					+ validatedObject, ex);
 		}
 		finally
 		{
@@ -1360,12 +1332,11 @@ public class Guard extends Validator
 
 	/**
 	 * Validates the post conditions for a method call.<br>
-	 * 
+	 *
 	 * @throws ValidationFailedException
 	 */
-	protected void validateMethodPost(final Object validatedObject, final Method method, final Object[] args,
-			final Object returnValue, final Map<PostCheck, Object> oldValues, final List<ConstraintViolation> violations)
-			throws ValidationFailedException
+	protected void validateMethodPost(final Object validatedObject, final Method method, final Object[] args, final Object returnValue,
+			final Map<PostCheck, Object> oldValues, final List<ConstraintViolation> violations) throws ValidationFailedException
 	{
 		final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
@@ -1417,8 +1388,8 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException("Method post conditions validation failed. Method: " + method
-					+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: "
+					+ validatedObject, ex);
 		}
 		finally
 		{
@@ -1428,7 +1399,7 @@ public class Guard extends Validator
 
 	/**
 	 * Validates the @Pre conditions for a method call.<br>
-	 * 
+	 *
 	 * @throws ValidationFailedException
 	 */
 	protected void validateMethodPre(final Object validatedObject, final Method method, final Object[] args,
@@ -1482,8 +1453,8 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method
-					+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method + " Validated object: "
+					+ validatedObject, ex);
 		}
 		finally
 		{
@@ -1493,11 +1464,11 @@ public class Guard extends Validator
 
 	/**
 	 * Validates the return value checks for a method call.<br>
-	 * 
+	 *
 	 * @throws ValidationFailedException
 	 */
-	protected void validateMethodReturnValue(final Object validatedObject, final Method method,
-			final Object returnValue, final List<ConstraintViolation> violations) throws ValidationFailedException
+	protected void validateMethodReturnValue(final Object validatedObject, final Method method, final Object returnValue,
+			final List<ConstraintViolation> violations) throws ValidationFailedException
 	{
 		final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
@@ -1505,10 +1476,10 @@ public class Guard extends Validator
 		 *  avoid circular references, e.g.
 		 *
 		 *  private String name;
-		 *  
+		 *
 		 *  @Assert("_this.name != null", lang="groovy")
 		 *  public String getName { return name; }
-		 *  
+		 *
 		 *  => Groovy will invoke the getter to return the value, invocations of the getter will trigger the validation of the method return values again, including the @Assert constraint
 		 */
 		if (currentlyCheckingMethodReturnValues.get().contains(key)) return;
@@ -1530,8 +1501,8 @@ public class Guard extends Validator
 		}
 		catch (final OValException ex)
 		{
-			throw new ValidationFailedException("Method post conditions validation failed. Method: " + method
-					+ " Validated object: " + validatedObject, ex);
+			throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: "
+					+ validatedObject, ex);
 		}
 		finally
 		{
