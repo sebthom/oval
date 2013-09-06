@@ -35,6 +35,7 @@ public class ChainedConstructorsTest extends TestCase
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void testConstructorChaining()
 	{
 		try
