@@ -1,5 +1,23 @@
 New and Noteworthy
 
+* Version 1.83 (2013-09-07)
+
+** New Features and Improvements
+
+ * added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice managed objects into constraint check implementations
+ * added Validator.resolveValue methods
+
+* Version 1.82 (2013-01-26)
+
+** New Features and Improvements
+
+ * JSR223 Scripting support
+
+** Issues solved
+
+ * fixed message variable cache invalidation on MatchPatternCheck and NotMatchPatternCheck
+ * [ oval-Bugs-3520684 ] Wrong generic types used in Check-implementations
+
 * Version 1.81 (2012-02-22)
 
 ** New Features and Improvements
@@ -12,26 +30,26 @@ New and Noteworthy
  * [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java
  * [ oval-Bugs-3488245 ] UnsupportedOperationException when using inspectInterfaces
 
- 
+
 * Version 1.80 (2011-10-03)
 
 ** New Features and Improvements
 
  * added caching of compiled OGNL expressions
  * added caching of compiled MVEL expressions
- * added support for target attribute on constraint annotations 
- 
+ * added support for target attribute on constraint annotations
+
 ** Issues solved
 
  * message attribute on JSR303 annotations being ignored
 
- 
+
 * Version 1.70 (2011-04-05)
 
 ** New Features and Improvements
 
  * added convenience constructors to XMLConfigurer for easier Spring-based configuration
- * added support for Spring dependencies being injected into SimpleCheck instances 
+ * added support for Spring dependencies being injected into SimpleCheck instances
 
 ** Issues solved
 
@@ -39,7 +57,7 @@ New and Noteworthy
  * [ oval-Bugs-3173470 ] Bug in DigitsCheck
  * [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
  * [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
- 
+
 
 * Version 1.61 (2011-04-05)
 
@@ -47,7 +65,7 @@ New and Noteworthy
 
  * simplified Spring-based configuration
  * improved OVal XSD for XML based configuration
-  
+
 ** Issues solved
 
  * [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
@@ -55,7 +73,7 @@ New and Noteworthy
  * [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
  * [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
 
- 
+
 * Version 1.61 (2010-11-13)
 
 ** Issues solved
@@ -99,9 +117,9 @@ New and Noteworthy
  * JPAAnnotationsConfigurer now also interprets annotated getter methods
 
  * @Size now checks the length of the value's String representation if the value is not a map, a list, or an array
- 
+
  * added @AssertNull, @Digits constraints
- 
+
  * added BeanValidationAnnotationsConfigurer that allows validation of JSR303 built-in constraint annotations
 
  * implemented [ oval-Bugs-2907399] added MessageValueFormatter and Validator.setMessageValueFormatter()
@@ -112,76 +130,76 @@ New and Noteworthy
  * added missing violation message for @AssertValid (thanks to Eric Lewis)
 
  * [ oval-Bugs-2894631 ] ClassCastException when validating arrays
-  
+
  * [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
 
  * [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
- 
+
  * [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
- 
+
  * [ oval-Bugs-2973323 ] XSD scheme is not complete
- 
+
  * [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
- 
+
  * [ oval-Bugs-2973339 ] Defaults are not applied to checks
- 
+
  * [ oval-Bugs-2973334 ] XMLConfigurer doesn't allow to parse when expressions
- 
+
  * [ oval-Bugs-2973344 ] NotNull checks for container values
 
- * changed @EMail regex pattern to support some rare email names [ oval-Bugs-2910553 ] 
+ * changed @EMail regex pattern to support some rare email names [ oval-Bugs-2910553 ]
 
-  
+
 * Version 1.40 (2009-09-27)
 
 ** New Features and Improvements
 
  * added support for conditional constraint activation (added the when="" attribute)
- 
+
  * added tolerance attribute for @DateRange, @Past and @Future constraint [ 2821805] (thanks to Eric Lewis)
- 
+
  * added @NotMatchPattern [ 2859133 ] (thanks to Eric Lewis)
- 
+
  * added ConstraintViolation.getCheckDeclaringContext() (thanks to Eric Lewis)
 
  * added appliesTo() attribute to constraints allowing to control if and how validation should be applied to childs of arrays, maps and collections (thanks to tomtran711)
 
-** Issues solved 
+** Issues solved
 
  * parameter "declaringClass" of @AssertFieldConstraints was ignored during constraint validation
- 
+
  * [ 2836116 ] DateRangeCheck contains bug in getMinMillis()
 
  * corrected checking of BigDecimal by @NotNegative constraint (thanks to Saleem)
- 
+
  * [ 2799870 ] Wrong escaped unicode sequences in Messages_de.properties
- 
+
 * Version 1.32 (2009-05-10)
 
 ** New Features and Improvements
- 
- * added Brazilian Portuguese translation of the constraint violation messages [ 2593104 ] (thanks to Leonardo Pinto) 
+
+ * added Brazilian Portuguese translation of the constraint violation messages [ 2593104 ] (thanks to Leonardo Pinto)
 
  * introduced an interface implemented by Validator for supporting easier mocking
 
  * French translation updated (thanks to  �ric Vigeant)
- 
+
  * upgraded Groovy 1.6.2, MVEL 2.0.8, Paranamer 1.3, JRuby 1.2.0, cglib 2.2,Spring 2.5.6SEC01
- 
+
  * added an @Email constraint (thanks to Musachy Barosso)
 
-** Issues solved 
+** Issues solved
 
  * [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
- 
+
  * [ 2495825 ] The profile feature of Validator is not thread safe
- 
+
  * [ 2493379 ] array types in xml based configuration
- 
+
  * [ 2579897 ] xml based configuration related to post/pre checks
- 
+
  * [ 2723344 ] Should not call any method on not fully initialized object
- 
+
  * [ 2723413 ] translated JDK exception should keep the cause
 
  * NPE in JDK Logger implementation (thanks to Carsten Siedentop)
@@ -192,25 +210,25 @@ New and Noteworthy
 ** New Features
 
   * added support for multi-valued constraints
-  
+
   * JPAAnnotationsConfigurer now interprets @Column.precision/scale for numeric fields
-    
+
 ** Issues solved
 
   * Object level constraints defined in XML were ignored by the XMLConfigurator (thanks to Niels Kirkegaard)
-  
+
   * [ 2063142 ] doc typo
-  
+
   * prefix of default constraint message codes (changed from net.sf.oval.constraints to net.sf.oval.constraint)
-  
+
   * an issue where OVal was translating exception thrown by guarded methods into ValidationFailedException
-  
+
   * bug [ 2164438 ] SerializableField bug when dealing with private fields
-  
+
   * bug [ 2166232 ] JPAAnnotationsConfigurer should use AssertValidCheck for @ManyToMany
-  
+
   * bug [ 2192175 ] Validator.validate checks the same object multiple times
-  
+
   * [ oval-Bugs-2406574 ] wrong scripting language enumerations in xsd and dtd
 
 
@@ -219,189 +237,189 @@ New and Noteworthy
 ** New Features
 
   * added support for logging via SLF4J
- 
+
   * added constraint check exclusion feature which can be used for fine-grained deactivation of constraints
- 
+
   * added <<<@net.sf.oval.constraint.exclusion.Nullable>>> constraint check exclusion
- 
+
   * introduced <<<net.sf.oval.localization.context.OValContextRenderer>>>
- 
+
   * <<<@MatchPattern>>> can now match against multiple patterns
- 
+
   * added constraint configuration XSD as replacement for the DTD
- 
+
   * ConstraintViolation now provides more details about the violated constraint (checkName, messageVariables, messageTemplate)
- 
+
   * added support for using Spring AOP to enable programming by contract for Spring managed beans
- 
+
   * constraints declared without any profiles are associated with a profile named "default" automatically
- 
+
   * greatly simplified usage of the probe mode feature
 
 
 ** Issues solved
 
   * an StackOverflowError that occurs when referencing the same property via _this.<property_name> in scripted pre/post conditions
- 
+
   * some issues in the DTD
- 
+
   * bug [ 2023617 ] <<<@ValidateWithMethod>>> in super classes do not work
- 
+
 
 ** Migration Notes (1.20 to 1.30)
 
   * changed parameter substring() of annotation @HasSubstring() to value() which allows less verbose usage, e.g. @HasSubstring("foo") instead of @HasSubstring(substring="foo")
-  
+
   * renamed MessageResolverImpl to ResourceBundleMessageResolver
-  
+
   * moved MessageResolver classes from net.sf.oval.localization to net.sf.oval.localization.message
-  
+
   * migrated from Ant to Maven as project build system
-  
+
   * Guard.setInProbeMode(...) has been refactored into to separate methods Guard.enableProbeMode(...) and Guard.disableProbeMode(...)
 
 
 * Version 1.20 (2008-04-05)
 
 ** New Features
-  
+
   * added support for Apache Commons JEXL as expression language
-  
+
   * added <<<@net.sf.oval.constraint.EqualToField>>> (thanks to anydoby for the idea)
-  
-  * added <<<@net.sf.oval.constraint.NotEqualToField>>> (thanks to anydoby for the idea) 
- 
-  * added <<<@net.sf.oval.constraint.DateRange>>> (thanks to anydoby for the idea) 
- 
-  * added Japanse translation of the constraint violation messages [ 1911078 ] (thanks to Shinpei Ohtani) 
- 
- 
+
+  * added <<<@net.sf.oval.constraint.NotEqualToField>>> (thanks to anydoby for the idea)
+
+  * added <<<@net.sf.oval.constraint.DateRange>>> (thanks to anydoby for the idea)
+
+  * added Japanse translation of the constraint violation messages [ 1911078 ] (thanks to Shinpei Ohtani)
+
+
 ** Issues solved
- 
+
   * [ 1885645 ] <<<Validator.validateFieldValue>>> should not return null
-   
+
   * [ 1834537 ] NullPointerException in <<<constraintViolation.getCauses()>>>
-   
+
   * [ 1852088 ] Incorrect default message for NotEqual validation
-   
+
   * [ 1852087 ] Corrupt default localized messages
-   
+
   * [ 1868301 ] OVal with groovy - Performance Evaluation
-   
+
   * [ 1917978 ] Length of @Column should be ignored if @Lob is present
-   
-  * [ 1934263 ] Version conflict with WLS10.0 Clientlib 
+
+  * [ 1934263 ] Version conflict with WLS10.0 Clientlib
 
 
 * Version 1.10 (2007-11-02)
 
-** New Features 
- 
+** New Features
+
   * five new built-in constraints <<<@AssertURL>>>, <<<@InstanceOfAny>>>, <<<@MemberOf>>>, <<<@NotEqual>>>, <<<@NotMemberOf>>>
-  
+
   * errorCode and severity can now be specified for constraints
-  
+
   * added support for object-level constraints (compound constraints)
-  
+
   * support for Ruby as constraints expression language
-  
+
   * constraints violation messages translated into Chinese, Dutch, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish
-  
+
   * support for different logging frameworks/facades, so far: JDK logging, Log4J, commons logging
 
 
 ** Migration Notes (1.0 to 1.10)
 
   * <<<net.sf.oval.exception.ConstraintsViolatedException>>> was moved from package <<<net.sf.oval.guard>>>
-  
+
   * <<<net.sf.oval.exception.ExceptionTranslator>>> was moved from package <<<net.sf.oval.guard>>>
-  
+
   * <<<net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl>>> was moved from package <<<net.sf.oval.guard>>>
-  
+
   * <<<@AssertTrue>>>, <<<@AssertFalse>>> are now evaluating the String representation of a value if it is not of type Boolean/boolean
-  
+
   * <<<@AssertValid>>> now recursively checks Arrays, Lists and Maps containing List, Map and Array items
-  
+
   * renamed method <<<Validator.validateField(...)>>> to <<<Validator.validateFieldValue(...)>>>
- 
- 
+
+
 * Version 1.0 (2007-07-22)
 
 ** New Features
 
   * New constraint <<<@NotBlank>>>
-  
+
   * Support for OGNL and MVEL as constraint expression language
 
 ** Migration Notes (0.9 to 1.0)
 
   * <<<Validator.setMessageResolver>>> and <<<Validator.getMessageResolver>>> are now static,
-    this means the same message resolver instance is used with all Validator/Guard instances. 
-        
+    this means the same message resolver instance is used with all Validator/Guard instances.
+
   * Class <<<net.sf.oval.collection.CollectionFactoryHolder>>> has been moved to package <<<net.sf.oval.internal>>>.
     This class should not be used directly, the collection factory in use can be retrieved via
     the static method <<<Validator.getCollectionFactory>>> and set with the static method <<<Validator.setCollectionFactory>>>.
-        
+
   * <<<@Guarded.applyFieldConstraintsToSetter>>> has been renamed to <<<@Guarded.applyFieldConstraintsToSetters>>>
-  
+
   * JPAAnnotationsConfigurer constraint mappings extended:\
     <<<@javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid\
     @javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid\
     @javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid>>>
-	
-	
+
+
 * Version 0.9 (2007-03-18)
 
 ** New Features
 
   * Scripting Support (Groovy, JavaScript, BeanShell) for class invariants, Pre-
     and Postconditions (<<<@Assert, @Pre, @Post>>>)
-    
+
   * Automatic check of class invariants on calls to all non-private methods
 
-  * Check of class invariants, pre-, postconditions can be separately enabled or 
+  * Check of class invariants, pre-, postconditions can be separately enabled or
     disabled during runtime
-    
-  * New constraints: <<<@CheckWith, @Future, @HasSubstring, @Max, @MaxLength, 
+
+  * New constraints: <<<@CheckWith, @Future, @HasSubstring, @Max, @MaxLength,
     @MaxSize, @Min, @MinLength, @MinSize, @Past>>>
-    
+
   * validating/guarding of static fields and methods is now supported
-  
+
   * introduced the concept of constraint profiles
 
-  * added <<<Guard.setExceptionTranslator()>>> allowing you to change the type of 
+  * added <<<Guard.setExceptionTranslator()>>> allowing you to change the type of
     exception that is thrown on constraint violations
 
 ** Migration Notes (0.8 to 0.9)
 
-  In the attempt to add all the new features and to make OVal 1.0 release ready, 
-  a large part of OVal's code base has been refactored. 
+  In the attempt to add all the new features and to make OVal 1.0 release ready,
+  a large part of OVal's code base has been refactored.
 
   This led to certain changes in the API:
 
   * Packages with names in plural have been changed to singular
     (e.g. net.sf.oval.constraints => net.sf.oval.constraint)
-    
-  * Everything related to programming by contract has been moved into a new 
+
+  * Everything related to programming by contract has been moved into a new
     package called net.sf.oval.guard. This includes ConstraintsViolatedListener,
     GuardAspect, Guard, @PreValidateThis, @PostValidateThis and others.
-    
-  * The Guard class now extends the Validator class, therefore the 
+
+  * The Guard class now extends the Validator class, therefore the
     Guard.getValidator() method has been removed.
-   
+
   * For class invariants are now checked by default for guarded classes on every
-    call to non-private methods. If you require the old behaviour you can disable 
-    automatic invariant checking via 
+    call to non-private methods. If you require the old behaviour you can disable
+    automatic invariant checking via
     <<<MyGuardAspect.aspectOf().getGuard().setInvariantCheckingActivated(false)>>>
-    
+
   * Getter methods now need to be annotated with @IsInvariant if their return
-    value should be checked on a object validation via 
+    value should be checked on a object validation via
     <<<Validator.validate(Object)>>>
-    
-  * The Guard's setReportingMode() methods have been replaced with 
+
+  * The Guard's setReportingMode() methods have been replaced with
     setInProbeMode methods.
-    
-    
-* OVal 0.1alpha (2005-08-17) 
+
+
+* OVal 0.1alpha (2005-08-17)
 
  initial release

@@ -5,25 +5,36 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.83" date="2013-??-??">
+		<release version="1.83" date="2013-09-07">
 			<action type="add">added Validator.resolveValue methods</action>
 			<action type="update">upgraded to Spring 3.2.3.RELEASE, Groovy 2.1.5, Paranamer 2.5.5</action>
 			<action type="update">small performance improvement in annotation processing in BeanValidationAnnotationsConfigurer</action>
 			<action type="add">added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice
-				managed objects
-				into constraint check implementations
+				managed objects	into constraint check implementations
 			</action>
 		</release>
 
 		<release version="1.82" date="2013-01-26">
 			<action type="fix" issue="oval-Bugs-3491671">currentlyCheckingPreConditions in Guard.validateMethodPost</action>
 			<action type="update">made deprecated XML attribute "requireValidElements" of assertValid optional in XSD</action>
-			<action type="fix" issue="oval-Bugs-3520684">Wrong generic types used in Check-implementations?</action>
+			<action type="fix" issue="oval-Bugs-3520684">Wrong generic types used in Check-implementations</action>
 			<action type="update">upgraded to AspectJ 1.7.1, JUnit 4.11, Log4J 1.2.17, SLF4J 1.7.2, XStream 1.4.4, Groovy 2.1.0, BeanShell 2.0b5, OGNL
-				3.0.6, JRuby 1.6.5, Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3</action>
+				3.0.6, JRuby 1.6.5, Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3
+			</action>
 			<action type="fix">fixed message variable cache invalidation on MatchPatternCheck NotMatchPatternCheck</action>
 			<action type="add" issue="oval-Bugs-3386846">JSR223 Scripting support</action>
 		</release>
 
+		<release version="1.81" date="2012-02-22">
+			<action type="fix" issue="oval-Bugs-3488791">xstream alias typo "postExcecution" in XMLConfigurer.java</action>
+			<action type="fix" issue="oval-Bugs-3488245">UnsupportedOperationException when using inspectInterfaces</action>
+			<action type="fix">fixed default message attribute value on JSR303 annotations being misinterpreted</action>
+			<action type="update">upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6,
+				commons-jexl 2.1.1, Paranamer 2.4.1
+			</action>
+			<action type="add">extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on
+				non-getter methods
+			</action>
+		</release>
 	</body>
 </document>
