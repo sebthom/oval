@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-autowire="no" default-lazy-init="false">
+
+	<bean id="xmlConfigurer1" class="net.sf.oval.configuration.xml.XMLConfigurer" />
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" p:targetObject-ref="xmlConfigurer1"
+		p:targetMethod="fromXML">
+		<property name="arguments">
+			<value type="java.io.InputStream">classpath:net/sf/oval/test/validator/XMLConfigurationTest.inc.xml</value>
+		</property>
+	</bean>
+
+	<bean id="validator" class="net.sf.oval.Validator">
+		<constructor-arg>
+			<list>
+				<ref bean="xmlConfigurer1" />
+				
+				<bean class="net.sf.oval.configuration.xml.XMLConfigurer">
+					<constructor-arg type="java.io.InputStream" value="classpath:net/sf/oval/test/validator/XMLConfigurationTest.xml" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+</beans>
