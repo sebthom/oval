@@ -77,7 +77,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 	<ciManagement>
 		<system>jenkins</system>
-		<url>https://ci.vegardit.com/job/oval/net.sf.oval</url>
+		<url>https://ci.vegardit.com/job/net.sf.oval</url>
 	</ciManagement>
 
 	<mailingLists>
