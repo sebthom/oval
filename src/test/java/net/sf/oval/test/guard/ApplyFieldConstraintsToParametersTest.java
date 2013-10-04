@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -74,7 +74,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 
 		public void setDummyFirstName(@AssertFieldConstraints(value = "firstName") final String dummyFirstName)
 		{
-		// doing interesting stuff here
+			// doing interesting stuff here
 		}
 
 		public void setFirstName(@AssertFieldConstraints final String firstName)
@@ -119,7 +119,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		try
 		{
 			ps.findPersonsByZipCode(null);
-			fail();
+			fail("NOT_NULL ConstraintsViolatedException expected");
 		}
 		catch (final ConstraintsViolatedException ex)
 		{
@@ -132,7 +132,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 		try
 		{
 			ps.findPersonsByZipCode("foobar");
-			fail();
+			fail("REG_EX ConstraintsViolatedException expected");
 		}
 		catch (final ConstraintsViolatedException ex)
 		{
@@ -142,7 +142,7 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase
 
 	/**
 	 * by default constraints specified for a field are also used for validating
-	 * method parameters of the corresponding setter methods 
+	 * method parameters of the corresponding setter methods
 	 */
 	public void testSetterValidation() throws Exception
 	{
