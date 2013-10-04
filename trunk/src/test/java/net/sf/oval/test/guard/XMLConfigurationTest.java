@@ -101,9 +101,9 @@ public class XMLConfigurationTest extends TestCase
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(2, violations.length);
-			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
+			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) parameter 0 (userId) is null",
 					violations[0].getMessage());
-			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
+			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) parameter 1 (managerId) is null",
 					violations[1].getMessage());
 		}
 
@@ -118,7 +118,7 @@ public class XMLConfigurationTest extends TestCase
 		{
 			final ConstraintViolation[] violations = ex.getConstraintViolations();
 			assertEquals(1, violations.length);
-			assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
+			assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) parameter 0 (managerId) is null",
 					violations[0].getMessage());
 		}
 
