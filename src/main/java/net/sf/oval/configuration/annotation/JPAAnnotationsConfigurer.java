@@ -62,6 +62,21 @@ public class JPAAnnotationsConfigurer implements Configurer
 	protected Boolean applyFieldConstraintsToSetters;
 	protected Boolean applyFieldConstraintsToConstructors;
 
+	protected void addAssertValidCheckIfRequired(final Annotation constraintAnnotation, final Collection<Check> checks,
+			final AccessibleObject fieldOrMethod)
+	{
+		if (constraintAnnotation instanceof OneToOne || constraintAnnotation instanceof OneToMany
+				|| constraintAnnotation instanceof ManyToOne || constraintAnnotation instanceof ManyToMany)
+			checks.add(new AssertValidCheck());
+	}
+
+	protected boolean containsCheckOfType(final Collection<Check> checks, final Class< ? extends Check> checkClass)
+	{
+		for (final Check check : checks)
+			if (checkClass.isInstance(check)) return true;
+		return false;
+	}
+
 	public Boolean getApplyFieldConstraintsToConstructors()
 	{
 		return applyFieldConstraintsToConstructors;
@@ -86,6 +101,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 			// loop over all annotations of the current field
 			for (final Annotation annotation : field.getAnnotations())
+			{
 				if (annotation instanceof Basic)
 					initializeChecks((Basic) annotation, checks);
 				else if (annotation instanceof Column)
@@ -97,6 +113,10 @@ public class JPAAnnotationsConfigurer implements Configurer
 				else if (annotation instanceof ManyToMany)
 					initializeChecks((ManyToMany) annotation, checks);
 				else if (annotation instanceof OneToMany) initializeChecks((OneToMany) annotation, checks);
+
+				addAssertValidCheckIfRequired(annotation, checks, field);
+			}
+
 			if (checks.size() > 0)
 			{
 				if (config.fieldConfigurations == null) config.fieldConfigurations = cf.createSet(8);
@@ -119,6 +139,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 			// loop over all annotations
 			for (final Annotation annotation : method.getAnnotations())
+			{
 				if (annotation instanceof Basic)
 					initializeChecks((Basic) annotation, checks);
 				else if (annotation instanceof Column)
@@ -130,6 +151,9 @@ public class JPAAnnotationsConfigurer implements Configurer
 				else if (annotation instanceof ManyToMany)
 					initializeChecks((ManyToMany) annotation, checks);
 				else if (annotation instanceof OneToMany) initializeChecks((OneToMany) annotation, checks);
+
+				addAssertValidCheckIfRequired(annotation, checks, method);
+			}
 
 			// check if anything has been configured for this method at all
 			if (checks.size() > 0)
@@ -155,17 +179,11 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 	protected void initializeChecks(final Basic annotation, final Collection<Check> checks)
 	{
-		assert annotation != null;
-		assert checks != null;
-
-		if (!annotation.optional()) checks.add(new NotNullCheck());
+		if (!annotation.optional() && !containsCheckOfType(checks, NotNullCheck.class)) checks.add(new NotNullCheck());
 	}
 
 	protected void initializeChecks(final Column annotation, final Collection<Check> checks, final AccessibleObject fieldOrMethod)
 	{
-		assert annotation != null;
-		assert checks != null;
-
 		/* If the value is generated (annotated with @GeneratedValue) it is allowed to be null
 		 * before the entity has been persisted, same is true in case of optimistic locking
 		 * when a field is annotated with @Version.
@@ -173,7 +191,8 @@ public class JPAAnnotationsConfigurer implements Configurer
 		 * has been persisted already, a not-null check will not be performed for such fields.
 		 */
 		if (!annotation.nullable() && !fieldOrMethod.isAnnotationPresent(GeneratedValue.class)
-				&& !fieldOrMethod.isAnnotationPresent(Version.class)) checks.add(new NotNullCheck());
+				&& !fieldOrMethod.isAnnotationPresent(Version.class))
+			if (!containsCheckOfType(checks, NotNullCheck.class)) checks.add(new NotNullCheck());
 
 		// only consider length parameter if @Lob is not present
 		if (!fieldOrMethod.isAnnotationPresent(Lob.class))
@@ -201,36 +220,22 @@ public class JPAAnnotationsConfigurer implements Configurer
 
 	protected void initializeChecks(final ManyToMany annotation, final Collection<Check> checks)
 	{
-		assert annotation != null;
-		assert checks != null;
-
-		checks.add(new AssertValidCheck());
+		// override if required
 	}
 
 	protected void initializeChecks(final ManyToOne annotation, final Collection<Check> checks)
 	{
-		assert annotation != null;
-		assert checks != null;
-
-		if (!annotation.optional()) checks.add(new NotNullCheck());
-		checks.add(new AssertValidCheck());
+		if (!annotation.optional() && !containsCheckOfType(checks, NotNullCheck.class)) checks.add(new NotNullCheck());
 	}
 
 	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks)
 	{
-		assert annotation != null;
-		assert checks != null;
-
-		checks.add(new AssertValidCheck());
+		// override if required
 	}
 
 	protected void initializeChecks(final OneToOne annotation, final Collection<Check> checks)
 	{
-		assert annotation != null;
-		assert checks != null;
-
-		if (!annotation.optional()) checks.add(new NotNullCheck());
-		checks.add(new AssertValidCheck());
+		if (!annotation.optional() && !containsCheckOfType(checks, NotNullCheck.class)) checks.add(new NotNullCheck());
 	}
 
 	public Boolean isApplyFieldConstraintsToSetter()
