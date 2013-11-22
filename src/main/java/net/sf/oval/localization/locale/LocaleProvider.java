@@ -10,18 +10,14 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.localization.value;
+package net.sf.oval.localization.locale;
+
+import java.util.Locale;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ToStringMessageValueFormatter implements MessageValueFormatter
+public interface LocaleProvider
 {
-	public static final ToStringMessageValueFormatter INSTANCE = new ToStringMessageValueFormatter();
-
-	public String format(final Object value)
-	{
-		if (value == null) return "null";
-		return value.toString();
-	}
+	Locale getLocale();
 }

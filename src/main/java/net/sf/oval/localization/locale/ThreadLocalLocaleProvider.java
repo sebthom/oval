@@ -10,18 +10,31 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.localization.value;
+package net.sf.oval.localization.locale;
+
+import java.util.Locale;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ToStringMessageValueFormatter implements MessageValueFormatter
+public class ThreadLocalLocaleProvider implements LocaleProvider
 {
-	public static final ToStringMessageValueFormatter INSTANCE = new ToStringMessageValueFormatter();
+	private final ThreadLocal<Locale> locale = new ThreadLocal<Locale>();
 
-	public String format(final Object value)
+	/**
+	 * Gets the locale of the current thread
+	 */
+	public Locale getLocale()
 	{
-		if (value == null) return "null";
-		return value.toString();
+		final Locale l = locale.get();
+		return l == null ? Locale.getDefault() : l;
+	}
+
+	/**
+	 * Sets the locale for the current thread
+	 */
+	public void setLocale(Locale locale)
+	{
+		this.locale.set(locale);
 	}
 }

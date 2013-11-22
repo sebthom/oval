@@ -74,6 +74,8 @@ import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalLinkedList;
 import net.sf.oval.localization.context.OValContextRenderer;
 import net.sf.oval.localization.context.ToStringValidationContextRenderer;
+import net.sf.oval.localization.locale.LocaleProvider;
+import net.sf.oval.localization.locale.ThreadLocalLocaleProvider;
 import net.sf.oval.localization.message.MessageResolver;
 import net.sf.oval.localization.message.ResourceBundleMessageResolver;
 import net.sf.oval.localization.value.MessageValueFormatter;
@@ -141,6 +143,7 @@ public class Validator implements IValidator
 
 	private static MessageResolver messageResolver;
 	private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
+	private static LocaleProvider localeProvider = new ThreadLocalLocaleProvider();
 
 	private static CollectionFactory _createDefaultCollectionFactory()
 	{
@@ -172,25 +175,21 @@ public class Validator implements IValidator
 		return collectionFactory;
 	}
 
-	/**
-	 * @return the contextRenderer
-	 */
 	public static OValContextRenderer getContextRenderer()
 	{
 		return contextRenderer;
 	}
 
-	/**
-	 * @return the loggerFactory
-	 */
+	public static LocaleProvider getLocaleProvider()
+	{
+		return localeProvider;
+	}
+
 	public static LoggerFactory getLoggerFactory()
 	{
 		return Log.getLoggerFactory();
 	}
 
-	/**
-	 * @return the messageResolver
-	 */
 	public static MessageResolver getMessageResolver()
 	{
 		/*
@@ -201,9 +200,6 @@ public class Validator implements IValidator
 		return messageResolver;
 	}
 
-	/**
-	 * @return the messageValueFormatter
-	 */
 	public static MessageValueFormatter getMessageValueFormatter()
 	{
 		return messageValueFormatter;
@@ -226,6 +222,12 @@ public class Validator implements IValidator
 	{
 		Assert.argumentNotNull("contextRenderer", contextRenderer);
 		Validator.contextRenderer = contextRenderer;
+	}
+
+	public static void setLocaleProvider(LocaleProvider localeProvider)
+	{
+		Assert.argumentNotNull("localeProvider", localeProvider);
+		Validator.localeProvider = localeProvider;
 	}
 
 	/**

@@ -7,6 +7,7 @@
 	<body>
 		<release version="1.84" date="2013-??-??">
 			<action type="fix" issue="[oval:bugs] #84">JPAAnnotationsConfigurer shouldn't add Checks twice</action>
+			<action type="add">LocaleProvider, ThreadLocalLocaleProvider, Validator.getLocaleProvider, Validator.setLocaleProvider</action>
 		</release>
 
 		<release version="1.83" date="2013-09-07">
