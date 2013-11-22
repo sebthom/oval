@@ -1,11 +1,23 @@
 New and Noteworthy
 
+* Version 1.84 (2013-11-22)
+
+** New Features and Improvements
+
+ * added LocaleProvider, ThreadLocalLocaleProvider, Validator.getLocaleProvider, Validator.setLocaleProvider
+
+** Issues solved
+
+ * fixed issue #84: JPAAnnotationsConfigurer shouldn't add Checks twice
+
+
 * Version 1.83 (2013-09-07)
 
 ** New Features and Improvements
 
  * added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice managed objects into constraint check implementations
  * added Validator.resolveValue methods
+
 
 * Version 1.82 (2013-01-26)
 
@@ -17,6 +29,7 @@ New and Noteworthy
 
  * fixed message variable cache invalidation on MatchPatternCheck and NotMatchPatternCheck
  * [ oval-Bugs-3520684 ] Wrong generic types used in Check-implementations
+
 
 * Version 1.81 (2012-02-22)
 

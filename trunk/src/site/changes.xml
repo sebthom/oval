@@ -5,7 +5,7 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.84" date="2013-??-??">
+		<release version="1.84" date="2013-11-22">
 			<action type="fix" issue="[oval:bugs] #84">JPAAnnotationsConfigurer shouldn't add Checks twice</action>
 			<action type="add">LocaleProvider, ThreadLocalLocaleProvider, Validator.getLocaleProvider, Validator.setLocaleProvider</action>
 		</release>
