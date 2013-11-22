@@ -1,0 +1,242 @@
+<!-- OVal DTD
+
+<!DOCTYPE oval PUBLIC 
+   "-//OVal/OVal Configuration DTD 0.95//EN"
+   "http://oval.sourceforge.net/oval-configuration-0.95.dtd">
+
+or
+
+<!DOCTYPE oval SYSTEM 
+   "file:///c:/mypath/oval-configuration-0.9.dtd">
+
+  http://en.wikipedia.org/wiki/Document_Type_Definition
+-->
+
+<!-- The root configuration element -->
+<!ELEMENT oval ( (constraintSet|class)* ) >
+
+<!-- Defines a constraint set -->
+<!ELEMENT constraintSet ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ATTLIST constraintSet id NMTOKEN #REQUIRED >
+<!ATTLIST constraintSet overwrite (true|false) #IMPLIED >
+
+<!-- Constraints configuration for a specific class -->
+<!ELEMENT class ( (field|constructor|method)* ) >
+<!ATTLIST class applyFieldConstraintsToSetter (true|false) #IMPLIED >
+<!ATTLIST class checkInvariants (true|false) #IMPLIED >
+<!ATTLIST class overwrite (true|false) #IMPLIED >
+<!ATTLIST class type CDATA #REQUIRED >
+
+<!-- Constraints configuration for a field -->
+<!ELEMENT field ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+<!ATTLIST field overwrite (true|false) #IMPLIED >
+
+<!--Constraints configuration for a constructor.
+To identify the correct constructor you are required to list all parameters, including parameters you are not intending to specify constraints for.-->
+<!ELEMENT constructor (parameter*) >
+<!ATTLIST constructor postCheckInvariants (true|false) #IMPLIED >
+<!ATTLIST constructor overwrite (true|false) #IMPLIED >
+
+<!-- Constraints configuration for a method.
+To identify the correct method you are required to list all parameters, including parameters you are not intending to specify constraints for. -->
+<!ELEMENT method (parameter*,preExcecution?,returnValue?,postExcecution?) >
+<!ATTLIST method name NMTOKEN #REQUIRED >
+<!ATTLIST method isInvariant (true|false) #IMPLIED >
+<!ATTLIST method overwrite (true|false) #IMPLIED >
+
+<!-- Constraints configuration for a constructor/method parameter -->
+<!ELEMENT parameter ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ATTLIST parameter overwrite (true|false) #IMPLIED >
+<!ATTLIST parameter type NMTOKEN #REQUIRED >
+
+<!-- Constraints configuration for the return value of a method. -->
+<!ELEMENT returnValue ( (assert|assertConstraintSet|assertFalse|assertFieldConstraints|assertTrue|assertValid|checkWith|future|hasSubstring|instanceOf|length|matchPattern|max|maxLength|maxSize|min|minLength|minSize|noSelfReference|notEmpty|notNegative|notNull|past|range|size|validateWithMethod)* )>
+<!ATTLIST returnValue overwrite (true|false) #IMPLIED >
+
+<!ELEMENT preExcecution (pre*)>
+<!ATTLIST preExcecution checkInvariants (true|false) #IMPLIED >
+<!ATTLIST preExcecution overwrite (true|false) #IMPLIED >
+
+<!-- method pre condition - special programming by contract constraints -->
+<!ELEMENT pre EMPTY >
+<!ATTLIST pre expr CDATA #REQUIRED >
+<!ATTLIST pre lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
+<!ATTLIST pre message CDATA #IMPLIED >
+<!ATTLIST pre profiles (string-array) #IMPLIED >
+
+<!ELEMENT postExcecution (post*) >
+<!ATTLIST postExcecution checkInvariants (true|false) #IMPLIED >
+<!ATTLIST postExcecution overwrite (true|false) #IMPLIED >
+
+<!-- method post condition - special programming by contract constraints -->
+<!ELEMENT post EMPTY >
+<!ATTLIST post expr CDATA #REQUIRED >
+<!ATTLIST post lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
+<!ATTLIST post message CDATA #IMPLIED >
+<!ATTLIST post profiles (string-array) #IMPLIED >
+
+<!-- An array of strings (new String[]{...})-->
+<!ELEMENT string-array (string*) >
+<!ELEMENT string (#PCDATA) >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Assert -->
+<!ELEMENT assert EMPTY >
+<!ATTLIST assert expr CDATA #REQUIRED >
+<!ATTLIST assert lang (bsh|beanshell|js|javascript|groovy|ognl) #REQUIRED >
+<!ATTLIST assert message CDATA #IMPLIED >
+<!ATTLIST assert profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.AssertConstraintSet -->
+<!ELEMENT assertConstraintSet EMPTY >
+<!ATTLIST assertConstraintSet id NMTOKEN #REQUIRED >
+<!ATTLIST assertConstraintSet source NMTOKEN #IMPLIED >
+<!ATTLIST assertConstraintSet profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.AssertFalse -->
+<!ELEMENT assertFalse EMPTY >
+<!ATTLIST assertFalse message CDATA #IMPLIED >
+<!ATTLIST assertFalse profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.AssertFieldConstraints -->
+<!ELEMENT assertFieldConstraints EMPTY >
+<!ATTLIST assertFieldConstraints fieldName NMTOKEN #REQUIRED >
+<!ATTLIST assertFieldConstraints profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.AssertTrue -->
+<!ELEMENT assertTrue EMPTY >
+<!ATTLIST assertTrue message CDATA #IMPLIED >
+<!ATTLIST assertTrue profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.AssertValid -->
+<!ELEMENT assertValid EMPTY >
+<!ATTLIST assertValid message CDATA #IMPLIED >
+<!ATTLIST assertValid requireValidElements (true|false) #REQUIRED>
+<!ATTLIST assertValid profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.CheckWith -->
+<!ELEMENT checkWith (simpleCheck) >
+<!ATTLIST checkWith ignoreIfNull (true|false) #IMPLIED >
+<!ATTLIST checkWith message CDATA #IMPLIED >
+<!ATTLIST checkWith profiles (string-array) #IMPLIED >
+
+<!ELEMENT simpleCheck EMPTY>
+<!-- name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck -->
+<!ATTLIST simpleCheck class CDATA #REQUIRED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Future -->
+<!ELEMENT future EMPTY >
+<!ATTLIST future message CDATA #IMPLIED >
+<!ATTLIST future profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.HasSubstring -->
+<!ELEMENT hasSubstring EMPTY >
+<!ATTLIST hasSubstring ignoreCase (true|false) #REQUIRED >
+<!ATTLIST hasSubstring message CDATA #IMPLIED >
+<!ATTLIST hasSubstring profiles (string-array) #IMPLIED >
+<!ATTLIST hasSubstring substring NMTOKEN #REQUIRED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.InstanceOf -->
+<!ELEMENT instanceOf EMPTY >
+<!ATTLIST instanceOf clazz NMTOKEN #REQUIRED >
+<!ATTLIST instanceOf message CDATA #IMPLIED >
+<!ATTLIST instanceOf profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Length -->
+<!ELEMENT length EMPTY >
+<!ATTLIST length max NMTOKEN #IMPLIED >
+<!ATTLIST length message CDATA #IMPLIED >
+<!ATTLIST length min NMTOKEN #IMPLIED >
+<!ATTLIST length profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MatchPattern -->
+<!ELEMENT matchPattern ( pattern ) >
+<!ATTLIST matchPattern message CDATA #IMPLIED >
+<!ATTLIST matchPattern profiles (string-array) #IMPLIED >
+
+<!ELEMENT pattern EMPTY >
+<!ATTLIST pattern flags NMTOKEN #IMPLIED >
+<!ATTLIST pattern pattern CDATA #REQUIRED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Max -->
+<!ELEMENT max EMPTY >
+<!ATTLIST max max NMTOKEN #REQUIRED >
+<!ATTLIST max message CDATA #IMPLIED >
+<!ATTLIST max profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MaxLength -->
+<!ELEMENT maxLength EMPTY >
+<!ATTLIST maxLength max NMTOKEN #REQUIRED >
+<!ATTLIST maxLength message CDATA #IMPLIED >
+<!ATTLIST maxLength profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MaxSize -->
+<!ELEMENT maxSize EMPTY >
+<!ATTLIST maxSize max NMTOKEN #REQUIRED >
+<!ATTLIST maxSize message CDATA #IMPLIED >
+<!ATTLIST maxSize profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Min -->
+<!ELEMENT min EMPTY >
+<!ATTLIST min message CDATA #IMPLIED >
+<!ATTLIST min min NMTOKEN #REQUIRED >
+<!ATTLIST min profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MinLength -->
+<!ELEMENT minLength EMPTY >
+<!ATTLIST minLength message CDATA #IMPLIED >
+<!ATTLIST minLength min NMTOKEN #REQUIRED >
+<!ATTLIST minLength profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.MinSize -->
+<!ELEMENT minSize EMPTY >
+<!ATTLIST minSize message CDATA #IMPLIED >
+<!ATTLIST minSize min NMTOKEN #IMPLIED >
+<!ATTLIST minSize profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.NoSelfReference -->
+<!ELEMENT noSelfReference EMPTY >
+<!ATTLIST noSelfReference message CDATA #IMPLIED >
+<!ATTLIST noSelfReference profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.NotEmpty -->
+<!ELEMENT notEmpty EMPTY >
+<!ATTLIST notEmpty message CDATA #IMPLIED >
+<!ATTLIST notEmpty profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.NotNegative -->
+<!ELEMENT notNegative EMPTY >
+<!ATTLIST notNegative message CDATA #IMPLIED >
+<!ATTLIST notNegative profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.NotNull -->
+<!ELEMENT notNull EMPTY >
+<!ATTLIST notNull message CDATA #IMPLIED >
+<!ATTLIST notNull profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Past -->
+<!ELEMENT past EMPTY >
+<!ATTLIST past message CDATA #IMPLIED >
+<!ATTLIST past profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Range -->
+<!ELEMENT range EMPTY >
+<!ATTLIST range max NMTOKEN #IMPLIED >
+<!ATTLIST range message CDATA #IMPLIED >
+<!ATTLIST range min NMTOKEN #IMPLIED >
+<!ATTLIST range profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraint.Size -->
+<!ELEMENT size EMPTY >
+<!ATTLIST size max NMTOKEN #IMPLIED >
+<!ATTLIST size message CDATA #IMPLIED >
+<!ATTLIST size min NMTOKEN #IMPLIED >
+<!ATTLIST size profiles (string-array) #IMPLIED >
+
+<!-- built-in single value constraint, corresponds to net.sf.oval.constraints.ValidateWithMethod -->
+<!ELEMENT validateWithMethod EMPTY >
+<!ATTLIST validateWithMethod ignoreIfNull (true|false) #IMPLIED >
+<!ATTLIST validateWithMethod message CDATA #IMPLIED >
+<!ATTLIST validateWithMethod methodName NMTOKEN #REQUIRED >
+<!ATTLIST validateWithMethod parameterType NMTOKEN #REQUIRED >
+<!ATTLIST validateWithMethod profiles (string-array) #IMPLIED >
