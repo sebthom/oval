@@ -14,12 +14,14 @@ package net.sf.oval.test.guard;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstructorConfiguration;
@@ -38,6 +40,7 @@ import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
+import net.sf.oval.localization.locale.ThreadLocalLocaleProvider;
 
 /**
  * @author Sebastian Thomschke
@@ -135,6 +138,12 @@ public class XMLConfigurationTest extends TestCase
 			assertEquals(1, violations.length);
 			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0].getMessage());
 		}
+	}
+
+	@Override
+	protected void setUp() throws Exception
+	{
+		((ThreadLocalLocaleProvider) Validator.getLocaleProvider()).setLocale(Locale.ENGLISH);
 	}
 
 	public void testImportedFile()

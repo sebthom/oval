@@ -43,29 +43,43 @@ public class ResourceBundleMessageResolver implements MessageResolver
 	/**
 	 * Adds a message bundle
 	 *
-	 * @param messageBundle
 	 * @return true if the bundle was registered and false if it was already registered
 	 */
 	public boolean addMessageBundle(final ResourceBundle messageBundle)
 	{
-		final ArrayList<ResourceBundle> messageBundles = getMessageBundlesForLocale(messageBundle.getLocale());
+		return addMessageBundle(messageBundle, messageBundle.getLocale());
+	}
+
+	protected boolean addMessageBundle(final ResourceBundle messageBundle, Locale locale)
+	{
+		final ArrayList<ResourceBundle> messageBundles = getMessageBundlesForLocale(locale);
 
 		if (messageBundles.contains(messageBundle)) return false;
 
 		messageBundles.add(0, messageBundle);
-		final List<String> keys = getCollectionFactory().createList();
 
-		for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum.hasMoreElements();)
-			keys.add(keysEnum.nextElement());
-
-		messageBundleKeys.put(messageBundle, keys);
+		if (!messageBundleKeys.containsKey(messageBundle))
+		{
+			final List<String> keys = getCollectionFactory().createList();
+			for (final Enumeration<String> keysEnum = messageBundle.getKeys(); keysEnum.hasMoreElements();)
+				keys.add(keysEnum.nextElement());
+			messageBundleKeys.put(messageBundle, keys);
+		}
 
 		return true;
 	}
 
 	public String getMessage(final String key)
 	{
-		final List<ResourceBundle> messageBundles = getMessageBundlesForLocale(Validator.getLocaleProvider().getLocale());
+		final Locale l = Validator.getLocaleProvider().getLocale();
+		String msg = getMessage(key, l);
+		if (msg == null && !l.equals((Locale.getDefault()))) msg = getMessage(key, Locale.getDefault());
+		return msg;
+	}
+
+	protected String getMessage(final String key, Locale locale)
+	{
+		final List<ResourceBundle> messageBundles = getMessageBundlesForLocale(locale);
 
 		for (final ResourceBundle bundle : messageBundles)
 		{
@@ -87,7 +101,7 @@ public class ResourceBundleMessageResolver implements MessageResolver
 			try
 			{
 				// add the message bundle for the pre-built constraints
-				mbs.add(ResourceBundle.getBundle("net/sf/oval/Messages", locale));
+				addMessageBundle(ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
 			}
 			catch (final MissingResourceException ex)
 			{
