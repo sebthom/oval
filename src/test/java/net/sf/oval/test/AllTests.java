@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *     Makkari - added AssertURLTest
@@ -29,12 +29,10 @@ public final class AllTests
 	private static void constraintsTests(final TestSuite suite) throws Exception
 	{
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertFalseTest.class);
-		suite.addTestSuite(net.sf.oval.test.constraints.AssertNullTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.DateRangeTest.class);
-		suite.addTestSuite(net.sf.oval.test.constraints.DigitsTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.EmailTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.EqualToFieldTest.class);
 		suite.addTestSuite(net.sf.oval.test.constraints.FutureTest.class);
@@ -102,7 +100,7 @@ public final class AllTests
 
 	public static Test suite() throws Exception
 	{
-		//System.setSecurityManager(new SecurityManager());
+		System.setSecurityManager(new SecurityManager());
 
 		// $JUnit-BEGIN$
 		final TestSuite suite = new TestSuite("Test for net.sf.oval");
@@ -178,27 +176,20 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.AssertOGNLTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertRubyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.AssertValidTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.BeanValidationAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CheckWithConstraintTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.CheckWithListConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CollectionTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConcurrencyTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConditionalConstraintsTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationMessagesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.DefaultInstancesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.FieldConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ObjectGraphTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.PrimitiveArrayTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ProfilesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.SerializationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.StaticFieldsAndGettersTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.TargetDefaultTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.TargetJXPathTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateClassWithoutConstraintsTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidateWithMethodConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ValidatorAssertValidTest.class);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * @author Sebastian Thomschke
  */
-public final class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
+public class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>>
 {
 	/**
 	 * {@inheritDoc}

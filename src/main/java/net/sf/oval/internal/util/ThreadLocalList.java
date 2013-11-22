@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Sebastian Thomschke
  */
-public final class ThreadLocalList<T> extends ThreadLocal<List<T>>
+public class ThreadLocalList<T> extends ThreadLocal<List<T>>
 {
 	/**
 	 * {@inheritDoc}

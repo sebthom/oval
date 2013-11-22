@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -24,7 +24,7 @@ import net.sf.oval.internal.Log;
  * 
  * @author Sebastian Thomschke
  */
-public final class SerializableMethod implements Serializable
+public class SerializableMethod implements Serializable
 {
 	private static final Log LOG = Log.getLog(SerializableMethod.class);
 
@@ -52,7 +52,7 @@ public final class SerializableMethod implements Serializable
 
 	private final Class< ? >[] parameterTypes;
 
-	private SerializableMethod(final Method method)
+	protected SerializableMethod(final Method method)
 	{
 		this.method = method;
 		name = method.getName();

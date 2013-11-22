@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -41,7 +41,8 @@ public final class StringUtils
 	/**
 	 * high-performance case-sensitive string replacement
 	 */
-	public static String replaceAll(final String searchIn, final String searchFor, final String replaceWith)
+	public static String replaceAll(final String searchIn, final String searchFor,
+			final String replaceWith)
 	{
 		final StringBuilder out = new StringBuilder();
 
@@ -62,6 +63,6 @@ public final class StringUtils
 	 */
 	private StringUtils()
 	{
-		super();
+	// do nothing
 	}
 }

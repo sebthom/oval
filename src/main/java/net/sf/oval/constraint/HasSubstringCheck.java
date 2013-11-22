@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -49,7 +49,7 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Map<String, String> createMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
@@ -60,12 +60,11 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * @return the substring
 	 */
@@ -77,7 +76,9 @@ public class HasSubstringCheck extends AbstractAnnotationCheck<HasSubstring>
 	private String getSubstringLowerCase()
 	{
 		if (substringLowerCase == null && substring != null)
+		{
 			substringLowerCase = substring.toLowerCase(Locale.getDefault());
+		}
 		return substringLowerCase;
 	}
 

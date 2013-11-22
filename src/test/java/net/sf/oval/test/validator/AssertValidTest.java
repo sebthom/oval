@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -30,7 +30,6 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
 import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
-import net.sf.oval.context.FieldContext;
 
 /**
  * @author Sebastian Thomschke
@@ -39,7 +38,7 @@ public class AssertValidTest extends TestCase
 {
 	protected static class Address
 	{
-		@NotNull(message = "NOT_NULL_STREET")
+		@NotNull
 		public String street;
 
 		@NotNull
@@ -101,9 +100,7 @@ public class AssertValidTest extends TestCase
 		assertEquals(1, violations.size());
 		assertEquals("ASSERT_VALID", violations.get(0).getMessage());
 		assertEquals(a, violations.get(0).getInvalidValue());
-		assertEquals(3, violations.get(0).getCauses().length);
-		for (final ConstraintViolation cv : violations.get(0).getCauses())
-			if ("NOT_NULL_STREET".equals(cv.getMessage())) assertEquals("street", ((FieldContext) cv.getContext()).getField().getName());
+
 		a.street = "The Street";
 		a.city = "The City";
 		a.zipCode = "12345";
@@ -168,7 +165,8 @@ public class AssertValidTest extends TestCase
 		assertEquals(2, validator.validate(registry).size());
 
 		registry.personsByCity.clear();
-		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1, invalidPerson1, invalidPerson2, invalidPerson2}));
+		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1, invalidPerson1, invalidPerson2,
+				invalidPerson2}));
 		// still only two since invalidPerson1 and invalidPerson2 have already been validated
 		assertEquals(2, validator.validate(registry).size());
 

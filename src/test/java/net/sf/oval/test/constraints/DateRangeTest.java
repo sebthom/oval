@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -23,7 +23,7 @@ import net.sf.oval.constraint.DateRangeCheck;
  */
 public class DateRangeTest extends AbstractContraintsTest
 {
-	public void testDateRange()
+	public void testDateRange() throws InterruptedException
 	{
 		final DateRangeCheck check = new DateRangeCheck();
 		super.testCheck(check);

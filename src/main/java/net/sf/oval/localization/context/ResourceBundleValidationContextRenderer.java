@@ -1,23 +1,21 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.localization.context;
 
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import net.sf.oval.Validator;
 import net.sf.oval.context.ClassContext;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -35,36 +33,36 @@ import net.sf.oval.internal.Log;
  * com.acme.model.Person.properties<br>
  * com.acme.model.Person_de.properties<br>
  * com.acme.model.Person_fr.properties</b>
- *
+ * 
  * <p>
  * The properties file is expected to have values following this scheme
  * <pre>
- * label.class=My translated name of the class name
- * label.field.firstname=My translated name of the field "firstname"
- * label.field.lastname=My translated name of the field "lastname"
- * label.parameter.amount=My translated name of a constructor/method parameter "amount"
- * label.method.increase=My translated name of the method "increase"
+ * label.class=My translated name of the class
+ * label.field.firstname=My translated name of firstname
+ * label.field.lastname=My translated name of lastname
+ * label.parameter.amount=My translated name of a constructor/method amount
+ * label.method.increase=My translated name of the increase
  * </pre>
  * @author Sebastian Thomschke
  */
 public class ResourceBundleValidationContextRenderer implements OValContextRenderer
 {
-	private static final Log LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
+	private static final Log  LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
 
 	public static final ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
 
-	private static boolean containsKey(final ResourceBundle bundle, final String key)
+	private boolean containsKey(final ResourceBundle bundle, final String key)
 	{
 		for (final Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();)
+		{
 			if (en.nextElement().equals(key)) return true;
+		}
 		return false;
 	}
 
-	protected Locale getLocale()
-	{
-		return Validator.getLocaleProvider().getLocale();
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public String render(final OValContext ovalContext)
 	{
 		final String baseName;
@@ -117,7 +115,7 @@ public class ResourceBundleValidationContextRenderer implements OValContextRende
 
 		try
 		{
-			final ResourceBundle bundle = ResourceBundle.getBundle(baseName, getLocale());
+			final ResourceBundle bundle = ResourceBundle.getBundle(baseName);
 			if (containsKey(bundle, key)) return bundle.getString(key);
 			LOG.debug("Key {1} not found in bundle {2}", key, baseName);
 		}

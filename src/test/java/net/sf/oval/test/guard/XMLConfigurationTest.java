@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -14,14 +14,12 @@ package net.sf.oval.test.guard;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintViolation;
-import net.sf.oval.Validator;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstraintSetConfiguration;
 import net.sf.oval.configuration.pojo.elements.ConstructorConfiguration;
@@ -40,7 +38,6 @@ import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
-import net.sf.oval.localization.locale.ThreadLocalLocaleProvider;
 
 /**
  * @author Sebastian Thomschke
@@ -62,7 +59,7 @@ public class XMLConfigurationTest extends TestCase
 
 		public User()
 		{
-			// do nothing
+		// do nothing
 		}
 
 		public User(final String userId, final String managerId, final int somethingElse)
@@ -86,64 +83,6 @@ public class XMLConfigurationTest extends TestCase
 		{
 			this.managerId = managerId;
 		}
-	}
-
-	@SuppressWarnings("unused")
-	private static void validateUser()
-	{
-		final ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
-		TestGuardAspect.aspectOf().getGuard().addListener(listener, User.class);
-
-		listener.clear();
-		try
-		{
-			new User(null, null, 1);
-			fail("ConstraintViolationException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(2, violations.length);
-			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) parameter 0 (userId) is null",
-					violations[0].getMessage());
-			assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) parameter 1 (managerId) is null",
-					violations[1].getMessage());
-		}
-
-		listener.clear();
-		try
-		{
-			final User user = new User("12345678", "12345678", 1);
-			user.setManagerId(null);
-			fail("ConstraintViolationException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(1, violations.length);
-			assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) parameter 0 (managerId) is null",
-					violations[0].getMessage());
-		}
-
-		listener.clear();
-		try
-		{
-			final User user = new User();
-			user.getManagerId();
-			fail("ConstraintViolationException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(1, violations.length);
-			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0].getMessage());
-		}
-	}
-
-	@Override
-	protected void setUp() throws Exception
-	{
-		((ThreadLocalLocaleProvider) Validator.getLocaleProvider()).setLocale(Locale.ENGLISH);
 	}
 
 	public void testImportedFile()
@@ -296,5 +235,62 @@ public class XMLConfigurationTest extends TestCase
 		TestGuardAspect.aspectOf().setGuard(guard);
 
 		validateUser();
+	}
+
+	private void validateUser()
+	{
+		final ConstraintsViolatedAdapter listener = new ConstraintsViolatedAdapter();
+		TestGuardAspect.aspectOf().getGuard().addListener(listener, User.class);
+
+		listener.clear();
+		try
+		{
+			new User(null, null, 1);
+			fail("ConstraintViolationException expected");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(2, violations.length);
+			assertEquals(
+					User.class.getName()
+							+ "(class java.lang.String,class java.lang.String,int) Parameter 0 (userId) is null",
+					violations[0].getMessage());
+			assertEquals(
+					User.class.getName()
+							+ "(class java.lang.String,class java.lang.String,int) Parameter 1 (managerId) is null",
+					violations[1].getMessage());
+		}
+
+		listener.clear();
+		try
+		{
+			final User user = new User("12345678", "12345678", 1);
+			user.setManagerId(null);
+			fail("ConstraintViolationException expected");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(1, violations.length);
+			assertEquals(User.class.getName()
+					+ ".setManagerId(class java.lang.String) Parameter 0 (managerId) is null",
+					violations[0].getMessage());
+		}
+
+		listener.clear();
+		try
+		{
+			final User user = new User();
+			user.getManagerId();
+			fail("ConstraintViolationException expected");
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			final ConstraintViolation[] violations = ex.getConstraintViolations();
+			assertEquals(1, violations.length);
+			assertEquals(User.class.getName() + ".getManagerId() is null", violations[0]
+					.getMessage());
+		}
 	}
 }

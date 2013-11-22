@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -15,7 +15,7 @@ package net.sf.oval.internal.util;
 /**
  * @author Sebastian Thomschke
  */
-public final class ThreadLocalObjectCache<K, V> extends ThreadLocal<ObjectCache<K, V>>
+public class ThreadLocalObjectCache<K, V> extends ThreadLocal<ObjectCache<K, V>>
 {
 	private final int maxElementsToKeep;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -26,21 +26,21 @@ public final class Assert
 		return ex;
 	}
 
-	public static <T> void argumentNotEmpty(final String name, final String value) throws IllegalArgumentException
+	public static <T> void notEmpty(final String name, final String value) throws IllegalArgumentException
 	{
 		if (value == null) throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
 		if (value.length() == 0)
 			throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be empty"));
 	}
 
-	public static <T> void argumentNotEmpty(final String name, final T[] value) throws IllegalArgumentException
+	public static <T> void notEmpty(final String name, final T[] value) throws IllegalArgumentException
 	{
 		if (value == null) throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
 		if (value.length == 0)
 			throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be empty"));
 	}
 
-	public static void argumentNotNull(final String name, final Object value) throws IllegalArgumentException
+	public static void notNull(final String name, final Object value) throws IllegalArgumentException
 	{
 		if (value == null) throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
 	}
@@ -50,6 +50,6 @@ public final class Assert
 	 */
 	private Assert()
 	{
-		super();
+	// do nothing
 	}
 }

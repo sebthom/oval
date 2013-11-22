@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -51,7 +51,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Map<String, String> createMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
 		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
@@ -62,12 +62,11 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * @return the members
 	 */
@@ -84,7 +83,9 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf>
 		{
 			membersLowerCase = getCollectionFactory().createList(members.size());
 			for (final String val : members)
+			{
 				membersLowerCase.add(val.toLowerCase(Locale.getDefault()));
+			}
 		}
 		return membersLowerCase;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -10,25 +10,24 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.oval.constraint;
-
-import net.sf.oval.Validator;
-import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
+package net.sf.oval.context;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AssertNullCheck extends AbstractAnnotationCheck<AssertNull>
+public class ConstraintSetContext extends OValContext
 {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
-			final Validator validator)
+	private final String constraintSetId;
+
+	public ConstraintSetContext(final  String constraintSetId)
 	{
-		return valueToValidate == null;
+		this.constraintSetId = constraintSetId;
+	}
+	
+	public String getConstraintSetId()
+	{
+		return constraintSetId;
 	}
 }

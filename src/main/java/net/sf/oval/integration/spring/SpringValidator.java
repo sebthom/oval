@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -69,7 +69,8 @@ public class SpringValidator implements org.springframework.validation.Validator
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean supports(@SuppressWarnings("rawtypes") final Class clazz)
+	@SuppressWarnings("unchecked")
+	public boolean supports(final Class clazz)
 	{
 		return true;
 	}
@@ -93,7 +94,9 @@ public class SpringValidator implements org.springframework.validation.Validator
 					errors.rejectValue(fieldName, errorCode, errorMessage);
 				}
 				else
+				{
 					errors.reject(errorCode, errorMessage);
+				}
 			}
 		}
 		catch (final ValidationFailedException ex)

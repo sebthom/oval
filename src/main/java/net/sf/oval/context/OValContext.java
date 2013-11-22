@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -23,7 +23,7 @@ public abstract class OValContext implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	protected Class< ? > compileTimeType;
+	protected Class< ? > compileTimeType = null;
 
 	public Class< ? > getCompileTimeType()
 	{

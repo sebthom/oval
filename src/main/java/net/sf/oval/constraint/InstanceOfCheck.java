@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -37,22 +37,6 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 		setTypes(constraintAnnotation.value());
 	}
 
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		if (types.length == 1)
-			messageVariables.put("types", types[0].getName());
-		else
-		{
-			final String[] classNames = new String[types.length];
-			for (int i = 0, l = classNames.length; i < l; i++)
-				classNames[i] = types[i].getName();
-			messageVariables.put("types", StringUtils.implode(classNames, ","));
-		}
-		return messageVariables;
-	}
-
 	/**
 	 * @return the type
 	 */
@@ -67,7 +51,9 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 		if (valueToValidate == null) return true;
 
 		for (final Class< ? > type : types)
+		{
 			if (!type.isInstance(valueToValidate)) return false;
+		}
 		return true;
 	}
 
@@ -78,5 +64,25 @@ public class InstanceOfCheck extends AbstractAnnotationCheck<InstanceOf>
 	{
 		this.types = types;
 		requireMessageVariablesRecreation();
+	}
+
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		if (types.length == 1)
+		{
+			messageVariables.put("types", types[0].getName());
+		}
+		else
+		{
+			final String[] classNames = new String[types.length];
+			for (int i = 0, l = classNames.length; i < l; i++)
+			{
+				classNames[i] = types[i].getName();
+			}
+			messageVariables.put("types", StringUtils.implode(classNames, ","));
+		}
+		return messageVariables;
 	}
 }

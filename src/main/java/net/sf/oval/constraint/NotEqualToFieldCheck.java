@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -50,20 +50,6 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 		setFieldName(constraintAnnotation.value());
 		setDeclaringClass(constraintAnnotation.declaringClass());
 		setUseGetter(constraintAnnotation.useGetter());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("fieldName", fieldName);
-		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
-				: declaringClass.getName());
-		messageVariables.put("useGetter", Boolean.toString(useGetter));
-		return messageVariables;
 	}
 
 	/**
@@ -159,5 +145,19 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
 	{
 		this.useGetter = useGetter;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("fieldName", fieldName);
+		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
+				: declaringClass.getName());
+		messageVariables.put("useGetter", Boolean.toString(useGetter));
+		return messageVariables;
 	}
 }

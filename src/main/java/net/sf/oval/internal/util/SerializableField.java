@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -24,7 +24,7 @@ import net.sf.oval.internal.Log;
  * 
  * @author Sebastian Thomschke
  */
-public final class SerializableField implements Serializable
+public class SerializableField implements Serializable
 {
 	private static final Log LOG = Log.getLog(SerializableField.class);
 
@@ -50,7 +50,7 @@ public final class SerializableField implements Serializable
 	private transient Field field;
 	private final String name;
 
-	private SerializableField(final Field field)
+	protected SerializableField(final Field field)
 	{
 		this.field = field;
 		name = field.getName();

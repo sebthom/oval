@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 /**
  * @author Sebastian Thomschke
  */
-public final class WeakHashSet<E> implements Set<E>, Serializable
+public class WeakHashSet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -64,7 +64,12 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 	{
 		int count = 0;
 		for (final E e : c)
-			if (add(e)) count++;
+		{
+			if (add(e))
+			{
+				count++;
+			}
+		}
 		return count > 0;
 	}
 
@@ -100,7 +105,7 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 		if (!(o instanceof Set< ? >)) return false;
 
 		final Set< ? > set = (Set< ? >) o;
-
+		
 		if (set.size() != size()) return false;
 
 		return containsAll(set);
@@ -114,7 +119,9 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 	{
 		int hash = 0;
 		for (final E e : map.keySet())
+		{
 			if (e != null) hash += e.hashCode();
+		}
 		return hash;
 	}
 
@@ -149,7 +156,9 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 		// materialize the elements
 		map = new WeakHashMap<E, Object>(size);
 		for (int i = 0; i < size; i++)
+		{
 			map.put((E) ois.readObject(), TRUE);
+		}
 	}
 
 	/**
@@ -213,6 +222,8 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 
 		// serialize the set's elements
 		for (final E e : map.keySet())
+		{
 			oos.writeObject(e);
+		}
 	}
 }

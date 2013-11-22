@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -28,7 +28,7 @@ public class FutureTest extends AbstractContraintsTest
 		super.testCheck(check);
 		assertTrue(check.isSatisfied(null, null, null, null));
 
-		final Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
 		cal.roll(Calendar.YEAR, 1);
 		assertTrue(check.isSatisfied(null, cal, null, null));
 		assertTrue(check.isSatisfied(null, cal.getTime(), null, null));
@@ -46,10 +46,10 @@ public class FutureTest extends AbstractContraintsTest
 	{
 		final FutureCheck check = new FutureCheck();
 
-		final Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
 		cal.roll(Calendar.SECOND, -2);
 		assertFalse(check.isSatisfied(null, cal, null, null));
-		check.setTolerance(1500);
+		check.setTolerance(1000);
 		assertFalse(check.isSatisfied(null, cal, null, null));
 		check.setTolerance(5000);
 		assertTrue(check.isSatisfied(null, cal, null, null));

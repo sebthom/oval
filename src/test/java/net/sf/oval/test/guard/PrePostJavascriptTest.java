@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -17,6 +17,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 import net.sf.oval.constraint.Assert;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
@@ -31,49 +32,32 @@ public class PrePostJavascriptTest extends TestCase
 	@Guarded
 	public static class TestTransaction
 	{
-		protected Date date;
-		protected String description;
-		protected BigDecimal value;
-		protected boolean buggyMode = false;
+		@SuppressWarnings("unused")
+		private Date date;
 
-		/**
-		 * @return the value
-		 */
-		public BigDecimal getValue()
+		@SuppressWarnings("unused")
+		private String description;
+
+		// Rhino's LiveConnect only supports access to public properties and methods
+		public BigDecimal value;
+
+		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "javascript", message = "PRE")
+		public void increase1(
+				@Assert(expr = "_value!=null", lang = "javascript", message = "ASSERT")
+				final BigDecimal value2add)
 		{
-			return value;
+			value = value.add(value2add);
 		}
 
-		@Post(expr = "_this.valuePost != null", lang = "js", message = "POST")
-		public BigDecimal getValuePost()
+		@Post(expr = "_this.value>0", lang = "groovy", message = "POST")
+		public void increase2(@NotNull
+		final BigDecimal value2add)
 		{
-			return value;
-		}
-
-		@Post(expr = "_this.valuePostWithOld != null && _old != null", old = "_this.value", lang = "js", message = "POST")
-		public BigDecimal getValuePostWithOld()
-		{
-			return value;
-		}
-
-		@Pre(expr = "_this.valuePre != null", lang = "js", message = "PRE")
-		public BigDecimal getValuePre()
-		{
-			return value;
-		}
-
-		@Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "js", message = "PRE")
-		@Post(expr = "_this.value>_old", old = "_this.value", lang = "javascript", message = "POST")
-		public void increase(@Assert(expr = "_value!=null", lang = "js", message = "ASSERT") final BigDecimal value2add)
-		{
-			if (buggyMode)
-				value = value.subtract(value2add);
-			else
-				value = value.add(value2add);
+			value = value.add(value2add);
 		}
 	}
 
-	public void test1Pre()
+	public void testPostJavascript()
 	{
 		final Guard guard = new Guard();
 		TestGuardAspect.aspectOf().setGuard(guard);
@@ -82,7 +66,29 @@ public class PrePostJavascriptTest extends TestCase
 
 		try
 		{
-			t.increase(BigDecimal.valueOf(1));
+			t.value = new BigDecimal(-2);
+			t.increase2(new BigDecimal(1));
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+		}
+
+		t.value = new BigDecimal(0);
+		t.increase2(new BigDecimal(1));
+	}
+
+	public void testPreJavascript()
+	{
+		final Guard guard = new Guard();
+		TestGuardAspect.aspectOf().setGuard(guard);
+
+		final TestTransaction t = new TestTransaction();
+
+		try
+		{
+			t.increase1(new BigDecimal(1));
 			fail();
 		}
 		catch (final ConstraintsViolatedException ex)
@@ -90,10 +96,10 @@ public class PrePostJavascriptTest extends TestCase
 			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
 		}
 
-		t.value = BigDecimal.valueOf(2);
 		try
 		{
-			t.increase(null);
+			t.value = new BigDecimal(2);
+			t.increase1(null);
 			fail();
 		}
 		catch (final ConstraintsViolatedException ex)
@@ -102,78 +108,11 @@ public class PrePostJavascriptTest extends TestCase
 		}
 		try
 		{
-			t.increase(BigDecimal.valueOf(1));
+			t.increase1(new BigDecimal(1));
 		}
 		catch (final ConstraintsViolatedException ex)
 		{
 			System.out.println(ex.getConstraintViolations()[0].getMessage());
 		}
-	}
-
-	public void test2Post()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		final TestTransaction t = new TestTransaction();
-		t.value = new BigDecimal(-2);
-		t.buggyMode = true;
-		try
-		{
-			t.increase(BigDecimal.valueOf(1));
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-		t.buggyMode = false;
-
-		t.increase(BigDecimal.valueOf(1));
-	}
-
-	public void test3CircularConditions()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-
-		final TestTransaction t = new TestTransaction();
-		try
-		{
-			// test circular pre-condition
-			t.getValuePre();
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
-		}
-
-		try
-		{
-			// test circular post-condition
-			t.getValuePost();
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-
-		try
-		{
-			// test circular post-condition
-			t.getValuePostWithOld();
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
-		}
-
-		t.value = BigDecimal.valueOf(0);
-		t.getValuePre();
-		t.getValuePost();
-		t.getValuePostWithOld();
 	}
 }

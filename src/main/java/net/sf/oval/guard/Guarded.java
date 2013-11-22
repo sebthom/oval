@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -9,7 +9,6 @@
  * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
- *     Chris Pheby - inspectInterfaces
  *******************************************************************************/
 package net.sf.oval.guard;
 
@@ -59,10 +58,4 @@ public @interface Guarded
 	 * prior and after calls to non-private methods.
 	 */
 	boolean checkInvariants() default true;
-
-	/**
-	 * Declares if annotations can be applied to interfaces that this class implements - supporting a documentation
-	 * function
-	 */
-	boolean inspectInterfaces() default false;
 }

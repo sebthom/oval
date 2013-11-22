@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,13 +12,13 @@
  *******************************************************************************/
 package net.sf.oval.guard;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.exception.ConstraintsViolatedException;
-import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -56,6 +56,6 @@ public class ConstraintsViolatedAdapter implements ConstraintsViolatedListener
 	public void onConstraintsViolatedException(final ConstraintsViolatedException exception)
 	{
 		violationExceptions.add(exception);
-		violations.addAll(ArrayUtils.asList(exception.getConstraintViolations()));
+		violations.addAll(Arrays.asList(exception.getConstraintViolations()));
 	}
 }

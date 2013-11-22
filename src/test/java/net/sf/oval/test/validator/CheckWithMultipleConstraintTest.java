@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -18,13 +18,14 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.CheckWith;
-import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
+import net.sf.oval.constraint.CheckWithMultiple;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 
 /**
  * @author Sebastian Thomschke
  */
-public class CheckWithListConstraintTest extends TestCase
+public class CheckWithMultipleConstraintTest extends TestCase
 {
 	protected static class TestEntity1
 	{
@@ -43,7 +44,7 @@ public class CheckWithListConstraintTest extends TestCase
 			}
 		}
 
-		@CheckWith.List(@CheckWith(value = NameCheck1.class, ignoreIfNull = false))
+		@CheckWithMultiple(@CheckWith(value = NameCheck1.class, ignoreIfNull = false))
 		public String name;
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -43,23 +43,11 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("min", Double.toString(min));
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * @return the min
 	 */
@@ -101,5 +89,16 @@ public class MinCheck extends AbstractAnnotationCheck<Min>
 	{
 		this.min = min;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("min", Double.toString(min));
+		return messageVariables;
 	}
 }

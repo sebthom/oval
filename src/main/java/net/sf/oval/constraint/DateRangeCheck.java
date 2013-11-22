@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -62,7 +62,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Map<String, String> createMessageVariables()
+	public Map<String, String> createMessageVariables()
 	{
 		final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
 		messageVariables.put("min", min == null ? ".." : min);
@@ -74,12 +74,11 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * @return the format
 	 */
@@ -152,6 +151,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				}
 			}
 			else
+			{
 				try
 				{
 					maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime() + tolerance;
@@ -160,6 +160,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				{
 					throw new InvalidConfigurationException("Unable to parse the max Date String", e);
 				}
+			}
 		}
 		return maxMillis;
 	}
@@ -225,6 +226,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				}
 			}
 			else
+			{
 				try
 				{
 					minMillis = DateFormat.getDateTimeInstance().parse(min).getTime() - tolerance;
@@ -233,6 +235,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 				{
 					throw new InvalidConfigurationException("Unable to parse the min Date String", e);
 				}
+			}
 		}
 		return minMillis;
 	}
@@ -254,25 +257,38 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 
 		// check if the value is a Date
 		if (valueToValidate instanceof Date)
+		{
 			valueInMillis = ((Date) valueToValidate).getTime();
+		}
+
+		// check if the value is a Calendar
 		else if (valueToValidate instanceof Calendar)
+		{
 			valueInMillis = ((Calendar) valueToValidate).getTime().getTime();
+		}
+
 		else
 		{
 			// see if we can extract a date based on the object's String representation
 			final String stringValue = valueToValidate.toString();
 			try
 			{
-				if (format != null) try
+				if (format != null)
 				{
-					valueInMillis = new SimpleDateFormat(format).parse(stringValue).getTime();
-				}
-				catch (final ParseException ex)
-				{
-					LOG.debug("valueToValidate not parsable with specified format {1}", format, ex);
+					try
+					{
+						valueInMillis = new SimpleDateFormat(format).parse(stringValue).getTime();
+					}
+					catch (final ParseException ex)
+					{
+						LOG.debug("valueToValidate not parsable with specified format {1}", format, ex);
+					}
 				}
 
-				if (valueInMillis == -1) valueInMillis = DateFormat.getDateTimeInstance().parse(stringValue).getTime();
+				if (valueInMillis == -1)
+				{
+					valueInMillis = DateFormat.getDateTimeInstance().parse(stringValue).getTime();
+				}
 			}
 			catch (final ParseException ex)
 			{
@@ -316,7 +332,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange>
 	/**
 	 * @param tolerance the tolerance to set
 	 */
-	public void setTolerance(final long tolerance)
+	public void setTolerance(long tolerance)
 	{
 		this.tolerance = tolerance;
 		minMillis = null;

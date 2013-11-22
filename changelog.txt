@@ -2,88 +2,6 @@
 [+] Feature added.
 [*] Change.
 
-2012-02-22 v1.81
-================
-- fixed [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java
-- fixed [ oval-Bugs-3488245 ] UnsupportedOperationException when using inspectInterfaces
-- fixed default message attribute value on JSR303 annotations being misinterpreted
-+ extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
-* upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6, commons-jexl 2.1.1, Paranamer 2.4.1
-
-2011-10-03 v1.80
-================
-* upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.4, Groovy 1.8.2, XStream 1.4.1, Rhino 1.7R3, Spring 3.0.6.RELEASE, Javolution 5.5.1
-+ added caching of compiled OGNL expressions
-+ added caching of compiled MVEL expressions
-- fixed message attribute on JSR303 annotations being ignored
-* removed deprecated AssertValid.requireValidElements attribute
-* removed deprecated class CheckWithMultiple
-+ added support for target attribute on constraint annotations
-
-2011-04-05 v1.70
-================
-* upgraded to AspectJ 1.6.10, Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, Commons JEXL 2.0.1, OGNL 3.0.1, Groovy 1.7.6
-- fixed [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
-- fixed [ oval-Bugs-3173470 ] Bug in DigitsCheck
-- fixed [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
-+ added convenience constructors to XMLConfigurer for easier Spring-based configuration
-+ added support for Spring dependencies being injected into SimpleCheck instances
-- fixed [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
-+ small XSD improvements
-
-2010-11-13 v1.61
-================
-- fixed [ oval-Bugs-3087277 ] @NotBlank ignores non-breaking space
-- fixed @EMail not validating addresses correct if allowPersonalName=true
-
-2010-10-13 v1.60
-================
-- fixed [ oval-Bugs-2994748 ] added missing French translations (thanks to Patrice Lachance)
-+ added Validator.reportConstraintViolation allowing check implementations to generate more than one constraint violation
-+ added overridable method AnnotationsConfigurer.newCheckInstance to allow implementation of custom check instantiation strategies
-+ fixed [ oval-Bugs-2922034 ] added support for constraints specified for method parameters at interface level: @Guard(inspectInterfaces=true) (thanks to Chris Pheby)
-- fixed a potential null reference (thanks to jacky163com)
-* upgraded to OGNL 3.0, Paranamer 2.2.1, MVEL 2.0.18, Groovy 1.7.5, Spring 3.0.4.RELEASE, JRuby 1.5.3, AspectJ 1.6.9, SLF4J 1.6.1, log4j 1.2.16
-+ Validator now eagerly checks Java SecurityManager configuration for suppressAccessChecks ReflectionPermission during instantiation
-+ added @<Constraint>.List annotations that can hold multiple constraint annotations of the same type
-+ added @Email(allowPersonalName=true/false) (thanks to Eric Lewis)
-+ added SimpleCheckWithMessageVariables (thanks to Eric Lewis)
-+ added add/remove CheckInitializationListener methods to AnnotationsConfigurer and XMLConfigurer
-+ added BeanInjectingCheckInitializationListener allowing Spring dependencies being injected into Check instances
-
-2010-03-29 v1.50
-================
-* upgraded to AspectJ 1.6.8, JUnit 4.8.1, SLF4J 1.5.11, MVEL 2.0.16, Paranamer 2.2, JRuby 1.4.0
-- fixed [ oval-Bugs-2879918 ] Difference in keys between Annotations and Properties file
-- added missing violation message for @AssertValid (thanks to Eric Lewis)
-- fixed [ oval-Bugs-2890683 ] Where is 'net.sf.oval.constraint.AssertURL.violated'
-+ JPAAnnotationsConfigurer now also interprets annotated getter methods
-- fixed [ oval-Bugs-2894631 ] ClassCastException when validating arrays
-+ @Size now checks the length of the value's String representation if the value is not a map, a list, or an array
-+ added @AssertNull, @Digits constraints
-+ added BeanValidationAnnotationsConfigurer to translate standard JSR303 constraint annotations into OVal constraints
-    @javax.validation.constraints.AssertFalse    => net.sf.oval.constraint.AssertFalseCheck
-    @javax.validation.constraints.AssertTrue     => net.sf.oval.constraint.AssertTrueCheck
-    @javax.validation.constraints.DecimalMax     => net.sf.oval.constraint.MaxCheck
-    @javax.validation.constraints.DecimalMin     => net.sf.oval.constraint.MinCheck
-    @javax.validation.constraints.Digits         => net.sf.oval.constraint.DigitsCheck
-    @javax.validation.constraints.Future         => net.sf.oval.constraint.FutureCheck
-    @javax.validation.constraints.Max            => net.sf.oval.constraint.MaxCheck
-    @javax.validation.constraints.Min            => net.sf.oval.constraint.MinCheck
-    @javax.validation.constraints.NotNull        => net.sf.oval.constraint.NotNullCheck
-    @javax.validation.constraints.Null           => net.sf.oval.constraint.AssertNullCheck
-    @javax.validation.constraints.Past           => net.sf.oval.constraint.PastCheck
-    @javax.validation.constraints.Pattern        => net.sf.oval.constraint.PatternCheck
-    @javax.validation.Valid                      => net.sf.oval.constraint.AssertValidCheck
-+ implemented [ oval-Bugs-2907399] added MessageValueFormatter and Validator.setMessageValueFormatter()
-- fixed [ oval-Bugs-2973326] XMLConfigurer doesn't completely cover constraints
-- fixed [ oval-Bugs-2973323 ] XSD scheme is not complete
-- fixed [ oval-Bugs-2973328 ] XMLConfigurer doesn't parse appliesTo for constraints
-- fixed [ oval-Bugs-2973339 ] Defaults are not applied to checks
-- fixed [ oval-Bugs-2973334 ] XMLConfigurer doesn't allow to parse when expressions
-- fixed [ oval-Bugs-2973344 ] NotNull checks for container values
-* changed @EMail regex pattern to support some rare email names [ oval-Bugs-2910553 ]
-
 2009-09-27 v1.40
 ================
 + added support for conditional constraint activation (added the when="" attribute)
@@ -97,11 +15,10 @@
 + added ConstraintViolation.getCheckDeclaringContext() (thanks to Eric Lewis)
 + added appliesTo() attribute to constraints allowing to control if and how validation should be applied to childs of arrays, maps and collections (thanks to tomtran711)
 - fixed [ 2799870 ] Wrong escaped unicode sequences in Messages_de.properties
-- fixed [ 2865777 ] Wrong English error message for MinLength
 
 2009-05-10 v1.32
 ================
-+ added Brazilian Portuguese translation of the constraint violation messages [ 2593104 ] (thanks to Leonardo Pinto)
++ added Brazilian Portuguese translation of the constraint violation messages [ 2593104 ] (thanks to Leonardo Pinto) 
 + introduced an interface implemented by Validator for supporting easier mocking
 - fixed [ 2493925 ] java.util.NoSuchElementException if @AssertValid is used
 - fixed [ 2495825 ] The profile feature of Validator is not thread safe
@@ -109,7 +26,7 @@
 - fixed [ 2579897 ] xml based configuration related to post/pre checks
 - fixed [ 2723344 ] Should not call any method on not fully initialized object
 - fixed [ 2723413 ] translated JDK exception should keep the cause
-* French translation updated (thanks to  ï¿½ric Vigeant)
+* French translation updated (thanks to  Éric Vigeant)
 * upgraded Groovy 1.6.2, MVEL 2.0.8, Paranamer 1.3, JRuby 1.2.0, cglib 2.2,Spring 2.5.6SEC01
 * removed the DTD for XML Configuration, use the XSD instead
 - fixed NPE in JDK Logger implementation (thanks to Carsten Siedentop)
@@ -152,7 +69,7 @@
 * renamed MessageResolverImpl to ResourceBundleMessageResolver
 * moved MessageResolver classes from net.sf.oval.localization to net.sf.oval.localization.message
 + introduced net.sf.oval.localization.context.OValContextRenderer
-+ added constraint configuration XSD as replacement for the DTD
++ added constraint configuration XSD as replacement for the DTD 
 + constraints declared without any profiles are associated with a profile named "default" automatically
 - fixed bug [ 2023617 ] @ValidateWithMethod in super classes do not work
 + ConstraintViolation now provides more details about the violated constraint (checkName, messageVariables, messageTemplate)
@@ -196,12 +113,12 @@ Built-in constraints:
  + added @net.sf.oval.constraint.NotMemberOf
  + added errorCode property
  + added severity property
-
+ 
 Expression languages:
  + added support for Ruby (JRuby) as expression language
 
 Localization:
- * update Polish translation of the constraint violation messages (thanks to Christopher Faryna)
+ * update Polish translation of the constraint violation messages (thanks to Christopher Faryna) 
  + added new translations of the constraint violation messages:
    + Chinese (thanks to kindloaf)
    + Dutch (thanks to miep)
@@ -225,12 +142,12 @@ Validator:
  * renamed method Validator.validateField(...) to Validator.validateFieldValue(...)
  * @AssertValid now recursively checks Arrays, Lists and Maps containing List, Map and Array items
  + added support for object-level constraints (@Assert, @CheckWith and @ValidateWithMethod can now be declared on class-level)
-
+ 
 Refactoring:
  * net.sf.oval.exception.ConstraintsViolatedException moved from package net.sf.oval.guard
  * net.sf.oval.exception.ExceptionTranslator moved from package net.sf.oval.guard
  * net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl moved from package net.sf.oval.guard
-
+ 
 Other Changes:
  * AssertTrue, AssertFalse are now evaluating the String representation of a value if it is not of type Boolean/boolean
  - Configuring validateWithMethod constraints via XML was broken (thanks to Ramon Buckland)
@@ -241,13 +158,13 @@ Other Changes:
 ===============
 Annotation configuration:
  - JPAAnnotationsConfigurer does not configure a NotNullCheck for fields with @Column(nullable=false)
-   that also have @javax.persistence.GeneratedValue or @javax.persistence.Version specified
+   that also have @javax.persistence.GeneratedValue or @javax.persistence.Version specified 
  * renamed @Guarded.applyFieldConstraintsToSetter to @Guarded.applyFieldConstraintsToSetters
  + added @Guarded.applyFieldConstraintsToConstructors to @Guarded.applyFieldConstraintsToConstructors
  * JPAAnnotationsConfigurer constraint mappings extended:
-  @javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid
-  @javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid
-  @javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid
+	@javax.persistence.OneToOne  => @net.sf.oval.constraints.AssertValid
+	@javax.persistence.OneToMany => @net.sf.oval.constraints.AssertValid
+	@javax.persistence.ManyToOne => @net.sf.oval.constraints.AssertValid
 
 Built-in constraints:
  + added @net.sf.oval.constraint.NotBlank (thanks to Dennis Kieselhorst)
@@ -266,7 +183,7 @@ Other changes:
  * made Validator.setMessageResolver method static
  * made Validator.getMessageResolver method static
  * moved net.sf.oval.collection.CollectionFactoryHolder to net.sf.oval.internal
- - fixed a StackOverflowError that occured during invariant checking for
+ - fixed a StackOverflowError that occured during invariant checking for 
    guarded classes that override the hashCode() method (thanks to io_exception)
  + documentation improved
 
@@ -288,7 +205,7 @@ Built-in constraints:
   + added @net.sf.oval.constraint.MinLength
   + added @net.sf.oval.constraint.MinSize
   + added @net.sf.oval.constraint.Past
-  * when @AssertValid is used on a map the map's keys and values are now validated too by default (thanks to tahura)
+  * when @AssertValid is used on a map the map's keys and values are now validated too by default (thanks to tahura)  
 
 Annotation configuration:
   * dropped @net.sf.oval.annotations.DefineConstraintSet
@@ -312,7 +229,7 @@ Guard (programming by contract):
   * replaced everything related to Guard.ReportingMode with Guard.isInProbeMode(...) and Guard.setInProbeMode(...)
   + added automatic invariant checking
   + check of pre,post, and/or invariant checks can turned on/off programmatically
-  + constraint violation listeners can now also be registered for interfaces
+  + constraint violation listeners can now also be registered for interfaces 
     (= notify about violations for all guarded classes implementing the given interface)
   + introduced @net.sf.oval.guard.Pre for declaring pre conditions with an expression language
   + introduced @net.sf.oval.guard.Post for declaring post conditions with an expression language
@@ -330,7 +247,7 @@ Guard (programming by contract):
     * net.sf.oval.guard.IsGuarded: moved from package net.sf.oval
     * net.sf.oval.guard.PostValidateThis: moved from package net.sf.oval.annotations
     * net.sf.oval.guard.PreValidateThis: moved from package net.sf.oval.annotations
-
+  
 Other changes:
   + introduced the concept of constraint profiles
   + added polish translation of the constraint violation messages (thanks to szymon_eu)
@@ -346,13 +263,13 @@ Other changes:
 2006-12-10 v0.8
 ===============
 + added JPAAnnotationsConfigurer to translate EJB3 JPA annotations into OVal constraints
-  @javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
-  @javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
-  @javax.persistence.ManyToOne(optional=false)  => @net.sf.oval.constraints.NotNull
-  @javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
-  @javax.persistence.Column(length=5)           => @net.sf.oval.constraints.Length
+	@javax.persistence.Basic(optional=false)      => @net.sf.oval.constraints.NotNull
+	@javax.persistence.OneToOne(optional=false)   => @net.sf.oval.constraints.NotNull
+	@javax.persistence.ManyToOne(optional=false)  => @net.sf.oval.constraints.NotNull
+	@javax.persistence.Column(nullable=false)     => @net.sf.oval.constraints.NotNull
+	@javax.persistence.Column(length=5)           => @net.sf.oval.constraints.Length
 * changed the ant script to generate a maven2 bundle jar in the dist target
-- AssertConstraintSet constraint was ignored when specified for getter methods' return value
+- AssertConstraintSet constraint was ignored when specified for getter methods' return value 
 - NPE was thrown when validating objects against an XML based configuration that uses constraint sets
 - various fixes regarding XML based configuration (thanks to tahura)
 + added more JUnit tests for the xml configuration
@@ -380,11 +297,11 @@ Refactoring:
     + added support for POJO based constraint configuration
     + added support for XML based constraint configuration
 + added the concept of constraint sets
-  + added @net.sf.oval.annotations.DefineConstraintSet
-  + added @net.sf.oval.constraints.AssertConstraintSet
-  + added net.sf.oval.exceptions.UndefinedConstraintSetException
-  + added net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException
-    + added net.sf.oval.Validator.addConstraintSet(ConstraintSetConfiguration)
+	+ added @net.sf.oval.annotations.DefineConstraintSet
+	+ added @net.sf.oval.constraints.AssertConstraintSet
+	+ added net.sf.oval.exceptions.UndefinedConstraintSetException
+	+ added net.sf.oval.exceptions.ConstraintSetAlreadyDefinedException
+    + added net.sf.oval.Validator.addConstraintSet(ConstraintSetConfiguration)	
 * made resolving of constraint violation messages customizable
     + added net.sf.oval.MessageResolver
     + added net.sf.oval.MessageResolverImpl
@@ -434,7 +351,7 @@ Refactoring:
 * net.sf.oval.annotations.Validatable: default value for applyFieldConstraintsToSetter() changed from "true" to "false"
 * net.sf.oval.Validator: method validate(Object) now returns List<ConstraintViolation> instead of ArrayList<ConstraintViolationException>
 * classes only need to be annotated with @net.sf.oval.annotations.Constrain when using the "design by contract" feature in conjunction with AspectJ
-+ added the aspect ApiUsageAuditor that will report warnings about unsupported usage of annotations in Eclipse IDE
++ added the aspect ApiUsageAuditor that will report warnings about unsupported usage of annotations in Eclipse IDE 
 + added support for specifying constraints on method return values when using programming by contract (post condition)
 * extended the documentation
 

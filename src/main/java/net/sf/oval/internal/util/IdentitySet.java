@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * @author Sebastian Thomschke
  */
-public final class IdentitySet<E> implements Set<E>, Serializable
+public class IdentitySet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -65,7 +65,12 @@ public final class IdentitySet<E> implements Set<E>, Serializable
 	{
 		int count = 0;
 		for (final E e : c)
-			if (add(e)) count++;
+		{
+			if (add(e))
+			{
+				count++;
+			}
+		}
 		return count > 0;
 	}
 
@@ -148,7 +153,12 @@ public final class IdentitySet<E> implements Set<E>, Serializable
 	{
 		boolean modified = false;
 		for (final Object e : c)
-			if (remove(e)) modified = true;
+		{
+			if (remove(e))
+			{
+				modified = true;
+			}
+		}
 		return modified;
 	}
 
@@ -197,6 +207,8 @@ public final class IdentitySet<E> implements Set<E>, Serializable
 
 		// serialize the set's elements
 		for (final E e : map.values())
+		{
 			oos.writeObject(e);
+		}
 	}
 }

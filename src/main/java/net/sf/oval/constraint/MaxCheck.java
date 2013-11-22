@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -43,24 +43,11 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	/**
 	 * {@inheritDoc}
 	 */
-
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Double.toString(max));
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * @return the max
 	 */
@@ -102,5 +89,17 @@ public class MaxCheck extends AbstractAnnotationCheck<Max>
 	{
 		this.max = max;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Double.toString(max));
+		return messageVariables;
 	}
 }

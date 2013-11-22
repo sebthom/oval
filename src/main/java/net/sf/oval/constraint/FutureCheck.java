@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -32,7 +32,7 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 	private long tolerance;
 
 	@Override
-	public void configure(final Future constraintAnnotation)
+	public void configure(Future constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setTolerance(constraintAnnotation.tolerance());
@@ -41,12 +41,11 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * @return the tolerance
 	 */
@@ -70,7 +69,8 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 			return ((Date) valueToValidate).getTime() > now;
 
 		// check if the value is a Calendar
-		if (valueToValidate instanceof Calendar) return ((Calendar) valueToValidate).getTime().getTime() > now;
+		if (valueToValidate instanceof Calendar) // return ((Calendar) value).getTime().after(new Date());
+			return ((Calendar) valueToValidate).getTime().getTime() > now;
 
 		// see if we can extract a date based on the object's String representation
 		final String stringValue = valueToValidate.toString();
@@ -88,7 +88,7 @@ public class FutureCheck extends AbstractAnnotationCheck<Future>
 	/**
 	 * @param tolerance the tolerance to set
 	 */
-	public void setTolerance(final long tolerance)
+	public void setTolerance(long tolerance)
 	{
 		this.tolerance = tolerance;
 	}

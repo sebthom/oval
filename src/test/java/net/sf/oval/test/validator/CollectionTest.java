@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -29,13 +29,7 @@ import net.sf.oval.constraint.NotNull;
  */
 public class CollectionTest extends TestCase
 {
-	public static class Entity
-	{
-		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
-		public final List<List<String>> items = new ArrayList<List<String>>();
-	}
-
-	public static class Group
+	public class Group
 	{
 		@MinSize(value = 1, message = "MIN_SIZE")
 		@MaxSize(value = 4, message = "MAX_SIZE")
@@ -43,14 +37,12 @@ public class CollectionTest extends TestCase
 		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
 		public List<String> members = new ArrayList<String>();
 
-		@NotNull(appliesTo = {ConstraintTarget.VALUES}, message = "NOT_NULL2")
-		public String[] secondaryMembers;
 	}
 
-	public void testListAndArray()
+	public void testCollection()
 	{
-		final Validator validator = new Validator();
-		final Group group = new Group();
+		Validator validator = new Validator();
+		Group group = new Group();
 
 		// test min size
 		List<ConstraintViolation> violations = validator.validate(group);
@@ -76,14 +68,14 @@ public class CollectionTest extends TestCase
 		violations = validator.validate(group);
 		assertEquals(1, violations.size());
 		assertEquals("NOT_NULL", violations.get(0).getMessage());
-
+		
 		// test elements not null
 		group.members = new ArrayList<String>();
 		group.members.add(null);
 		violations = validator.validate(group);
 		assertEquals(1, violations.size());
 		assertEquals("NOT_NULL", violations.get(0).getMessage());
-
+		
 		// test elements length
 		group.members = new ArrayList<String>();
 		group.members.add("");
@@ -92,28 +84,5 @@ public class CollectionTest extends TestCase
 		assertEquals(2, violations.size());
 		assertEquals("LENGTH", violations.get(0).getMessage());
 		assertEquals("LENGTH", violations.get(1).getMessage());
-
-		// test string array elements not null
-		group.members = new ArrayList<String>();
-		group.members.add("1234");
-		group.secondaryMembers = new String[]{"foo", null, "bar"};
-		violations = validator.validate(group);
-		assertEquals(1, violations.size());
-		assertEquals("NOT_NULL2", violations.get(0).getMessage());
-	}
-
-	public void testListOfLists()
-	{
-		final Validator validator = new Validator();
-
-		final Entity e = new Entity();
-		e.items.add(null);
-		assertEquals(1, validator.validate(e).size());
-
-		e.items.clear();
-		e.items.add(new ArrayList<String>());
-		assertEquals(0, validator.validate(e).size());
-		e.items.get(0).add(null);
-		assertEquals(1, validator.validate(e).size());
 	}
 }

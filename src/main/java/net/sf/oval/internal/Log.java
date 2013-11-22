@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.logging.Logger;
 import net.sf.oval.logging.LoggerFactory;
@@ -33,11 +34,22 @@ public final class Log
 	 */
 	private static final Map<String, Log> LOG_REGISTRY = new HashMap<String, Log>(32);
 
-	public static synchronized Log getLog(final Class< ? > clazz) throws IllegalArgumentException
+	public static Log getLog(final Class< ? > clazz) throws IllegalArgumentException
 	{
-		final String name = clazz.getName();
-		final Log log = LOG_REGISTRY.get(name);
-		if (log == null) return new Log(loggerFactory.createLogger(name));
+		Assert.notNull("clazz", clazz);
+
+		return getLog(clazz.getName());
+	}
+
+	public synchronized static Log getLog(final String name) throws IllegalArgumentException
+	{
+		Assert.notNull("name", name);
+
+		Log log = LOG_REGISTRY.get(name);
+		if (log == null)
+		{
+			log = new Log(loggerFactory.createLogger(name));
+		}
 		return log;
 	}
 
@@ -57,11 +69,15 @@ public final class Log
 	 */
 	public static void setLoggerFactory(final LoggerFactory loggerFactory) throws IllegalArgumentException
 	{
+		Assert.notNull("loggerFactory", loggerFactory);
+
 		synchronized (LOG_REGISTRY)
 		{
 			Log.loggerFactory = loggerFactory;
 			for (final Entry<String, Log> entry : LOG_REGISTRY.entrySet())
+			{
 				entry.getValue().setLogger(loggerFactory.createLogger(entry.getKey()));
+			}
 		}
 	}
 
@@ -83,7 +99,9 @@ public final class Log
 	public void debug(final String msgFormat, final Object arg1)
 	{
 		if (logger.isDebug())
+		{
 			logger.debug(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()));
+		}
 	}
 
 	public void debug(final String msgFormat, final Object arg1, final Object arg2)
@@ -123,7 +141,9 @@ public final class Log
 	public void debug(final String msgFormat, final Object arg1, final Throwable t)
 	{
 		if (logger.isDebug())
+		{
 			logger.debug(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()), t);
+		}
 	}
 
 	public void debug(final String msg, final Throwable t)
@@ -139,7 +159,9 @@ public final class Log
 	public void error(final String msgFormat, final Object arg1)
 	{
 		if (logger.isError())
+		{
 			logger.error(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()));
+		}
 	}
 
 	public void error(final String msgFormat, final Object arg1, final Object arg2)
@@ -179,7 +201,9 @@ public final class Log
 	public void error(final String msgFormat, final Object arg1, final Throwable t)
 	{
 		if (logger.isError())
+		{
 			logger.error(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()), t);
+		}
 	}
 
 	public void error(final String msg, final Throwable t)
@@ -195,7 +219,9 @@ public final class Log
 	public void info(final String msgFormat, final Object arg1)
 	{
 		if (logger.isInfo())
+		{
 			logger.info(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()));
+		}
 	}
 
 	public void info(final String msgFormat, final Object arg1, final Object arg2)
@@ -235,7 +261,9 @@ public final class Log
 	public void info(final String msgFormat, final Object arg1, final Throwable t)
 	{
 		if (logger.isInfo())
+		{
 			logger.info(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()), t);
+		}
 	}
 
 	public void info(final String msg, final Throwable t)
@@ -270,6 +298,8 @@ public final class Log
 
 	private void setLogger(final Logger logger)
 	{
+		Assert.notNull("logger", logger);
+
 		this.logger = logger;
 	}
 
@@ -281,7 +311,9 @@ public final class Log
 	public void trace(final String msgFormat, final Object arg1)
 	{
 		if (logger.isDebug())
+		{
 			logger.trace(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()));
+		}
 	}
 
 	public void trace(final String msgFormat, final Object arg1, final Object arg2)
@@ -321,7 +353,9 @@ public final class Log
 	public void trace(final String msgFormat, final Object arg1, final Throwable t)
 	{
 		if (logger.isDebug())
+		{
 			logger.trace(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()), t);
+		}
 	}
 
 	public void trace(final String msg, final Throwable t)
@@ -337,7 +371,9 @@ public final class Log
 	public void warn(final String msgFormat, final Object arg1)
 	{
 		if (logger.isWarn())
+		{
 			logger.warn(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()));
+		}
 	}
 
 	public void warn(final String msgFormat, final Object arg1, final Object arg2)
@@ -377,7 +413,9 @@ public final class Log
 	public void warn(final String msgFormat, final Object arg1, final Throwable t)
 	{
 		if (logger.isWarn())
+		{
 			logger.warn(StringUtils.replaceAll(msgFormat, "{1}", arg1 == null ? "null" : arg1.toString()), t);
+		}
 	}
 
 	public void warn(final String msg, final Throwable t)

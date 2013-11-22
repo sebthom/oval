@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -32,16 +32,15 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 	private long tolerance;
 
 	@Override
-	public void configure(final Past constraintAnnotation)
+	public void configure(Past constraintAnnotation)
 	{
 		super.configure(constraintAnnotation);
 		setTolerance(constraintAnnotation.tolerance());
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
@@ -64,7 +63,7 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 		if (valueToValidate == null) return true;
 
 		final long now = System.currentTimeMillis() + tolerance;
-
+		
 		// check if the value is a Date
 		if (valueToValidate instanceof Date) // return ((Date) value).before(new Date());
 			return ((Date) valueToValidate).getTime() < now;
@@ -89,7 +88,7 @@ public class PastCheck extends AbstractAnnotationCheck<Past>
 	/**
 	 * @param tolerance the tolerance to set
 	 */
-	public void setTolerance(final long tolerance)
+	public void setTolerance(long tolerance)
 	{
 		this.tolerance = tolerance;
 	}

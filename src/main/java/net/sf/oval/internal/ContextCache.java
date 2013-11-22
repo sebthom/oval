@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -28,77 +28,77 @@ import net.sf.oval.context.MethodReturnValueContext;
  */
 public final class ContextCache
 {
-	private static final Map<Class< ? >, ClassContext> CLASS_CONTEXTS = new WeakHashMap<Class< ? >, ClassContext>();
-	private static final Map<Field, FieldContext> FIELD_CONTEXTS = new WeakHashMap<Field, FieldContext>();
-	private static final Map<Method, MethodEntryContext> METHOD_ENTRY_CONTEXTS = new WeakHashMap<Method, MethodEntryContext>();
-	private static final Map<Method, MethodExitContext> METHOD_EXIT_CONTEXTS = new WeakHashMap<Method, MethodExitContext>();
-	private static final Map<Method, MethodReturnValueContext> METHOD_RETURN_VALUE_CONTEXTS = new WeakHashMap<Method, MethodReturnValueContext>();
+	private final static Map<Class< ? >, ClassContext> classContexts = new WeakHashMap<Class< ? >, ClassContext>();
+	private final static Map<Field, FieldContext> fieldContexts = new WeakHashMap<Field, FieldContext>();
+	private final static Map<Method, MethodEntryContext> methodEntryContexts = new WeakHashMap<Method, MethodEntryContext>();
+	private final static Map<Method, MethodExitContext> methodExitContexts = new WeakHashMap<Method, MethodExitContext>();
+	private final static Map<Method, MethodReturnValueContext> methodReturnValueContexts = new WeakHashMap<Method, MethodReturnValueContext>();
 
-	public static ClassContext getClassContext(final Class< ? > clazz)
+	public static ClassContext getClassContext(Class< ? > clazz)
 	{
-		synchronized (CLASS_CONTEXTS)
+		synchronized (classContexts)
 		{
-			ClassContext ctx = CLASS_CONTEXTS.get(clazz);
+			ClassContext ctx = classContexts.get(clazz);
 			if (ctx == null)
 			{
 				ctx = new ClassContext(clazz);
-				CLASS_CONTEXTS.put(clazz, ctx);
+				classContexts.put(clazz, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static FieldContext getFieldContext(final Field field)
+	public static FieldContext getFieldContext(Field field)
 	{
-		synchronized (FIELD_CONTEXTS)
+		synchronized (fieldContexts)
 		{
-			FieldContext ctx = FIELD_CONTEXTS.get(field);
+			FieldContext ctx = fieldContexts.get(field);
 			if (ctx == null)
 			{
 				ctx = new FieldContext(field);
-				FIELD_CONTEXTS.put(field, ctx);
+				fieldContexts.put(field, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static MethodEntryContext getMethodEntryContext(final Method method)
+	public static MethodEntryContext getMethodEntryContext(Method method)
 	{
-		synchronized (METHOD_ENTRY_CONTEXTS)
+		synchronized (methodEntryContexts)
 		{
-			MethodEntryContext ctx = METHOD_ENTRY_CONTEXTS.get(method);
+			MethodEntryContext ctx = methodEntryContexts.get(method);
 			if (ctx == null)
 			{
 				ctx = new MethodEntryContext(method);
-				METHOD_ENTRY_CONTEXTS.put(method, ctx);
+				methodEntryContexts.put(method, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static MethodExitContext getMethodExitContext(final Method method)
+	public static MethodExitContext getMethodExitContext(Method method)
 	{
-		synchronized (METHOD_EXIT_CONTEXTS)
+		synchronized (methodExitContexts)
 		{
-			MethodExitContext ctx = METHOD_EXIT_CONTEXTS.get(method);
+			MethodExitContext ctx = methodExitContexts.get(method);
 			if (ctx == null)
 			{
 				ctx = new MethodExitContext(method);
-				METHOD_EXIT_CONTEXTS.put(method, ctx);
+				methodExitContexts.put(method, ctx);
 			}
 			return ctx;
 		}
 	}
 
-	public static MethodReturnValueContext getMethodReturnValueContext(final Method method)
+	public static MethodReturnValueContext getMethodReturnValueContext(Method method)
 	{
-		synchronized (METHOD_RETURN_VALUE_CONTEXTS)
+		synchronized (methodReturnValueContexts)
 		{
-			MethodReturnValueContext ctx = METHOD_RETURN_VALUE_CONTEXTS.get(method);
+			MethodReturnValueContext ctx = methodReturnValueContexts.get(method);
 			if (ctx == null)
 			{
 				ctx = new MethodReturnValueContext(method);
-				METHOD_RETURN_VALUE_CONTEXTS.put(method, ctx);
+				methodReturnValueContexts.put(method, ctx);
 			}
 			return ctx;
 		}

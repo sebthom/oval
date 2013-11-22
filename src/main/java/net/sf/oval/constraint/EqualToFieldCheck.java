@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -53,20 +53,6 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("fieldName", fieldName);
-		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
-				: declaringClass.getName());
-		messageVariables.put("useGetter", Boolean.toString(useGetter));
-		return messageVariables;
-	}
-
-	/**
 	 * @return the declaringClass
 	 */
 	public Class< ? > getDeclaringClass()
@@ -97,8 +83,10 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 		{
 			final Method getter = ReflectionUtils.getGetterRecursive(clazz, fieldName);
 			if (getter == null)
+			{
 				throw new MethodNotFoundException("Getter for field <" + fieldName + "> not found in class <" + clazz
 						+ "> or it's super classes.");
+			}
 
 			try
 			{
@@ -115,8 +103,10 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 			final Field field = ReflectionUtils.getFieldRecursive(clazz, fieldName);
 
 			if (field == null)
+			{
 				throw new FieldNotFoundException("Field <" + fieldName + "> not found in class <" + clazz
 						+ "> or it's super classes.");
+			}
 
 			valueToCompare = ReflectionUtils.getFieldValue(field, validatedObject);
 		}
@@ -159,5 +149,19 @@ public class EqualToFieldCheck extends AbstractAnnotationCheck<EqualToField>
 	{
 		this.useGetter = useGetter;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("fieldName", fieldName);
+		messageVariables.put("declaringClass", declaringClass == null || declaringClass == Void.class ? null
+				: declaringClass.getName());
+		messageVariables.put("useGetter", Boolean.toString(useGetter));
+		return messageVariables;
 	}
 }

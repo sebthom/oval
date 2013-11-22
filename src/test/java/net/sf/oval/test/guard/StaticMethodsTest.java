@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -27,21 +27,21 @@ public class StaticMethodsTest extends TestCase
 	@Guarded
 	private static class TestEntity
 	{
-		@SuppressWarnings("unused")
 		@NotNull(message = "NULL")
 		public static String value;
 
 		public static void doSomethingPost()
 		{
-			//
+		//
 		}
 
 		public static void doSomethingPre()
 		{
-			//
+		//
 		}
 
-		public static void setValue(@AssertFieldConstraints final String value)
+		public static void setValue(@AssertFieldConstraints
+		final String value)
 		{
 			TestEntity.value = value;
 		}

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import net.sf.oval.constraint.MaxLength;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
-import net.sf.oval.guard.Guarded;
 import net.sf.oval.guard.SuppressOValWarnings;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -26,28 +25,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 */
 public class SpringAOPAllianceTest extends TestCase
 {
-	public static interface TestServiceInterface
-	{
-		@MaxLength(value = 5, message = "MAX_LENGTH")
-		String getSomething(@NotNull(message = "NOT_NULL") final String input);
-	}
-
-	/**
-	 * interface based service
-	 */
-	@Guarded(inspectInterfaces = true)
-	public static class TestServiceWithInterface implements TestServiceInterface
-	{
-		public String getSomething(final String input)
-		{
-			return input;
-		}
-	}
-
 	/**
 	 * class based service
 	 */
-	public static class TestServiceWithoutInterface
+	public static class TestCGLIBProxyService
 	{
 		@SuppressOValWarnings
 		@MaxLength(value = 5, message = "MAX_LENGTH")
@@ -57,100 +38,75 @@ public class SpringAOPAllianceTest extends TestCase
 		}
 	}
 
-	public void testCGLIBProxying()
+	public static interface TestJDKProxyService
 	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestCGLIBProxy.xml",
-				SpringAOPAllianceTest.class);
+		@MaxLength(value = 5, message = "MAX_LENGTH")
+		String getSomething(@NotNull(message = "NOT_NULL") final String input);
+	}
 
-		try
+	/**
+	 * interface based service
+	 */
+	public static class TestJDKProxyServiceImpl implements TestJDKProxyService
+	{
+		public String getSomething(final String input)
 		{
-			{
-				final TestServiceWithoutInterface testServiceWithoutInterface = (TestServiceWithoutInterface) ctx
-						.getBean("testServiceWithoutInterface");
-
-				try
-				{
-					testServiceWithoutInterface.getSomething(null);
-					fail();
-				}
-				catch (final ConstraintsViolatedException ex)
-				{
-					assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
-				}
-
-				try
-				{
-					testServiceWithoutInterface.getSomething("123456");
-					fail();
-				}
-				catch (final ConstraintsViolatedException ex)
-				{
-					assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
-				}
-			}
-
-			{
-				final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface", TestServiceInterface.class);
-
-				try
-				{
-					testServiceWithInterface.getSomething(null);
-					fail();
-				}
-				catch (final ConstraintsViolatedException ex)
-				{
-					assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
-				}
-
-				try
-				{
-					testServiceWithInterface.getSomething("123456");
-					fail();
-				}
-				catch (final ConstraintsViolatedException ex)
-				{
-					assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
-				}
-			}
-		}
-		finally
-		{
-			ctx.close();
+			return input;
 		}
 	}
 
-	public void testJDKProxying()
+	public void testCGLIBProxyService()
 	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestJDKProxy.xml",
-				SpringAOPAllianceTest.class);
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
+				"SpringAOPAllianceTestCGLIBProxy.xml", SpringAOPAllianceTest.class);
+		final TestCGLIBProxyService testService = (TestCGLIBProxyService) ctx.getBean("testService");
 
 		try
 		{
-			final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface", TestServiceInterface.class);
-
-			try
-			{
-				testServiceWithInterface.getSomething(null);
-				fail();
-			}
-			catch (final ConstraintsViolatedException ex)
-			{
-				assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
-			}
-
-			try
-			{
-				testServiceWithInterface.getSomething("123456");
-				fail();
-			}
-			catch (final ConstraintsViolatedException ex)
-			{
-				assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
-			}
+			testService.getSomething(null);
+			fail();
 		}
-		finally
+		catch (final ConstraintsViolatedException ex)
 		{
-			ctx.close();
+			assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+		}
+
+		try
+		{
+			testService.getSomething("123456");
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+		}
+	}
+
+	public void testJDKProxyService()
+	{
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
+				"SpringAOPAllianceTestJDKProxy.xml", SpringAOPAllianceTest.class);
+		final TestJDKProxyService testService = (TestJDKProxyService) ctx.getBean("testService",
+				TestJDKProxyService.class);
+
+		try
+		{
+			testService.getSomething(null);
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+		}
+
+		try
+		{
+			testService.getSomething("123456");
+			fail();
+		}
+		catch (final ConstraintsViolatedException ex)
+		{
+			assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
 		}
 	}
 }

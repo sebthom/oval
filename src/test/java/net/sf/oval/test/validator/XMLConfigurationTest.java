@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -196,7 +196,7 @@ public class XMLConfigurationTest extends TestCase
 		validateUser(new Validator(x));
 	}
 
-	public void validateUser(final Validator validator)
+	private void validateUser(final Validator validator)
 	{
 		final User usr = new User();
 
@@ -252,8 +252,8 @@ public class XMLConfigurationTest extends TestCase
 		usr.managerId = "%$$e3";
 		violations = validator.validate(usr);
 		assertEquals(1, violations.size());
-		assertEquals(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$",
-				violations.get(0).getMessage());
+		assertEquals(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$", violations.get(
+				0).getMessage());
 
 		/*
 		 * check object constraints

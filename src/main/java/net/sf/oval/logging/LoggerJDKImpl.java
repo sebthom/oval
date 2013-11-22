@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -32,7 +32,7 @@ public class LoggerJDKImpl implements Logger
 	 */
 	public LoggerJDKImpl(final String name) throws IllegalArgumentException
 	{
-		Assert.argumentNotNull("name", name);
+		Assert.notNull("name", name);
 
 		this.name = name;
 		jdkLogger = java.util.logging.Logger.getLogger(name);

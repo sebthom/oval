@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2008 Sebastian
  * Thomschke.
- *
+ * 
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.IsInvariant;
@@ -72,16 +73,16 @@ public class ConcurrencyTest extends TestCase
 
 				for (int i = 0; i < 100; i++)
 				{
-					assertEquals(1, validator.validate(sharedEntity).size());
+					Assert.assertEquals(1, validator.validate(sharedEntity).size());
 
 					entity.name = null;
-					assertEquals(1, validator.validate(entity).size());
+					Assert.assertEquals(1, validator.validate(entity).size());
 
 					entity.name = "1234";
-					assertEquals(0, validator.validate(entity).size());
+					Assert.assertEquals(0, validator.validate(entity).size());
 
 					entity.name = "123456";
-					assertEquals(1, validator.validate(entity).size());
+					Assert.assertEquals(1, validator.validate(entity).size());
 
 					try
 					{

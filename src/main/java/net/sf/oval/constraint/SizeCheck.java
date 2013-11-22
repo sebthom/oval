@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -44,18 +44,6 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("max", Integer.toString(max));
-		messageVariables.put("min", Integer.toString(min));
-		return messageVariables;
-	}
-
-	/**
 	 * @return the max
 	 */
 	public int getMax()
@@ -79,12 +67,12 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	{
 		if (valueToValidate == null) return true;
 
-		if (valueToValidate instanceof Collection< ? >)
+		if (valueToValidate instanceof Collection)
 		{
 			final int size = ((Collection< ? >) valueToValidate).size();
 			return size >= min && size <= max;
 		}
-		if (valueToValidate instanceof Map< ? , ? >)
+		if (valueToValidate instanceof Map)
 		{
 			final int size = ((Map< ? , ? >) valueToValidate).size();
 			return size >= min && size <= max;
@@ -94,9 +82,7 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 			final int size = Array.getLength(valueToValidate);
 			return size >= min && size <= max;
 		}
-		final String str = valueToValidate.toString();
-		final int size = str.length();
-		return size >= min && size <= max;
+		return false;
 	}
 
 	/**
@@ -115,5 +101,17 @@ public class SizeCheck extends AbstractAnnotationCheck<Size>
 	{
 		this.min = min;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("max", Integer.toString(max));
+		messageVariables.put("min", Integer.toString(min));
+		return messageVariables;
 	}
 }

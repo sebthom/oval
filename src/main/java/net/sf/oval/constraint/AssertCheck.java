@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.util.Map;
 
@@ -30,8 +30,8 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 {
 	private static final long serialVersionUID = 1L;
 
-	private String expr;
 	private String lang;
+	private String expr;
 
 	/**
 	 * {@inheritDoc}
@@ -42,18 +42,6 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		super.configure(constraintAnnotation);
 		setExpr(constraintAnnotation.expr());
 		setLang(constraintAnnotation.lang());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("expression", expr);
-		messageVariables.put("language", lang);
-		return messageVariables;
 	}
 
 	/**
@@ -82,7 +70,7 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 
-		final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(lang);
+		final ExpressionLanguage el = validator.getExpressionLanguage(lang);
 		return el.evaluateAsBoolean(expr, values);
 	}
 
@@ -103,4 +91,17 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert>
 		lang = language;
 		requireMessageVariablesRecreation();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("expression", expr);
+		messageVariables.put("language", lang);
+		return messageVariables;
+	}
+
 }

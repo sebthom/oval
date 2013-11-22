@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -34,11 +34,6 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		boolean isSatisfied(Object validatedObject, Object value);
 	}
 
-	public interface SimpleCheckWithMessageVariables extends SimpleCheck
-	{
-		Map<String, ? extends Serializable> createMessageVariables();
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	private boolean ignoreIfNull;
@@ -53,25 +48,6 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 		super.configure(constraintAnnotation);
 		setSimpleCheck(constraintAnnotation.value());
 		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, ? extends Serializable> createMessageVariables()
-	{
-		final Map<String, Serializable> messageVariables = getCollectionFactory().createMap(4);
-
-		if (simpleCheck instanceof SimpleCheckWithMessageVariables)
-		{
-			final Map<String, ? extends Serializable> simpleCheckMessageVariables = ((SimpleCheckWithMessageVariables) simpleCheck)
-					.createMessageVariables();
-			if (simpleCheckMessageVariables != null) messageVariables.putAll(simpleCheckMessageVariables);
-		}
-		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
-		return messageVariables;
 	}
 
 	/**
@@ -117,7 +93,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	public void setSimpleCheck(final Class< ? extends SimpleCheck> simpleCheckType) throws ReflectionException,
 			IllegalArgumentException
 	{
-		Assert.argumentNotNull("simpleCheckType", simpleCheckType);
+		Assert.notNull("simpleCheckType", simpleCheckType);
 
 		try
 		{
@@ -139,9 +115,21 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith>
 	 */
 	public void setSimpleCheck(final SimpleCheck simpleCheck) throws IllegalArgumentException
 	{
-		Assert.argumentNotNull("simpleCheck", simpleCheck);
+		Assert.notNull("simpleCheck", simpleCheck);
 
 		this.simpleCheck = simpleCheck;
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+		messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
+		return messageVariables;
 	}
 }

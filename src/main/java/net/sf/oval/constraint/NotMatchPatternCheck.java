@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,25 +53,12 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 				final Pattern p = Pattern.compile(stringPatterns[i], flag);
 				patterns.add(p);
 			}
-			requireMessageVariablesRecreation();
 		}
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
-		return messageVariables;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
@@ -97,7 +84,9 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 		if (valueToValidate == null) return true;
 
 		for (final Pattern p : patterns)
+		{
 			if (p.matcher(valueToValidate.toString()).matches()) return false;
+		}
 		return true;
 	}
 
@@ -151,5 +140,16 @@ public class NotMatchPatternCheck extends AbstractAnnotationCheck<NotMatchPatter
 			ArrayUtils.addAll(this.patterns, patterns);
 		}
 		requireMessageVariablesRecreation();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> createMessageVariables()
+	{
+		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+		messageVariables.put("pattern", patterns.size() == 1 ? patterns.get(0).toString() : patterns.toString());
+		return messageVariables;
 	}
 }

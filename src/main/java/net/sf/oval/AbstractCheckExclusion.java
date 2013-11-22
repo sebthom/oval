@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
 
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public abstract class AbstractCheckExclusion implements CheckExclusion
 		values.put("_value", valueToValidate);
 		values.put("_this", validatedObject);
 
-		final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
+		final ExpressionLanguage el = validator.getExpressionLanguage(whenLang);
 		return el.evaluateAsBoolean(whenFormula, values);
 	}
 

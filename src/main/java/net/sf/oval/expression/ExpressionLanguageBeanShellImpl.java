@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -25,25 +25,27 @@ import bsh.Interpreter;
  */
 public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 {
-	private static final Log LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
+	private static final Log  LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
-		LOG.debug("Evaluating BeanShell expression: {1}", expression);
 		try
 		{
 			final Interpreter interpreter = new Interpreter();
 			interpreter.eval("setAccessibility(true)"); // turn off access restrictions
 			for (final Entry<String, ? > entry : values.entrySet())
+			{
 				interpreter.set(entry.getKey(), entry.getValue());
+			}
+			LOG.debug("Evaluating BeanShell expression: {1}", expression);
 			return interpreter.eval(expression);
 		}
 		catch (final EvalError ex)
 		{
-			throw new ExpressionEvaluationException("Evaluating BeanShell expression failed: " + expression, ex);
+			throw new ExpressionEvaluationException("Evaluating script with BeanShell failed.", ex);
 		}
 	}
 
@@ -54,6 +56,7 @@ public class ExpressionLanguageBeanShellImpl implements ExpressionLanguage
 			throws ExpressionEvaluationException
 	{
 		final Object result = evaluate(expression, values);
+
 		if (!(result instanceof Boolean))
 			throw new ExpressionEvaluationException("The script must return a boolean value.");
 		return (Boolean) result;

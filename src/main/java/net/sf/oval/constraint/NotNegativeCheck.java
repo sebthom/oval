@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -24,19 +24,18 @@ import net.sf.oval.context.OValContext;
  */
 public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 {
-	private static final BigDecimal ZERO = BigDecimal.valueOf(0);
-
+	private final static BigDecimal ZERO = BigDecimal.valueOf(0);
+	
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
 		return new ConstraintTarget[]{ConstraintTarget.VALUES};
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -49,7 +48,8 @@ public class NotNegativeCheck extends AbstractAnnotationCheck<NotNegative>
 		{
 			if (valueToValidate instanceof Float || valueToValidate instanceof Double)
 				return ((Number) valueToValidate).doubleValue() >= 0;
-			if (valueToValidate instanceof BigDecimal) return ((BigDecimal) valueToValidate).compareTo(ZERO) >= 0;
+			if (valueToValidate instanceof BigDecimal)
+				return ((BigDecimal)valueToValidate).compareTo(ZERO) >= 0;
 			return ((Number) valueToValidate).longValue() >= 0;
 		}
 

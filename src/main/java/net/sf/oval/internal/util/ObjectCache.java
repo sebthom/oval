@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * @author Sebastian Thomschke
  */
-public final class ObjectCache<K, V>
+public class ObjectCache<K, V>
 {
 	private final Map<K, SoftReference<V>> map = new HashMap<K, SoftReference<V>>();
 
@@ -49,7 +49,10 @@ public final class ObjectCache<K, V>
 		for (final Map.Entry<K, SoftReference<V>> entry : map.entrySet())
 		{
 			final SoftReference<V> ref = entry.getValue();
-			if (ref.get() == null) map.remove(entry.getKey());
+			if (ref.get() == null)
+			{
+				map.remove(entry.getKey());
+			}
 		}
 	}
 
@@ -66,12 +69,17 @@ public final class ObjectCache<K, V>
 			final V value = softReference.get();
 
 			if (value == null)
+			{
 				map.remove(key);
+			}
 			else if (objectsToKeepCount > 0 && value != objectsLastAccessed.getFirst())
 			{
 				objectsLastAccessed.remove(value);
 				objectsLastAccessed.addFirst(value);
-				if (objectsLastAccessed.size() > objectsToKeepCount) objectsLastAccessed.removeLast();
+				if (objectsLastAccessed.size() > objectsToKeepCount)
+				{
+					objectsLastAccessed.removeLast();
+				}
 			}
 			return softReference.get();
 		}

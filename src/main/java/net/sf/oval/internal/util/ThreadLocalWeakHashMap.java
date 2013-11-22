@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2009 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -17,7 +17,7 @@ import java.util.WeakHashMap;
 /**
  * @author Sebastian Thomschke
  */
-public final class ThreadLocalWeakHashMap<K, V> extends ThreadLocal<WeakHashMap<K, V>>
+public class ThreadLocalWeakHashMap<K, V> extends ThreadLocal<WeakHashMap<K, V>>
 {
 	/**
 	 * {@inheritDoc}

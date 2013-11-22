@@ -3,13 +3,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-autowire="no" default-lazy-init="false"
 >
-
-	<bean id="testServiceWithInterface" class="net.sf.oval.test.integration.spring.SpringAOPAllianceTest$TestServiceWithInterface" />
-
+	<bean id="testService" class="net.sf.oval.test.integration.spring.SpringAOPAllianceTest$TestJDKProxyServiceImpl" />
 	<bean id="ovalGuardInterceptor" class="net.sf.oval.guard.GuardInterceptor" />
 	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
 		<property name="proxyTargetClass" value="false" />
-		<property name="beanNames" value="testService*" />
+		<property name="beanNames" value="*Service"/>
 		<property name="interceptorNames">
 			<list>
 				<value>ovalGuardInterceptor</value>
