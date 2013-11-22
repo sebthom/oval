@@ -13,9 +13,11 @@
 package net.sf.oval.localization.context;
 
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import net.sf.oval.Validator;
 import net.sf.oval.context.ClassContext;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -58,9 +60,11 @@ public class ResourceBundleValidationContextRenderer implements OValContextRende
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	protected Locale getLocale()
+	{
+		return Validator.getLocaleProvider().getLocale();
+	}
+
 	public String render(final OValContext ovalContext)
 	{
 		final String baseName;
@@ -113,7 +117,7 @@ public class ResourceBundleValidationContextRenderer implements OValContextRende
 
 		try
 		{
-			final ResourceBundle bundle = ResourceBundle.getBundle(baseName);
+			final ResourceBundle bundle = ResourceBundle.getBundle(baseName, getLocale());
 			if (containsKey(bundle, key)) return bundle.getString(key);
 			LOG.debug("Key {1} not found in bundle {2}", key, baseName);
 		}
