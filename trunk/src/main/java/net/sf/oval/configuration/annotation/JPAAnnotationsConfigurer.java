@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
@@ -40,23 +41,40 @@ import net.sf.oval.configuration.pojo.elements.FieldConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
 import net.sf.oval.constraint.AssertValidCheck;
+import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.LengthCheck;
+import net.sf.oval.constraint.NotNull;
 import net.sf.oval.constraint.NotNullCheck;
+import net.sf.oval.constraint.Range;
 import net.sf.oval.constraint.RangeCheck;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * Constraints configurer that interprets certain EJB3 JPA annotations:
- * <ul>
- * <li>javax.persistence.Basic(optional=false)     => net.sf.oval.constraint.NotNullCheck
- * <li>javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraint.NotNullCheck, net.sf.oval.constraint.AssertValidCheck
- * <li>javax.persistence.ManyToOne(optional=false) => net.sf.oval.constraint.NotNullCheck, net.sf.oval.constraint.AssertValidCheck
- * <li>javax.persistence.ManyToMany                => net.sf.oval.constraint.AssertValidCheck
- * <li>javax.persistence.Column(nullable=false)    => net.sf.oval.constraint.NotNullCheck
- * <li>javax.persistence.Column(length=5)          => net.sf.oval.constraint.LengthCheck
- * </ul>
+ * <pre>
+ * * javax.persistence.Basic(optional=false)     => net.sf.oval.constraint.NotNullCheck
+ * * javax.persistence.OneToOne(optional=false)  => net.sf.oval.constraint.NotNullCheck, net.sf.oval.constraint.AssertValidCheck (if addAssertValidConstraints=true)
+ * * javax.persistence.ManyToOne(optional=false) => net.sf.oval.constraint.NotNullCheck, net.sf.oval.constraint.AssertValidCheck (if addAssertValidConstraints=true)
+ * * javax.persistence.ManyToMany                => net.sf.oval.constraint.AssertValidCheck (if addAssertValidConstraints=true)
+ * * javax.persistence.Column(nullable=false)    => net.sf.oval.constraint.NotNullCheck
+ * * javax.persistence.Column(length=5)          => net.sf.oval.constraint.LengthCheck
+ * * javax.persistence.Column(precision>0)       => net.sf.oval.constraint.RangeCheck (for Numbers only)
+ * </pre>
+ *
+ * <b>Important:</b> by default AssertValidChecks are added for n-m relationships. This may be a problem when using lazy loading. Read <a href="http://sourceforge.net/p/oval/discussion/488110/thread/6ec11584/#4ae0">this post</a> for more details.
+ * To avoid this override the method {@link #addAssertValidCheckIfRequired(Annotation, Collection, AccessibleObject)} with an empty method body, for example
+ * <pre>
+ * JPAAnnotationsConfigurer configurer = new JPAAnnotationsConfigurer() {
+ *    protected void addAssertValidCheckIfRequired(Annotation constraintAnnotation, Collection<Check> checks, AccessibleObject fieldOrMethod)
+ *    {
+ *       // do nothing
+ *    }
+ * };
+ * </pre>
+ *
  * @author Sebastian Thomschke
  */
+@SuppressWarnings("javadoc")
 public class JPAAnnotationsConfigurer implements Configurer
 {
 	protected Boolean applyFieldConstraintsToSetters;
@@ -65,6 +83,8 @@ public class JPAAnnotationsConfigurer implements Configurer
 	protected void addAssertValidCheckIfRequired(final Annotation constraintAnnotation, final Collection<Check> checks,
 			final AccessibleObject fieldOrMethod)
 	{
+		if (containsCheckOfType(checks, AssertValidCheck.class)) return;
+
 		if (constraintAnnotation instanceof OneToOne || constraintAnnotation instanceof OneToMany
 				|| constraintAnnotation instanceof ManyToOne || constraintAnnotation instanceof ManyToMany)
 			checks.add(new AssertValidCheck());
@@ -191,21 +211,26 @@ public class JPAAnnotationsConfigurer implements Configurer
 		 * has been persisted already, a not-null check will not be performed for such fields.
 		 */
 		if (!annotation.nullable() && !fieldOrMethod.isAnnotationPresent(GeneratedValue.class)
-				&& !fieldOrMethod.isAnnotationPresent(Version.class))
+				&& !fieldOrMethod.isAnnotationPresent(Version.class) && !fieldOrMethod.isAnnotationPresent(NotNull.class))
 			if (!containsCheckOfType(checks, NotNullCheck.class)) checks.add(new NotNullCheck());
 
-		// only consider length parameter if @Lob is not present
-		if (!fieldOrMethod.isAnnotationPresent(Lob.class))
+		// add Length check based on Column.length parameter, but only:
+		if (!fieldOrMethod.isAnnotationPresent(Lob.class) && // if @Lob is not present
+				!fieldOrMethod.isAnnotationPresent(Enumerated.class) && // if @Enumerated is not present
+				!fieldOrMethod.isAnnotationPresent(Length.class) // if an explicit @Length constraint is not present
+		)
 		{
 			final LengthCheck lengthCheck = new LengthCheck();
 			lengthCheck.setMax(annotation.length());
 			checks.add(lengthCheck);
 		}
 
-		// only consider precision/scale for numeric fields
-		if (annotation.precision() > 0
+		// add Range check based on Column.precision/scale parameters, but only:
+		if (!fieldOrMethod.isAnnotationPresent(Range.class) // if an explicit @Range is not present
+				&& annotation.precision() > 0 // if precision is > 0
 				&& Number.class.isAssignableFrom(fieldOrMethod instanceof Field ? ((Field) fieldOrMethod).getType()
-						: ((Method) fieldOrMethod).getReturnType()))
+						: ((Method) fieldOrMethod).getReturnType()) // if numeric field type
+		)
 		{
 			/*
 			 * precision = 6, scale = 2  => -9999.99<=x<=9999.99
