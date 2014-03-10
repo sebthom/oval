@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -81,7 +81,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 	protected Boolean applyFieldConstraintsToConstructors;
 
 	protected void addAssertValidCheckIfRequired(final Annotation constraintAnnotation, final Collection<Check> checks,
-			final AccessibleObject fieldOrMethod)
+			@SuppressWarnings("unused")/*parameter for potential use by subclasses*/final AccessibleObject fieldOrMethod)
 	{
 		if (containsCheckOfType(checks, AssertValidCheck.class)) return;
 
@@ -232,8 +232,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 						: ((Method) fieldOrMethod).getReturnType()) // if numeric field type
 		)
 		{
-			/*
-			 * precision = 6, scale = 2  => -9999.99<=x<=9999.99
+			/* precision = 6, scale = 2  => -9999.99<=x<=9999.99
 			 * precision = 4, scale = 1  =>   -999.9<=x<=999.9
 			 */
 			final RangeCheck rangeCheck = new RangeCheck();
@@ -243,6 +242,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void initializeChecks(final ManyToMany annotation, final Collection<Check> checks)
 	{
 		// override if required
@@ -253,6 +253,7 @@ public class JPAAnnotationsConfigurer implements Configurer
 		if (!annotation.optional() && !containsCheckOfType(checks, NotNullCheck.class)) checks.add(new NotNullCheck());
 	}
 
+	@SuppressWarnings("unused")
 	protected void initializeChecks(final OneToMany annotation, final Collection<Check> checks)
 	{
 		// override if required

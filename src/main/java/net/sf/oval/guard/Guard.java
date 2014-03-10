@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -58,7 +58,6 @@ import net.sf.oval.internal.util.ThreadLocalWeakHashMap;
  */
 public class Guard extends Validator
 {
-
 	/**
 	 * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions
 	 */
@@ -537,8 +536,8 @@ public class Guard extends Validator
 	 * @throws ConstraintsViolatedException
 	 * @throws ValidationFailedException
 	 */
-	protected void guardConstructorPost(final Object guardedObject, final Constructor< ? > ctor, final Object[] args)
-			throws ConstraintsViolatedException, ValidationFailedException
+	protected void guardConstructorPost(final Object guardedObject, final Constructor< ? > ctor,
+			@SuppressWarnings("unused") final Object[] args) throws ConstraintsViolatedException, ValidationFailedException
 	{
 		if (!isActivated) return;
 
