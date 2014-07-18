@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -28,8 +28,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 /**
  * This is an annotations based version of the GuardAspect aspect.
- * 
- * In contrast to GuardAspect no custom scopes are supported yet, 
+ *
+ * In contrast to GuardAspect no custom scopes are supported yet,
  * so only guarding based on the @Guarded annotation is possible right now.
  *
  * To workaround an AspectJ bug use the -XnoInline weave option, in case you are getting errors like:
@@ -60,7 +60,6 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2
 
 	private static final Log LOG = Log.getLog(GuardAspect2.class);
 
-	@SuppressWarnings("unused")
 	// add the IsGuarded marker interface to all classes annotated with @Guarded
 	@DeclareParents("(@net.sf.oval.guard.Guarded *)")
 	private IsGuarded implementedInterface;

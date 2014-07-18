@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -29,19 +29,15 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase
 	@Guarded(applyFieldConstraintsToConstructors = true, checkInvariants = false)
 	private static class Person
 	{
-		@SuppressWarnings("unused")
 		@AssertTrue(message = "ASSERT_TRUE")
 		private boolean isValid = true;
 
-		@SuppressWarnings("unused")
 		@NotNull(message = "NOT_NULL")
 		private String firstName = "";
 
-		@SuppressWarnings("unused")
 		@NotNull(message = "NOT_NULL")
 		private String lastName = "";
 
-		@SuppressWarnings("unused")
 		@NotNull(message = "NOT_NULL")
 		@Length(max = 6, message = "LENGTH")
 		@NotEmpty(message = "NOT_EMPTY")

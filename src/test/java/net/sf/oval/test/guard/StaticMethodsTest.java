@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,10 +27,6 @@ public class StaticMethodsTest extends TestCase
 	@Guarded
 	private static class TestEntity
 	{
-		@SuppressWarnings("unused")
-		@NotNull(message = "NULL")
-		public static String value;
-
 		public static void doSomethingPost()
 		{
 			//
@@ -45,6 +41,9 @@ public class StaticMethodsTest extends TestCase
 		{
 			TestEntity.value = value;
 		}
+
+		@NotNull(message = "NULL")
+		public static String value;
 	}
 
 	public void testPostValidateThis() throws Exception

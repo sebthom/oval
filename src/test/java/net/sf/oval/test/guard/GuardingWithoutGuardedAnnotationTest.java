@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,7 +27,6 @@ public class GuardingWithoutGuardedAnnotationTest extends TestCase
 {
 	public static class TestEntity
 	{
-		@SuppressWarnings("unused")
 		@NotNull(message = "NOT_NULL")
 		private String name = "";
 
