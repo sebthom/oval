@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -18,7 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import net.sf.oval.Validator;
 import net.sf.oval.collection.CollectionFactoryJDKImpl;
-import net.sf.oval.collection.CollectionFactoryJavalutionImpl;
+import net.sf.oval.collection.CollectionFactoryJavolutionImpl;
 import net.sf.oval.collection.CollectionFactoryTroveImpl;
 
 /**
@@ -115,14 +115,14 @@ public final class AllTests
 			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
+			{
+				@Override
+				protected void setUp() throws Exception
 				{
-					@Override
-					protected void setUp() throws Exception
-					{
-						super.setUp();
-						Validator.setCollectionFactory(new CollectionFactoryJDKImpl());
-					}
-				};
+					super.setUp();
+					Validator.setCollectionFactory(new CollectionFactoryJDKImpl());
+				}
+			};
 			suite.addTest(setup1);
 		}
 
@@ -134,14 +134,14 @@ public final class AllTests
 			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
+			{
+				@Override
+				protected void setUp() throws Exception
 				{
-					@Override
-					protected void setUp() throws Exception
-					{
-						super.setUp();
-						Validator.setCollectionFactory(new CollectionFactoryJavalutionImpl());
-					}
-				};
+					super.setUp();
+					Validator.setCollectionFactory(new CollectionFactoryJavolutionImpl());
+				}
+			};
 			suite.addTest(setup1);
 		}
 
@@ -153,14 +153,14 @@ public final class AllTests
 			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
+			{
+				@Override
+				protected void setUp() throws Exception
 				{
-					@Override
-					protected void setUp() throws Exception
-					{
-						super.setUp();
-						Validator.setCollectionFactory(new CollectionFactoryTroveImpl());
-					}
-				};
+					super.setUp();
+					Validator.setCollectionFactory(new CollectionFactoryTroveImpl());
+				}
+			};
 			suite.addTest(setup1);
 		}
 		// $JUnit-END$

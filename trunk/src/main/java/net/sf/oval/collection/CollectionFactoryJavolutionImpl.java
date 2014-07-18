@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -23,7 +23,7 @@ import javolution.util.FastTable;
 /**
  * @author Sebastian Thomschke
  */
-public class CollectionFactoryJavalutionImpl implements CollectionFactory
+public class CollectionFactoryJavolutionImpl implements CollectionFactory
 {
 	/**
 	 * {@inheritDoc}

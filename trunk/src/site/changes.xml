@@ -5,8 +5,9 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version=1.85">
-		<action type="update">upgraded to Spring 3.2.6.RELEASE, SLF4J 1.7.6</action>
+		<release version="1.85" date="2014-07-??">
+			<action type="fix">[bugs:#86] Trove is wrongly detected (thanks to Geert Bevin)</action>
+			<action type="update">upgraded to AspectJ 1.8.1, commons-logging 1.2, Groovy 2.2.2, Spring 3.2.9.RELEASE, SLF4J 1.7.7</action>
 		</release>
 
 		<release version="1.84" date="2013-11-22">
