@@ -13,7 +13,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -69,10 +69,6 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		}
 	}
 
-	private static final long serialVersionUID = 1L;
-
-	private static final Log LOG = Log.getLog(AssertURLCheck.class);
-
 	private static boolean canConnect(final String url)
 	{
 		try
@@ -98,6 +94,10 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			return false;
 		}
 	}
+
+	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = Log.getLog(AssertURLCheck.class);
 
 	/**
 	 * Specifies if a connection to the URL should be attempted to verify its validity.
@@ -180,7 +180,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		}
 		catch (final java.net.URISyntaxException ex)
 		{
-			LOG.debug("URI scheme or scheme-specific-part not specified");
+			LOG.debug("URI scheme or scheme-specific-part not specified", ex);
 			return false;
 		}
 
