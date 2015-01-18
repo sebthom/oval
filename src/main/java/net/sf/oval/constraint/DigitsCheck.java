@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -149,8 +149,11 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 		{
 			BigDecimal value = null;
 			if (valueToValidate instanceof BigDecimal)
+			{
 				value = (BigDecimal) valueToValidate;
+			}
 			else
+			{
 				try
 				{
 					value = new BigDecimal(valueToValidate.toString());
@@ -160,6 +163,7 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 					LOG.debug("Failed to parse numeric value: " + valueToValidate, ex);
 					return false;
 				}
+			}
 			final int valueScale = value.scale();
 			final long longValue = value.longValue();
 			intLen = longValue == 0 ? 1 : (int) Math.log10(longValue) + 1;
@@ -175,6 +179,7 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 	public void setMaxFraction(final int maxFraction)
 	{
 		this.maxFraction = maxFraction;
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -183,6 +188,7 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 	public void setMaxInteger(final int maxInteger)
 	{
 		this.maxInteger = maxInteger;
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -191,6 +197,7 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 	public void setMinFraction(final int minFraction)
 	{
 		this.minFraction = minFraction;
+		requireMessageVariablesRecreation();
 	}
 
 	/**
@@ -199,5 +206,6 @@ public class DigitsCheck extends AbstractAnnotationCheck<Digits>
 	public void setMinInteger(final int minInteger)
 	{
 		this.minInteger = minInteger;
+		requireMessageVariablesRecreation();
 	}
 }
