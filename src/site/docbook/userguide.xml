@@ -1618,8 +1618,8 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
 
 	  <listitem>
 	    <para>How to integrate Oval validation with Spring 3 (2013)</para>
-        <para><ulink url="http://maheshjq.blogspot.de/2013/08/how-to-integrate-oval-validation-with.html">http://maheshjq.blogspot.de/2013/08/how-to-integrate-oval-validation-with.html</ulink>
-	  <listitem>
+        <para><ulink url="http://maheshjq.blogspot.de/2013/08/how-to-integrate-oval-validation-with.html">http://maheshjq.blogspot.de/2013/08/how-to-integrate-oval-validation-with.html</ulink></para>
+	  </listitem>
 
 	  <listitem>
 	    <para>OVal - validate your models quickly and effortlessly (2011)</para>
