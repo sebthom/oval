@@ -1728,7 +1728,12 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     <itemizedlist>
 
 	  <listitem>
-        <para>fustewa -  A full web stack based on spring</para>
+        <para>Omniproperties - a lightweight configuration utility</para>
+        <para><ulink url="https://github.com/siemens/omniproperties">https://github.com/siemens/omniproperties</ulink></para>
+	  </listitem>
+
+	  <listitem>
+        <para>fustewa - A full web stack based on Spring</para>
         <para><ulink url="https://github.com/opensource21/fuwesta">https://github.com/opensource21/fuwesta</ulink></para>
 	  </listitem>
 
