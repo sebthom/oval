@@ -1,0 +1,11 @@
+<oval xmlns="http://oval.sf.net/oval-configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://oval.sf.net/oval-configuration ../../../../../../../main/resources/net/sf/oval/configuration/xml/oval-configuration.xsd">
+
+	<class type="net.sf.oval.test.validator.CustomXMLConstraintTest$Entity">
+		<field name="message">
+			<notNull message="Effectve Begin Date cannot be left blank" />
+			<net.sf.oval.test.validator.CustomXMLConstraintCheck />
+		</field>
+	</class>
+
+</oval>
