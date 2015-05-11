@@ -5,7 +5,8 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.85" date="2015-01-??">
+		<release version="1.85" date="2015-05-??">
+			<action type="fix">concurrency fix in SerializableMethod/SerializableField/SerializableContructor (thanks to Andrew Malota)</action>
 			<action type="fix">DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)</action>
 			<action type="fix">DigitsCheck's message variables are emtpy (thanks to Dirk Buchhorn)</action>
 			<action type="fix">[bugs:#86] Trove is wrongly detected (thanks to Geert Bevin)</action>
