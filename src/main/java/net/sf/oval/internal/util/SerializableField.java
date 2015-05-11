@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import net.sf.oval.internal.Log;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
- * 
+ *
  * @author Sebastian Thomschke
  */
 public final class SerializableField implements Serializable
@@ -34,16 +34,16 @@ public final class SerializableField implements Serializable
 
 	public static SerializableField getInstance(final Field field)
 	{
-		/*
-		 * intentionally the following code is not synchronized
-		 */
-		SerializableField sm = CACHE.get(field);
-		if (sm == null)
+		synchronized (CACHE)
 		{
-			sm = new SerializableField(field);
-			CACHE.put(field, sm);
+			SerializableField sm = CACHE.get(field);
+			if (sm == null)
+			{
+				sm = new SerializableField(field);
+				CACHE.put(field, sm);
+			}
+			return sm;
 		}
-		return sm;
 	}
 
 	private final Class< ? > declaringClass;

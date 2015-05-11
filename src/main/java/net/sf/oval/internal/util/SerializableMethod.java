@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import net.sf.oval.internal.Log;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
- * 
+ *
  * @author Sebastian Thomschke
  */
 public final class SerializableMethod implements Serializable
@@ -34,16 +34,16 @@ public final class SerializableMethod implements Serializable
 
 	public static SerializableMethod getInstance(final Method method)
 	{
-		/*
-		 * intentionally the following code is not synchronized
-		 */
-		SerializableMethod sm = CACHE.get(method);
-		if (sm == null)
+		synchronized (CACHE)
 		{
-			sm = new SerializableMethod(method);
-			CACHE.put(method, sm);
+			SerializableMethod sm = CACHE.get(method);
+			if (sm == null)
+			{
+				sm = new SerializableMethod(method);
+				CACHE.put(method, sm);
+			}
+			return sm;
 		}
-		return sm;
 	}
 
 	private final Class< ? > declaringClass;
