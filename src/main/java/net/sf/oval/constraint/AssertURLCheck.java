@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.Locale;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
@@ -69,6 +68,10 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 		}
 	}
 
+	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = Log.getLog(AssertURLCheck.class);
+
 	private static boolean canConnect(final String url)
 	{
 		try
@@ -94,10 +97,6 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			return false;
 		}
 	}
-
-	private static final long serialVersionUID = 1L;
-
-	private static final Log LOG = Log.getLog(AssertURLCheck.class);
 
 	/**
 	 * Specifies if a connection to the URL should be attempted to verify its validity.
@@ -173,7 +172,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL>
 			}
 
 			// Check whether the URI scheme is supported
-			if (!isURISchemeValid(scheme.toLowerCase(Locale.getDefault()))) return false;
+			if (!isURISchemeValid(scheme.toLowerCase(Validator.getLocaleProvider().getLocale()))) return false;
 
 			// If the connect flag is true then attempt to connect to the URL
 			if (connect) return canConnect(uriString);

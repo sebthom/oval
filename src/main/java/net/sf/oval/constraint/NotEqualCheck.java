@@ -1,20 +1,19 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
-import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
@@ -76,7 +75,9 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 	private String getTestStringLowerCase()
 	{
 		if (testStringLowerCase == null && testString != null)
-			testStringLowerCase = testString.toLowerCase(Locale.getDefault());
+		{
+			testStringLowerCase = testString.toLowerCase(Validator.getLocaleProvider().getLocale());
+		}
 		return testStringLowerCase;
 	}
 
@@ -97,7 +98,7 @@ public class NotEqualCheck extends AbstractAnnotationCheck<NotEqual>
 		if (valueToValidate == null) return true;
 
 		if (ignoreCase)
-			return !valueToValidate.toString().toLowerCase(Locale.getDefault()).equals(getTestStringLowerCase());
+			return !valueToValidate.toString().toLowerCase(Validator.getLocaleProvider().getLocale()).equals(getTestStringLowerCase());
 
 		return !valueToValidate.toString().equals(testString);
 	}
