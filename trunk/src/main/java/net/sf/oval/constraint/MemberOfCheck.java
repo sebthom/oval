@@ -1,21 +1,20 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
@@ -84,7 +83,9 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 		{
 			membersLowerCase = getCollectionFactory().createList(members.size());
 			for (final String val : members)
-				membersLowerCase.add(val.toLowerCase(Locale.getDefault()));
+			{
+				membersLowerCase.add(val.toLowerCase(Validator.getLocaleProvider().getLocale()));
+			}
 		}
 		return membersLowerCase;
 	}
@@ -106,7 +107,7 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
 		if (valueToValidate == null) return true;
 
 		if (ignoreCase)
-			return getMembersLowerCase().contains(valueToValidate.toString().toLowerCase(Locale.getDefault()));
+			return getMembersLowerCase().contains(valueToValidate.toString().toLowerCase(Validator.getLocaleProvider().getLocale()));
 
 		return members.contains(valueToValidate.toString());
 	}

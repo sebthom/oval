@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -24,7 +24,6 @@ import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import net.sf.oval.exception.AccessingFieldValueFailedException;
@@ -50,6 +49,7 @@ public final class ReflectionUtils
 	{
 		final SecurityManager manager = System.getSecurityManager();
 		if (manager != null)
+		{
 			try
 			{
 				manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
@@ -59,6 +59,7 @@ public final class ReflectionUtils
 				throw new ReflectionException(
 						"Current security manager configuration does not allow access to private fields and methods.", ex);
 			}
+		}
 	}
 
 	/**
@@ -95,14 +96,16 @@ public final class ReflectionUtils
 
 		final List<Annotation> annotations = ArrayUtils.asList(method.getAnnotations());
 		for (final Class< ? > nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass()))
+		{
 			try
 			{
 				ArrayUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
 			}
-			catch (final NoSuchMethodException e)
+			catch (final NoSuchMethodException ex)
 			{
 				// ignore
 			}
+		}
 		return annotations.toArray(new Annotation[annotations.size()]);
 	}
 
@@ -115,7 +118,7 @@ public final class ReflectionUtils
 		{
 			return clazz.getDeclaredField(fieldName);
 		}
-		catch (final NoSuchFieldException e)
+		catch (final NoSuchFieldException ex)
 		{
 			return null;
 		}
@@ -136,8 +139,11 @@ public final class ReflectionUtils
 
 		// calculate the corresponding field name based on the name of the setter method (e.g. method setName() => field
 		// name)
-		String fieldName = methodName.substring(3, 4).toLowerCase(Locale.getDefault());
-		if (methodName.length() > 4) fieldName += methodName.substring(4);
+		String fieldName = methodName.substring(3, 4).toLowerCase(getLocaleProvider().getLocale());
+		if (methodName.length() > 4)
+		{
+			fieldName += methodName.substring(4);
+		}
 
 		Field field = null;
 		try
@@ -199,7 +205,10 @@ public final class ReflectionUtils
 	{
 		try
 		{
-			if (!field.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(field));
+			if (!field.isAccessible())
+			{
+				AccessController.doPrivileged(new SetAccessibleAction(field));
+			}
 			return field.get(target);
 		}
 		catch (final Exception ex)
@@ -210,7 +219,7 @@ public final class ReflectionUtils
 
 	public static Method getGetter(final Class< ? > clazz, final String propertyName)
 	{
-		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
+		final String appendix = propertyName.substring(0, 1).toUpperCase(getLocaleProvider().getLocale()) + propertyName.substring(1);
 		try
 		{
 			return clazz.getDeclaredMethod("get" + appendix);
@@ -256,7 +265,10 @@ public final class ReflectionUtils
 		for (final Class< ? > iface : interfaces)
 		{
 			final Method m = getMethod(iface, methodName, parameterTypes);
-			if (m != null) methods.add(m);
+			if (m != null)
+			{
+				methods.add(m);
+			}
 		}
 		return methods;
 	}
@@ -294,7 +306,7 @@ public final class ReflectionUtils
 		{
 			return clazz.getDeclaredMethod(methodName, parameterTypes);
 		}
-		catch (final NoSuchMethodException e)
+		catch (final NoSuchMethodException ex)
 		{
 			return null;
 		}
@@ -338,6 +350,7 @@ public final class ReflectionUtils
 		final Set<Class< ? >> classes = ReflectionUtils.getInterfacesRecursive(clazz);
 		classes.add(clazz);
 		for (final Class< ? > nextClass : classes)
+		{
 			try
 			{
 				final Method nextMethod = nextClass.getDeclaredMethod(methodName, methodParameterTypes);
@@ -347,16 +360,22 @@ public final class ReflectionUtils
 					if (paramAnnos.length > 0)
 					{
 						HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
-						if (cummulatedParamAnnos == null) methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
+						if (cummulatedParamAnnos == null)
+						{
+							methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
+						}
 						for (final Annotation anno : paramAnnos)
+						{
 							cummulatedParamAnnos.add(anno);
+						}
 					}
 				}
 			}
-			catch (final NoSuchMethodException e)
+			catch (final NoSuchMethodException ex)
 			{
 				// ignore
 			}
+		}
 
 		final Annotation[][] result = new Annotation[methodParameterTypesCount][];
 		for (int i = 0; i < methodParameterTypesCount; i++)
@@ -371,7 +390,8 @@ public final class ReflectionUtils
 
 	public static Method getSetter(final Class< ? > clazz, final String propertyName)
 	{
-		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
+		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(getLocaleProvider().getLocale())
+				+ propertyName.substring(1);
 
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
 		for (final Method method : declaredMethods)
@@ -419,17 +439,25 @@ public final class ReflectionUtils
 		{
 			fieldName = fieldName.substring(3);
 			if (fieldName.length() == 1)
-				fieldName = fieldName.toLowerCase(Locale.getDefault());
+			{
+				fieldName = fieldName.toLowerCase(getLocaleProvider().getLocale());
+			}
 			else
+			{
 				fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+			}
 		}
 		else if (fieldName.startsWith("is") && fieldName.length() > 2)
 		{
 			fieldName = fieldName.substring(2);
 			if (fieldName.length() == 1)
-				fieldName = fieldName.toLowerCase(Locale.getDefault());
+			{
+				fieldName = fieldName.toLowerCase(getLocaleProvider().getLocale());
+			}
 			else
+			{
 				fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+			}
 		}
 
 		return fieldName;
@@ -459,7 +487,10 @@ public final class ReflectionUtils
 	{
 		try
 		{
-			if (!method.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(method));
+			if (!method.isAccessible())
+			{
+				AccessController.doPrivileged(new SetAccessibleAction(method));
+			}
 			return (T) method.invoke(obj, args);
 		}
 		catch (final Exception ex)
@@ -489,14 +520,16 @@ public final class ReflectionUtils
 		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
 
 		for (final Class< ? > next : getInterfacesRecursive(method.getDeclaringClass()))
+		{
 			try
 			{
 				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass)) return true;
 			}
-			catch (final NoSuchMethodException e)
+			catch (final NoSuchMethodException ex)
 			{
 				// ignore
 			}
+		}
 		return false;
 	}
 
@@ -507,7 +540,7 @@ public final class ReflectionUtils
 			Class.forName(className);
 			return true;
 		}
-		catch (final ClassNotFoundException e)
+		catch (final ClassNotFoundException ex)
 		{
 			return false;
 		}
@@ -545,13 +578,16 @@ public final class ReflectionUtils
 	public static boolean isPrivateAccessAllowed()
 	{
 		final SecurityManager manager = System.getSecurityManager();
-		if (manager != null) try
+		if (manager != null)
 		{
-			manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
-		}
-		catch (final SecurityException ex)
-		{
-			return false;
+			try
+			{
+				manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+			}
+			catch (final SecurityException ex)
+			{
+				return false;
+			}
 		}
 		return true;
 	}
@@ -608,24 +644,27 @@ public final class ReflectionUtils
 		assert target != null;
 		assert propertyName != null;
 		final Method setter = getSetterRecursive(target.getClass(), propertyName);
-		if (setter != null) try
+		if (setter != null)
 		{
-			setter.invoke(target, propertyValue);
-		}
-		catch (final IllegalArgumentException ex)
-		{
-			LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-			return false;
-		}
-		catch (final IllegalAccessException ex)
-		{
-			LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-			return false;
-		}
-		catch (final InvocationTargetException ex)
-		{
-			LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-			return false;
+			try
+			{
+				setter.invoke(target, propertyValue);
+			}
+			catch (final IllegalArgumentException ex)
+			{
+				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+				return false;
+			}
+			catch (final IllegalAccessException ex)
+			{
+				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+				return false;
+			}
+			catch (final InvocationTargetException ex)
+			{
+				LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
+				return false;
+			}
 		}
 		return false;
 	}
