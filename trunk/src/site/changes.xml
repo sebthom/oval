@@ -5,7 +5,11 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.85" date="2015-05-??">
+		<release version="1.85" date="2015-06-??">
+			<action type="fix">
+				[bugs:#88] ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to
+				Petras)
+			</action>
 			<action type="fix">concurrency fix in SerializableMethod/SerializableField/SerializableContructor (thanks to Andrew Malota)</action>
 			<action type="fix">DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)</action>
 			<action type="fix">DigitsCheck's message variables are emtpy (thanks to Dirk Buchhorn)</action>
