@@ -5,7 +5,11 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.85" date="2015-06-??">
+		<release version="1.85" date="2015-07-??">
+			<action type="fix">
+				<fixes issue="[bugs:#85]" />
+				@Email validation treats + as invalid character (thanks to David van Geest)
+			</action>
 			<action type="fix">
 				ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists
 				<fixes issue="[bugs:#89]" />
