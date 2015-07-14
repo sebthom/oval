@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -39,6 +39,7 @@ public class EmailTest extends AbstractContraintsTest
 		assertTrue(check.isSatisfied(null, "test.j'e.e'@yahoo.co.uk", null, null));
 		assertTrue(check.isSatisfied(null, "testj'ee@yahoo.com", null, null));
 		assertTrue(check.isSatisfied(null, "test&jee@yahoo.com", null, null));
+		assertTrue(check.isSatisfied(null, "test+jee@yahoo.com", null, null));
 		assertTrue(check.isSatisfied(null, "test_j.s.@yahoo.com", null, null));
 
 		assertFalse(check.isSatisfied(null, "testjee@@yahoo.com", null, null));
