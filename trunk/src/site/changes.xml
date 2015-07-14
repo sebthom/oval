@@ -8,9 +8,8 @@
 		<release version="1.85" date="2015-06-??">
 			<action type="fix">
 				ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists
-				<fixes issue="[bugs:#89]">
-					Limiting the nesting level for ConstraintTarget.VALUES (thanks to Petras)
-				</fixes>
+				<fixes issue="[bugs:#89]" />
+				Limiting the nesting level for ConstraintTarget.VALUES (thanks to Petras)
 			</action>
 			<action type="fix">
 				[bugs:#88] ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to
