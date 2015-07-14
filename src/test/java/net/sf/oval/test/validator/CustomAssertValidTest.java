@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2010 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -94,13 +94,13 @@ public class CustomAssertValidTest extends TestCase
 	@Constraint(checkWith = CustomAssertValidCheck.class)
 	public static @interface CustomAssertValid
 	{
+		ConstraintTarget[] appliesTo() default {ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE};
+
 		String errorCode() default "CustomAssertValid";
 
 		String message() default "CustomAssertValid.violated";
 
 		String[] profiles() default {};
-
-		ConstraintTarget[] appliesTo() default {ConstraintTarget.VALUES};
 
 		int severity() default 0;
 	}
@@ -121,8 +121,7 @@ public class CustomAssertValidTest extends TestCase
 			assertValidCheck.setSeverity(constraintAnnotation.severity());
 		}
 
-		public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context,
-				final Validator validator)
+		public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context, final Validator validator)
 		{
 			return true;
 		}
@@ -220,8 +219,7 @@ public class CustomAssertValidTest extends TestCase
 		assertEquals(2, validator.validate(registry).size());
 
 		registry.personsByCity.clear();
-		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1, invalidPerson1, invalidPerson2,
-				invalidPerson2}));
+		registry.personsByCity.put("city1", Arrays.asList(new Person[]{invalidPerson1, invalidPerson1, invalidPerson2, invalidPerson2}));
 		// still only two since invalidAddress1 and invalidAddress2 have already been validated
 		assertEquals(2, validator.validate(registry).size());
 
