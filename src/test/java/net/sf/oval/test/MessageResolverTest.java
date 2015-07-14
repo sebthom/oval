@@ -27,12 +27,12 @@ public class MessageResolverTest extends TestCase
 		 * test with built-in messages
 		 */
 		final Locale def = Locale.getDefault();
-		/*	Locale.setDefault(Locale.GERMAN);
-			assertEquals("{context} muss unwahr sein", Validator.getMessageResolver().getMessage("net.sf.oval.constraint.AssertFalse.violated"));
+		Locale.setDefault(Locale.GERMAN);
+		assertEquals("{context} muss unwahr sein", Validator.getMessageResolver().getMessage("net.sf.oval.constraint.AssertFalse.violated"));
 
-			Locale.setDefault(Locale.ENGLISH);
-			assertEquals("{context} is not false", Validator.getMessageResolver().getMessage("net.sf.oval.constraint.AssertFalse.violated"));
-		*/
+		Locale.setDefault(Locale.ENGLISH);
+		assertEquals("{context} is not false", Validator.getMessageResolver().getMessage("net.sf.oval.constraint.AssertFalse.violated"));
+
 		Locale.setDefault(Locale.GERMANY);
 		assertEquals("{context} muss unwahr sein", Validator.getMessageResolver().getMessage("net.sf.oval.constraint.AssertFalse.violated"));
 
