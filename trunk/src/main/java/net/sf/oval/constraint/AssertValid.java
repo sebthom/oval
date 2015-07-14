@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if the value passes a validation by Validator.validate().
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
@@ -62,12 +62,12 @@ public @interface AssertValid
 
 	/**
 	 * <p>In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-	 * 
+	 *
 	 * <p><b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES
-	 * 
+	 *
 	 * <p><b>Note:</b> This setting is ignored for object types other than array, map and collection.
 	 */
-	ConstraintTarget[] appliesTo() default {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+	ConstraintTarget[] appliesTo() default {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE};
 
 	/**
 	 * error code passed to the ConstraintViolation object
@@ -76,7 +76,7 @@ public @interface AssertValid
 
 	/**
 	 * message to be used for the ContraintsViolatedException
-	 * 
+	 *
 	 * @see ConstraintViolation
 	 */
 	String message() default "net.sf.oval.constraint.AssertValid.violated";

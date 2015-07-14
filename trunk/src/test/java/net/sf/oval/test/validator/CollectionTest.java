@@ -1,19 +1,22 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.test.validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintTarget;
@@ -23,6 +26,7 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MaxSize;
 import net.sf.oval.constraint.MinSize;
 import net.sf.oval.constraint.NotNull;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * @author Sebastian Thomschke
@@ -31,8 +35,18 @@ public class CollectionTest extends TestCase
 {
 	public static class Entity
 	{
+		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
+		public final List<List<String>> listWithLists = new ArrayList<List<String>>();
+
 		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
-		public final List<List<String>> items = new ArrayList<List<String>>();
+		public final List<List<String>> listWithLists2 = new ArrayList<List<String>>();
+
+		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
+		public final Map<List<String>, List<String>> mapWithLists = new HashMap<List<String>, List<String>>();
+
+		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES}, message = "NOT_NULL")
+		public final Map<List<String>, List<String>> mapWithLists2 = new HashMap<List<String>, List<String>>();
+
 	}
 
 	public static class Group
@@ -102,18 +116,109 @@ public class CollectionTest extends TestCase
 		assertEquals("NOT_NULL2", violations.get(0).getMessage());
 	}
 
-	public void testListOfLists()
+	public void testListWithLists()
 	{
 		final Validator validator = new Validator();
 
 		final Entity e = new Entity();
-		e.items.add(null);
+
+		/*
+		 * with ConstraintTarget.RECURSIVE
+		 */
+		e.listWithLists.add(null);
+		assertEquals(1, validator.validate(e).size());
+		e.listWithLists.clear();
+
+		e.listWithLists.add(new ArrayList<String>());
+		assertEquals(0, validator.validate(e).size());
+		e.listWithLists.get(0).add(null);
+		assertEquals(1, validator.validate(e).size());
+		e.listWithLists.clear();
+
+		/*
+		 * without ConstraintTarget.RECURSIVE
+		 */
+		e.listWithLists2.add(null);
 		assertEquals(1, validator.validate(e).size());
 
-		e.items.clear();
-		e.items.add(new ArrayList<String>());
+		e.listWithLists2.clear();
+		e.listWithLists2.add(new ArrayList<String>());
 		assertEquals(0, validator.validate(e).size());
-		e.items.get(0).add(null);
-		assertEquals(1, validator.validate(e).size());
+		e.listWithLists2.get(0).add(null);
+		assertEquals(0, validator.validate(e).size());
 	}
+
+	public void testMapWithLists()
+	{
+		final Validator validator = new Validator();
+
+		final Entity e = new Entity();
+
+		final List<String> emptyList = Collections.emptyList();
+		@SuppressWarnings("unchecked")
+		final List<String> listWithNull = Arrays.asList(new String[]{null});
+
+		/*
+		 * with ConstraintTarget.RECURSIVE
+		 */
+		e.mapWithLists.put(null, null);
+		assertEquals(2, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		e.mapWithLists.put(emptyList, null);
+		assertEquals(1, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		e.mapWithLists.put(null, emptyList);
+		assertEquals(1, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		e.mapWithLists.put(emptyList, emptyList);
+		assertEquals(0, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		e.mapWithLists.put(listWithNull, listWithNull);
+		assertEquals(2, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		e.mapWithLists.put(emptyList, listWithNull);
+		assertEquals(1, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		e.mapWithLists.put(listWithNull, emptyList);
+		assertEquals(1, validator.validate(e).size());
+		e.mapWithLists.clear();
+
+		/*
+		 * without ConstraintTarget.RECURSIVE
+		 */
+		e.mapWithLists2.put(null, null);
+		assertEquals(2, validator.validate(e).size());
+		e.mapWithLists2.clear();
+
+		e.mapWithLists2.put(emptyList, null);
+		assertEquals(1, validator.validate(e).size());
+		e.mapWithLists2.clear();
+
+		e.mapWithLists2.put(null, emptyList);
+		assertEquals(1, validator.validate(e).size());
+		e.mapWithLists2.clear();
+
+		e.mapWithLists2.put(emptyList, emptyList);
+		assertEquals(0, validator.validate(e).size());
+		e.mapWithLists2.clear();
+
+		e.mapWithLists2.put(listWithNull, listWithNull);
+		assertEquals(0, validator.validate(e).size());
+		e.mapWithLists2.clear();
+
+		e.mapWithLists2.put(emptyList, listWithNull);
+		assertEquals(0, validator.validate(e).size());
+		e.mapWithLists2.clear();
+
+		e.mapWithLists2.put(listWithNull, emptyList);
+		assertEquals(0, validator.validate(e).size());
+		e.mapWithLists2.clear();
+	}
+
 }

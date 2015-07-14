@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -136,6 +136,18 @@ public class Validator implements IValidator
 		}
 	}
 
+	private static final Log LOG = Log.getLog(Validator.class);
+
+	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
+
+	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
+
+	private static MessageResolver messageResolver;
+
+	private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
+
+	private static LocaleProvider localeProvider = new ThreadLocalLocaleProvider();
+
 	private static CollectionFactory _createDefaultCollectionFactory()
 	{
 		// if Javolution collection classes are found use them by default
@@ -253,18 +265,6 @@ public class Validator implements IValidator
 		Validator.messageValueFormatter = formatter;
 	}
 
-	private static final Log LOG = Log.getLog(Validator.class);
-
-	private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
-
-	private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
-
-	private static MessageResolver messageResolver;
-
-	private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
-
-	private static LocaleProvider localeProvider = new ThreadLocalLocaleProvider();
-
 	private final Map<Class< ? >, ClassChecks> checksByClass = new WeakHashMap<Class< ? >, ClassChecks>();
 
 	private final Set<Configurer> configurers = new LinkedHashSet<Configurer>(4);
@@ -337,7 +337,7 @@ public class Validator implements IValidator
 	}
 
 	private void _addChecks(final ClassChecks cc, final ClassConfiguration classCfg) throws InvalidConfigurationException,
-	ReflectionException
+			ReflectionException
 	{
 		if (TRUE.equals(classCfg.overwrite))
 		{
@@ -817,7 +817,7 @@ public class Validator implements IValidator
 	 * @throws InvalidConfigurationException if getter is not a getter method
 	 */
 	public void addChecks(final Method invariantMethod, final Check... checks) throws IllegalArgumentException,
-	InvalidConfigurationException
+			InvalidConfigurationException
 	{
 		Assert.argumentNotNull("invariantMethod", invariantMethod);
 		Assert.argumentNotEmpty("checks", checks);
@@ -838,7 +838,7 @@ public class Validator implements IValidator
 	 * @throws IllegalArgumentException if <code>constraintSet.id == null</code>
 	 */
 	public void addConstraintSet(final ConstraintSet constraintSet, final boolean overwrite) throws ConstraintSetAlreadyDefinedException,
-	IllegalArgumentException
+			IllegalArgumentException
 	{
 		Assert.argumentNotNull("constraintSet", constraintSet);
 		Assert.argumentNotEmpty("constraintSet.id", constraintSet.getId());
@@ -856,7 +856,7 @@ public class Validator implements IValidator
 	 * {@inheritDoc}
 	 */
 	public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException,
-	ConstraintsViolatedException
+			ConstraintsViolatedException
 	{
 		final List<ConstraintViolation> violations = validate(validatedObject);
 
@@ -926,52 +926,62 @@ public class Validator implements IValidator
 
 		final boolean isCollection = valueToValidate != null ? //
 				valueToValidate instanceof Collection< ? > : //
-					Collection.class.isAssignableFrom(compileTimeType);
+				Collection.class.isAssignableFrom(compileTimeType);
 		final boolean isMap = !isCollection && //
 				(valueToValidate != null ? //
 						valueToValidate instanceof Map< ? , ? > : //
-							Map.class.isAssignableFrom(compileTimeType));
+						Map.class.isAssignableFrom(compileTimeType));
 		final boolean isArray = !isCollection && !isMap && //
 				(valueToValidate != null ? //
 						valueToValidate.getClass().isArray() : //
-							compileTimeType.isArray());
+						compileTimeType.isArray());
 		final boolean isContainer = isCollection || isMap || isArray;
 
-		if (isContainer && valueToValidate != null) if (isCollection)
-		{
-			if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
+		if (isContainer && valueToValidate != null)
+			if (isCollection)
 			{
-				for (final Object item : (Collection< ? >) valueToValidate)
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES)
+						&& (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE)))
 				{
-					checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					for (final Object item : (Collection< ? >) valueToValidate)
+					{
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					}
 				}
 			}
-		}
-		else if (isMap)
-		{
-			if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS))
+			else if (isMap)
 			{
-				for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS)
+						&& (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE)))
 				{
-					checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					for (final Object item : ((Map< ? , ? >) valueToValidate).keySet())
+					{
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					}
+				}
+
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES)
+						&& (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE)))
+				{
+					for (final Object item : ((Map< ? , ? >) valueToValidate).values())
+					{
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					}
+				}
+			}
+			else
+			// array
+			{
+				if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES)
+						&& (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE)))
+				{
+					for (final Object item : ArrayUtils.asList(valueToValidate))
+					{
+						checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+					}
 				}
 			}
 
-			if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
-			{
-				for (final Object item : ((Map< ? , ? >) valueToValidate).values())
-				{
-					checkConstraint(violations, check, validatedObject, item, context, profiles, true);
-				}
-			}
-		}
-		else if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES))
-		{
-			for (final Object item : ArrayUtils.asList(valueToValidate))
-			{
-				checkConstraint(violations, check, validatedObject, item, context, profiles, true);
-			}
-		}
 		if (isContainerValue || !isContainer || isContainer && ArrayUtils.containsSame(targets, ConstraintTarget.CONTAINER))
 		{
 			_checkConstraint(violations, check, validatedObject, valueToValidate, context, profiles);
@@ -980,7 +990,7 @@ public class Validator implements IValidator
 
 	protected void checkConstraintAssertConstraintSet(final List<ConstraintViolation> violations, final AssertConstraintSetCheck check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context, final String[] profiles)
-					throws OValException
+			throws OValException
 	{
 		final ConstraintSet cs = getConstraintSet(check.getId());
 
@@ -1072,7 +1082,7 @@ public class Validator implements IValidator
 
 	protected void checkConstraintAssertValid(final List<ConstraintViolation> violations, final AssertValidCheck check,
 			final Object validatedObject, final Object valueToValidate, final OValContext context, final String[] profiles)
-					throws OValException
+			throws OValException
 	{
 		if (valueToValidate == null) return;
 
@@ -1207,7 +1217,7 @@ public class Validator implements IValidator
 	 * @throws IllegalArgumentException if <code>clazz == null</code>
 	 */
 	protected ClassChecks getClassChecks(final Class< ? > clazz) throws IllegalArgumentException, InvalidConfigurationException,
-	ReflectionException
+			ReflectionException
 	{
 		Assert.argumentNotNull("clazz", clazz);
 
@@ -1525,7 +1535,7 @@ public class Validator implements IValidator
 	 * {@inheritDoc}
 	 */
 	public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws IllegalArgumentException,
-	ValidationFailedException
+			ValidationFailedException
 	{
 		Assert.argumentNotNull("validatedObject", validatedObject);
 
@@ -1552,7 +1562,7 @@ public class Validator implements IValidator
 	 */
 	public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException
-			{
+	{
 		Assert.argumentNotNull("validatedObject", validatedObject);
 		Assert.argumentNotNull("validatedField", validatedField);
 
@@ -1587,7 +1597,7 @@ public class Validator implements IValidator
 			currentViolations.get().removeLast();
 			currentlyValidatedObjects.get().removeLast();
 		}
-			}
+	}
 
 	/**
 	 * validates the field and getter constrains of the given object.
@@ -1613,4 +1623,5 @@ public class Validator implements IValidator
 			_validateObjectInvariants(validatedObject, validatedObject.getClass(), violations, profiles);
 		}
 	}
+
 }
