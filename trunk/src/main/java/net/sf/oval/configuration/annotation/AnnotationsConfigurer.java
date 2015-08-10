@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,7 @@ import net.sf.oval.configuration.pojo.elements.MethodPreExecutionConfiguration;
 import net.sf.oval.configuration.pojo.elements.MethodReturnValueConfiguration;
 import net.sf.oval.configuration.pojo.elements.ObjectConfiguration;
 import net.sf.oval.configuration.pojo.elements.ParameterConfiguration;
+import net.sf.oval.constraint.ConstraintsCheck;
 import net.sf.oval.exception.OValException;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.guard.Guarded;
@@ -76,11 +78,17 @@ public class AnnotationsConfigurer implements Configurer
 			for (final Annotation annotation : paramAnnotations[i])
 				// check if the current annotation is a constraint annotation
 				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
 					paramChecks.add(initializeCheck(annotation));
+				}
 				else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+				{
 					initializeChecks(annotation, paramChecks);
+				}
 				else if (annotation.annotationType().isAnnotationPresent(Exclusion.class))
+				{
 					paramCheckExclusions.add(initializeExclusion(annotation));
+				}
 
 			final ParameterConfiguration pc = new ParameterConfiguration();
 			paramCfg.add(pc);
@@ -118,7 +126,10 @@ public class AnnotationsConfigurer implements Configurer
 
 			if (paramCfg.size() > 0 || postValidateThis)
 			{
-				if (classCfg.constructorConfigurations == null) classCfg.constructorConfigurations = cf.createSet(2);
+				if (classCfg.constructorConfigurations == null)
+				{
+					classCfg.constructorConfigurations = cf.createSet(2);
+				}
 
 				final ConstructorConfiguration cc = new ConstructorConfiguration();
 				cc.parameterConfigurations = paramCfg;
@@ -140,12 +151,20 @@ public class AnnotationsConfigurer implements Configurer
 			for (final Annotation annotation : field.getAnnotations())
 				// check if the current annotation is a constraint annotation
 				if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
 					checks.add(initializeCheck(annotation));
-				else if (annotation.annotationType().isAnnotationPresent(Constraints.class)) initializeChecks(annotation, checks);
+				}
+				else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+				{
+					initializeChecks(annotation, checks);
+				}
 
 			if (checks.size() > 0)
 			{
-				if (classCfg.fieldConfigurations == null) classCfg.fieldConfigurations = cf.createSet(2);
+				if (classCfg.fieldConfigurations == null)
+				{
+					classCfg.fieldConfigurations = cf.createSet(2);
+				}
 
 				final FieldConfiguration fc = new FieldConfiguration();
 				fc.name = field.getName();
@@ -185,7 +204,9 @@ public class AnnotationsConfigurer implements Configurer
 					preChecks.add(pc);
 				}
 				else if (annotation instanceof PreValidateThis)
+				{
 					preValidateThis = true;
+				}
 				else if (annotation instanceof Post)
 				{
 					final PostCheck pc = new PostCheck();
@@ -193,11 +214,17 @@ public class AnnotationsConfigurer implements Configurer
 					postChecks.add(pc);
 				}
 				else if (annotation instanceof PostValidateThis)
+				{
 					postValidateThis = true;
+				}
 				else if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+				{
 					returnValueChecks.add(initializeCheck(annotation));
+				}
 				else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+				{
 					initializeChecks(annotation, returnValueChecks);
+				}
 
 			/*
 			 * determine parameter checks
@@ -210,7 +237,10 @@ public class AnnotationsConfigurer implements Configurer
 			if (paramCfg.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0 || postChecks.size() > 0 || preValidateThis
 					|| postValidateThis)
 			{
-				if (classCfg.methodConfigurations == null) classCfg.methodConfigurations = cf.createSet(2);
+				if (classCfg.methodConfigurations == null)
+				{
+					classCfg.methodConfigurations = cf.createSet(2);
+				}
 
 				final MethodConfiguration mc = new MethodConfiguration();
 				mc.name = method.getName();
@@ -249,8 +279,13 @@ public class AnnotationsConfigurer implements Configurer
 		for (final Annotation annotation : ReflectionUtils.getAnnotations(classCfg.type, Boolean.TRUE.equals(classCfg.inspectInterfaces)))
 			// check if the current annotation is a constraint annotation
 			if (annotation.annotationType().isAnnotationPresent(Constraint.class))
+			{
 				checks.add(initializeCheck(annotation));
-			else if (annotation.annotationType().isAnnotationPresent(Constraints.class)) initializeChecks(annotation, checks);
+			}
+			else if (annotation.annotationType().isAnnotationPresent(Constraints.class))
+			{
+				initializeChecks(annotation, checks);
+			}
 
 		if (checks.size() > 0)
 		{
@@ -259,9 +294,6 @@ public class AnnotationsConfigurer implements Configurer
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ClassConfiguration getClassConfiguration(final Class< ? > clazz)
 	{
 		final ClassConfiguration classCfg = new ClassConfiguration();
@@ -294,9 +326,6 @@ public class AnnotationsConfigurer implements Configurer
 		return classCfg;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId)
 	{
 		return null;
@@ -319,10 +348,15 @@ public class AnnotationsConfigurer implements Configurer
 		check.configure(constraintAnnotation);
 
 		for (final CheckInitializationListener listener : listeners)
+		{
 			listener.onCheckInitialized(check);
+		}
 		return check;
 	}
 
+	/**
+	 * handles list of annotations like @Assert.List(...)
+	 */
 	protected <ConstraintsAnnotation extends Annotation> void initializeChecks(final ConstraintsAnnotation constraintsAnnotation,
 			final List<Check> checks) throws ReflectionException
 	{
@@ -330,8 +364,15 @@ public class AnnotationsConfigurer implements Configurer
 		{
 			final Method getValue = constraintsAnnotation.annotationType().getDeclaredMethod("value", (Class< ? >[]) null);
 			final Object[] constraintAnnotations = (Object[]) getValue.invoke(constraintsAnnotation, (Object[]) null);
+
+			final ConstraintsCheck constraintsCheck = new ConstraintsCheck();
+			constraintsCheck.configure(constraintsAnnotation);
+			constraintsCheck.checks = new ArrayList<Check>(constraintAnnotations.length);
 			for (final Object ca : constraintAnnotations)
-				checks.add(initializeCheck((Annotation) ca));
+			{
+				constraintsCheck.checks.add(initializeCheck((Annotation) ca));
+			}
+			checks.add(constraintsCheck);
 		}
 		catch (final ReflectionException ex)
 		{

@@ -5,7 +5,11 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.85" date="2015-07-??">
+		<release version="1.85" date="2015-08-??">
+			<action type="fix">
+				<fixes issue="[bugs:#90]" />
+				Activation rules are not considered for whole contraints' list (thanks to Petras)
+			</action>
 			<action type="fix">
 				<fixes issue="[bugs:#85]" />
 				@Email validation treats + as invalid character (thanks to David van Geest)
@@ -23,7 +27,9 @@
 			<action type="fix">DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)</action>
 			<action type="fix">DigitsCheck's message variables are emtpy (thanks to Dirk Buchhorn)</action>
 			<action type="fix">[bugs:#86] Trove is wrongly detected (thanks to Geert Bevin)</action>
-			<action type="update">upgraded to AspectJ 1.8.6, commons-logging 1.2, Groovy 2.2.2, OGNL 3.0.11, Paranamer 2.7, Rhino 1.7R5, Spring 3.2.14.RELEASE, SLF4J 1.7.12</action>
+			<action type="update">upgraded to AspectJ 1.8.6, commons-logging 1.2, Groovy 2.2.2, OGNL 3.0.11, Paranamer 2.7, Rhino 1.7R5, Spring
+				3.2.14.RELEASE, SLF4J 1.7.12
+			</action>
 		</release>
 
 		<release version="1.84" date="2013-11-22">
