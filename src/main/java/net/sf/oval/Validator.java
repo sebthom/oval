@@ -43,6 +43,7 @@ import net.sf.oval.configuration.xml.XMLConfigurer;
 import net.sf.oval.constraint.AssertConstraintSetCheck;
 import net.sf.oval.constraint.AssertFieldConstraintsCheck;
 import net.sf.oval.constraint.AssertValidCheck;
+import net.sf.oval.constraint.ConstraintsCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -307,8 +308,6 @@ public class Validator implements IValidator
 
 	/**
 	 * Constructs a new validator instance and configures it using the given configurers
-	 *
-	 * @param configurers
 	 */
 	public Validator(final Collection<Configurer> configurers)
 	{
@@ -321,8 +320,6 @@ public class Validator implements IValidator
 
 	/**
 	 * Constructs a new validator instance and configures it using the given configurers
-	 *
-	 * @param configurers
 	 */
 	public Validator(final Configurer... configurers)
 	{
@@ -632,6 +629,21 @@ public class Validator implements IValidator
 		}
 
 		/*
+		 * special handling of the constraint lists
+		 */
+		if (check instanceof ConstraintsCheck)
+		{
+			if (check.isActive(validatedObject, valueToValidate, this))
+			{
+				for (final Check innerCheck : ((ConstraintsCheck) check).checks)
+				{
+					_checkConstraint(violations, innerCheck, validatedObject, valueToValidate, context, profiles);
+				}
+			}
+			return;
+		}
+
+		/*
 		 * special handling of the FieldConstraints constraint
 		 */
 		if (check instanceof AssertConstraintSetCheck)
@@ -829,7 +841,6 @@ public class Validator implements IValidator
 	 * Registers a new constraint set.
 	 *
 	 * @param constraintSet cannot be null
-	 * @param overwrite
 	 * @throws ConstraintSetAlreadyDefinedException if <code>overwrite == false</code> and
 	 * 												a constraint set with the given id exists already
 	 * @throws IllegalArgumentException if <code>constraintSet == null</code>
@@ -852,9 +863,6 @@ public class Validator implements IValidator
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException,
 			ConstraintsViolatedException
 	{
@@ -863,9 +871,6 @@ public class Validator implements IValidator
 		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void assertValidFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
 			throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException
 	{
@@ -1341,7 +1346,6 @@ public class Validator implements IValidator
 	/**
 	 * Determines if the given object is currently validated in the current thread
 	 *
-	 * @param object
 	 * @return Returns true if the given object is currently validated in the current thread.
 	 */
 	protected boolean isCurrentlyValidated(final Object object)
@@ -1353,7 +1357,6 @@ public class Validator implements IValidator
 	/**
 	 * Determines if the given profile is enabled.
 	 *
-	 * @param profileId
 	 * @return Returns true if the given profile is enabled.
 	 */
 	public boolean isProfileEnabled(final String profileId)
@@ -1387,8 +1390,6 @@ public class Validator implements IValidator
 	/**
 	 * Removes object-level constraint checks
 	 *
-	 * @param clazz
-	 * @param checks
 	 * @throws IllegalArgumentException if <code>clazz == null</code> or <code>checks == null</code> or checks is empty
 	 */
 	public void removeChecks(final Class< ? > clazz, final Check... checks) throws IllegalArgumentException
@@ -1402,8 +1403,6 @@ public class Validator implements IValidator
 	/**
 	 * Removes constraint checks for the given field
 	 *
-	 * @param field
-	 * @param checks
 	 * @throws IllegalArgumentException if <code>field == null</code> or <code>checks == null</code> or checks is empty
 	 */
 	public void removeChecks(final Field field, final Check... checks) throws IllegalArgumentException
@@ -1418,7 +1417,6 @@ public class Validator implements IValidator
 	 * Removes constraint checks for the given getter's return value
 	 *
 	 * @param getter a JavaBean Getter style method
-	 * @param checks
 	 * @throws IllegalArgumentException if <code>getter == null</code> or <code>checks == null</code>
 	 */
 	public void removeChecks(final Method getter, final Check... checks) throws IllegalArgumentException
@@ -1506,9 +1504,6 @@ public class Validator implements IValidator
 		return ex;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException
 	{
 		Assert.argumentNotNull("validatedObject", validatedObject);
@@ -1531,9 +1526,6 @@ public class Validator implements IValidator
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws IllegalArgumentException,
 			ValidationFailedException
 	{
@@ -1557,9 +1549,6 @@ public class Validator implements IValidator
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException
 	{
@@ -1605,7 +1594,6 @@ public class Validator implements IValidator
 	 * are validated.
 	 *
 	 * @param validatedObject the object to validate, cannot be null
-	 * @throws ValidationFailedException
 	 * @throws IllegalArgumentException if <code>validatedObject == null</code>
 	 */
 	protected void validateInvariants(final Object validatedObject, final List<ConstraintViolation> violations, final String[] profiles)
