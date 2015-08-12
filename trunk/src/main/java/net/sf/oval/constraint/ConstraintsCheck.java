@@ -35,8 +35,8 @@ public class ConstraintsCheck extends AbstractAnnotationCheck<Annotation>
 	@Override
 	protected ConstraintTarget[] getAppliesToDefault()
 	{
-		return new ConstraintTarget[]{ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES,
-				ConstraintTarget.RECURSIVE};
+		return new ConstraintTarget[]{ConstraintTarget.CONTAINER /*, ConstraintTarget.KEYS, ConstraintTarget.VALUES,
+																	ConstraintTarget.RECURSIVE*/};
 	}
 
 	/**
