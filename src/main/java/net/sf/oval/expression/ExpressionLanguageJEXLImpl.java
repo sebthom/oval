@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -25,7 +25,7 @@ import org.apache.commons.jexl2.MapContext;
 /**
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
+public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage
 {
 	private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
 
@@ -33,9 +33,6 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 
 	private final ObjectCache<String, Expression> expressionCache = new ObjectCache<String, Expression>();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("unchecked")
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
@@ -54,15 +51,5 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage
 		{
 			throw new ExpressionEvaluationException("Evaluating JEXL expression failed: " + expression, ex);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
-	{
-		final Object result = evaluate(expression, values);
-		if (!(result instanceof Boolean)) throw new ExpressionEvaluationException("The script must return a boolean value.");
-		return (Boolean) result;
 	}
 }

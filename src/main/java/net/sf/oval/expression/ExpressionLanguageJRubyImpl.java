@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -29,13 +29,10 @@ import org.jruby.runtime.builtin.IRubyObject;
  * @author Sebastian Thomschke
  *
  */
-public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
+public class ExpressionLanguageJRubyImpl extends AbstractExpressionLanguage
 {
 	private static final Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		LOG.debug("Evaluating JRuby expression: {1}", expression);
@@ -61,15 +58,5 @@ public class ExpressionLanguageJRubyImpl implements ExpressionLanguage
 		{
 			throw new ExpressionEvaluationException("Evaluating JRuby expression failed: " + expression, ex);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
-	{
-		final Object result = evaluate(expression, values);
-		if (!(result instanceof Boolean)) throw new ExpressionEvaluationException("The script must return a boolean value.");
-		return (Boolean) result;
 	}
 }

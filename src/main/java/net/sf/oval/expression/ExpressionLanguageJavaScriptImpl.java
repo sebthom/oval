@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -27,9 +27,8 @@ import org.mozilla.javascript.Scriptable;
 
 /**
  * @author Sebastian Thomschke
- *
  */
-public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
+public class ExpressionLanguageJavaScriptImpl extends AbstractExpressionLanguage
 {
 	private static final Log LOG = Log.getLog(ExpressionLanguageJavaScriptImpl.class);
 
@@ -37,9 +36,6 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 
 	private final ObjectCache<String, Script> scriptCache = new ObjectCache<String, Script>();
 
-	/**
-	 * Default constructor.
-	 */
 	public ExpressionLanguageJavaScriptImpl()
 	{
 		final Context ctx = ContextFactory.getGlobal().enterContext();
@@ -53,9 +49,6 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		LOG.debug("Evaluating JavaScript expression: {1}", expression);
@@ -73,7 +66,9 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 			scope.setPrototype(parentScope);
 			scope.setParentScope(null);
 			for (final Entry<String, ? > entry : values.entrySet())
+			{
 				scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
+			}
 			return script.exec(ctx, scope);
 		}
 		catch (final EvaluatorException ex)
@@ -84,17 +79,5 @@ public class ExpressionLanguageJavaScriptImpl implements ExpressionLanguage
 		{
 			Context.exit();
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values)
-			throws ExpressionEvaluationException
-	{
-		final Object result = evaluate(expression, values);
-		if (!(result instanceof Boolean))
-			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		return (Boolean) result;
 	}
 }
