@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -34,7 +34,7 @@ import net.sf.oval.internal.util.ObjectCache;
  *
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageScriptEngineImpl implements ExpressionLanguage
+public class ExpressionLanguageScriptEngineImpl extends AbstractExpressionLanguage
 {
 	private static final Log LOG = Log.getLog(ExpressionLanguageScriptEngineImpl.class);
 
@@ -44,7 +44,9 @@ public class ExpressionLanguageScriptEngineImpl implements ExpressionLanguage
 	{
 		final List<Object> languages = Validator.getCollectionFactory().createList();
 		for (final ScriptEngineFactory ef : FACTORY.getEngineFactories())
+		{
 			languages.add(ef.getNames());
+		}
 		LOG.info("Available ScriptEngine language names: {1}", languages);
 	}
 
@@ -73,9 +75,6 @@ public class ExpressionLanguageScriptEngineImpl implements ExpressionLanguage
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		LOG.debug("Evaluating JavaScript expression: {1}", expression);
@@ -83,7 +82,9 @@ public class ExpressionLanguageScriptEngineImpl implements ExpressionLanguage
 		{
 			final Bindings scope = engine.createBindings();
 			for (final Entry<String, ? > entry : values.entrySet())
+			{
 				scope.put(entry.getKey(), entry.getValue());
+			}
 
 			if (compilable != null)
 			{
@@ -101,15 +102,5 @@ public class ExpressionLanguageScriptEngineImpl implements ExpressionLanguage
 		{
 			throw new ExpressionEvaluationException("Evaluating JavaScript expression failed: " + expression, ex);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
-	{
-		final Object result = evaluate(expression, values);
-		if (!(result instanceof Boolean)) throw new ExpressionEvaluationException("The script must return a boolean value.");
-		return (Boolean) result;
 	}
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import net.sf.oval.internal.util.ThreadLocalObjectCache;
 /**
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
+public class ExpressionLanguageGroovyImpl extends AbstractExpressionLanguage
 {
 	private static final Log LOG = Log.getLog(ExpressionLanguageGroovyImpl.class);
 
@@ -35,9 +35,6 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 
 	private final ThreadLocalObjectCache<String, Script> threadScriptCache = new ThreadLocalObjectCache<String, Script>();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
 	{
 		LOG.debug("Evaluating Groovy expression: {1}", expression);
@@ -53,7 +50,9 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 
 			final Binding binding = new Binding();
 			for (final Entry<String, ? > entry : values.entrySet())
+			{
 				binding.setVariable(entry.getKey(), entry.getValue());
+			}
 			script.setBinding(binding);
 			return script.run();
 		}
@@ -61,17 +60,5 @@ public class ExpressionLanguageGroovyImpl implements ExpressionLanguage
 		{
 			throw new ExpressionEvaluationException("Evaluating script with Groovy failed.", ex);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean evaluateAsBoolean(final String expression, final Map<String, ? > values)
-			throws ExpressionEvaluationException
-	{
-		final Object result = evaluate(expression, values);
-		if (!(result instanceof Boolean))
-			throw new ExpressionEvaluationException("The script must return a boolean value.");
-		return (Boolean) result;
 	}
 }
