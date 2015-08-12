@@ -115,17 +115,11 @@ public class Validator implements IValidator
 			return delegate;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		public String[] getParameterNames(final Constructor< ? > constructor) throws ReflectionException
 		{
 			return delegate.getParameterNames(constructor);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		public String[] getParameterNames(final Method method) throws ReflectionException
 		{
 			return delegate.getParameterNames(method);
@@ -298,7 +292,7 @@ public class Validator implements IValidator
 			new ParameterNameResolverEnumerationImpl());
 
 	/**
-	 * Constructs a new validator instance and uses a new instance of AnnotationsConfigurer
+	 * Constructs a new instance and uses a new instance of AnnotationsConfigurer
 	 */
 	public Validator()
 	{
@@ -307,7 +301,7 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * Constructs a new validator instance and configures it using the given configurers
+	 * Constructs a new instance and configures it using the given configurers
 	 */
 	public Validator(final Collection<Configurer> configurers)
 	{
@@ -319,7 +313,7 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * Constructs a new validator instance and configures it using the given configurers
+	 * Constructs a new instance and configures it using the given configurers
 	 */
 	public Validator(final Configurer... configurers)
 	{
@@ -633,12 +627,9 @@ public class Validator implements IValidator
 		 */
 		if (check instanceof ConstraintsCheck)
 		{
-			if (check.isActive(validatedObject, valueToValidate, this))
+			for (final Check innerCheck : ((ConstraintsCheck) check).checks)
 			{
-				for (final Check innerCheck : ((ConstraintsCheck) check).checks)
-				{
-					_checkConstraint(violations, innerCheck, validatedObject, valueToValidate, context, profiles);
-				}
+				checkConstraint(violations, innerCheck, validatedObject, valueToValidate, context, profiles, false);
 			}
 			return;
 		}
@@ -674,7 +665,7 @@ public class Validator implements IValidator
 	}
 
 	/**
-	 * validate validatedObject based on the constraints of the given class
+	 * Validate validatedObject based on the constraints of the given class.
 	 */
 	private void _validateObjectInvariants(final Object validatedObject, final Class< ? > clazz,
 			final List<ConstraintViolation> violations, final String[] profiles) throws ValidationFailedException
@@ -1119,6 +1110,7 @@ public class Validator implements IValidator
 
 	/**
 	 * Disables a constraints profile globally.
+	 *
 	 * @param profile the id of the profile
 	 */
 	public void disableProfile(final String profile)
@@ -1149,6 +1141,7 @@ public class Validator implements IValidator
 
 	/**
 	 * Enables a constraints profile globally.
+	 *
 	 * @param profile the id of the profile
 	 */
 	public void enableProfile(final String profile)
@@ -1429,6 +1422,7 @@ public class Validator implements IValidator
 
 	/**
 	 * Removes the constraint set with the given id
+	 *
 	 * @param id the id of the constraint set to remove, cannot be null
 	 * @return the removed constraint set
 	 * @throws IllegalArgumentException if <code>id == null</code>
@@ -1460,6 +1454,7 @@ public class Validator implements IValidator
 	/**
 	 * Reports an additional constraint violation for the current validation cycle.
 	 * This method is intended to be executed by check implementations only.
+	 *
 	 * @param constraintViolation the constraint violation
 	 */
 	public void reportConstraintViolation(final ConstraintViolation constraintViolation)
