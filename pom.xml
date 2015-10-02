@@ -70,9 +70,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 	</contributors>
 
 	<scm>
-		<url>https://svn.code.sf.net/p/oval/code/trunk/</url>
-		<connection>scm:javasvn:https://svn.code.sf.net/p/oval/code/trunk/</connection>
-		<developerConnection>scm:javasvn:https://svn.code.sf.net/p/oval/code/trunk/</developerConnection>
+		<url>https://github.com/sebthom/oval/trunk</url>
+		<connection>scm:javasvn:https://github.com/sebthom/oval/trunk</connection>
+		<developerConnection>scm:javasvn:https://github.com/sebthom/oval/trunk</developerConnection>
 	</scm>
 
 	<ciManagement>
