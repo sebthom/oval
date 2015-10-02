@@ -83,19 +83,18 @@ Besides field/property validation OVal implements Programming by Contract featur
 	<mailingLists>
 		<mailingList>
 			<name>Help</name>
-			<archive>http://sourceforge.net/forum/forum.php?forum_id=488110</archive>
+			<archive>https://sourceforge.net/p/oval/discussion/488110/</archive>
 		</mailingList>
 		<mailingList>
 			<name>Open Discussion</name>
-			<archive>http://sourceforge.net/forum/forum.php?forum_id=488109</archive>
+			<archive>https://sourceforge.net/p/oval/discussion/488109/</archive>
 		</mailingList>
 	</mailingLists>
 
 	<repositories>
 		<repository>
 			<id>javax.script-backport</id>
-			<!-- <url>http://dist.codehaus.org/mule/dependencies/maven2/</url> -->
-			<!-- <url>http://repo1.maven.org/maven/mule/dependencies/maven2/</url> -->
+			<!-- <url>https://svn.apache.org/repos/asf/servicemix/m2-repo/</url> -->
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven/mule/dependencies/maven2/</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -108,15 +107,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 		</repository>
 	</repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>Codehaus repository</id>
-			<url>http://repository.codehaus.org/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<distributionManagement>
-		<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963</downloadUrl>
+		<downloadUrl>https://sourceforge.net/projects/oval/files/</downloadUrl>
 		<repository>
 			<id>oval-release</id>
 			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/release</url>
@@ -137,7 +129,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 
 	<issueManagement>
 		<system>sourceforge</system>
-		<url>http://sourceforge.net/tracker/?group_id=145963</url>
+		<url>https://sourceforge.net/p/oval/bugs/</url>
 	</issueManagement>
 
 	<properties>
@@ -216,7 +208,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
-			<version>3.0.11</version>
+			<version>3.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -241,24 +233,28 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<!-- cannot upgrade to 6.0, which requires Java6 or higher -->
 			<groupId>javolution</groupId>
 			<artifactId>javolution</artifactId>
 			<version>5.5.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<!-- cannot upgrade to 6.0, which requires Java6 or higher -->
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<!-- cannot upgrade to 4.0, which requires Java6 or higher -->
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>3.2.14.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<!-- cannot upgrade to 4.0, which requires Java6 or higher -->
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>3.2.14.RELEASE</version>
@@ -273,7 +269,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>2.2.2</version>
+			<version>3.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -292,14 +288,14 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel2</artifactId>
-			<!-- cannot upgrade to 2.1.x-2.2.1 because of NPE in MVEL -->
+			<!-- cannot upgrade to 2.1.x-2.2.7.Final because of NPE in MVEL -->
 			<version>2.0.19</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
-			<version>2.7</version>
+			<version>2.8</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -405,7 +401,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>2.7</version>
 				<configuration>
 					<minSeverity>info</minSeverity>
 				</configuration>
@@ -417,7 +413,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				********************************************************************* -->
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.4</version>
+				<version>1.4.1</version>
 				<executions>
 					<execution>
 						<id>enforce-no-snapshots</id>
@@ -429,11 +425,23 @@ Besides field/property validation OVal implements Programming by Contract featur
 								<requireReleaseDeps>
 									<message>No Snapshots Allowed!</message>
 								</requireReleaseDeps>
+								<banCircularDependencies />
+								<enforceBytecodeVersion>
+									<maxJdkVersion>${java.version}</maxJdkVersion>
+								</enforceBytecodeVersion>
 							</rules>
 							<fail>true</fail>
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>extra-enforcer-rules</artifactId>
+						<version>1.0-beta-3</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 
@@ -845,7 +853,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- sftp support -->
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.6</version>
+				<version>2.10</version>
 			</extension>
 		</extensions>
 		<pluginManagement>
@@ -953,9 +961,14 @@ Besides field/property validation OVal implements Programming by Contract featur
 					The basic purpose of "Maven Dashboard Report Plugin" is to centralize and share all
 					quality informations generated by other Maven report plugins
 				-->
-				<groupId>org.codehaus.mojo</groupId>
+				<!--
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>dashboard-maven-plugin</artifactId>
+					<version>1.0.0-beta-1</version>
+				-->
+				<groupId>com.thesett</groupId>
 				<artifactId>dashboard-maven-plugin</artifactId>
-				<version>1.0.0-beta-1</version>
+				<version>0.8.21</version>
 			</plugin>
 
 			<plugin>
@@ -1017,7 +1030,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- JUnit Code Coverage report -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.6</version>
+				<version>2.7</version>
 				<configuration>
 					<instrumentation>
 						<excludes>
@@ -1079,7 +1092,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>2.7</version>
 			</plugin>
 
 			<plugin>
