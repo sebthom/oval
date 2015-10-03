@@ -91,22 +91,6 @@ Besides field/property validation OVal implements Programming by Contract featur
 		</mailingList>
 	</mailingLists>
 
-	<repositories>
-		<repository>
-			<id>javax.script-backport</id>
-			<!-- <url>https://svn.apache.org/repos/asf/servicemix/m2-repo/</url> -->
-			<url>http://mirrors.ibiblio.org/pub/mirrors/maven/mule/dependencies/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>net.sf.oval-repo</id>
-			<name>OVal Repository for Maven</name>
-			<url>http://oval.sourceforge.net/mvn-repo/release</url>
-		</repository>
-	</repositories>
-
 	<distributionManagement>
 		<downloadUrl>https://sourceforge.net/projects/oval/files/</downloadUrl>
 		<repository>
@@ -317,29 +301,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<!-- required for JSR223 Script Engine backport -->
-			<groupId>javax.script</groupId>
-			<artifactId>script-api</artifactId>
+			<groupId>com.sun.phobos</groupId>
+			<artifactId>jsr223-api</artifactId>
 			<version>1.0</version>
-			<classifier>jdk14</classifier>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<!-- required for JSR223 Script Engine backport -->
-			<groupId>javax.script</groupId>
-			<artifactId>js-engine</artifactId>
-			<version>1.1</version>
-			<classifier>jdk14</classifier>
-			<scope>test</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<!-- required for JSR223 Script Engine backport -->
-			<groupId>net.sf.retrotranslator</groupId>
-			<artifactId>retrotranslator-runtime</artifactId>
-			<version>1.2.9</version>
-			<scope>test</scope>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
@@ -416,7 +380,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<version>1.4.1</version>
 				<executions>
 					<execution>
-						<id>enforce-no-snapshots</id>
+						<id>basic-rules</id>
 						<goals>
 							<goal>enforce</goal>
 						</goals>

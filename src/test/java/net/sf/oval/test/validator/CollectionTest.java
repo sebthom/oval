@@ -13,6 +13,7 @@
 package net.sf.oval.test.validator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MaxSize;
 import net.sf.oval.constraint.MinSize;
 import net.sf.oval.constraint.NotNull;
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * @author Sebastian Thomschke
@@ -41,7 +41,8 @@ public class CollectionTest extends TestCase
 		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
 		public final List<List<String>> listWithLists2 = new ArrayList<List<String>>();
 
-		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
+		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES,
+				ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
 		public final Map<List<String>, List<String>> mapWithLists = new HashMap<List<String>, List<String>>();
 
 		@NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES}, message = "NOT_NULL")
@@ -155,7 +156,6 @@ public class CollectionTest extends TestCase
 		final Entity e = new Entity();
 
 		final List<String> emptyList = Collections.emptyList();
-		@SuppressWarnings("unchecked")
 		final List<String> listWithNull = Arrays.asList(new String[]{null});
 
 		/*
