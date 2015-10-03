@@ -6,34 +6,31 @@
 	</properties>
 	<body>
 		<release version="1.85" date="2015-10-03">
-			<action type="fix">
-				<fixes issue="[bugs:#90]" />
-				Activation rules are not considered for whole contraints' list (thanks to Petras)
+			<action type="fix" issue="90">
+				Activation rules are not considered for whole contraints list (thanks to Petras)
 			</action>
-			<action type="fix">
-				<fixes issue="[bugs:#85]" />
+			<action type="fix" issue="85">
 				@Email validation treats + as invalid character (thanks to David van Geest)
 			</action>
-			<action type="fix">
+			<action type="fix" issue="89">
 				ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists
-				<fixes issue="[bugs:#89]" />
 				Limiting the nesting level for ConstraintTarget.VALUES (thanks to Petras)
 			</action>
-			<action type="fix">
-				[bugs:#88] ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to
+			<action type="fix" issue="88">
+				ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to
 				Petras)
 			</action>
 			<action type="fix">concurrency fix in SerializableMethod/SerializableField/SerializableContructor (thanks to Andrew Malota)</action>
 			<action type="fix">DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)</action>
 			<action type="fix">DigitsCheck's message variables are emtpy (thanks to Dirk Buchhorn)</action>
-			<action type="fix">[bugs:#86] Trove is wrongly detected (thanks to Geert Bevin)</action>
+			<action type="fix" issue="86">Trove is wrongly detected (thanks to Geert Bevin)</action>
 			<action type="update">upgraded to AspectJ 1.8.6, commons-logging 1.2, Groovy 2.2.2, OGNL 3.1, Paranamer 2.8, Rhino 1.7R5, Spring
 				3.2.14.RELEASE, SLF4J 1.7.12
 			</action>
 		</release>
 
 		<release version="1.84" date="2013-11-22">
-			<action type="fix" issue="[oval:bugs] #84">JPAAnnotationsConfigurer shouldn't add Checks twice</action>
+			<action type="fix" issue="84">JPAAnnotationsConfigurer shouldn't add Checks twice</action>
 			<action type="add">LocaleProvider, ThreadLocalLocaleProvider, Validator.getLocaleProvider, Validator.setLocaleProvider</action>
 			<action type="update">upgraded to Spring 3.2.5.RELEASE, Paranamer 2.6, xstream 1.4.5, OGNL 3.0.8</action>
 		</release>
@@ -49,19 +46,19 @@
 		</release>
 
 		<release version="1.82" date="2013-01-26">
-			<action type="fix" issue="oval-Bugs-3491671">currentlyCheckingPreConditions in Guard.validateMethodPost</action>
+			<action type="fix" issue="78">currentlyCheckingPreConditions in Guard.validateMethodPost</action>
 			<action type="update">made deprecated XML attribute "requireValidElements" of assertValid optional in XSD</action>
-			<action type="fix" issue="oval-Bugs-3520684">Wrong generic types used in Check-implementations</action>
+			<action type="fix" issue="79">Wrong generic types used in Check-implementations</action>
 			<action type="update">upgraded to AspectJ 1.7.1, JUnit 4.11, Log4J 1.2.17, SLF4J 1.7.2, XStream 1.4.4, Groovy 2.1.0, BeanShell 2.0b5, OGNL
 				3.0.6, JRuby 1.6.5, Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3
 			</action>
 			<action type="fix">fixed message variable cache invalidation on MatchPatternCheck NotMatchPatternCheck</action>
-			<action type="add" issue="oval-Bugs-3386846">JSR223 Scripting support</action>
+			<action type="add" issue="75">JSR223 Scripting support</action>
 		</release>
 
 		<release version="1.81" date="2012-02-22">
-			<action type="fix" issue="oval-Bugs-3488791">xstream alias typo "postExcecution" in XMLConfigurer.java</action>
-			<action type="fix" issue="oval-Bugs-3488245">UnsupportedOperationException when using inspectInterfaces</action>
+			<action type="fix" issue="77">xstream alias typo "postExcecution" in XMLConfigurer.java</action>
+			<action type="fix" issue="76">UnsupportedOperationException when using inspectInterfaces</action>
 			<action type="fix">fixed default message attribute value on JSR303 annotations being misinterpreted</action>
 			<action type="update">upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6,
 				commons-jexl 2.1.1, Paranamer 2.4.1
