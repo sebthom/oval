@@ -2,39 +2,6 @@
 [+] Feature added.
 [*] Change.
 
-2012-02-22 v1.81
-================
-- fixed [ oval-Bugs-3488791 ] xstream alias typo "postExcecution" in XMLConfigurer.java
-- fixed [ oval-Bugs-3488245 ] UnsupportedOperationException when using inspectInterfaces
-- fixed default message attribute value on JSR303 annotations being misinterpreted
-+ extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
-* upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6, commons-jexl 2.1.1, Paranamer 2.4.1
-
-2011-10-03 v1.80
-================
-* upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.4, Groovy 1.8.2, XStream 1.4.1, Rhino 1.7R3, Spring 3.0.6.RELEASE, Javolution 5.5.1
-+ added caching of compiled OGNL expressions
-+ added caching of compiled MVEL expressions
-- fixed message attribute on JSR303 annotations being ignored
-* removed deprecated AssertValid.requireValidElements attribute
-* removed deprecated class CheckWithMultiple
-+ added support for target attribute on constraint annotations
-
-2011-04-05 v1.70
-================
-* upgraded to AspectJ 1.6.10, Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, Commons JEXL 2.0.1, OGNL 3.0.1, Groovy 1.7.6
-- fixed [ oval-Bugs-3156080 ] OVal fails to load at bean creation time
-- fixed [ oval-Bugs-3173470 ] Bug in DigitsCheck
-- fixed [ oval-Bugs-3175737 ] Bug while retrieving profile names from JSR group
-+ added convenience constructors to XMLConfigurer for easier Spring-based configuration
-+ added support for Spring dependencies being injected into SimpleCheck instances
-- fixed [ oval-Bugs-3220331 ] Missing sources JAR for OVal in Maven repository
-+ small XSD improvements
-
-2010-11-13 v1.61
-================
-- fixed [ oval-Bugs-3087277 ] @NotBlank ignores non-breaking space
-- fixed @EMail not validating addresses correct if allowPersonalName=true
 
 2010-10-13 v1.60
 ================
