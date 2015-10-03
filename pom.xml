@@ -1000,7 +1000,11 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<!-- JUnit Code Coverage report -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
+				<!-- upgrading to 2.7 results in:
+					Failed to execute goal org.codehaus.mojo:cobertura-maven-plugin:2.7:instrument (null) on project oval: Unable to prepare instrumentation
+					directory. source and destination are the same directory. -> [Help 1]
+				-->
+				<version>2.6</version>
 				<configuration>
 					<instrumentation>
 						<excludes>
