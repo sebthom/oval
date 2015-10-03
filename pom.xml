@@ -3,14 +3,13 @@
 	@author Sebastian Thomschke
 	@author Holger Riegel
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.oval</groupId>
 	<artifactId>oval</artifactId>
-	<version>1.85-SNAPSHOT</version>
+	<version>1.85</version>
 	<packaging>jar</packaging>
 	<name>OVal</name>
 
@@ -1067,7 +1066,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<version>2.11</version>
 				<configuration>
 
-					<issueLinkTemplate></issueLinkTemplate>
+					<issueLinkTemplate />
 					<xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
 				</configuration>
 				<reportSets>
