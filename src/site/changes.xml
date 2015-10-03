@@ -5,7 +5,7 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.85" date="2015-10-??">
+		<release version="1.85" date="2015-10-03">
 			<action type="fix">
 				<fixes issue="[bugs:#90]" />
 				Activation rules are not considered for whole contraints' list (thanks to Petras)
