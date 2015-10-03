@@ -3,7 +3,8 @@
 	@author Sebastian Thomschke
 	@author Holger Riegel
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -433,6 +434,20 @@ Besides field/property validation OVal implements Programming by Contract featur
 								<phase>verify</phase>
 								<goals>
 									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-repository-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>create-repo-upload-bundle</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>bundle-create</goal>
 								</goals>
 							</execution>
 						</executions>
