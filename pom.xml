@@ -392,6 +392,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 								<banCircularDependencies />
 								<enforceBytecodeVersion>
 									<maxJdkVersion>${java.version}</maxJdkVersion>
+									<excludes>
+										<!-- these artifacts are not referenced in the pom as dependencies but are reported as "banned" by the enforcer - probably a bug -->
+										<exclude>org.apache.commons:commons-lang3</exclude>
+										<exclude>net.sourceforge.cobertura:cobertura</exclude>
+										<exclude>com.sun:tools</exclude>
+									</excludes>
 								</enforceBytecodeVersion>
 							</rules>
 							<fail>true</fail>
