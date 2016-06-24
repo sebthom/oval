@@ -70,6 +70,7 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToConstructorsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToParametersTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ApplyFieldConstraintsToSettersTest.class);
+		suite.addTestSuite(net.sf.oval.test.guard.ChainedConstructorsTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ConstraintSetTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.CustomConstraintMessageTest.class);
 		suite.addTestSuite(net.sf.oval.test.guard.ExceptionTranslatorTest.class);
@@ -96,8 +97,12 @@ public final class AllTests
 
 	private static void integrationTests(final TestSuite suite) throws Exception
 	{
+		suite.addTestSuite(net.sf.oval.test.integration.guice.GuiceInjectorTest.class);
+		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringAOPAllianceBeanValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringAOPAllianceTest.class);
+		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringInjectorTest.class);
 		suite.addTestSuite(net.sf.oval.test.integration.spring.SpringValidatorTest.class);
+		suite.addTestSuite(net.sf.oval.test.integration.spring.ValidatorSpringBeanTest.class);
 	}
 
 	public static Test suite() throws Exception
@@ -115,14 +120,14 @@ public final class AllTests
 			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
-			{
-				@Override
-				protected void setUp() throws Exception
 				{
-					super.setUp();
-					Validator.setCollectionFactory(new CollectionFactoryJDKImpl());
-				}
-			};
+					@Override
+					protected void setUp() throws Exception
+					{
+						super.setUp();
+						Validator.setCollectionFactory(new CollectionFactoryJDKImpl());
+					}
+				};
 			suite.addTest(setup1);
 		}
 
@@ -134,14 +139,14 @@ public final class AllTests
 			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
-			{
-				@Override
-				protected void setUp() throws Exception
 				{
-					super.setUp();
-					Validator.setCollectionFactory(new CollectionFactoryJavolutionImpl());
-				}
-			};
+					@Override
+					protected void setUp() throws Exception
+					{
+						super.setUp();
+						Validator.setCollectionFactory(new CollectionFactoryJavolutionImpl());
+					}
+				};
 			suite.addTest(setup1);
 		}
 
@@ -153,14 +158,14 @@ public final class AllTests
 			guardTests(suite1);
 			integrationTests(suite1);
 			final TestSetup setup1 = new TestSetup(suite1)
-			{
-				@Override
-				protected void setUp() throws Exception
 				{
-					super.setUp();
-					Validator.setCollectionFactory(new CollectionFactoryTroveImpl());
-				}
-			};
+					@Override
+					protected void setUp() throws Exception
+					{
+						super.setUp();
+						Validator.setCollectionFactory(new CollectionFactoryTroveImpl());
+					}
+				};
 			suite.addTest(setup1);
 		}
 		// $JUnit-END$
@@ -187,10 +192,12 @@ public final class AllTests
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationMessagesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ConstraintViolationOrderTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.CustomAssertValidTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CustomConstraintViolationsTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.CustomXMLConstraintTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.DefaultInstancesTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.FieldConstraintsValidationTest.class);
-		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.InheritanceTest.class);
+		suite.addTestSuite(net.sf.oval.test.validator.InvariantMethodConstraintsValidationTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.JPAAnnotationsConfigurerTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.ObjectGraphTest.class);
 		suite.addTestSuite(net.sf.oval.test.validator.PrimitiveArrayTest.class);
