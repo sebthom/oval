@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval;
 
-import static java.lang.Boolean.TRUE;
+import static java.lang.Boolean.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -115,14 +115,12 @@ public class Validator implements IValidator
 			return delegate;
 		}
 
-		@Override
-        public String[] getParameterNames(final Constructor< ? > constructor) throws ReflectionException
+		public String[] getParameterNames(final Constructor< ? > constructor) throws ReflectionException
 		{
 			return delegate.getParameterNames(constructor);
 		}
 
-		@Override
-        public String[] getParameterNames(final Method method) throws ReflectionException
+		public String[] getParameterNames(final Method method) throws ReflectionException
 		{
 			return delegate.getParameterNames(method);
 		}
@@ -856,8 +854,7 @@ public class Validator implements IValidator
 		}
 	}
 
-	@Override
-    public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException,
+	public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException,
 			ConstraintsViolatedException
 	{
 		final List<ConstraintViolation> violations = validate(validatedObject);
@@ -865,8 +862,7 @@ public class Validator implements IValidator
 		if (violations.size() > 0) throw translateException(new ConstraintsViolatedException(violations));
 	}
 
-	@Override
-    public void assertValidFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
+	public void assertValidFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
 			throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException
 	{
 		final List<ConstraintViolation> violations = validateFieldValue(validatedObject, validatedField, fieldValueToValidate);
@@ -1503,8 +1499,7 @@ public class Validator implements IValidator
 		return ex;
 	}
 
-	@Override
-    public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException
+	public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException
 	{
 		Assert.argumentNotNull("validatedObject", validatedObject);
 
@@ -1526,8 +1521,7 @@ public class Validator implements IValidator
 		}
 	}
 
-	@Override
-    public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws IllegalArgumentException,
+	public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws IllegalArgumentException,
 			ValidationFailedException
 	{
 		Assert.argumentNotNull("validatedObject", validatedObject);
@@ -1550,8 +1544,7 @@ public class Validator implements IValidator
 		}
 	}
 
-	@Override
-    public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
+	public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField,
 			final Object fieldValueToValidate) throws IllegalArgumentException, ValidationFailedException
 	{
 		Assert.argumentNotNull("validatedObject", validatedObject);
