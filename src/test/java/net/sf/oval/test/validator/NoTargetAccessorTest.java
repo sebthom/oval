@@ -28,7 +28,7 @@ import net.sf.oval.constraint.AssertNull;
  */
 public class NoTargetAccessorTest
 {
-	
+
 	private Validator sut;
 	private HappyPopulation population;
 
@@ -36,8 +36,9 @@ public class NoTargetAccessorTest
 	 * Prepares validator and other stuff.
 	 */
 	@Before
-	public void pre() {
-		sut = new Validator();		
+	public void pre()
+	{
+		sut = new Validator();
 		population = new HappyPopulation();
 	}
 
@@ -45,11 +46,12 @@ public class NoTargetAccessorTest
 	 * Checks that all people of a happy population are happy
 	 */
 	@Test
-	public void okTest() {
+	public void okTest()
+	{
 		population.add(happy(), happy(), happy());
-		
+
 		List<ConstraintViolation> list = sut.validate(population);
-		
+
 		assertTrue("There must be not unhappy people in this population", list.isEmpty());
 	}
 
@@ -57,8 +59,9 @@ public class NoTargetAccessorTest
 	 * Checks that empty population is happy
 	 */
 	@Test
-	public void okTest_Empty() {
-		List<ConstraintViolation> list = sut.validate(population);		
+	public void okTest_Empty()
+	{
+		List<ConstraintViolation> list = sut.validate(population);
 		assertTrue("There must be not unhappy people in this population", list.isEmpty());
 	}
 
@@ -66,24 +69,27 @@ public class NoTargetAccessorTest
 	 * Checks that empty population is happy
 	 */
 	@Test
-	public void okTest_One() {
+	public void okTest_One()
+	{
 		population.add(happy());
-		
+
 		List<ConstraintViolation> list = sut.validate(population);
-		
+
 		assertTrue("There must be not unhappy people in this population", list.isEmpty());
 	}
 
 	/**
-	 * Checks that adding some unhappy people to the happy population will fail validation.
+	 * Checks that adding some unhappy people to the happy population will fail
+	 * validation.
 	 */
 	@Test
-	public void failTest_Some() {
+	public void failTest_Some()
+	{
 		population.add(happy(), unhappy(), unhappy(), happy());
-		
+
 		List<ConstraintViolation> list = sut.validate(population);
-		
-		assertFalse("This population should not be all happy",list.isEmpty());
+
+		assertFalse("This population should not be all happy", list.isEmpty());
 		assertEquals(1, list.size());
 		ConstraintViolation violation = list.get(0);
 		assertNull(violation.getCauses());
@@ -91,33 +97,35 @@ public class NoTargetAccessorTest
 	}
 
 	/**
-	 * Checks that adding some unhappy people to the happy population will fail validation.
+	 * Checks that adding some unhappy people to the happy population will fail
+	 * validation.
 	 */
 	@Test
-	public void failTest_All() {
+	public void failTest_All()
+	{
 		population.add(unhappy());
-		
+
 		List<ConstraintViolation> list = sut.validate(population);
-		
-		assertFalse("This population should not be all happy",list.isEmpty());
+
+		assertFalse("This population should not be all happy", list.isEmpty());
 		assertEquals(1, list.size());
 		ConstraintViolation violation = list.get(0);
 		assertNull(violation.getCauses());
 		assertEquals(population.people.get(0), violation.getInvalidValue());
 	}
 
-
 	/**
 	 * Sample population consisting of people.
+	 * 
 	 * @author anydoby
 	 *
 	 */
 	public static class HappyPopulation
 	{
-		
-		@AssertNull(target="jxpath:.[happy = false()]") 
+
+		@AssertNull(target = "jxpath:.[happy = false()]")
 		List<Person> people = new ArrayList<NoTargetAccessorTest.Person>();
-		
+
 		/**
 		 * @return happy people
 		 */
@@ -125,14 +133,15 @@ public class NoTargetAccessorTest
 		{
 			return people;
 		}
-		
+
 		/**
 		 * @param p
 		 */
-		public void add(Person... p) {
+		public void add(Person... p)
+		{
 			people.addAll(asList(p));
 		}
-		
+
 	}
 
 	/**
@@ -169,12 +178,12 @@ public class NoTargetAccessorTest
 			Person person = new Person();
 			return person;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return isHappy() ? "happy" : "unhappy";
 		}
 	}
-	
+
 }
