@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -16,7 +16,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclareWarning;
 
 /**
- * This is an annotations based version of the ApiUsageAuditor aspect
+ * This is an annotations based version of the {@link ApiUsageAuditor} aspect
  *
  * @author Sebastian Thomschke
  */
@@ -24,19 +24,19 @@ import org.aspectj.lang.annotation.DeclareWarning;
 public abstract class ApiUsageAuditor2
 {
 	/*
-	 * Rule 1: Warn about return value constraints for void methods 
+	 * Rule 1: Warn about return value constraints for void methods
 	 */
 	@DeclareWarning("execution(@(@net.sf.oval.configuration.annotation.Constraint *) void *.*(..))")
 	public static final String RULE1 = "OVal API usage violation 1: Method return value constraints are not allowed for methods without return values";
 
 	/*
-	 * Rule 2: Warn about return value constraints for non-void, parameterized methods in classes that are not guarded 
+	 * Rule 2: Warn about return value constraints for non-void, parameterized methods in classes that are not guarded
 	 */
 	@DeclareWarning("execution(@(@net.sf.oval.configuration.annotation.Constraint *) !void (!@net.sf.oval.guard.Guarded *).*(*,..))")
 	public static final String RULE2 = "OVal API usage violation 2: Method return value constraints for parameterized methods are only allowed in guarded classes";
 
 	/*
-	 * Rule 3: Warn about return value constraints for non-void, non-parameterized methods missing the @Invariant annotation in classes 
+	 * Rule 3: Warn about return value constraints for non-void, non-parameterized methods missing the @Invariant annotation in classes
 	 * that are not guarded
 	 */
 	@DeclareWarning("execution(!@net.sf.oval.configuration.annotation.IsInvariant @(@net.sf.oval.configuration.annotation.Constraint *) !void (!@net.sf.oval.guard.Guarded *).*())")
