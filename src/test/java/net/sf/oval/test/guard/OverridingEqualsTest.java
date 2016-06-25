@@ -20,49 +20,39 @@ import net.sf.oval.guard.Guarded;
  * @author Sebastian Thomschke
  *
  */
-public class OverridingEqualsTest extends TestCase
-{
-	@Guarded
-	public static class Entity
-	{
-		protected int foo;
+public class OverridingEqualsTest extends TestCase {
+    @Guarded
+    public static class Entity {
+        protected int foo;
 
-		@Override
-		public boolean equals(final Object o)
-		{
-			final boolean retVal;
-			if (o == null)
-			{
-				retVal = false;
-			}
-			else if (o instanceof Entity)
-			{
-				retVal = ((Entity) o).foo == foo;
-			}
-			else
-			{
-				retVal = false;
-			}
-			return retVal;
-		}
+        @Override
+        public boolean equals(final Object o) {
+            final boolean retVal;
+            if (o == null) {
+                retVal = false;
+            } else if (o instanceof Entity) {
+                retVal = ((Entity) o).foo == foo;
+            } else {
+                retVal = false;
+            }
+            return retVal;
+        }
 
-		@Override
-		public int hashCode()
-		{
-			return super.hashCode();
-		}
-	}
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+    }
 
-	public void testGuarding()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
+    public void testGuarding() {
+        final Guard guard = new Guard();
+        TestGuardAspect.aspectOf().setGuard(guard);
 
-		final Entity a1 = new Entity();
-		a1.foo = 2;
-		final Entity a2 = new Entity();
-		a2.foo = 2;
+        final Entity a1 = new Entity();
+        a1.foo = 2;
+        final Entity a2 = new Entity();
+        a2.foo = 2;
 
-		assertEquals(a1, a2);
-	}
+        assertEquals(a1, a2);
+    }
 }

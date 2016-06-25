@@ -20,38 +20,35 @@ import net.sf.oval.constraint.PastCheck;
 /**
  * @author Sebastian Thomschke
  */
-public class PastTest extends AbstractContraintsTest
-{
-	public void testPast()
-	{
-		final PastCheck check = new PastCheck();
-		super.testCheck(check);
-		assertTrue(check.isSatisfied(null, null, null, null));
+public class PastTest extends AbstractContraintsTest {
+    public void testPast() {
+        final PastCheck check = new PastCheck();
+        super.testCheck(check);
+        assertTrue(check.isSatisfied(null, null, null, null));
 
-		final Calendar cal = Calendar.getInstance();
-		cal.roll(Calendar.YEAR, -1);
-		assertTrue(check.isSatisfied(null, cal, null, null));
-		assertTrue(check.isSatisfied(null, cal.getTime(), null, null));
-		assertTrue(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+        final Calendar cal = Calendar.getInstance();
+        cal.roll(Calendar.YEAR, -1);
+        assertTrue(check.isSatisfied(null, cal, null, null));
+        assertTrue(check.isSatisfied(null, cal.getTime(), null, null));
+        assertTrue(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
-		cal.roll(Calendar.YEAR, 2);
-		assertFalse(check.isSatisfied(null, cal, null, null));
-		assertFalse(check.isSatisfied(null, cal.getTime(), null, null));
-		assertFalse(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+        cal.roll(Calendar.YEAR, 2);
+        assertFalse(check.isSatisfied(null, cal, null, null));
+        assertFalse(check.isSatisfied(null, cal.getTime(), null, null));
+        assertFalse(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
-		assertFalse(check.isSatisfied(null, "bla", null, null));
-	}
+        assertFalse(check.isSatisfied(null, "bla", null, null));
+    }
 
-	public void testTolerance()
-	{
-		final PastCheck check = new PastCheck();
+    public void testTolerance() {
+        final PastCheck check = new PastCheck();
 
-		final Calendar cal = Calendar.getInstance();
-		cal.roll(Calendar.SECOND, 3);
-		assertFalse(check.isSatisfied(null, cal, null, null));
-		check.setTolerance(1000);
-		assertFalse(check.isSatisfied(null, cal, null, null));
-		check.setTolerance(5000);
-		assertTrue(check.isSatisfied(null, cal, null, null));
-	}
+        final Calendar cal = Calendar.getInstance();
+        cal.roll(Calendar.SECOND, 3);
+        assertFalse(check.isSatisfied(null, cal, null, null));
+        check.setTolerance(1000);
+        assertFalse(check.isSatisfied(null, cal, null, null));
+        check.setTolerance(5000);
+        assertTrue(check.isSatisfied(null, cal, null, null));
+    }
 }

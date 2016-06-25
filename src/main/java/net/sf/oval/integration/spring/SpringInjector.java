@@ -36,32 +36,28 @@ import org.springframework.util.Assert;
  * @author Sebastian Thomschke
  */
 @Component
-public class SpringInjector
-{
-	private static final Log LOG = Log.getLog(SpringInjector.class);
+public class SpringInjector {
+    private static final Log LOG = Log.getLog(SpringInjector.class);
 
-	private static SpringInjector INSTANCE;
+    private static SpringInjector INSTANCE;
 
-	public static SpringInjector get()
-	{
-		Assert.notNull(INSTANCE, "No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
-				+ "\" /> to your spring configuration!");
+    public static SpringInjector get() {
+        Assert.notNull(INSTANCE, "No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
+                + "\" /> to your spring configuration!");
 
-		return INSTANCE;
-	}
+        return INSTANCE;
+    }
 
-	@Autowired
-	private AutowiredAnnotationBeanPostProcessor processor;
+    @Autowired
+    private AutowiredAnnotationBeanPostProcessor processor;
 
-	private SpringInjector()
-	{
-		LOG.info("Instantiated.");
+    private SpringInjector() {
+        LOG.info("Instantiated.");
 
-		INSTANCE = this;
-	}
+        INSTANCE = this;
+    }
 
-	public void inject(final Object unmanagedBean)
-	{
-		processor.processInjection(unmanagedBean);
-	}
+    public void inject(final Object unmanagedBean) {
+        processor.processInjection(unmanagedBean);
+    }
 }

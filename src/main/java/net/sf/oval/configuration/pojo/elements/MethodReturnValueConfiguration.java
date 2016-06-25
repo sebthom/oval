@@ -19,12 +19,11 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodReturnValueConfiguration extends ConfigurationElement
-{
-	private static final long serialVersionUID = 1L;
+public class MethodReturnValueConfiguration extends ConfigurationElement {
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * checks for a method's return value that need to be verified after method execution
-	 */
-	public List<Check> checks;
+    /**
+     * checks for a method's return value that need to be verified after method execution
+     */
+    public List<Check> checks;
 }

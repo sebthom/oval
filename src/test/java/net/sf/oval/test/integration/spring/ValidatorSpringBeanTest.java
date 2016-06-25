@@ -18,20 +18,14 @@ import net.sf.oval.test.validator.XMLConfigurationTest;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ValidatorSpringBeanTest extends TestCase
-{
-	public void testValidatorSpringBean()
-	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("ValidatorSpringBeanTest.xml",
-				ValidatorSpringBeanTest.class);
-		try
-		{
-			final Validator validator = ctx.getBean("validator", Validator.class);
-			new XMLConfigurationTest().validateUser(validator);
-		}
-		finally
-		{
-			ctx.close();
-		}
-	}
+public class ValidatorSpringBeanTest extends TestCase {
+    public void testValidatorSpringBean() {
+        final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("ValidatorSpringBeanTest.xml", ValidatorSpringBeanTest.class);
+        try {
+            final Validator validator = ctx.getBean("validator", Validator.class);
+            new XMLConfigurationTest().validateUser(validator);
+        } finally {
+            ctx.close();
+        }
+    }
 }

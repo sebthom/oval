@@ -17,19 +17,17 @@ import net.sf.oval.constraint.NotEmptyCheck;
 /**
  * @author Sebastian Thomschke
  */
-public class NotEmptyTest extends AbstractContraintsTest
-{
-	public void testNotEmpty()
-	{
-		final NotEmptyCheck check = new NotEmptyCheck();
-		super.testCheck(check);
-		assertTrue(check.isSatisfied(null, null, null, null));
+public class NotEmptyTest extends AbstractContraintsTest {
+    public void testNotEmpty() {
+        final NotEmptyCheck check = new NotEmptyCheck();
+        super.testCheck(check);
+        assertTrue(check.isSatisfied(null, null, null, null));
 
-		assertTrue(check.isSatisfied(null, "bla", null, null));
-		assertTrue(check.isSatisfied(null, true, null, null));
-		assertTrue(check.isSatisfied(null, 1, null, null));
-		assertFalse(check.isSatisfied(null, "", null, null));
-		assertTrue(check.isSatisfied(null, ' ', null, null));
-		assertTrue(check.isSatisfied(null, " ", null, null));
-	}
+        assertTrue(check.isSatisfied(null, "bla", null, null));
+        assertTrue(check.isSatisfied(null, true, null, null));
+        assertTrue(check.isSatisfied(null, 1, null, null));
+        assertFalse(check.isSatisfied(null, "", null, null));
+        assertTrue(check.isSatisfied(null, ' ', null, null));
+        assertTrue(check.isSatisfied(null, " ", null, null));
+    }
 }

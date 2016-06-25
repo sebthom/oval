@@ -25,31 +25,25 @@ import org.apache.commons.jexl2.MapContext;
 /**
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage
-{
-	private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
+public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage {
+    private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
 
-	private static final JexlEngine jexl = new JexlEngine();
+    private static final JexlEngine jexl = new JexlEngine();
 
-	private final ObjectCache<String, Expression> expressionCache = new ObjectCache<String, Expression>();
+    private final ObjectCache<String, Expression> expressionCache = new ObjectCache<String, Expression>();
 
-	@SuppressWarnings("unchecked")
-	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
-	{
-		LOG.debug("Evaluating JEXL expression: {1}", expression);
-		try
-		{
-			Expression expr = expressionCache.get(expression);
-			if (expr == null)
-			{
-				expr = jexl.createExpression(expression);
-				expressionCache.put(expression, expr);
-			}
-			return expr.evaluate(new MapContext((Map<String, Object>) values));
-		}
-		catch (final Exception ex)
-		{
-			throw new ExpressionEvaluationException("Evaluating JEXL expression failed: " + expression, ex);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
+        LOG.debug("Evaluating JEXL expression: {1}", expression);
+        try {
+            Expression expr = expressionCache.get(expression);
+            if (expr == null) {
+                expr = jexl.createExpression(expression);
+                expressionCache.put(expression, expr);
+            }
+            return expr.evaluate(new MapContext((Map<String, Object>) values));
+        } catch (final Exception ex) {
+            throw new ExpressionEvaluationException("Evaluating JEXL expression failed: " + expression, ex);
+        }
+    }
 }

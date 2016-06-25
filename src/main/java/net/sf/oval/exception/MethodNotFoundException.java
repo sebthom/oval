@@ -15,22 +15,18 @@ package net.sf.oval.exception;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodNotFoundException extends ReflectionException
-{
-	private static final long serialVersionUID = 1L;
+public class MethodNotFoundException extends ReflectionException {
+    private static final long serialVersionUID = 1L;
 
-	public MethodNotFoundException(final String message)
-	{
-		super(message);
-	}
-	
-	public MethodNotFoundException(final String message, final Throwable cause)
-	{
-		super(message, cause);
-	}
-	
-	public MethodNotFoundException(final Throwable cause)
-	{
-		super(cause);
-	}
+    public MethodNotFoundException(final String message) {
+        super(message);
+    }
+
+    public MethodNotFoundException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public MethodNotFoundException(final Throwable cause) {
+        super(cause);
+    }
 }

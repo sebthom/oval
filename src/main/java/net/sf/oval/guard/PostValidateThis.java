@@ -19,7 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * After the annotated method has been executed all field and getter constraints 
+ * After the annotated method has been executed all field and getter constraints
  * (invariants) of this object are validated.<br>
  * <br>
  * In case of constraint violations the annotated method will throw an ConstraintsViolatedException.<br>
@@ -28,8 +28,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface PostValidateThis
-{
-	//
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+public @interface PostValidateThis {
+    //
 }

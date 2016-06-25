@@ -31,72 +31,59 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
-* @author Sebastian Thomschke
-*/
-public class SpringInjectorTest extends TestCase
-{
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@Constraint(checkWith = SpringNullContraintCheck.class)
-	public @interface SpringNullContraint
-	{
-		//nothing
-	}
+ * @author Sebastian Thomschke
+ */
+public class SpringInjectorTest extends TestCase {
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.FIELD })
+    @Constraint(checkWith = SpringNullContraintCheck.class)
+    public @interface SpringNullContraint {
+        //nothing
+    }
 
-	public static class Entity
-	{
-		@SpringNullContraint
-		protected String field;
-	}
+    public static class Entity {
+        @SpringNullContraint
+        protected String field;
+    }
 
-	/**
-	 * constraint check implementation requiring Spring managed beans
-	 */
-	public static class SpringNullContraintCheck extends AbstractAnnotationCheck<SpringNullContraint>
-	{
-		private static final long serialVersionUID = 1L;
+    /**
+     * constraint check implementation requiring Spring managed beans
+     */
+    public static class SpringNullContraintCheck extends AbstractAnnotationCheck<SpringNullContraint> {
+        private static final long serialVersionUID = 1L;
 
-		@Autowired
-		@Qualifier("SPRING_MANAGED_BEAN")
-		private Integer springManagedBean;
+        @Autowired
+        @Qualifier("SPRING_MANAGED_BEAN")
+        private Integer springManagedBean;
 
-		public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
-				final Validator validator) throws OValException
-		{
-			return springManagedBean == 10 && valueToValidate != null;
-		}
-	}
+        public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+                throws OValException {
+            return springManagedBean == 10 && valueToValidate != null;
+        }
+    }
 
-	public void testWithSpringInjector()
-	{
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringInjectorTest.xml", SpringInjectorTest.class);
-		try
-		{
-			final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
-			myConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
-			final Validator v = new Validator(myConfigurer);
+    public void testWithSpringInjector() {
+        final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringInjectorTest.xml", SpringInjectorTest.class);
+        try {
+            final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
+            myConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
+            final Validator v = new Validator(myConfigurer);
 
-			final Entity e = new Entity();
-			assertEquals(1, v.validate(e).size());
-			e.field = "whatever";
-			assertEquals(0, v.validate(e).size());
-		}
-		finally
-		{
-			ctx.close();
-		}
-	}
+            final Entity e = new Entity();
+            assertEquals(1, v.validate(e).size());
+            e.field = "whatever";
+            assertEquals(0, v.validate(e).size());
+        } finally {
+            ctx.close();
+        }
+    }
 
-	public void testWithoutSpringInjector()
-	{
-		final Validator v = new Validator();
-		final Entity e = new Entity();
-		try
-		{
-			v.validate(e);
-			fail("NPE expected.");
-		}
-		catch (final NullPointerException ex)
-		{}
-	}
+    public void testWithoutSpringInjector() {
+        final Validator v = new Validator();
+        final Entity e = new Entity();
+        try {
+            v.validate(e);
+            fail("NPE expected.");
+        } catch (final NullPointerException ex) {}
+    }
 }

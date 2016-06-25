@@ -20,79 +20,62 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class NullableTest extends TestCase
-{
-	@Guarded(assertParametersNotNull = true)
-	protected static class TestEntity1
-	{
-		protected TestEntity1(final String param1, @Nullable final String param2)
-		{
-			// nothing
-		}
+public class NullableTest extends TestCase {
+    @Guarded(assertParametersNotNull = true)
+    protected static class TestEntity1 {
+        protected TestEntity1(final String param1, @Nullable final String param2) {
+            // nothing
+        }
 
-		public void setParam1(final String param1)
-		{
-			// nothing
-		}
+        public void setParam1(final String param1) {
+            // nothing
+        }
 
-		public void setParam2(@Nullable final String param2)
-		{
-			// nothing
-		}
-	}
+        public void setParam2(@Nullable final String param2) {
+            // nothing
+        }
+    }
 
-	// assertParametersNotNull is false by default
-	@Guarded
-	protected static class TestEntity2
-	{
-		protected TestEntity2(final String param1, @Nullable final String param2)
-		{
-			// nothing
-		}
+    // assertParametersNotNull is false by default
+    @Guarded
+    protected static class TestEntity2 {
+        protected TestEntity2(final String param1, @Nullable final String param2) {
+            // nothing
+        }
 
-		public void setParam1(final String param1)
-		{
-			// nothing
-		}
+        public void setParam1(final String param1) {
+            // nothing
+        }
 
-		public void setParam2(@Nullable final String param2)
-		{
-			// nothing
-		}
-	}
+        public void setParam2(@Nullable final String param2) {
+            // nothing
+        }
+    }
 
-	@SuppressWarnings("unused")
-	public void testNullable1()
-	{
-		try
-		{
-			new TestEntity1(null, "foo");
-			fail("ConstraintsViolatedException expected");
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			// nothing
-		}
+    @SuppressWarnings("unused")
+    public void testNullable1() {
+        try {
+            new TestEntity1(null, "foo");
+            fail("ConstraintsViolatedException expected");
+        } catch (final ConstraintsViolatedException ex) {
+            // nothing
+        }
 
-		final TestEntity1 t = new TestEntity1("foo", null);
+        final TestEntity1 t = new TestEntity1("foo", null);
 
-		try
-		{
-			t.setParam1(null);
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			// nothing
-		}
-		t.setParam2(null);
-	}
+        try {
+            t.setParam1(null);
+        } catch (final ConstraintsViolatedException ex) {
+            // nothing
+        }
+        t.setParam2(null);
+    }
 
-	@SuppressWarnings("unused")
-	public void testNullable2()
-	{
-		new TestEntity2(null, "foo");
-		final TestEntity2 t = new TestEntity2("foo", null);
-		t.setParam1(null);
-		t.setParam2(null);
-	}
+    @SuppressWarnings("unused")
+    public void testNullable2() {
+        new TestEntity2(null, "foo");
+        final TestEntity2 t = new TestEntity2("foo", null);
+        t.setParam1(null);
+        t.setParam2(null);
+    }
 }

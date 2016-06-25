@@ -38,6 +38,7 @@ import net.sf.oval.internal.Log;
  *
  * <p>
  * The properties file is expected to have values following this scheme
+ * 
  * <pre>
  * label.class=My translated name of the class name
  * label.field.firstname=My translated name of the field "firstname"
@@ -45,86 +46,68 @@ import net.sf.oval.internal.Log;
  * label.parameter.amount=My translated name of a constructor/method parameter "amount"
  * label.method.increase=My translated name of the method "increase"
  * </pre>
+ * 
  * @author Sebastian Thomschke
  */
-public class ResourceBundleValidationContextRenderer implements OValContextRenderer
-{
-	private static final Log LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
+public class ResourceBundleValidationContextRenderer implements OValContextRenderer {
+    private static final Log LOG = Log.getLog(ResourceBundleValidationContextRenderer.class);
 
-	public static final ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
+    public static final ResourceBundleValidationContextRenderer INSTANCE = new ResourceBundleValidationContextRenderer();
 
-	private static boolean containsKey(final ResourceBundle bundle, final String key)
-	{
-		for (final Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();)
-			if (en.nextElement().equals(key)) return true;
-		return false;
-	}
+    private static boolean containsKey(final ResourceBundle bundle, final String key) {
+        for (final Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();)
+            if (en.nextElement().equals(key))
+                return true;
+        return false;
+    }
 
-	protected Locale getLocale()
-	{
-		return Validator.getLocaleProvider().getLocale();
-	}
+    protected Locale getLocale() {
+        return Validator.getLocaleProvider().getLocale();
+    }
 
-	public String render(final OValContext ovalContext)
-	{
-		final String baseName;
-		final String key;
-		if (ovalContext instanceof ClassContext)
-		{
-			final ClassContext ctx = (ClassContext) ovalContext;
-			baseName = ctx.getClazz().getName();
-			key = "label.class";
-		}
-		else if (ovalContext instanceof FieldContext)
-		{
-			final FieldContext ctx = (FieldContext) ovalContext;
-			baseName = ctx.getField().getDeclaringClass().getName();
-			final String fieldName = ctx.getField().getName();
-			key = "label.field." + fieldName;
-		}
-		else if (ovalContext instanceof ConstructorParameterContext)
-		{
-			final ConstructorParameterContext ctx = (ConstructorParameterContext) ovalContext;
-			baseName = ctx.getConstructor().getDeclaringClass().getName();
-			key = "label.parameter." + ctx.getParameterName();
-		}
-		else if (ovalContext instanceof MethodParameterContext)
-		{
-			final MethodParameterContext ctx = (MethodParameterContext) ovalContext;
-			baseName = ctx.getMethod().getDeclaringClass().getName();
-			key = "label.parameter." + ctx.getParameterName();
-		}
-		else if (ovalContext instanceof MethodEntryContext)
-		{
-			final MethodEntryContext ctx = (MethodEntryContext) ovalContext;
-			baseName = ctx.getMethod().getDeclaringClass().getName();
-			key = "label.method." + ctx.getMethod().getName();
-		}
-		else if (ovalContext instanceof MethodExitContext)
-		{
-			final MethodExitContext ctx = (MethodExitContext) ovalContext;
-			baseName = ctx.getMethod().getDeclaringClass().getName();
-			key = "label.method." + ctx.getMethod().getName();
-		}
-		else if (ovalContext instanceof MethodReturnValueContext)
-		{
-			final MethodReturnValueContext ctx = (MethodReturnValueContext) ovalContext;
-			baseName = ctx.getMethod().getDeclaringClass().getName();
-			key = "label.method." + ctx.getMethod().getName();
-		}
-		else
-			return ovalContext.toString();
+    public String render(final OValContext ovalContext) {
+        final String baseName;
+        final String key;
+        if (ovalContext instanceof ClassContext) {
+            final ClassContext ctx = (ClassContext) ovalContext;
+            baseName = ctx.getClazz().getName();
+            key = "label.class";
+        } else if (ovalContext instanceof FieldContext) {
+            final FieldContext ctx = (FieldContext) ovalContext;
+            baseName = ctx.getField().getDeclaringClass().getName();
+            final String fieldName = ctx.getField().getName();
+            key = "label.field." + fieldName;
+        } else if (ovalContext instanceof ConstructorParameterContext) {
+            final ConstructorParameterContext ctx = (ConstructorParameterContext) ovalContext;
+            baseName = ctx.getConstructor().getDeclaringClass().getName();
+            key = "label.parameter." + ctx.getParameterName();
+        } else if (ovalContext instanceof MethodParameterContext) {
+            final MethodParameterContext ctx = (MethodParameterContext) ovalContext;
+            baseName = ctx.getMethod().getDeclaringClass().getName();
+            key = "label.parameter." + ctx.getParameterName();
+        } else if (ovalContext instanceof MethodEntryContext) {
+            final MethodEntryContext ctx = (MethodEntryContext) ovalContext;
+            baseName = ctx.getMethod().getDeclaringClass().getName();
+            key = "label.method." + ctx.getMethod().getName();
+        } else if (ovalContext instanceof MethodExitContext) {
+            final MethodExitContext ctx = (MethodExitContext) ovalContext;
+            baseName = ctx.getMethod().getDeclaringClass().getName();
+            key = "label.method." + ctx.getMethod().getName();
+        } else if (ovalContext instanceof MethodReturnValueContext) {
+            final MethodReturnValueContext ctx = (MethodReturnValueContext) ovalContext;
+            baseName = ctx.getMethod().getDeclaringClass().getName();
+            key = "label.method." + ctx.getMethod().getName();
+        } else
+            return ovalContext.toString();
 
-		try
-		{
-			final ResourceBundle bundle = ResourceBundle.getBundle(baseName, getLocale());
-			if (containsKey(bundle, key)) return bundle.getString(key);
-			LOG.debug("Key {1} not found in bundle {2}", key, baseName);
-		}
-		catch (final MissingResourceException ex)
-		{
-			LOG.debug("Bundle {1} not found", baseName, ex);
-		}
-		return ovalContext.toString();
-	}
+        try {
+            final ResourceBundle bundle = ResourceBundle.getBundle(baseName, getLocale());
+            if (containsKey(bundle, key))
+                return bundle.getString(key);
+            LOG.debug("Key {1} not found in bundle {2}", key, baseName);
+        } catch (final MissingResourceException ex) {
+            LOG.debug("Bundle {1} not found", baseName, ex);
+        }
+        return ovalContext.toString();
+    }
 }

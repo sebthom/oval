@@ -26,108 +26,95 @@ import net.sf.oval.guard.ProbeModeListener;
 /**
  * @author Sebastian Thomschke
  */
-public class ProbeModeTest extends TestCase
-{
+public class ProbeModeTest extends TestCase {
 
-	@Guarded
-	protected static class Person
-	{
-		@NotNull(message = "NOT_NULL")
-		private String firstName = "";
+    @Guarded
+    protected static class Person {
+        @NotNull(message = "NOT_NULL")
+        private String firstName = "";
 
-		@NotNull(message = "NOT_NULL")
-		private String lastName = "";
+        @NotNull(message = "NOT_NULL")
+        private String lastName = "";
 
-		@NotNull(message = "NOT_NULL")
-		@Length(max = 6, message = "LENGTH")
-		@NotEmpty(message = "NOT_EMPTY")
-		@MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
-		private String zipCode = "1";
+        @NotNull(message = "NOT_NULL")
+        @Length(max = 6, message = "LENGTH")
+        @NotEmpty(message = "NOT_EMPTY")
+        @MatchPattern(pattern = "^[0-9]*$", message = "REG_EX")
+        private String zipCode = "1";
 
-		public String getFirstName()
-		{
-			return firstName;
-		}
+        public String getFirstName() {
+            return firstName;
+        }
 
-		public String getLastName()
-		{
-			return lastName;
-		}
+        public String getLastName() {
+            return lastName;
+        }
 
-		public String getZipCode()
-		{
-			return zipCode;
-		}
+        public String getZipCode() {
+            return zipCode;
+        }
 
-		public void setFirstName(@AssertFieldConstraints final String firstName)
-		{
-			this.firstName = firstName;
-		}
+        public void setFirstName(@AssertFieldConstraints final String firstName) {
+            this.firstName = firstName;
+        }
 
-		public void setLastName(@AssertFieldConstraints final String lastName)
-		{
-			this.lastName = lastName;
-		}
+        public void setLastName(@AssertFieldConstraints final String lastName) {
+            this.lastName = lastName;
+        }
 
-		public void setZipCode(@AssertFieldConstraints final String zipCode)
-		{
-			this.zipCode = zipCode;
-		}
-	}
+        public void setZipCode(@AssertFieldConstraints final String zipCode) {
+            this.zipCode = zipCode;
+        }
+    }
 
-	public void testProbeModeWithIllegalValues()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
+    public void testProbeModeWithIllegalValues() {
+        final Guard guard = new Guard();
+        TestGuardAspect.aspectOf().setGuard(guard);
 
-		final Person p = new Person();
-		guard.enableProbeMode(p);
+        final Person p = new Person();
+        guard.enableProbeMode(p);
 
-		p.setFirstName(null);
-		p.setLastName(null);
-		p.setZipCode("abcde");
-		final ProbeModeListener result = guard.disableProbeMode(p);
+        p.setFirstName(null);
+        p.setLastName(null);
+        p.setZipCode("abcde");
+        final ProbeModeListener result = guard.disableProbeMode(p);
 
-		assertEquals("", p.getFirstName());
-		assertEquals("", p.getLastName());
-		assertEquals("1", p.getZipCode());
-		assertEquals(3, result.getConstraintsViolatedExceptions().size());
-		assertEquals(3, result.getConstraintViolations().size());
-		try
-		{
-			result.commit();
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			// expected
-		}
-	}
+        assertEquals("", p.getFirstName());
+        assertEquals("", p.getLastName());
+        assertEquals("1", p.getZipCode());
+        assertEquals(3, result.getConstraintsViolatedExceptions().size());
+        assertEquals(3, result.getConstraintViolations().size());
+        try {
+            result.commit();
+            fail();
+        } catch (final ConstraintsViolatedException ex) {
+            // expected
+        }
+    }
 
-	public void testProbeModeWithValidValues()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
+    public void testProbeModeWithValidValues() {
+        final Guard guard = new Guard();
+        TestGuardAspect.aspectOf().setGuard(guard);
 
-		final Person p = new Person();
-		guard.enableProbeMode(p);
+        final Person p = new Person();
+        guard.enableProbeMode(p);
 
-		p.setFirstName("John");
-		p.setLastName("Doe");
-		p.setZipCode("12345");
+        p.setFirstName("John");
+        p.setLastName("Doe");
+        p.setZipCode("12345");
 
-		final ProbeModeListener result = guard.disableProbeMode(p);
+        final ProbeModeListener result = guard.disableProbeMode(p);
 
-		assertEquals("", p.getFirstName());
-		assertEquals("", p.getLastName());
-		assertEquals("1", p.getZipCode());
-		assertEquals(0, result.getConstraintsViolatedExceptions().size());
-		assertEquals(0, result.getConstraintViolations().size());
+        assertEquals("", p.getFirstName());
+        assertEquals("", p.getLastName());
+        assertEquals("1", p.getZipCode());
+        assertEquals(0, result.getConstraintsViolatedExceptions().size());
+        assertEquals(0, result.getConstraintViolations().size());
 
-		result.commit();
+        result.commit();
 
-		assertEquals("John", p.getFirstName());
-		assertEquals("Doe", p.getLastName());
-		assertEquals("12345", p.getZipCode());
-	}
+        assertEquals("John", p.getFirstName());
+        assertEquals("Doe", p.getLastName());
+        assertEquals("12345", p.getZipCode());
+    }
 }

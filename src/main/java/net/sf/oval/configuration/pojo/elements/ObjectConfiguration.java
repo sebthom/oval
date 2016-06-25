@@ -19,12 +19,11 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class ObjectConfiguration extends ConfigurationElement
-{
-	private static final long serialVersionUID = 1L;
+public class ObjectConfiguration extends ConfigurationElement {
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * object level checks
-	 */
-	public List<Check> checks;
+    /**
+     * object level checks
+     */
+    public List<Check> checks;
 }

@@ -17,20 +17,18 @@ import net.sf.oval.constraint.NotBlankCheck;
 /**
  * @author Sebastian Thomschke
  */
-public class NotBlankTest extends AbstractContraintsTest
-{
-	public void testNotBlank()
-	{
-		final NotBlankCheck check = new NotBlankCheck();
-		super.testCheck(check);
-		assertTrue(check.isSatisfied(null, null, null, null));
+public class NotBlankTest extends AbstractContraintsTest {
+    public void testNotBlank() {
+        final NotBlankCheck check = new NotBlankCheck();
+        super.testCheck(check);
+        assertTrue(check.isSatisfied(null, null, null, null));
 
-		assertTrue(check.isSatisfied(null, "bla", null, null));
-		assertTrue(check.isSatisfied(null, true, null, null));
-		assertTrue(check.isSatisfied(null, 1, null, null));
-		assertFalse(check.isSatisfied(null, "", null, null));
-		assertFalse(check.isSatisfied(null, ' ', null, null));
-		assertFalse(check.isSatisfied(null, " ", null, null));
-		assertFalse(check.isSatisfied(null, "                  ", null, null));
-	}
+        assertTrue(check.isSatisfied(null, "bla", null, null));
+        assertTrue(check.isSatisfied(null, true, null, null));
+        assertTrue(check.isSatisfied(null, 1, null, null));
+        assertFalse(check.isSatisfied(null, "", null, null));
+        assertFalse(check.isSatisfied(null, ' ', null, null));
+        assertFalse(check.isSatisfied(null, " ", null, null));
+        assertFalse(check.isSatisfied(null, "                  ", null, null));
+    }
 }

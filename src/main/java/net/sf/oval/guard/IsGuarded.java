@@ -20,7 +20,6 @@ package net.sf.oval.guard;
  * 
  * @author Sebastian Thomschke
  */
-public interface IsGuarded
-{
-	//	
+public interface IsGuarded {
+    //	
 }

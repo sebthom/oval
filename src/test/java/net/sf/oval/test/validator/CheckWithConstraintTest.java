@@ -24,98 +24,93 @@ import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 /**
  * @author Sebastian Thomschke
  */
-public class CheckWithConstraintTest extends TestCase
-{
-	protected static class TestEntity1
-	{
-		protected static class NameCheck1 implements SimpleCheck
-		{
-			protected static final long serialVersionUID = 1L;
+public class CheckWithConstraintTest extends TestCase {
+    protected static class TestEntity1 {
+        protected static class NameCheck1 implements SimpleCheck {
+            protected static final long serialVersionUID = 1L;
 
-			public boolean isSatisfied(final Object validatedObject, final Object value)
-			{
-				final String name = (String) value;
+            public boolean isSatisfied(final Object validatedObject, final Object value) {
+                final String name = (String) value;
 
-				if (name == null) return false;
-				if (name.length() == 0) return false;
-				if (name.length() > 4) return false;
-				return true;
-			}
-		}
+                if (name == null)
+                    return false;
+                if (name.length() == 0)
+                    return false;
+                if (name.length() > 4)
+                    return false;
+                return true;
+            }
+        }
 
-		@CheckWith(value = NameCheck1.class, ignoreIfNull = false)
-		public String name;
-	}
+        @CheckWith(value = NameCheck1.class, ignoreIfNull = false)
+        public String name;
+    }
 
-	protected static class TestEntity2
-	{
-		protected static class NameCheck2 implements SimpleCheck
-		{
-			protected static final long serialVersionUID = 1L;
+    protected static class TestEntity2 {
+        protected static class NameCheck2 implements SimpleCheck {
+            protected static final long serialVersionUID = 1L;
 
-			public boolean isSatisfied(final Object validatedObject, final Object value)
-			{
-				return ((TestEntity2) validatedObject).isValidName((String) value);
-			}
-		}
+            public boolean isSatisfied(final Object validatedObject, final Object value) {
+                return ((TestEntity2) validatedObject).isValidName((String) value);
+            }
+        }
 
-		@CheckWith(value = NameCheck2.class)
-		@NotNull
-		public String name;
+        @CheckWith(value = NameCheck2.class)
+        @NotNull
+        public String name;
 
-		protected boolean isValidName(final String name)
-		{
-			if (name.length() == 0) return false;
-			if (name.length() > 4) return false;
-			return true;
-		}
-	}
+        protected boolean isValidName(final String name) {
+            if (name.length() == 0)
+                return false;
+            if (name.length() > 4)
+                return false;
+            return true;
+        }
+    }
 
-	public void testCheckWith1()
-	{
-		final Validator validator = new Validator();
+    public void testCheckWith1() {
+        final Validator validator = new Validator();
 
-		final TestEntity1 t = new TestEntity1();
+        final TestEntity1 t = new TestEntity1();
 
-		List<ConstraintViolation> violations;
+        List<ConstraintViolation> violations;
 
-		violations = validator.validate(t);
-		assertEquals(1, violations.size());
+        violations = validator.validate(t);
+        assertEquals(1, violations.size());
 
-		t.name = "";
-		violations = validator.validate(t);
-		assertEquals(1, violations.size());
+        t.name = "";
+        violations = validator.validate(t);
+        assertEquals(1, violations.size());
 
-		t.name = "12345";
-		violations = validator.validate(t);
-		assertEquals(1, violations.size());
+        t.name = "12345";
+        violations = validator.validate(t);
+        assertEquals(1, violations.size());
 
-		t.name = "1234";
-		violations = validator.validate(t);
-		assertEquals(0, violations.size());
-	}
+        t.name = "1234";
+        violations = validator.validate(t);
+        assertEquals(0, violations.size());
+    }
 
-	public void testCheckWith2()
-	{
-		final Validator validator = new Validator();
+    public void testCheckWith2() {
+        final Validator validator = new Validator();
 
-		final TestEntity2 t = new TestEntity2();
+        final TestEntity2 t = new TestEntity2();
 
-		List<ConstraintViolation> violations;
+        List<ConstraintViolation> violations;
 
-		violations = validator.validate(t);
-		assertEquals(1, violations.size());
+        violations = validator.validate(t);
+        assertEquals(1, violations.size());
 
-		t.name = "";
-		violations = validator.validate(t);
-		assertEquals(1, violations.size());
+        t.name = "";
+        violations = validator.validate(t);
+        assertEquals(1, violations.size());
 
-		t.name = "12345";
-		violations = validator.validate(t);
-		assertEquals(1, violations.size());
+        t.name = "12345";
+        violations = validator.validate(t);
+        assertEquals(1, violations.size());
 
-		t.name = "1234";
-		violations = validator.validate(t);
-		assertEquals(0, violations.size());
-	}
+        t.name = "1234";
+        violations = validator.validate(t);
+        assertEquals(0, violations.size());
+    }
 }

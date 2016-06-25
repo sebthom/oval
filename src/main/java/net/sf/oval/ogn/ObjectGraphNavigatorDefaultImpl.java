@@ -29,37 +29,31 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * 
  * @author Sebastian Thomschke
  */
-public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
-{
-	public ObjectGraphNavigationResult navigateTo(final Object root, final String path)
-			throws InvalidConfigurationException
-	{
-		Assert.argumentNotNull("root", root);
-		Assert.argumentNotNull("path", path);
+public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
+    public ObjectGraphNavigationResult navigateTo(final Object root, final String path) throws InvalidConfigurationException {
+        Assert.argumentNotNull("root", root);
+        Assert.argumentNotNull("path", path);
 
-		Object parent = null;
-		Object target = root;
-		AccessibleObject targetAccessor = null;
-		for (final String chunk : path.split("\\."))
-		{
-			parent = target;
-			if (parent == null) return null;
-			final Field field = ReflectionUtils.getFieldRecursive(parent.getClass(), chunk);
-			if (field == null)
-			{
-				final Method getter = ReflectionUtils.getGetterRecursive(parent.getClass(), chunk);
-				if (getter == null)
-					throw new InvalidConfigurationException("Invalid object navigation path from root object class ["
-							+ root.getClass().getName() + "] path: " + path);
-				targetAccessor = getter;
-				target = ReflectionUtils.invokeMethod(getter, parent);
-			}
-			else
-			{
-				targetAccessor = field;
-				target = ReflectionUtils.getFieldValue(field, parent);
-			}
-		}
-		return new ObjectGraphNavigationResult(root, path, parent, targetAccessor, target);
-	}
+        Object parent = null;
+        Object target = root;
+        AccessibleObject targetAccessor = null;
+        for (final String chunk : path.split("\\.")) {
+            parent = target;
+            if (parent == null)
+                return null;
+            final Field field = ReflectionUtils.getFieldRecursive(parent.getClass(), chunk);
+            if (field == null) {
+                final Method getter = ReflectionUtils.getGetterRecursive(parent.getClass(), chunk);
+                if (getter == null)
+                    throw new InvalidConfigurationException("Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: "
+                            + path);
+                targetAccessor = getter;
+                target = ReflectionUtils.invokeMethod(getter, parent);
+            } else {
+                targetAccessor = field;
+                target = ReflectionUtils.getFieldValue(field, parent);
+            }
+        }
+        return new ObjectGraphNavigationResult(root, path, parent, targetAccessor, target);
+    }
 }

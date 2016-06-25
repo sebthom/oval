@@ -28,35 +28,32 @@ import net.sf.oval.constraint.Length;
 /**
  * @author Sebastian Thomschke
  */
-public class SerializationTest extends TestCase
-{
-	protected static class Person implements Serializable
-	{
-		private static final long serialVersionUID = 1L;
+public class SerializationTest extends TestCase {
+    protected static class Person implements Serializable {
+        private static final long serialVersionUID = 1L;
 
-		@Length(max = 5)
-		public String firstName;
-	}
+        @Length(max = 5)
+        public String firstName;
+    }
 
-	public void testSerialization() throws IOException, ClassNotFoundException
-	{
-		final Validator validator = new Validator();
+    public void testSerialization() throws IOException, ClassNotFoundException {
+        final Validator validator = new Validator();
 
-		final Person p = new Person();
-		p.firstName = "123456";
-		List<ConstraintViolation> violations = validator.validate(p);
-		assertTrue(violations.size() == 1);
+        final Person p = new Person();
+        p.firstName = "123456";
+        List<ConstraintViolation> violations = validator.validate(p);
+        assertTrue(violations.size() == 1);
 
-		// serialize the violations
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(bos);
-		oos.writeObject(violations);
-		oos.flush();
-		byte[] bytes = bos.toByteArray();
+        // serialize the violations
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(violations);
+        oos.flush();
+        byte[] bytes = bos.toByteArray();
 
-		// deserialize the violations
-		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-		ObjectInputStream ois = new ObjectInputStream(bis);
-		assertTrue(ois.readObject() instanceof List);
-	}
+        // deserialize the violations
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        assertTrue(ois.readObject() instanceof List);
+    }
 }

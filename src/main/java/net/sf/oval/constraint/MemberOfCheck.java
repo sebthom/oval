@@ -27,119 +27,79 @@ import net.sf.oval.internal.util.StringUtils;
 /**
  * @author Sebastian Thomschke
  */
-public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf>
-{
-	private static final long serialVersionUID = 1L;
+public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf> {
+    private static final long serialVersionUID = 1L;
 
-	private boolean ignoreCase;
-	private List<String> members;
-	private transient List<String> membersLowerCase;
+    private boolean ignoreCase;
+    private List<String> members;
+    private transient List<String> membersLowerCase;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void configure(final MemberOf constraintAnnotation)
-	{
-		super.configure(constraintAnnotation);
-		setIgnoreCase(constraintAnnotation.ignoreCase());
-		setMembers(constraintAnnotation.value());
-	}
+    @Override
+    public void configure(final MemberOf constraintAnnotation) {
+        super.configure(constraintAnnotation);
+        setIgnoreCase(constraintAnnotation.ignoreCase());
+        setMembers(constraintAnnotation.value());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-		messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-		messageVariables.put("members", StringUtils.implode(members, ","));
-		return messageVariables;
-	}
+    @Override
+    protected Map<String, String> createMessageVariables() {
+        final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+        messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
+        messageVariables.put("members", StringUtils.implode(members, ","));
+        return messageVariables;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected ConstraintTarget[] getAppliesToDefault()
-	{
-		return new ConstraintTarget[]{ConstraintTarget.VALUES};
-	}
+    @Override
+    protected ConstraintTarget[] getAppliesToDefault() {
+        return new ConstraintTarget[] { ConstraintTarget.VALUES };
+    }
 
-	/**
-	 * @return the members
-	 */
-	public List<String> getMembers()
-	{
-		final List<String> v = getCollectionFactory().createList();
-		v.addAll(members);
-		return v;
-	}
+    public List<String> getMembers() {
+        final List<String> v = getCollectionFactory().createList();
+        v.addAll(members);
+        return v;
+    }
 
-	private List<String> getMembersLowerCase()
-	{
-		if (membersLowerCase == null)
-		{
-			membersLowerCase = getCollectionFactory().createList(members.size());
-			for (final String val : members)
-			{
-				membersLowerCase.add(val.toLowerCase(Validator.getLocaleProvider().getLocale()));
-			}
-		}
-		return membersLowerCase;
-	}
+    private List<String> getMembersLowerCase() {
+        if (membersLowerCase == null) {
+            membersLowerCase = getCollectionFactory().createList(members.size());
+            for (final String val : members) {
+                membersLowerCase.add(val.toLowerCase(Validator.getLocaleProvider().getLocale()));
+            }
+        }
+        return membersLowerCase;
+    }
 
-	/**
-	 * @return the ignoreCase
-	 */
-	public boolean isIgnoreCase()
-	{
-		return ignoreCase;
-	}
+    public boolean isIgnoreCase() {
+        return ignoreCase;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
-			final Validator validator)
-	{
-		if (valueToValidate == null) return true;
+    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+        if (valueToValidate == null)
+            return true;
 
-		if (ignoreCase)
-			return getMembersLowerCase().contains(valueToValidate.toString().toLowerCase(Validator.getLocaleProvider().getLocale()));
+        if (ignoreCase)
+            return getMembersLowerCase().contains(valueToValidate.toString().toLowerCase(Validator.getLocaleProvider().getLocale()));
 
-		return members.contains(valueToValidate.toString());
-	}
+        return members.contains(valueToValidate.toString());
+    }
 
-	/**
-	 * @param ignoreCase the ignoreCase to set
-	 */
-	public void setIgnoreCase(final boolean ignoreCase)
-	{
-		this.ignoreCase = ignoreCase;
-		requireMessageVariablesRecreation();
-	}
+    public void setIgnoreCase(final boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+        requireMessageVariablesRecreation();
+    }
 
-	/**
-	 * @param members the members to set
-	 */
-	public void setMembers(final List<String> members)
-	{
-		this.members = getCollectionFactory().createList();
-		this.members.addAll(members);
-		membersLowerCase = null;
-		requireMessageVariablesRecreation();
-	}
+    public void setMembers(final List<String> members) {
+        this.members = getCollectionFactory().createList();
+        this.members.addAll(members);
+        membersLowerCase = null;
+        requireMessageVariablesRecreation();
+    }
 
-	/**
-	 * @param members the members to set
-	 */
-	public void setMembers(final String... members)
-	{
-		this.members = getCollectionFactory().createList();
-		ArrayUtils.addAll(this.members, members);
-		membersLowerCase = null;
-		requireMessageVariablesRecreation();
-	}
+    public void setMembers(final String... members) {
+        this.members = getCollectionFactory().createList();
+        ArrayUtils.addAll(this.members, members);
+        membersLowerCase = null;
+        requireMessageVariablesRecreation();
+    }
 }

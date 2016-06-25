@@ -15,7 +15,6 @@ package net.sf.oval.logging;
 /**
  * @author Sebastian Thomschke
  */
-public interface LoggerFactory
-{
-	Logger createLogger(String name);
+public interface LoggerFactory {
+    Logger createLogger(String name);
 }

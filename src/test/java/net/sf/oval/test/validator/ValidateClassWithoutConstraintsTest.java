@@ -22,43 +22,37 @@ import net.sf.oval.configuration.xml.XMLConfigurer;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidateClassWithoutConstraintsTest extends TestCase
-{
-	protected static class TestEntity
-	{
-		protected String name;
+public class ValidateClassWithoutConstraintsTest extends TestCase {
+    protected static class TestEntity {
+        protected String name;
 
-		protected TestEntity(final String name)
-		{
-			this.name = name;
-		}
+        protected TestEntity(final String name) {
+            this.name = name;
+        }
 
-		/**
-		 * @param name the name to set
-		 */
-		public void setName(final String name)
-		{
-			this.name = name;
-		}
-	}
+        /**
+         * @param name the name to set
+         */
+        public void setName(final String name) {
+            this.name = name;
+        }
+    }
 
-	public void testClassWithoutConstraints()
-	{
-		final TestEntity e = new TestEntity(null);
+    public void testClassWithoutConstraints() {
+        final TestEntity e = new TestEntity(null);
 
-		final Validator v = new Validator();
-		final List<ConstraintViolation> violations = v.validate(e);
-		assertEquals(0, violations.size());
-	}
+        final Validator v = new Validator();
+        final List<ConstraintViolation> violations = v.validate(e);
+        assertEquals(0, violations.size());
+    }
 
-	public void testEmptyXmlConfigurer()
-	{
-		final XMLConfigurer xmlConfigurer = new XMLConfigurer();
-		final Validator v = new Validator(xmlConfigurer);
+    public void testEmptyXmlConfigurer() {
+        final XMLConfigurer xmlConfigurer = new XMLConfigurer();
+        final Validator v = new Validator(xmlConfigurer);
 
-		final TestEntity e = new TestEntity(null);
+        final TestEntity e = new TestEntity(null);
 
-		final List<ConstraintViolation> violations = v.validate(e);
-		assertEquals(0, violations.size());
-	}
+        final List<ConstraintViolation> violations = v.validate(e);
+        assertEquals(0, violations.size());
+    }
 }

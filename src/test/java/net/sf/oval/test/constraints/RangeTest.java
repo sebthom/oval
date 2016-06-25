@@ -17,24 +17,22 @@ import net.sf.oval.constraint.RangeCheck;
 /**
  * @author Sebastian Thomschke
  */
-public class RangeTest extends AbstractContraintsTest
-{
-	public void testRange()
-	{
-		final RangeCheck check = new RangeCheck();
-		super.testCheck(check);
-		assertTrue(check.isSatisfied(null, null, null, null));
+public class RangeTest extends AbstractContraintsTest {
+    public void testRange() {
+        final RangeCheck check = new RangeCheck();
+        super.testCheck(check);
+        assertTrue(check.isSatisfied(null, null, null, null));
 
-		check.setMin(3);
-		assertEquals(3.0, check.getMin());
+        check.setMin(3);
+        assertEquals(3.0, check.getMin());
 
-		assertTrue(check.isSatisfied(null, "16", null, null));
+        assertTrue(check.isSatisfied(null, "16", null, null));
 
-		check.setMax(6);
-		assertEquals(6.0, check.getMax());
+        check.setMax(6);
+        assertEquals(6.0, check.getMax());
 
-		assertTrue(check.isSatisfied(null, "4", null, null));
-		assertFalse(check.isSatisfied(null, "16", null, null));
-		assertFalse(check.isSatisfied(null, "2", null, null));
-	}
+        assertTrue(check.isSatisfied(null, "4", null, null));
+        assertFalse(check.isSatisfied(null, "16", null, null));
+        assertFalse(check.isSatisfied(null, "2", null, null));
+    }
 }

@@ -22,25 +22,22 @@ import net.sf.oval.constraint.NotNull;
 /**
  * @author Sebastian Thomschke
  */
-public class ConditionalConstraintsTest extends TestCase
-{
-	protected static class TestEntity
-	{
-		@NotNull(when = "groovy:_this.lastname!=null", message = "NOT_NULL")
-		public String firstname;
+public class ConditionalConstraintsTest extends TestCase {
+    protected static class TestEntity {
+        @NotNull(when = "groovy:_this.lastname!=null", message = "NOT_NULL")
+        public String firstname;
 
-		public String lastname;
-	}
+        public String lastname;
+    }
 
-	public void testConstraintViolationOrder()
-	{
-		final TestEntity e = new TestEntity();
-		final Validator v = new Validator();
-		List<ConstraintViolation> violations = v.validate(e);
-		assertEquals(0, violations.size());
-		e.lastname = "foo";
-		violations = v.validate(e);
-		assertEquals(1, violations.size());
-		assertEquals("NOT_NULL", violations.get(0).getMessage());
-	}
+    public void testConstraintViolationOrder() {
+        final TestEntity e = new TestEntity();
+        final Validator v = new Validator();
+        List<ConstraintViolation> violations = v.validate(e);
+        assertEquals(0, violations.size());
+        e.lastname = "foo";
+        violations = v.validate(e);
+        assertEquals(1, violations.size());
+        assertEquals("NOT_NULL", violations.get(0).getMessage());
+    }
 }

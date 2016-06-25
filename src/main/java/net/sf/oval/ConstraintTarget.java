@@ -15,25 +15,24 @@ package net.sf.oval;
 /**
  * @author Sebastian Thomschke
  */
-public enum ConstraintTarget
-{
-	/**
-	 * apply the constraint to the keys of a map
-	 */
-	KEYS,
+public enum ConstraintTarget {
+    /**
+     * apply the constraint to the keys of a map
+     */
+    KEYS,
 
-	/**
-	 * apply the constraint to the values of a the map / the items of the collection / the elements of the array
-	 */
-	VALUES,
+    /**
+     * apply the constraint to the values of a the map / the items of the collection / the elements of the array
+     */
+    VALUES,
 
-	/**
-	 * recursively apply the constraint to items of keys and values in case they are lists or arrays themselves
-	 */
-	RECURSIVE,
+    /**
+     * recursively apply the constraint to items of keys and values in case they are lists or arrays themselves
+     */
+    RECURSIVE,
 
-	/**
-	 * apply the constraint to the collection / map / array object itself
-	 */
-	CONTAINER
+    /**
+     * apply the constraint to the collection / map / array object itself
+     */
+    CONTAINER
 }

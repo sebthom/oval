@@ -29,34 +29,28 @@ import org.jruby.runtime.builtin.IRubyObject;
  * @author Sebastian Thomschke
  *
  */
-public class ExpressionLanguageJRubyImpl extends AbstractExpressionLanguage
-{
-	private static final Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
+public class ExpressionLanguageJRubyImpl extends AbstractExpressionLanguage {
+    private static final Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
 
-	public Object evaluate(final String expression, final Map<String, ? > values) throws ExpressionEvaluationException
-	{
-		LOG.debug("Evaluating JRuby expression: {1}", expression);
-		try
-		{
-			final RubyInstanceConfig config = new RubyInstanceConfig();
-			config.setCompatVersion(CompatVersion.RUBY1_9);
-			final Ruby runtime = JavaEmbedUtils.initialize(new ArrayList<String>(), config);
+    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
+        LOG.debug("Evaluating JRuby expression: {1}", expression);
+        try {
+            final RubyInstanceConfig config = new RubyInstanceConfig();
+            config.setCompatVersion(CompatVersion.RUBY1_9);
+            final Ruby runtime = JavaEmbedUtils.initialize(new ArrayList<String>(), config);
 
-			final StringBuilder localVars = new StringBuilder();
-			for (final Entry<String, ? > entry : values.entrySet())
-			{
-				runtime.getGlobalVariables().set("$" + entry.getKey(), JavaEmbedUtils.javaToRuby(runtime, entry.getValue()));
-				localVars.append(entry.getKey()) //
-						.append("=$") //
-						.append(entry.getKey()) //
-						.append("\n");
-			}
-			final IRubyObject result = runtime.evalScriptlet(localVars + expression);
-			return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
-		}
-		catch (final RuntimeException ex)
-		{
-			throw new ExpressionEvaluationException("Evaluating JRuby expression failed: " + expression, ex);
-		}
-	}
+            final StringBuilder localVars = new StringBuilder();
+            for (final Entry<String, ?> entry : values.entrySet()) {
+                runtime.getGlobalVariables().set("$" + entry.getKey(), JavaEmbedUtils.javaToRuby(runtime, entry.getValue()));
+                localVars.append(entry.getKey()) //
+                    .append("=$") //
+                    .append(entry.getKey()) //
+                    .append("\n");
+            }
+            final IRubyObject result = runtime.evalScriptlet(localVars + expression);
+            return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
+        } catch (final RuntimeException ex) {
+            throw new ExpressionEvaluationException("Evaluating JRuby expression failed: " + expression, ex);
+        }
+    }
 }

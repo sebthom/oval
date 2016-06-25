@@ -26,27 +26,25 @@ import net.sf.oval.context.OValContext;
  *
  * @author Sebastian Thomschke
  */
-public class ConstraintsCheck extends AbstractAnnotationCheck<Annotation>
-{
-	private static final long serialVersionUID = 1L;
+public class ConstraintsCheck extends AbstractAnnotationCheck<Annotation> {
+    private static final long serialVersionUID = 1L;
 
-	public List<Check> checks;
+    public List<Check> checks;
 
-	@Override
-	protected ConstraintTarget[] getAppliesToDefault()
-	{
-		return new ConstraintTarget[]{ConstraintTarget.CONTAINER /*, ConstraintTarget.KEYS, ConstraintTarget.VALUES,
-																	ConstraintTarget.RECURSIVE*/};
-	}
+    @Override
+    protected ConstraintTarget[] getAppliesToDefault() {
+        return new ConstraintTarget[] { ConstraintTarget.CONTAINER /*, ConstraintTarget.KEYS, ConstraintTarget.VALUES,
+                                                                   ConstraintTarget.RECURSIVE*/ };
+    }
 
-	/**
-	 *  <b>This method is not used.</b><br>
-	 *  The validation of this special constraint is directly performed by the Validator class
-	 *  @throws UnsupportedOperationException always thrown if this method is invoked
-	 */
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
-			final Validator validator) throws UnsupportedOperationException
-	{
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * <b>This method is not used.</b><br>
+     * The validation of this special constraint is directly performed by the Validator class
+     * 
+     * @throws UnsupportedOperationException always thrown if this method is invoked
+     */
+    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+            throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -17,19 +17,18 @@ import java.util.List;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodConfiguration extends ConfigurationElement
-{
-	private static final long serialVersionUID = 1L;
+public class MethodConfiguration extends ConfigurationElement {
+    private static final long serialVersionUID = 1L;
 
-	public String name;
-	public Boolean isInvariant;
-	
-	public List<ParameterConfiguration> parameterConfigurations;
-	public MethodReturnValueConfiguration returnValueConfiguration;
+    public String name;
+    public Boolean isInvariant;
 
-	public Boolean postCheckInvariants;
-	public MethodPostExecutionConfiguration postExecutionConfiguration;
-	
-	public Boolean preCheckInvariants;
-	public MethodPreExecutionConfiguration preExecutionConfiguration;
+    public List<ParameterConfiguration> parameterConfigurations;
+    public MethodReturnValueConfiguration returnValueConfiguration;
+
+    public Boolean postCheckInvariants;
+    public MethodPostExecutionConfiguration postExecutionConfiguration;
+
+    public Boolean preCheckInvariants;
+    public MethodPreExecutionConfiguration preExecutionConfiguration;
 }

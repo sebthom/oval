@@ -25,69 +25,52 @@ import net.sf.oval.guard.Guarded;
  *
  * @author Sebastian Thomschke
  */
-public class ExceptionTranslatorTest extends TestCase
-{
-	@Guarded
-	public static final class TestEntity
-	{
-		public void setName(@NotNull(message = "NULL") final String name)
-		{
-			//...
-		}
+public class ExceptionTranslatorTest extends TestCase {
+    @Guarded
+    public static final class TestEntity {
+        public void setName(@NotNull(message = "NULL") final String name) {
+            //...
+        }
 
-		@SuppressWarnings("static-method")
-		public void throwCheckedException() throws InvocationTargetException
-		{
-			throw new InvocationTargetException(null);
-		}
-	}
+        @SuppressWarnings("static-method")
+        public void throwCheckedException() throws InvocationTargetException {
+            throw new InvocationTargetException(null);
+        }
+    }
 
-	public void testExceptionTranslator()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
+    public void testExceptionTranslator() {
+        final Guard guard = new Guard();
+        TestGuardAspect.aspectOf().setGuard(guard);
 
-		assertNull(guard.getExceptionTranslator());
+        assertNull(guard.getExceptionTranslator());
 
-		try
-		{
-			final TestEntity t = new TestEntity();
-			t.setName(null);
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			assertEquals(ex.getMessage(), "NULL");
-		}
+        try {
+            final TestEntity t = new TestEntity();
+            t.setName(null);
+        } catch (final ConstraintsViolatedException ex) {
+            assertEquals(ex.getMessage(), "NULL");
+        }
 
-		try
-		{
-			final TestEntity t = new TestEntity();
+        try {
+            final TestEntity t = new TestEntity();
 
-			guard.setExceptionTranslator(new ExceptionTranslatorJDKExceptionsImpl());
-			try
-			{
-				t.setName(null);
-				fail();
-			}
-			catch (final IllegalArgumentException ex)
-			{
-				assertEquals(ex.getMessage(), "NULL");
-			}
+            guard.setExceptionTranslator(new ExceptionTranslatorJDKExceptionsImpl());
+            try {
+                t.setName(null);
+                fail();
+            } catch (final IllegalArgumentException ex) {
+                assertEquals(ex.getMessage(), "NULL");
+            }
 
-			try
-			{
-				t.throwCheckedException();
-				fail();
-			}
-			catch (final InvocationTargetException ex)
-			{
-				// expected
-			}
+            try {
+                t.throwCheckedException();
+                fail();
+            } catch (final InvocationTargetException ex) {
+                // expected
+            }
 
-		}
-		finally
-		{
-			guard.setExceptionTranslator(null);
-		}
-	}
+        } finally {
+            guard.setExceptionTranslator(null);
+        }
+    }
 }

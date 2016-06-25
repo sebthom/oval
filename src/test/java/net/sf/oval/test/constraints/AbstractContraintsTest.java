@@ -19,25 +19,24 @@ import net.sf.oval.Validator;
 /**
  * @author Sebastian Thomschke
  */
-public abstract class AbstractContraintsTest extends TestCase
-{
-	protected final Validator validator = new Validator();
+public abstract class AbstractContraintsTest extends TestCase {
+    protected final Validator validator = new Validator();
 
-	/**
-	 * Performs basic tests of the check implementation.
-	 * @param check
-	 */
-	protected void testCheck(final Check check)
-	{
-		check.setMessage("XYZ");
-		assertEquals("XYZ", check.getMessage());
+    /**
+     * Performs basic tests of the check implementation.
+     * 
+     * @param check
+     */
+    protected void testCheck(final Check check) {
+        check.setMessage("XYZ");
+        assertEquals("XYZ", check.getMessage());
 
-		check.setProfiles("p1");
-		assertNotNull(check.getProfiles());
-		assertEquals(1, check.getProfiles().length);
-		assertEquals("p1", check.getProfiles()[0]);
+        check.setProfiles("p1");
+        assertNotNull(check.getProfiles());
+        assertEquals(1, check.getProfiles().length);
+        assertEquals("p1", check.getProfiles()[0]);
 
-		check.setProfiles((String[]) null);
-		assertTrue(check.getProfiles() == null || check.getProfiles().length == 0);
-	}
+        check.setProfiles((String[]) null);
+        assertTrue(check.getProfiles() == null || check.getProfiles().length == 0);
+    }
 }

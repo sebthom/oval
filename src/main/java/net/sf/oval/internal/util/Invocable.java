@@ -16,7 +16,6 @@ package net.sf.oval.internal.util;
  * @author Sebastian Thomschke
  *
  */
-public interface Invocable
-{
-	Object invoke() throws Throwable;
+public interface Invocable {
+    Object invoke() throws Throwable;
 }

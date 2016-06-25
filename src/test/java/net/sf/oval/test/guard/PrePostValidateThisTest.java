@@ -26,137 +26,118 @@ import net.sf.oval.guard.PreValidateThis;
 /**
  * @author Sebastian Thomschke
  */
-public class PrePostValidateThisTest extends TestCase
-{
-	@Guarded(applyFieldConstraintsToSetters = true, checkInvariants = false)
-	public static class TestEntity
-	{
-		@NotNull(message = "NOT_NULL")
-		public String name;
+public class PrePostValidateThisTest extends TestCase {
+    @Guarded(applyFieldConstraintsToSetters = true, checkInvariants = false)
+    public static class TestEntity {
+        @NotNull(message = "NOT_NULL")
+        public String name;
 
-		public TestEntity()
-		{
-			// do nothing
-		}
+        public TestEntity() {
+            // do nothing
+        }
 
-		@PostValidateThis
-		public TestEntity(final String name)
-		{
-			this.name = name;
-		}
+        @PostValidateThis
+        public TestEntity(final String name) {
+            this.name = name;
+        }
 
-		@PreValidateThis
-		public String getName()
-		{
-			return name;
-		}
+        @PreValidateThis
+        public String getName() {
+            return name;
+        }
 
-		public void setName(final String name)
-		{
-			this.name = name;
-		}
+        public void setName(final String name) {
+            this.name = name;
+        }
 
-		@PostValidateThis
-		public void setNamePost(final String name)
-		{
-			this.name = name;
-		}
-	}
+        @PostValidateThis
+        public void setNamePost(final String name) {
+            this.name = name;
+        }
+    }
 
-	@SuppressWarnings("unused")
-	public void testConstructorValidation()
-	{
-		try
-		{
-			new TestEntity(null);
+    @SuppressWarnings("unused")
+    public void testConstructorValidation() {
+        try {
+            new TestEntity(null);
 
-			fail();
-		}
-		catch (final ConstraintsViolatedException e)
-		{
-			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertNotNull(violations);
-			assertEquals(1, violations.length);
-			assertEquals("NOT_NULL", violations[0].getMessage());
-			assertTrue(violations[0].getContext() instanceof FieldContext);
-		}
+            fail();
+        } catch (final ConstraintsViolatedException e) {
+            final ConstraintViolation[] violations = e.getConstraintViolations();
+            assertNotNull(violations);
+            assertEquals(1, violations.length);
+            assertEquals("NOT_NULL", violations[0].getMessage());
+            assertTrue(violations[0].getContext() instanceof FieldContext);
+        }
 
-		new TestEntity("test");
-	}
+        new TestEntity("test");
+    }
 
-	public void testMethodValidation()
-	{
-		final TestEntity t = new TestEntity();
+    public void testMethodValidation() {
+        final TestEntity t = new TestEntity();
 
-		try
-		{
-			t.getName();
-			fail();
-		}
-		catch (final ConstraintsViolatedException e)
-		{
-			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertNotNull(violations);
-			assertTrue(violations.length > 0);
-			assertEquals("NOT_NULL", violations[0].getMessage());
-			assertTrue(violations[0].getContext() instanceof FieldContext);
-		}
+        try {
+            t.getName();
+            fail();
+        } catch (final ConstraintsViolatedException e) {
+            final ConstraintViolation[] violations = e.getConstraintViolations();
+            assertNotNull(violations);
+            assertTrue(violations.length > 0);
+            assertEquals("NOT_NULL", violations[0].getMessage());
+            assertTrue(violations[0].getContext() instanceof FieldContext);
+        }
 
-		t.setName("test");
+        t.setName("test");
 
-		try
-		{
-			t.setName(null);
-			fail();
-		}
-		catch (final ConstraintsViolatedException e)
-		{
-			final ConstraintViolation[] violations = e.getConstraintViolations();
-			assertNotNull(violations);
-			assertTrue(violations.length > 0);
-			assertEquals("NOT_NULL", violations[0].getMessage());
-			assertTrue(violations[0].getContext() instanceof MethodParameterContext);
-		}
+        try {
+            t.setName(null);
+            fail();
+        } catch (final ConstraintsViolatedException e) {
+            final ConstraintViolation[] violations = e.getConstraintViolations();
+            assertNotNull(violations);
+            assertTrue(violations.length > 0);
+            assertEquals("NOT_NULL", violations[0].getMessage());
+            assertTrue(violations[0].getContext() instanceof MethodParameterContext);
+        }
 
-		t.setName("the name");
-		assertNotNull(t.getName());
-	}
+        t.setName("the name");
+        assertNotNull(t.getName());
+    }
 
-	public void testMethodValidationInProbeMode()
-	{
-		final TestEntity t = new TestEntity();
+    public void testMethodValidationInProbeMode() {
+        final TestEntity t = new TestEntity();
 
-		TestGuardAspect.aspectOf().getGuard().enableProbeMode(t);
+        TestGuardAspect.aspectOf().getGuard().enableProbeMode(t);
 
-		final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
-		TestGuardAspect.aspectOf().getGuard().addListener(va, t);
+        final ConstraintsViolatedAdapter va = new ConstraintsViolatedAdapter();
+        TestGuardAspect.aspectOf().getGuard().addListener(va, t);
 
-		// test non-getter precondition failed
-		t.getName();
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-		assertTrue(va.getConstraintViolations().size() == 1);
-		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
-		va.clear();
+        // test non-getter precondition failed
+        t.getName();
+        assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+        assertTrue(va.getConstraintViolations().size() == 1);
+        assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+        va.clear();
 
-		t.setName(null);
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-		assertTrue(va.getConstraintViolations().size() == 1);
-		assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
-		va.clear();
+        t.setName(null);
+        assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
+        assertTrue(va.getConstraintViolations().size() == 1);
+        assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+        va.clear();
 
-		// test post-condition ignored even if pre-conditions satisfied
-		t.setNamePost(null);
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+        // test post-condition ignored even if pre-conditions satisfied
+        t.setNamePost(null);
+        assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 
-		// test setter
-		t.setName("the name");
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
-		assertTrue(va.getConstraintViolations().size() == 0);
+        // test setter
+        t.setName("the name");
+        assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+        assertTrue(va.getConstraintViolations().size() == 0);
 
-		// test getter returns null because we are in probe mode
-		t.name = "the name";
-		assertNull(t.getName());
-		assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
-		assertTrue(va.getConstraintViolations().size() == 0);
-	}
+        // test getter returns null because we are in probe mode
+        t.name = "the name";
+        assertNull(t.getName());
+        assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+        assertTrue(va.getConstraintViolations().size() == 0);
+    }
 }

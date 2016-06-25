@@ -24,42 +24,36 @@ import net.sf.oval.context.OValContext;
 /**
  * @author Sebastian Thomschke
  */
-public class CustomConstraintViolationsTest extends TestCase
-{
-	public static class CustomCheck extends AbstractCheck
-	{
-		private static final long serialVersionUID = 1L;
+public class CustomConstraintViolationsTest extends TestCase {
+    public static class CustomCheck extends AbstractCheck {
+        private static final long serialVersionUID = 1L;
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isSatisfied(final Object validatedObject, final Object valueToValidate,
-				final OValContext context, final Validator validator)
-		{
-			final Entity entity = (Entity) validatedObject;
-			if (entity.message == null)
-				validator.reportConstraintViolation(new ConstraintViolation(this, "message cannot be null",
-						validatedObject, null, new FieldContext(Entity.class, "message")));
+        /**
+         * {@inheritDoc}
+         */
+        public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+            final Entity entity = (Entity) validatedObject;
+            if (entity.message == null)
+                validator.reportConstraintViolation(new ConstraintViolation(this, "message cannot be null", validatedObject, null, new FieldContext(
+                    Entity.class, "message")));
 
-			if (entity.name == null)
-				validator.reportConstraintViolation(new ConstraintViolation(this, "name cannot be null",
-						validatedObject, null, new FieldContext(Entity.class, "name")));
+            if (entity.name == null)
+                validator.reportConstraintViolation(new ConstraintViolation(this, "name cannot be null", validatedObject, null, new FieldContext(Entity.class,
+                    "name")));
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
-	public final class Entity
-	{
-		String name;
-		String message;
-	}
+    public final class Entity {
+        String name;
+        String message;
+    }
 
-	public void testMessages()
-	{
-		final Validator val = new Validator();
-		val.addChecks(Entity.class, new CustomCheck());
-		final List<ConstraintViolation> violations = val.validate(new Entity());
-		assertEquals(2, violations.size());
-	}
+    public void testMessages() {
+        final Validator val = new Validator();
+        val.addChecks(Entity.class, new CustomCheck());
+        final List<ConstraintViolation> violations = val.validate(new Entity());
+        assertEquals(2, violations.size());
+    }
 }

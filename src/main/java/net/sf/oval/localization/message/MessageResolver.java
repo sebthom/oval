@@ -15,7 +15,6 @@ package net.sf.oval.localization.message;
 /**
  * @author Sebastian Thomschke
  */
-public interface MessageResolver
-{
-	String getMessage(String key);
+public interface MessageResolver {
+    String getMessage(String key);
 }

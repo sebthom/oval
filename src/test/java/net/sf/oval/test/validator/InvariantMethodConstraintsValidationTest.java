@@ -25,87 +25,77 @@ import net.sf.oval.guard.SuppressOValWarnings;
 /**
  * @author Sebastian Thomschke
  */
-public class InvariantMethodConstraintsValidationTest extends TestCase
-{
-	public static class TestEntity
-	{
-		public String name;
+public class InvariantMethodConstraintsValidationTest extends TestCase {
+    public static class TestEntity {
+        public String name;
 
-		@IsInvariant
-		@NotNull(message = "NOT_NULL")
-		@Length(max = 4, message = "LENGTH")
-		public String getName()
-		{
-			return name;
-		}
-	}
+        @IsInvariant
+        @NotNull(message = "NOT_NULL")
+        @Length(max = 4, message = "LENGTH")
+        public String getName() {
+            return name;
+        }
+    }
 
-	public static class TestEntityInvalidConfig extends TestEntity
-	{
-		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 7" warning by the ApiUsageAuditor
-		 * because class is not guarded
-		 */
-		public TestEntityInvalidConfig(@NotNull final String defaultValue)
-		{
-		//
-		}
+    public static class TestEntityInvalidConfig extends TestEntity {
+        /**
+         * the @NotNull annotation should lead to a "OVal API usage violation 7" warning by the ApiUsageAuditor
+         * because class is not guarded
+         */
+        public TestEntityInvalidConfig(@NotNull final String defaultValue) {
+            //
+        }
 
-		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 2" warning by the ApiUsageAuditor
-		 * because class is not guarded
-		 */
-		@NotNull
-		public String doSomething(final String value)
-		{
-			return null;
-		}
+        /**
+         * the @NotNull annotation should lead to a "OVal API usage violation 2" warning by the ApiUsageAuditor
+         * because class is not guarded
+         */
+        @NotNull
+        public String doSomething(final String value) {
+            return null;
+        }
 
-		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 5" warning by the ApiUsageAuditor
-		 * because class is not guarded
-		 */
-		public String doSomething(final String value, @NotNull final String defaultValue)
-		{
-			return null;
-		}
+        /**
+         * the @NotNull annotation should lead to a "OVal API usage violation 5" warning by the ApiUsageAuditor
+         * because class is not guarded
+         */
+        public String doSomething(final String value, @NotNull final String defaultValue) {
+            return null;
+        }
 
-		/**
-		 * the @NotNull annotation should not lead to a "OVal API usage violation 2" warning by the ApiUsageAuditor, 
-		 */
-		@NotNull
-		@SuppressOValWarnings
-		public String doSomething2(final String value)
-		{
-			return null;
-		}
+        /**
+         * the @NotNull annotation should not lead to a "OVal API usage violation 2" warning by the ApiUsageAuditor,
+         */
+        @NotNull
+        @SuppressOValWarnings
+        public String doSomething2(final String value) {
+            return null;
+        }
 
-		/**
-		 * the @NotNull annotation should lead to a "OVal API usage violation 3" warning by the ApiUsageAuditor
-		 * because @IsInvariant is missing
-		 */
-		@NotNull
-		public String getSomething()
-		{
-			return null;
-		}
-	}
+        /**
+         * the @NotNull annotation should lead to a "OVal API usage violation 3" warning by the ApiUsageAuditor
+         * because @IsInvariant is missing
+         */
+        @NotNull
+        public String getSomething() {
+            return null;
+        }
+    }
 
-	public void testMethodReturnValueConstraintValidation()
-	{
-		final Validator validator = new Validator();
+    public void testMethodReturnValueConstraintValidation() {
+        final Validator validator = new Validator();
 
-		{
-			final TestEntity t = new TestEntity();
+        {
+            final TestEntity t = new TestEntity();
 
-			List<ConstraintViolation> violations = validator.validate(t);
-			assertTrue(violations.size() == 1);
-			assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+            List<ConstraintViolation> violations = validator.validate(t);
+            assertTrue(violations.size() == 1);
+            assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
 
-			t.name = "wqerwqer";
-			violations = validator.validate(t);
-			assertTrue(violations.size() == 1);
-			assertTrue(violations.get(0).getMessage().equals("LENGTH"));
-		}
-	}
+            t.name = "wqerwqer";
+            violations = validator.validate(t);
+            assertTrue(violations.size() == 1);
+            assertTrue(violations.get(0).getMessage().equals("LENGTH"));
+        }
+    }
 }

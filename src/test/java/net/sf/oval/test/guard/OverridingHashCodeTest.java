@@ -21,35 +21,27 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class OverridingHashCodeTest extends TestCase
-{
-	@Guarded
-	public static class Entity
-	{
-		@Override
-		public int hashCode()
-		{
-			return super.hashCode();
-		}
+public class OverridingHashCodeTest extends TestCase {
+    @Guarded
+    public static class Entity {
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
 
-		public void setFoo(@NotNull final String s)
-		{
-		//
-		}
-	}
+        public void setFoo(@NotNull final String s) {
+            //
+        }
+    }
 
-	public void testGuarding()
-	{
-		final Guard guard = new Guard();
-		TestGuardAspect.aspectOf().setGuard(guard);
-		try
-		{
-			new Entity().setFoo(null);
-			fail("Violation expected");
-		}
-		catch (final ConstraintsViolatedException e)
-		{
-			// expected
-		}
-	}
+    public void testGuarding() {
+        final Guard guard = new Guard();
+        TestGuardAspect.aspectOf().setGuard(guard);
+        try {
+            new Entity().setFoo(null);
+            fail("Violation expected");
+        } catch (final ConstraintsViolatedException e) {
+            // expected
+        }
+    }
 }

@@ -23,57 +23,47 @@ import net.sf.oval.exception.ConstraintsViolatedException;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidatorAssertValidTest extends TestCase
-{
-	protected static class TestEntity
-	{
-		@NotNull(message = "NOT_NULL")
-		public String name;
+public class ValidatorAssertValidTest extends TestCase {
+    protected static class TestEntity {
+        @NotNull(message = "NOT_NULL")
+        public String name;
 
-		@NotNull(message = "NOT_NULL")
-		public Integer value;
-	}
+        @NotNull(message = "NOT_NULL")
+        public Integer value;
+    }
 
-	public void testValidatorAssert() throws Exception
-	{
-		final TestEntity e = new TestEntity();
-		final Validator v = new Validator();
-		try
-		{
-			v.assertValid(e);
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(2, violations.length);
-			assertEquals("NOT_NULL", violations[0].getMessage());
-			assertEquals("NOT_NULL", violations[1].getMessage());
-		}
+    public void testValidatorAssert() throws Exception {
+        final TestEntity e = new TestEntity();
+        final Validator v = new Validator();
+        try {
+            v.assertValid(e);
+            fail();
+        } catch (final ConstraintsViolatedException ex) {
+            final ConstraintViolation[] violations = ex.getConstraintViolations();
+            assertEquals(2, violations.length);
+            assertEquals("NOT_NULL", violations[0].getMessage());
+            assertEquals("NOT_NULL", violations[1].getMessage());
+        }
 
-		e.name = "asdads";
-		e.value = 5;
-		v.assertValid(e);
-	}
+        e.name = "asdads";
+        e.value = 5;
+        v.assertValid(e);
+    }
 
-	public void testValidatorAssertField() throws Exception
-	{
-		final Field f = TestEntity.class.getField("name");
+    public void testValidatorAssertField() throws Exception {
+        final Field f = TestEntity.class.getField("name");
 
-		final TestEntity e = new TestEntity();
-		final Validator v = new Validator();
-		try
-		{
-			v.assertValidFieldValue(e, f, null);
-			fail();
-		}
-		catch (final ConstraintsViolatedException ex)
-		{
-			final ConstraintViolation[] violations = ex.getConstraintViolations();
-			assertEquals(1, violations.length);
-			assertEquals("NOT_NULL", violations[0].getMessage());
-		}
+        final TestEntity e = new TestEntity();
+        final Validator v = new Validator();
+        try {
+            v.assertValidFieldValue(e, f, null);
+            fail();
+        } catch (final ConstraintsViolatedException ex) {
+            final ConstraintViolation[] violations = ex.getConstraintViolations();
+            assertEquals(1, violations.length);
+            assertEquals("NOT_NULL", violations[0].getMessage());
+        }
 
-		v.assertValidFieldValue(e, f, "test");
-	}
+        v.assertValidFieldValue(e, f, "test");
+    }
 }

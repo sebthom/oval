@@ -19,17 +19,16 @@ import net.sf.oval.Check;
 /**
  * @author Sebastian Thomschke
  */
-public class FieldConfiguration extends ConfigurationElement
-{
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * name of the field
-	 */
-	public String name;
-	
-	/**
-	 * checks of the field
-	 */
-	public List<Check> checks;
+public class FieldConfiguration extends ConfigurationElement {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * name of the field
+     */
+    public String name;
+
+    /**
+     * checks of the field
+     */
+    public List<Check> checks;
 }

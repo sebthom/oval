@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -23,53 +23,29 @@ import javolution.util.FastTable;
 /**
  * @author Sebastian Thomschke
  */
-public class CollectionFactoryJavolutionImpl implements CollectionFactory
-{
-	/**
-	 * {@inheritDoc}
-	 */
-	public <ItemType> List<ItemType> createList()
-	{
-		return new FastTable<ItemType>();
-	}
+public class CollectionFactoryJavolutionImpl implements CollectionFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <ItemType> List<ItemType> createList(final int initialCapacity)
-	{
-		return new FastTable<ItemType>(initialCapacity);
-	}
+    public <ItemType> List<ItemType> createList() {
+        return new FastTable<ItemType>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <KeyType, ValueType> Map<KeyType, ValueType> createMap()
-	{
-		return new FastMap<KeyType, ValueType>();
-	}
+    public <ItemType> List<ItemType> createList(final int initialCapacity) {
+        return new FastTable<ItemType>(initialCapacity);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity)
-	{
-		return new FastMap<KeyType, ValueType>(initialCapacity);
-	}
+    public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
+        return new FastMap<KeyType, ValueType>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <ItemType> Set<ItemType> createSet()
-	{
-		return new FastSet<ItemType>();
-	}
+    public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
+        return new FastMap<KeyType, ValueType>(initialCapacity);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public <ItemType> Set<ItemType> createSet(final int initialCapacity)
-	{
-		return new FastSet<ItemType>(initialCapacity);
-	}
+    public <ItemType> Set<ItemType> createSet() {
+        return new FastSet<ItemType>();
+    }
+
+    public <ItemType> Set<ItemType> createSet(final int initialCapacity) {
+        return new FastSet<ItemType>(initialCapacity);
+    }
 }

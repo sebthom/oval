@@ -22,46 +22,44 @@ import net.sf.oval.constraint.ValidateWithMethod;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidateWithMethodConstraintTest extends TestCase
-{
-	protected static class BaseEntity
-	{
-		protected boolean isNameValid(final String name)
-		{
-			if (name == null) return false;
-			if (name.length() == 0) return false;
-			if (name.length() > 4) return false;
-			return true;
-		}
-	}
+public class ValidateWithMethodConstraintTest extends TestCase {
+    protected static class BaseEntity {
+        protected boolean isNameValid(final String name) {
+            if (name == null)
+                return false;
+            if (name.length() == 0)
+                return false;
+            if (name.length() > 4)
+                return false;
+            return true;
+        }
+    }
 
-	protected static class TestEntity extends BaseEntity
-	{
-		@ValidateWithMethod(methodName = "isNameValid", parameterType = String.class, ignoreIfNull = false)
-		public String name;
-	}
+    protected static class TestEntity extends BaseEntity {
+        @ValidateWithMethod(methodName = "isNameValid", parameterType = String.class, ignoreIfNull = false)
+        public String name;
+    }
 
-	public void testCheckByMethod()
-	{
-		final Validator validator = new Validator();
+    public void testCheckByMethod() {
+        final Validator validator = new Validator();
 
-		final TestEntity t = new TestEntity();
+        final TestEntity t = new TestEntity();
 
-		List<ConstraintViolation> violations;
+        List<ConstraintViolation> violations;
 
-		violations = validator.validate(t);
-		assertTrue(violations.size() == 1);
+        violations = validator.validate(t);
+        assertTrue(violations.size() == 1);
 
-		t.name = "";
-		violations = validator.validate(t);
-		assertTrue(violations.size() == 1);
+        t.name = "";
+        violations = validator.validate(t);
+        assertTrue(violations.size() == 1);
 
-		t.name = "12345";
-		violations = validator.validate(t);
-		assertTrue(violations.size() == 1);
+        t.name = "12345";
+        violations = validator.validate(t);
+        assertTrue(violations.size() == 1);
 
-		t.name = "1234";
-		violations = validator.validate(t);
-		assertTrue(violations.size() == 0);
-	}
+        t.name = "1234";
+        violations = validator.validate(t);
+        assertTrue(violations.size() == 0);
+    }
 }

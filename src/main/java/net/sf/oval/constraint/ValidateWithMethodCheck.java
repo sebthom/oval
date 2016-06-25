@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -28,112 +28,72 @@ import net.sf.oval.internal.util.ReflectionUtils;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod>
-{
-	private static final long serialVersionUID = 1L;
+public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod> {
+    private static final long serialVersionUID = 1L;
 
-	private boolean ignoreIfNull;
-	private String methodName;
-	private Class< ? > parameterType;
+    private boolean ignoreIfNull;
+    private String methodName;
+    private Class<?> parameterType;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void configure(final ValidateWithMethod constraintAnnotation)
-	{
-		super.configure(constraintAnnotation);
-		setMethodName(constraintAnnotation.methodName());
-		setParameterType(constraintAnnotation.parameterType());
-		setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
-	}
+    @Override
+    public void configure(final ValidateWithMethod constraintAnnotation) {
+        super.configure(constraintAnnotation);
+        setMethodName(constraintAnnotation.methodName());
+        setParameterType(constraintAnnotation.parameterType());
+        setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Map<String, String> createMessageVariables()
-	{
-		final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
-		messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-		messageVariables.put("methodName", methodName);
-		messageVariables.put("parameterType", parameterType.getName());
-		return messageVariables;
-	}
+    @Override
+    protected Map<String, String> createMessageVariables() {
+        final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+        messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+        messageVariables.put("methodName", methodName);
+        messageVariables.put("parameterType", parameterType.getName());
+        return messageVariables;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected ConstraintTarget[] getAppliesToDefault()
-	{
-		return new ConstraintTarget[]{ConstraintTarget.VALUES};
-	}
+    @Override
+    protected ConstraintTarget[] getAppliesToDefault() {
+        return new ConstraintTarget[] { ConstraintTarget.VALUES };
+    }
 
-	/**
-	 * @return the methodName
-	 */
-	public String getMethodName()
-	{
-		return methodName;
-	}
+    public String getMethodName() {
+        return methodName;
+    }
 
-	/**
-	 * @return the parameterType
-	 */
-	public Class< ? > getParameterType()
-	{
-		return parameterType;
-	}
+    public Class<?> getParameterType() {
+        return parameterType;
+    }
 
-	/**
-	 * @return the ignoreIfNull
-	 */
-	public boolean isIgnoreIfNull()
-	{
-		return ignoreIfNull;
-	}
+    public boolean isIgnoreIfNull() {
+        return ignoreIfNull;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context,
-			final Validator validator) throws ReflectionException
-	{
-		if (valueToValidate == null && ignoreIfNull) return true;
+    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+            throws ReflectionException {
+        if (valueToValidate == null && ignoreIfNull)
+            return true;
 
-		final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName, parameterType);
-		if (method == null)
-			throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName + "("
-					+ parameterType + ") not found. Is [" + parameterType + "] the correct value for [parameterType]?");
-		//explicit cast to avoid: type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object
-		return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
-	}
+        final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName, parameterType);
+        if (method == null)
+            throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName + "(" + parameterType
+                    + ") not found. Is [" + parameterType + "] the correct value for [parameterType]?");
+        //explicit cast to avoid: type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object
+        return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
+    }
 
-	/**
-	 * @param ignoreIfNull the ignoreIfNull to set
-	 */
-	public void setIgnoreIfNull(final boolean ignoreIfNull)
-	{
-		this.ignoreIfNull = ignoreIfNull;
-		requireMessageVariablesRecreation();
-	}
+    public void setIgnoreIfNull(final boolean ignoreIfNull) {
+        this.ignoreIfNull = ignoreIfNull;
+        requireMessageVariablesRecreation();
+    }
 
-	/**
-	 * @param methodName the methodName to set
-	 */
-	public void setMethodName(final String methodName)
-	{
-		this.methodName = methodName;
-		requireMessageVariablesRecreation();
-	}
+    public void setMethodName(final String methodName) {
+        this.methodName = methodName;
+        requireMessageVariablesRecreation();
+    }
 
-	/**
-	 * @param parameterType the parameterType to set
-	 */
-	public void setParameterType(final Class< ? > parameterType)
-	{
-		this.parameterType = parameterType;
-		requireMessageVariablesRecreation();
-	}
+    public void setParameterType(final Class<?> parameterType) {
+        this.parameterType = parameterType;
+        requireMessageVariablesRecreation();
+    }
 }

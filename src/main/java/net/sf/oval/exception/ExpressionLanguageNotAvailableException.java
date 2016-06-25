@@ -17,13 +17,10 @@ import net.sf.oval.internal.MessageRenderer;
 /**
  * @author Sebastian Thomschke
  */
-public class ExpressionLanguageNotAvailableException extends InvalidConfigurationException
-{
-	private static final long serialVersionUID = 1L;
+public class ExpressionLanguageNotAvailableException extends InvalidConfigurationException {
+    private static final long serialVersionUID = 1L;
 
-	public ExpressionLanguageNotAvailableException(final String languageId)
-	{
-		super(MessageRenderer.renderMessage("net.sf.oval.exception.ExpressionLanguageNotAvailableException.message",
-				"languageId", languageId));
-	}
+    public ExpressionLanguageNotAvailableException(final String languageId) {
+        super(MessageRenderer.renderMessage("net.sf.oval.exception.ExpressionLanguageNotAvailableException.message", "languageId", languageId));
+    }
 }

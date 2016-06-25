@@ -19,18 +19,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Before the annotated method is executed all field and getter constraints 
+ * Before the annotated method is executed all field and getter constraints
  * (invariants) of this object are validated.
  * 
- * If constraint violations occur, the annotated method will not be executed 
- * instead it will throw a ConstraintsViolatedException exception.<br> 
+ * If constraint violations occur, the annotated method will not be executed
+ * instead it will throw a ConstraintsViolatedException exception.<br>
  *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface PreValidateThis
-{
-	//
+@Target({ ElementType.METHOD })
+public @interface PreValidateThis {
+    //
 }

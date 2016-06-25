@@ -17,24 +17,21 @@ import java.util.Locale;
 /**
  * @author Sebastian Thomschke
  */
-public class ThreadLocalLocaleProvider implements LocaleProvider
-{
-	private final ThreadLocal<Locale> locale = new ThreadLocal<Locale>();
+public class ThreadLocalLocaleProvider implements LocaleProvider {
+    private final ThreadLocal<Locale> locale = new ThreadLocal<Locale>();
 
-	/**
-	 * Gets the locale of the current thread
-	 */
-	public Locale getLocale()
-	{
-		final Locale l = locale.get();
-		return l == null ? Locale.getDefault() : l;
-	}
+    /**
+     * Gets the locale of the current thread
+     */
+    public Locale getLocale() {
+        final Locale l = locale.get();
+        return l == null ? Locale.getDefault() : l;
+    }
 
-	/**
-	 * Sets the locale for the current thread
-	 */
-	public void setLocale(Locale locale)
-	{
-		this.locale.set(locale);
-	}
+    /**
+     * Sets the locale for the current thread
+     */
+    public void setLocale(Locale locale) {
+        this.locale.set(locale);
+    }
 }

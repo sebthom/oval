@@ -25,5 +25,5 @@ import net.sf.oval.Check;
  * @deprecated Use {@link SpringCheckInitializationListener} instead
  */
 @Deprecated
-public class BeanInjectingCheckInitializationListener extends SpringCheckInitializationListener
-{}
+public class BeanInjectingCheckInitializationListener extends SpringCheckInitializationListener {
+}

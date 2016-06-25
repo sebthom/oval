@@ -17,13 +17,10 @@ import net.sf.oval.internal.MessageRenderer;
 /**
  * @author Sebastian Thomschke
  */
-public class ObjectGraphNavigatorNotAvailableException extends InvalidConfigurationException
-{
-	private static final long serialVersionUID = 1L;
+public class ObjectGraphNavigatorNotAvailableException extends InvalidConfigurationException {
+    private static final long serialVersionUID = 1L;
 
-	public ObjectGraphNavigatorNotAvailableException(final String id)
-	{
-		super(MessageRenderer.renderMessage("net.sf.oval.exception.ObjectGraphNavigatorNotAvailableException.message",
-				"id", id));
-	}
+    public ObjectGraphNavigatorNotAvailableException(final String id) {
+        super(MessageRenderer.renderMessage("net.sf.oval.exception.ObjectGraphNavigatorNotAvailableException.message", "id", id));
+    }
 }

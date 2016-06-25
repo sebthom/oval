@@ -25,52 +25,49 @@ import net.sf.oval.constraint.NotNull;
 /**
  * @author Sebastian Thomschke
  */
-public class FieldConstraintsValidationTest extends TestCase
-{
-	protected static class Person
-	{
-		@NotNull
-		public String firstName;
+public class FieldConstraintsValidationTest extends TestCase {
+    protected static class Person {
+        @NotNull
+        public String firstName;
 
-		@NotNull
-		public String lastName;
+        @NotNull
+        public String lastName;
 
-		@NotNull
-		@Length(max = 6, message = "LENGTH")
-		@NotEmpty(message = "NOT_EMPTY")
-		@MatchPattern(pattern = PATTERN_ZIP_CODE, message = "MATCH_PATTERN")
-		public String zipCode;
-	}
+        @NotNull
+        @Length(max = 6, message = "LENGTH")
+        @NotEmpty(message = "NOT_EMPTY")
+        @MatchPattern(pattern = PATTERN_ZIP_CODE, message = "MATCH_PATTERN")
+        public String zipCode;
+    }
 
-	private static final String PATTERN_ZIP_CODE = "^[0-9]*$";
+    private static final String PATTERN_ZIP_CODE = "^[0-9]*$";
 
-	public void testFieldValidation()
-	{
-		final Validator validator = new Validator();
+    public void testFieldValidation() {
+        final Validator validator = new Validator();
 
-		// test @NotNull
-		final Person p = new Person();
-		List<ConstraintViolation> violations = validator.validate(p);
-		assertTrue(violations.size() == 3);
+        // test @NotNull
+        final Person p = new Person();
+        List<ConstraintViolation> violations = validator.validate(p);
+        assertTrue(violations.size() == 3);
 
-		// test @Length(max=)
-		p.firstName = "Mike";
-		p.lastName = "Mahoney";
-		p.zipCode = "1234567";
-		violations = validator.validate(p);
-		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("LENGTH"));
+        // test @Length(max=)
+        p.firstName = "Mike";
+        p.lastName = "Mahoney";
+        p.zipCode = "1234567";
+        violations = validator.validate(p);
+        assertTrue(violations.size() == 1);
+        assertTrue(violations.get(0).getMessage().equals("LENGTH"));
 
-		// test @NotEmpty
-		p.zipCode = "";
-		violations = validator.validate(p);
-		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("NOT_EMPTY"));
+        // test @NotEmpty
+        p.zipCode = "";
+        violations = validator.validate(p);
+        assertTrue(violations.size() == 1);
+        assertTrue(violations.get(0).getMessage().equals("NOT_EMPTY"));
 
-		// test @RegEx
-		p.zipCode = "dffd34";
-		violations = validator.validate(p);
-		assertTrue(violations.size() == 1);
-		assertTrue(violations.get(0).getMessage().equals("MATCH_PATTERN"));
-	}
+        // test @RegEx
+        p.zipCode = "dffd34";
+        violations = validator.validate(p);
+        assertTrue(violations.size() == 1);
+        assertTrue(violations.get(0).getMessage().equals("MATCH_PATTERN"));
+    }
 }

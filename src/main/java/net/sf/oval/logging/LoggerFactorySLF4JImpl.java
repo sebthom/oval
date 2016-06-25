@@ -15,13 +15,11 @@ package net.sf.oval.logging;
 /**
  * @author Sebastian Thomschke
  */
-public class LoggerFactorySLF4JImpl implements LoggerFactory
-{
-	/**
-	 * {@inheritDoc}
-	 */
-	public Logger createLogger(final String name)
-	{
-		return new LoggerSLF4JImpl(name);
-	}
+public class LoggerFactorySLF4JImpl implements LoggerFactory {
+    /**
+     * {@inheritDoc}
+     */
+    public Logger createLogger(final String name) {
+        return new LoggerSLF4JImpl(name);
+    }
 }
