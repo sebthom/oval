@@ -21,7 +21,7 @@ import net.sf.oval.constraint.Assert;
 
 /**
  * JSR223 integration tst
- * 
+ *
  * @author Sebastian Thomschke
  */
 public class AssertScriptEngineJavascriptTest extends TestCase {
@@ -48,9 +48,6 @@ public class AssertScriptEngineJavascriptTest extends TestCase {
             this.failed = failed;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void run() {
             for (int i = 0; i < 500; i++) {
                 // test not null

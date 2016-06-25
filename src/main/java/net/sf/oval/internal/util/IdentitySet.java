@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -46,57 +46,37 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         map = getCollectionFactory().createMap(initialCapacity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean add(final E o) {
         final int hash = System.identityHashCode(o);
         return map.put(hash, o) == null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean addAll(final Collection<? extends E> c) {
         int count = 0;
         for (final E e : c)
-            if (add(e))
+            if (add(e)) {
                 count++;
+            }
         return count > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void clear() {
         map.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean contains(final Object o) {
         final int hash = System.identityHashCode(o);
         return map.containsKey(hash);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEmpty() {
         return map.isEmpty();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Iterator<E> iterator() {
         return map.values().iterator();
     }
@@ -121,49 +101,32 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean remove(final Object o) {
         final int hash = System.identityHashCode(o);
         return map.remove(hash) != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean removeAll(final Collection<?> c) {
         boolean modified = false;
         for (final Object e : c)
-            if (remove(e))
+            if (remove(e)) {
                 modified = true;
+            }
         return modified;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean retainAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int size() {
         return map.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object[] toArray() {
         return map.values().toArray();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public <T> T[] toArray(final T[] a) {
         return map.values().toArray(a);
     }
@@ -179,7 +142,8 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         oos.writeInt(map.size());
 
         // serialize the set's elements
-        for (final E e : map.values())
+        for (final E e : map.values()) {
             oos.writeObject(e);
+        }
     }
 }

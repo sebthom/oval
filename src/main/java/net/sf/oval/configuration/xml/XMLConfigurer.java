@@ -220,9 +220,6 @@ public class XMLConfigurer implements Configurer {
             super(mapper);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean canConvert(@SuppressWarnings("rawtypes") final Class type) {
             return List.class.isAssignableFrom(type);

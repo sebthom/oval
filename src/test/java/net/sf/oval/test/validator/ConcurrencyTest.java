@@ -54,9 +54,6 @@ public class ConcurrencyTest extends TestCase {
             this.failed = failed;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void run() {
             try {
                 final TestEntity1 entity = new TestEntity1();

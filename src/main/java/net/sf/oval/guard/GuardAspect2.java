@@ -48,9 +48,6 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2 {
             this.thisJoinPoint = thisJoinPoint;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public Object invoke() throws Throwable {
             return thisJoinPoint.proceed();
         }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -23,6 +23,7 @@ import net.sf.oval.constraint.Assert;
  * @author Sebastian Thomschke
  */
 public class AssertJavascriptTest extends TestCase {
+
     @Assert(expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", lang = "javascript", errorCode = "C0")
     public static class Person {
         @Assert(expr = "_value!=null", lang = "javascript", errorCode = "C1")
@@ -46,9 +47,6 @@ public class AssertJavascriptTest extends TestCase {
             this.failed = failed;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void run() {
             for (int i = 0; i < 500; i++) {
                 // test not null
