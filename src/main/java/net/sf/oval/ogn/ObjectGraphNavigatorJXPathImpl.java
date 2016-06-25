@@ -15,10 +15,6 @@ package net.sf.oval.ogn;
 import java.lang.reflect.AccessibleObject;
 import java.util.Locale;
 
-import net.sf.oval.exception.InvalidConfigurationException;
-import net.sf.oval.internal.util.Assert;
-import net.sf.oval.internal.util.ReflectionUtils;
-
 import org.apache.commons.jxpath.JXPathBeanInfo;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathIntrospector;
@@ -32,6 +28,10 @@ import org.apache.commons.jxpath.ri.model.beans.BeanPointerFactory;
 import org.apache.commons.jxpath.ri.model.beans.NullPointer;
 import org.apache.commons.jxpath.ri.model.beans.NullPropertyPointer;
 import org.apache.commons.jxpath.ri.model.beans.PropertyPointer;
+
+import net.sf.oval.exception.InvalidConfigurationException;
+import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * JXPath {@link "http://commons.apache.org/jxpath/"} based object graph navigator implementation.
@@ -133,20 +133,35 @@ public class ObjectGraphNavigatorJXPathImpl implements ObjectGraphNavigator
 		{
 			final JXPathContext ctx = JXPathContext.newContext(root);
 			ctx.setLenient(true); // do not throw an exception if object graph is incomplete, e.g. contains null-values
-			final Pointer pointer = ctx.getPointer(xpath);
 
-			if (pointer instanceof NullPropertyPointer) return null;
+			Pointer pointer = ctx.getPointer(xpath);
+
+			// no match found or invalid xpath
+			if (pointer instanceof NullPropertyPointer || pointer instanceof NullPointer) return null;
+
+			if (pointer instanceof BeanPointer)
+			{
+				final Pointer parent = ((BeanPointer) pointer).getImmediateParentPointer();
+				if (parent instanceof PropertyPointer)
+				{
+					pointer = parent;
+				}
+			}
 
 			if (pointer instanceof PropertyPointer)
 			{
 				final PropertyPointer pp = (PropertyPointer) pointer;
 				final Class< ? > beanClass = pp.getBean().getClass();
 				AccessibleObject accessor = ReflectionUtils.getField(beanClass, pp.getPropertyName());
-				if (accessor == null) accessor = ReflectionUtils.getGetter(beanClass, pp.getPropertyName());
+				if (accessor == null)
+				{
+					accessor = ReflectionUtils.getGetter(beanClass, pp.getPropertyName());
+				}
 				return new ObjectGraphNavigationResult(root, xpath, pp.getBean(), accessor, pointer.getValue());
 			}
 
-			return new ObjectGraphNavigationResult(root, xpath, pointer.getNode(), null, pointer.getValue());
+			throw new InvalidConfigurationException("Don't know how to handle pointer [" + pointer + "] of type ["
+					+ pointer.getClass().getName() + "] for xpath [" + xpath + "]");
 		}
 		catch (final JXPathNotFoundException ex)
 		{
