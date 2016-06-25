@@ -8,7 +8,7 @@
 			<action type="fix">
 				Improve support for constraint target selection via JXPath
 			</action>
-			<action type="update">upgraded to BeanShell 2.0b6, OGNL 3.1.3, Spring 3.2.17.RELEASE</action>
+			<action type="update">upgraded to AspectJ 1.8.9, BeanShell 2.0b6, OGNL 3.1.3, Spring 3.2.17.RELEASE</action>
 		</release>
 		<release version="1.85" date="2015-10-03">
 			<action type="fix" issue="90">

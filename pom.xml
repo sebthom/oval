@@ -119,7 +119,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.5</java.version>
-		<aspectj.version>1.8.6</aspectj.version>
+		<aspectj.version>1.8.9</aspectj.version>
 	</properties>
 
 	<prerequisites>
