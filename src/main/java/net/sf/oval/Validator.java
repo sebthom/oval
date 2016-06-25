@@ -910,7 +910,7 @@ public class Validator implements IValidator
 					{
 						context = ContextCache.getFieldContext((Field) result.targetAccessor);
 					}
-					else
+					else if (result.targetAccessor != null)
 					{
 						context = ContextCache.getMethodReturnValueContext((Method) result.targetAccessor);
 					}
