@@ -12,13 +12,17 @@
  *******************************************************************************/
 package net.sf.oval.test.integration.spring;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import junit.framework.TestCase;
 import net.sf.oval.Validator;
 import net.sf.oval.test.validator.XMLConfigurationTest;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
+/**
+ * @author Sebastian Thomschke
+ */
 public class ValidatorSpringBeanTest extends TestCase {
+
     public void testValidatorSpringBean() {
         final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("ValidatorSpringBeanTest.xml", ValidatorSpringBeanTest.class);
         try {
@@ -28,4 +32,5 @@ public class ValidatorSpringBeanTest extends TestCase {
             ctx.close();
         }
     }
+
 }
