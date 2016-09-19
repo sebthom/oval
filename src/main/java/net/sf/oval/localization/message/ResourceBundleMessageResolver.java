@@ -102,13 +102,19 @@ public class ResourceBundleMessageResolver implements MessageResolver {
 
         ArrayList<ResourceBundle> bundles = messageBundlesByLocale.get(locale);
         if (bundles == null) {
-            bundles = new ArrayList<ResourceBundle>();
-            messageBundlesByLocale.put(locale, bundles);
-            try {
-                // add the message bundle for the pre-built constraints
-                addMessageBundle(ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
-            } catch (final MissingResourceException ex) {
-                LOG.debug("No message bundle net.sf.oval.Messages for locale %s found.", ex, locale);
+            // Double-check locking to initialize bundles for locale
+            synchronized(messageBundlesByLocale) {
+                bundles = messageBundlesByLocale.get(locale);
+                if (bundles == null) {
+                    bundles = new ArrayList<ResourceBundle>();
+                    messageBundlesByLocale.put(locale, bundles);
+                    try {
+                        // add the message bundle for the pre-built constraints
+                        addMessageBundle(ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
+                    } catch (final MissingResourceException ex) {
+                        LOG.debug("No message bundle net.sf.oval.Messages for locale %s found.", ex, locale);
+                    }
+                }
             }
         }
         return bundles;
