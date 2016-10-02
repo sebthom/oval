@@ -1728,6 +1728,11 @@ Validator myValidator = new Validator(myConfigurer);]]></programlisting>
     <itemizedlist>
 
 	  <listitem>
+        <para>Jadira Framework</para>
+        <para><ulink url="http://jadira.sourceforge.net/">http://jadira.sourceforge.net/</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
         <para>Omniproperties - a lightweight configuration utility</para>
         <para><ulink url="https://github.com/siemens/omniproperties">https://github.com/siemens/omniproperties</ulink></para>
 	  </listitem>
