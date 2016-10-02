@@ -12,16 +12,17 @@
  *******************************************************************************/
 package net.sf.oval.integration.spring;
 
-import net.sf.oval.internal.Log;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import net.sf.oval.internal.Log;
+
 /**
  * Injects spring beans into unmanaged Java objects having {@link org.springframework.beans.factory.annotation.Autowired},
- * {@link org.springframework.beans.factory.annotation.Value} and {@link javax.inject.Inject} annotations.
+ * {@link org.springframework.beans.factory.annotation.Value} and {@link javax.inject.Inject} annotations
+ * and executes {@link org.springframework.beans.factory.InitializingBean#afterPropertiesSet} and {@link javax.annotation.PostConstruct} callback methods.
  *
  * <pre>
  * &lt;bean class="net.sf.oval.integration.spring.SpringInjector" /&gt;
@@ -49,7 +50,7 @@ public class SpringInjector {
     }
 
     @Autowired
-    private AutowiredAnnotationBeanPostProcessor processor;
+    private AutowireCapableBeanFactory beanFactory;
 
     private SpringInjector() {
         LOG.info("Instantiated.");
@@ -57,7 +58,17 @@ public class SpringInjector {
         INSTANCE = this;
     }
 
+    /**
+     * processes @PostConstruct, InitializingBean#afterPropertiesSet
+     */
+    public void initialize(final Object unmanagedBean) {
+        beanFactory.initializeBean(unmanagedBean, "bean");
+    }
+
+    /**
+     * processes @Autowired, @Inject
+     */
     public void inject(final Object unmanagedBean) {
-        processor.processInjection(unmanagedBean);
+        beanFactory.autowireBean(unmanagedBean);
     }
 }
