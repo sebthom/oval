@@ -4,7 +4,8 @@
 		<title>Change Log for OVal</title>
 	</properties>
 	<body>
-		<release version="1.86" date="2016-09-??">
+		<release version="1.86" date="2016-10-??">
+			<action type="add">SpringInjector.initialize(Object)</action>
 			<action type="fix" issue="91">
 				Race condition when initializing ResourceBundleMessageResolver (thanks to Ville Koskela)
 			</action>
