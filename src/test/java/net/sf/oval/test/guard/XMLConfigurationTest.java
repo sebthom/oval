@@ -127,6 +127,11 @@ public class XMLConfigurationTest extends TestCase {
         ((ThreadLocalLocaleProvider) Validator.getLocaleProvider()).setLocale(Locale.ENGLISH);
     }
 
+    @Override
+    protected void tearDown() throws Exception {
+        ((ThreadLocalLocaleProvider) Validator.getLocaleProvider()).setLocale(null);
+    }
+
     public void testImportedFile() {
         try {
             final XMLConfigurer x = new XMLConfigurer();
