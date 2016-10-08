@@ -178,7 +178,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<!-- cannot upgrade to 1.4.5-1.4.8 which results in an xstream internal RuntimeException -->
+			<!-- cannot upgrade to 1.4.5-1.4.9 which results in an xstream internal RuntimeException -->
 			<version>1.4.4</version>
 			<optional>true</optional>
 		</dependency>
@@ -274,6 +274,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<artifactId>mvel2</artifactId>
 			<!-- 2.0.19 -->
 			<!-- cannot upgrade to 2.1.x-2.2.8.Final because of NPE in MVEL -->
+			<!-- cannot upgrade to 2.3, which requires Java6 or higher -->
 			<version>2.0.19</version>
 			<optional>true</optional>
 		</dependency>
@@ -529,7 +530,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 						<!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>extra-enforcer-rules</artifactId>
-						<version>1.0-beta-4</version>
+						<version>1.0-beta-5</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -1026,7 +1027,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 						</excludes>
 					</instrumentation>
 					<check>
-						<haltOnFailure>false</haltOnFailure>
+						<haltOnFailure>true</haltOnFailure>
 					</check>
 				</configuration>
 			</plugin>
