@@ -16,6 +16,7 @@ import static net.sf.oval.Validator.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
@@ -30,6 +31,8 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod> {
     private static final long serialVersionUID = 1L;
+
+    private final Map<Class<?>, Method> validationMethodsByClass = new WeakHashMap<Class<?>, Method>();
 
     private boolean ignoreIfNull;
     private String methodName;
@@ -74,11 +77,19 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
         if (valueToValidate == null && ignoreIfNull)
             return true;
 
-        final Method method = ReflectionUtils.getMethodRecursive(validatedObject.getClass(), methodName, parameterType);
+        final Class<?> clazz = validatedObject.getClass();
+        Method method;
+        synchronized (validationMethodsByClass) {
+            method = validationMethodsByClass.get(clazz);
+            if (method == null) {
+                method = ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
+                validationMethodsByClass.put(clazz, method);
+            }
+        }
         if (method == null)
-            throw new InvalidConfigurationException("Method " + validatedObject.getClass().getName() + "." + methodName + "(" + parameterType
-                    + ") not found. Is [" + parameterType + "] the correct value for [parameterType]?");
-        //explicit cast to avoid: type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object
+            throw new InvalidConfigurationException("Method " + clazz.getName() + "." + methodName + "(" + parameterType + ") not found. Is [" + parameterType
+                    + "] the correct value for [@ValidateWithMethod.parameterType]?");
+        //explicit cast to workaround: type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object
         return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
     }
 
@@ -89,11 +100,17 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 
     public void setMethodName(final String methodName) {
         this.methodName = methodName;
+        synchronized (validationMethodsByClass) {
+            validationMethodsByClass.clear();
+        }
         requireMessageVariablesRecreation();
     }
 
     public void setParameterType(final Class<?> parameterType) {
         this.parameterType = parameterType;
+        synchronized (validationMethodsByClass) {
+            validationMethodsByClass.clear();
+        }
         requireMessageVariablesRecreation();
     }
 }
