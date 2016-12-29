@@ -69,7 +69,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 	</contributors>
 
 	<scm>
-		<url>https://github.com/sebthom/oval/trunk</url>
+		<url>https://github.com/sebthom/oval/</url>
 		<connection>scm:javasvn:https://github.com/sebthom/oval/trunk</connection>
 		<developerConnection>scm:javasvn:https://github.com/sebthom/oval/trunk</developerConnection>
 	</scm>
@@ -111,8 +111,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 	<inceptionYear>2005</inceptionYear>
 
 	<issueManagement>
-		<system>SourceForge2</system>
-		<url>https://sourceforge.net/p/oval/bugs/</url>
+		<system>GitHub</system>
+		<url>https://github.com/sebthom/oval/issues/</url>
 	</issueManagement>
 
 	<properties>
