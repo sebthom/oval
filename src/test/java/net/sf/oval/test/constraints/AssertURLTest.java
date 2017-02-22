@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2017
  * Sebastian Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -60,7 +60,6 @@ public class AssertURLTest extends AbstractContraintsTest {
         assertTrue(check.isSatisfied(this, "http://www.google.com", null, validator));
         //assertTrue(check.isSatisfied(this, "https://www.verisign.com/site-map/index.html", null, validator));
         assertFalse(check.isSatisfied(this, "http://127.0.0.1:34343", null, validator));
-        assertFalse(check.isSatisfied(this, "http://www.checkupdown.com/accounts/grpb/B1394343/", null, validator));
         assertTrue(check.isSatisfied(this, "ftp://ftp.debian.org/debian/README.html", null, validator));
         assertFalse(check.isSatisfied(this, "ftp://ftp.debian.org/debian/foo.html", null, validator));
 
