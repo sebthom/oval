@@ -544,6 +544,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<version>1.8</version>
 				<executions>
 					<execution>
+						<id>Interpolate README.txt</id>
 						<phase>generate-sources</phase>
 						<configuration>
 							<target>
@@ -551,6 +552,19 @@ Besides field/property validation OVal implements Programming by Contract featur
 									<fileset dir="${project.basedir}" includes="README.txt" />
 								</copy>
 								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>Delete java.time stubs</id>
+						<phase>process-classes</phase>
+						<configuration>
+							<target>
+								<!-- delete the java.time stubs after compilation, before testing -->
+								<delete dir="${project.build.directory}/classes/java" />
 							</target>
 						</configuration>
 						<goals>
@@ -813,6 +827,10 @@ Besides field/property validation OVal implements Programming by Contract featur
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<!-- exclude java.time stubs -->
+							<excludePackageNames>java.time</excludePackageNames>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -842,6 +860,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<!-- exclude java.time stubs -->
+								<exclude>java/**/*</exclude>
+								<exclude>java</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

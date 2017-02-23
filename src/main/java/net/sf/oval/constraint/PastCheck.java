@@ -26,7 +26,21 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class PastCheck extends AbstractAnnotationCheck<Past> {
+
     private static final long serialVersionUID = 1L;
+
+    private static final boolean IS_JAVA_TIME_API_AVAILABLE;
+
+    static {
+        boolean hasJavaTimeAPI = false;
+        try {
+            java.time.LocalDate.class.getName();
+            hasJavaTimeAPI = true;
+        } catch (final LinkageError ex) {
+            // happens if java.time API is not available (i.e. Java < 8)
+        }
+        IS_JAVA_TIME_API_AVAILABLE = hasJavaTimeAPI;
+    }
 
     private long tolerance;
 
@@ -45,6 +59,35 @@ public class PastCheck extends AbstractAnnotationCheck<Past> {
         return tolerance;
     }
 
+    private Boolean isJavaTimeSatisfied(final long now, final Object valueToValidate) {
+        // check if the value is a LocalDate
+        if (valueToValidate instanceof java.time.LocalDate)
+            return ((java.time.LocalDate) valueToValidate).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() < now;
+
+        // check if the value is a LocalTime
+        if (valueToValidate instanceof java.time.LocalTime)
+            return ((java.time.LocalTime) valueToValidate).atDate(java.time.LocalDate.now()).atZone(java.time.ZoneId.systemDefault()).toInstant()
+                .toEpochMilli() < now;
+
+        // check if the value is a LocalDateTime
+        if (valueToValidate instanceof java.time.LocalDateTime)
+            return ((java.time.LocalDateTime) valueToValidate).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() < now;
+
+        // check if the value is an OffsetTime
+        if (valueToValidate instanceof java.time.OffsetTime)
+            return ((java.time.OffsetTime) valueToValidate).atDate(java.time.LocalDate.now()).toInstant().toEpochMilli() < now;
+
+        // check if the value is an OffsetDateTime
+        if (valueToValidate instanceof java.time.OffsetDateTime)
+            return ((java.time.OffsetDateTime) valueToValidate).toInstant().toEpochMilli() < now;
+
+        // check if the value is an ZonedDateTime
+        if (valueToValidate instanceof java.time.ZonedDateTime)
+            return ((java.time.ZonedDateTime) valueToValidate).toInstant().toEpochMilli() < now;
+
+        return null;
+    }
+
     public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
         if (valueToValidate == null)
             return true;
@@ -59,42 +102,11 @@ public class PastCheck extends AbstractAnnotationCheck<Past> {
         if (valueToValidate instanceof Calendar) // return ((Calendar) value).getTime().before(new Date());
             return ((Calendar) valueToValidate).getTime().getTime() < now;
 
-        // check value against java.time.* API
-        try {
-            Class.forName("java.time.ZoneId");
-            Class.forName("java.time.LocalDate");
-            Class.forName("java.time.LocalTime");
-            Class.forName("java.time.LocalDateTime");
-            Class.forName("java.time.OffsetTime");
-            Class.forName("java.time.OffsetDateTime");
-            Class.forName("java.time.ZonedDateTime");
-
-            // check if the value is a LocalDate
-            if (valueToValidate instanceof java.time.LocalDate)
-                return ((java.time.LocalDate) valueToValidate).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() < now;
-
-            // check if the value is a LocalTime
-            if (valueToValidate instanceof java.time.LocalTime)
-                return ((java.time.LocalTime) valueToValidate).atDate(java.time.LocalDate.now()).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() < now;
-
-            // check if the value is a LocalDateTime
-            if (valueToValidate instanceof java.time.LocalDateTime)
-                return ((java.time.LocalDateTime) valueToValidate).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() < now;
-
-            // check if the value is an OffsetTime
-            if (valueToValidate instanceof java.time.OffsetTime)
-                return ((java.time.OffsetTime) valueToValidate).atDate(java.time.LocalDate.now()).toInstant().toEpochMilli() < now;
-
-            // check if the value is an OffsetDateTime
-            if (valueToValidate instanceof java.time.OffsetDateTime)
-                return ((java.time.OffsetDateTime) valueToValidate).toInstant().toEpochMilli() < now;
-
-            // check if the value is an ZonedDateTime
-            if (valueToValidate instanceof java.time.ZonedDateTime)
-                return ((java.time.ZonedDateTime) valueToValidate).toInstant().toEpochMilli() < now;
-
-        } catch (ClassNotFoundException e) {
-            // continue checking
+        // check if the value is java.time API value
+        if (IS_JAVA_TIME_API_AVAILABLE) {
+            final Boolean result = isJavaTimeSatisfied(now, valueToValidate);
+            if (result != null)
+                return result;
         }
 
         // see if we can extract a date based on the object's String representation
