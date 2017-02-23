@@ -13,7 +13,7 @@ example allows runtime validation of method arguments.
 ===========================================
 
 Portions created by Sebastian Thomschke are
-copyright (c) 2005-2016 Sebastian Thomschke.
+copyright (c) 2005-2017 Sebastian Thomschke.
 
 All Rights Reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
