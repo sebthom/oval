@@ -1,5 +1,7 @@
 package java.time;
 
-public interface OffsetDateTime {
-    Instant toInstant();
+public final class OffsetDateTime {
+    public Instant toInstant() {
+        throw new UnsupportedOperationException();
+    }
 }

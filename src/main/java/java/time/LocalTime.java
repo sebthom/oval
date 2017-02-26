@@ -1,5 +1,7 @@
 package java.time;
 
-public interface LocalTime {
-    LocalDateTime atDate(LocalDate date);
+public final class LocalTime {
+    public LocalDateTime atDate(@SuppressWarnings("unused") final LocalDate date) {
+        throw new UnsupportedOperationException();
+    }
 }

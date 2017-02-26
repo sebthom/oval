@@ -1,5 +1,7 @@
 package java.time;
 
-public interface OffsetTime {
-    OffsetDateTime atDate(LocalDate date);
+public final class OffsetTime {
+    public OffsetDateTime atDate(@SuppressWarnings("unused") final LocalDate date) {
+        throw new UnsupportedOperationException();
+    }
 }

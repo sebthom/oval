@@ -1,5 +1,7 @@
 package java.time;
 
-public interface ZonedDateTime {
-    Instant toInstant();
+public final class ZonedDateTime {
+    public Instant toInstant() {
+        throw new UnsupportedOperationException();
+    }
 }

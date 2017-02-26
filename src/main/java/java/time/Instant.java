@@ -1,5 +1,7 @@
 package java.time;
 
-public interface Instant {
-    long toEpochMilli();
+public final class Instant {
+    public long toEpochMilli() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -1,9 +1,11 @@
 package java.time;
 
-public abstract class LocalDate {
+public final class LocalDate {
     public static LocalDate now() {
         throw new UnsupportedOperationException();
     }
 
-    public abstract LocalDateTime atStartOfDay();
+    public LocalDateTime atStartOfDay() {
+        throw new UnsupportedOperationException();
+    }
 }

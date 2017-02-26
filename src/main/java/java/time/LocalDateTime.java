@@ -1,5 +1,7 @@
 package java.time;
 
-public interface LocalDateTime {
-    ZonedDateTime atZone(ZoneId zone);
+public final class LocalDateTime {
+    public ZonedDateTime atZone(@SuppressWarnings("unused") final ZoneId zone) {
+        throw new UnsupportedOperationException();
+    }
 }
