@@ -6,7 +6,7 @@
 	</properties>
 
 	<body>
-		<release version="1.87" date="2017-02-??">
+		<release version="1.87" date="2017-03-04">
 			<action type="add" issue="github-5">Support for Java 8 java.time Dates in @Future and @Past (thanks to Pyeroh)</action>
 			<action type="add" issue="github-3">Improve performance of ValidateWithMethodCheck (thanks to an-bel)</action>
 		</release>
