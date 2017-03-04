@@ -952,6 +952,8 @@ Besides field/property validation OVal implements Programming by Contract featur
 							<goal>changes-check</goal>
 						</goals>
 						<configuration>
+							<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+							<skipSnapshots>true</skipSnapshots>
 							<xmlPath>src/site/changes.xml</xmlPath>
 						</configuration>
 					</execution>
