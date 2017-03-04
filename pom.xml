@@ -441,16 +441,21 @@ Besides field/property validation OVal implements Programming by Contract featur
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-repository-plugin</artifactId>
-						<version>2.4</version>
+						<!-- using the assembly plugin instead of maven-repository-plugin:bundle-create which will trigger a complete maven build lifecycle -->
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.6</version>
 						<executions>
 							<execution>
-								<id>create-repo-upload-bundle</id>
-								<phase>verify</phase>
+								<id>Generate repository bundle</id>
 								<goals>
-									<goal>bundle-create</goal>
+									<goal>single</goal>
 								</goals>
+								<phase>verify</phase>
+								<configuration>
+									<descriptors>
+										<descriptor>${project.basedir}/src/main/assembly/repository-bundle.xml</descriptor>
+									</descriptors>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -857,8 +862,13 @@ Besides field/property validation OVal implements Programming by Contract featur
 				<executions>
 					<execution>
 						<id>attach-sources</id>
+						<phase>verify</phase>
 						<goals>
-							<goal>jar</goal>
+							<!-- 
+								http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+								using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+							-->
+							<goal>jar-no-fork</goal>
 						</goals>
 						<configuration>
 							<excludes>
@@ -870,27 +880,29 @@ Besides field/property validation OVal implements Programming by Contract featur
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.6</version>
-				<configuration>
-					<!-- do not upload during deploy phase -->
-					<attach>false</attach>
-					<descriptors>
-						<descriptor>${project.basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
-						<descriptor>${project.basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
-					</descriptors>
-				</configuration>
 				<executions>
 					<execution>
+						<id>Generate .tar.gz and .zip files</id>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<phase>package</phase>
+						<configuration>
+									<!-- do not upload during deploy phase -->
+							<attach>false</attach>
+							<descriptors>
+								<descriptor>${project.basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
+								<descriptor>${project.basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
+							</descriptors>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-
+			
 			<!--*********************************************************************
 				phase: release
 				********************************************************************* -->
@@ -939,6 +951,9 @@ Besides field/property validation OVal implements Programming by Contract featur
 						<goals>
 							<goal>changes-check</goal>
 						</goals>
+						<configuration>
+							<xmlPath>src/site/changes.xml</xmlPath>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
