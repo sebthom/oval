@@ -14,6 +14,7 @@ package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.constraint.MaxLength;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.context.FieldContext;
 import net.sf.oval.context.MethodParameterContext;
@@ -27,18 +28,24 @@ import net.sf.oval.guard.PreValidateThis;
  * @author Sebastian Thomschke
  */
 public class PrePostValidateThisTest extends TestCase {
+
     @Guarded(applyFieldConstraintsToSetters = true, checkInvariants = false)
     public static class TestEntity {
+
+        private boolean limitLength = false;
+
         @NotNull(message = "NOT_NULL")
-        public String name;
+        @MaxLength(value = 4, message = "TOO_LONG", when = "javascript:_this.limitLength == true")
+        protected String name;
 
         public TestEntity() {
             // do nothing
         }
 
         @PostValidateThis
-        public TestEntity(final String name) {
+        public TestEntity(final String name, final boolean limitLength) {
             this.name = name;
+            this.limitLength = limitLength;
         }
 
         @PreValidateThis
@@ -46,12 +53,16 @@ public class PrePostValidateThisTest extends TestCase {
             return name;
         }
 
+        public boolean isLimitLength() {
+            return limitLength;
+        }
+
         public void setName(final String name) {
             this.name = name;
         }
 
         @PostValidateThis
-        public void setNamePost(final String name) {
+        public void setNameWithPostValidation(final String name) {
             this.name = name;
         }
     }
@@ -59,7 +70,7 @@ public class PrePostValidateThisTest extends TestCase {
     @SuppressWarnings("unused")
     public void testConstructorValidation() {
         try {
-            new TestEntity(null);
+            new TestEntity(null, false);
 
             fail();
         } catch (final ConstraintsViolatedException e) {
@@ -70,7 +81,18 @@ public class PrePostValidateThisTest extends TestCase {
             assertTrue(violations[0].getContext() instanceof FieldContext);
         }
 
-        new TestEntity("test");
+        new TestEntity("as-long-as-I-what-if_limit-is-not-enabled", false);
+        new TestEntity("OK", true);
+        try {
+            new TestEntity("too-long-when-limit-is-enabled", true);
+            fail();
+        } catch (final ConstraintsViolatedException e) {
+            final ConstraintViolation[] violations = e.getConstraintViolations();
+            assertNotNull(violations);
+            assertEquals(1, violations.length);
+            assertEquals("TOO_LONG", violations[0].getMessage());
+            assertTrue(violations[0].getContext() instanceof FieldContext);
+        }
     }
 
     public void testMethodValidation() {
@@ -87,7 +109,8 @@ public class PrePostValidateThisTest extends TestCase {
             assertTrue(violations[0].getContext() instanceof FieldContext);
         }
 
-        t.setName("test");
+        t.setName("the name");
+        assertNotNull(t.getName());
 
         try {
             t.setName(null);
@@ -100,8 +123,21 @@ public class PrePostValidateThisTest extends TestCase {
             assertTrue(violations[0].getContext() instanceof MethodParameterContext);
         }
 
-        t.setName("the name");
         assertNotNull(t.getName());
+
+        t.setNameWithPostValidation("as-long-as-I-what-if_limit-is-not-enabled");
+        t.limitLength = true;
+        t.setNameWithPostValidation("OK");
+        try {
+            t.setNameWithPostValidation("too-long-when-limit-is-enabled");
+            fail();
+        } catch (final ConstraintsViolatedException e) {
+            final ConstraintViolation[] violations = e.getConstraintViolations();
+            assertNotNull(violations);
+            assertEquals(1, violations.length);
+            assertEquals("TOO_LONG", violations[0].getMessage());
+            assertTrue(violations[0].getContext() instanceof FieldContext);
+        }
     }
 
     public void testMethodValidationInProbeMode() {
@@ -126,7 +162,7 @@ public class PrePostValidateThisTest extends TestCase {
         va.clear();
 
         // test post-condition ignored even if pre-conditions satisfied
-        t.setNamePost(null);
+        t.setNameWithPostValidation(null);
         assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
 
         // test setter
