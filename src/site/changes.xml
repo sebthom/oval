@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns="http://maven.apache.org/changes/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
 
-	<properties>
-		<title>Change Log for OVal</title>
-	</properties>
+    <properties>
+        <title>Change Log for OVal</title>
+    </properties>
 
-	<body>
-		<release version="1.87" date="2017-03-04">
-			<action type="add" issue="5">Support for Java 8 java.time Dates in @Future and @Past (thanks to Pyeroh)</action>
-			<action type="add" issue="3">Improve performance of ValidateWithMethodCheck (thanks to an-bel)</action>
-		</release>
-		<release version="1.86" date="2016-10-08">
-			<action type="add">SpringInjector#initialize(Object)</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/91">Race condition when initializing ResourceBundleMessageResolver (thanks to Ville Koskela)</action>
-			<action type="fix">Improve support for constraint target selection via JXPath</action>
-			<action type="update">upgraded to AspectJ 1.8.9, BeanShell 2.0b6, OGNL 3.1.3, Spring 3.2.17.RELEASE</action>
-		</release>
+    <body>
+        <release version="1.87" date="2017-05-??">
+            <action type="fix" issue="7">StackOverflowError when using @Guarded(checkInvariants=true) (thanks to Kai Tait)</action>
+        </release>
+        
+        <release version="1.87" date="2017-03-04">
+            <action type="add" issue="5">Support for Java 8 java.time Dates in @Future and @Past (thanks to Pyeroh)</action>
+            <action type="add" issue="3">Improve performance of ValidateWithMethodCheck (thanks to an-bel)</action>
+        </release>
+        
+        <release version="1.86" date="2016-10-08">
+            <action type="add">SpringInjector#initialize(Object)</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/91">Race condition when initializing ResourceBundleMessageResolver (thanks to Ville Koskela)</action>
+            <action type="fix">Improve support for constraint target selection via JXPath</action>
+            <action type="update">upgraded to AspectJ 1.8.9, BeanShell 2.0b6, OGNL 3.1.3, Spring 3.2.17.RELEASE</action>
+        </release>
 
-		<release version="1.85" date="2015-10-03">
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/90">Activation rules are not considered for whole contraints list (thanks to Petras)</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/85">@Email validation treats + as invalid character (thanks to David van Geest)</action>
+        <release version="1.85" date="2015-10-03">
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/90">Activation rules are not considered for whole contraints list (thanks to Petras)</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/85">@Email validation treats + as invalid character (thanks to David van Geest)</action>
 			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/89">ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists Limiting the nesting
 				level for ConstraintTarget.VALUES (thanks to Petras)
 			</action>
@@ -30,13 +35,13 @@
 			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/86">Trove is wrongly detected (thanks to Geert Bevin)</action>
 			<action type="update">upgraded to AspectJ 1.8.6, commons-logging 1.2, Groovy 2.2.2, OGNL 3.1, Paranamer 2.8, Rhino 1.7R5, Spring 3.2.14.RELEASE, SLF4J 1.7.12
 			</action>
-		</release>
+        </release>
 
-		<release version="1.84" date="2013-11-22">
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/84">JPAAnnotationsConfigurer shouldn't add Checks twice</action>
-			<action type="add">LocaleProvider, ThreadLocalLocaleProvider, Validator.getLocaleProvider, Validator.setLocaleProvider</action>
-			<action type="update">upgraded to Spring 3.2.5.RELEASE, Paranamer 2.6, xstream 1.4.5, OGNL 3.0.8</action>
-		</release>
+        <release version="1.84" date="2013-11-22">
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/84">JPAAnnotationsConfigurer shouldn't add Checks twice</action>
+            <action type="add">LocaleProvider, ThreadLocalLocaleProvider, Validator.getLocaleProvider, Validator.setLocaleProvider</action>
+            <action type="update">upgraded to Spring 3.2.5.RELEASE, Paranamer 2.6, xstream 1.4.5, OGNL 3.0.8</action>
+        </release>
 
 		<release version="1.83" date="2013-09-07">
 			<action type="add">added Validator.resolveValue methods</action>

@@ -1118,6 +1118,10 @@ public class Guard extends Validator {
     @Override
     protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations, final String[] profiles)
             throws IllegalArgumentException, ValidationFailedException {
+        if (currentlyValidatedObjects.get().size() > 0 && currentlyValidatedObjects.get().getLast().contains(guardedObject))
+            // to prevent StackOverflowError
+            return;
+
         // create a new set for this validation cycle
         currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
         try {
