@@ -179,7 +179,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<!-- cannot upgrade to 1.4.5-1.4.9 which results in an xstream internal RuntimeException -->
-			<version>1.4.4</version>
+			<version>1.4.3</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
