@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-	@author Sebastian Thomschke
+	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 	@author Holger Riegel
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,7 +27,6 @@ Besides field/property validation OVal implements Programming by Contract featur
         <license>
             <name>Eclipse Public License 1.0</name>
             <distribution>repo</distribution>
-			<!-- <url>http://www.eclipse.org/legal/epl-v10.html</url> -->
             <url>http://oval.sf.net/license/epl-v10.txt</url>
         </license>
     </licenses>
@@ -69,6 +68,7 @@ Besides field/property validation OVal implements Programming by Contract featur
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        
         <java.version>1.5</java.version>
         <java.vendor>sun</java.vendor>
         <java.version.integration-tests>1.6</java.version.integration-tests>
@@ -79,7 +79,6 @@ Besides field/property validation OVal implements Programming by Contract featur
         <maven.scm.version>1.9.5</maven.scm.version>
         <maven.scm.svnjava.version>2.1.2</maven.scm.svnjava.version>
         <maven.wagon.version>3.0.0</maven.wagon.version>
-
 
         <!-- cannot upgrade, newer versions require Java 7 -->
         <aspectj.version>1.8.9</aspectj.version>
@@ -183,9 +182,6 @@ Besides field/property validation OVal implements Programming by Contract featur
                         </goals>
                         <configuration>
                             <rules>
-                                <requireReleaseDeps>
-                                    <message>No Snapshots Allowed!</message>
-                                </requireReleaseDeps>
                                 <banCircularDependencies />
 
 								<!-- extra enforcer rules -->
@@ -257,7 +253,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                         <configuration>
                             <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
                             <skipSnapshots>true</skipSnapshots>
-                            <xmlPath>src/site/changes.xml</xmlPath>
+		                    <xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
                         </configuration>
                     </execution>
                 </executions>
@@ -597,11 +593,38 @@ Besides field/property validation OVal implements Programming by Contract featur
                 </plugin>
 
                 <plugin>
-				<!-- we are generating the site in the package phase because we want to include it in the distribution -->
+                    <artifactId>maven-changelog-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <providerImplementations>
+                            <svn>javasvn</svn>
+                        </providerImplementations>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                            <artifactId>maven-scm-provider-svnjava</artifactId>
+                            <version>${maven.scm.svnjava.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-api</artifactId>
+                            <version>${maven.scm.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-provider-svn-commons</artifactId>
+                            <version>${maven.scm.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+					<!-- we are generating the site in the package phase because we want to include it in the distribution -->
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.6</version>
                     <configuration>
-					<!-- https://jira.codehaus.org/browse/WAGON-354 -->
+						<!-- https://jira.codehaus.org/browse/WAGON-354 -->
                         <chmod>false</chmod>
                     </configuration>
                     <executions>
@@ -612,6 +635,24 @@ Besides field/property validation OVal implements Programming by Contract featur
                             <phase>package</phase>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-confluence</artifactId>
+                            <version>1.7</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.wagon</groupId>
+                            <artifactId>wagon-webdav-jackrabbit</artifactId>
+                            <version>${maven.wagon.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.pegdown</groupId>
+                            <artifactId>pegdown</artifactId>
+							<!-- newer version than the one that is referenced by doxia-module-markdown:1.7 -->
+                            <version>1.6.0</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <plugin>
@@ -1101,13 +1142,24 @@ Besides field/property validation OVal implements Programming by Contract featur
     <profiles>
         <profile>
             <id>jrebel-config</id>
+			<!-- only activated if executed within Eclipse and if rebel-remote.xml is present, requires Maven 3.2.2 or higher, see http://jira.codehaus.org/browse/MNG-4565 -->
             <activation>
+				<property>
+					<name>eclipse.application</name>
+				</property>
                 <file>
                     <exists>src/main/resources/rebel-remote.xml</exists>
                 </file>
             </activation>
 
             <build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+
                 <plugins>
                     <plugin>
                         <groupId>org.zeroturnaround</groupId>
@@ -1186,6 +1238,23 @@ Besides field/property validation OVal implements Programming by Contract featur
                                     <pluginExecutions>
                                         <pluginExecution>
                                             <pluginExecutionFilter>
+                                                <groupId>org.zeroturnaround</groupId>
+                                                <artifactId>jrebel-maven-plugin</artifactId>
+                                                <versionRange>[1.1.5,)</versionRange>
+                                                <goals>
+                                                    <goal>generate</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <execute>
+													<!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
+                                                    <runOnConfiguration>true</runOnConfiguration>
+                                                    <runOnIncremental>true</runOnIncremental>
+                                                </execute>
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
                                                 <groupId>org.apache.maven.plugins</groupId>
                                                 <artifactId>maven-enforcer-plugin</artifactId>
                                                 <versionRange>[1.0,)</versionRange>
@@ -1261,23 +1330,6 @@ Besides field/property validation OVal implements Programming by Contract featur
                                             </pluginExecutionFilter>
                                             <action>
                                                 <ignore />
-                                            </action>
-                                        </pluginExecution>
-                                        <pluginExecution>
-                                            <pluginExecutionFilter>
-                                                <groupId>org.zeroturnaround</groupId>
-                                                <artifactId>jrebel-maven-plugin</artifactId>
-                                                <versionRange>[1.1.5,)</versionRange>
-                                                <goals>
-                                                    <goal>generate</goal>
-                                                </goals>
-                                            </pluginExecutionFilter>
-                                            <action>
-                                                <execute>
-													<!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
-                                                    <runOnConfiguration>true</runOnConfiguration>
-                                                    <runOnIncremental>true</runOnIncremental>
-                                                </execute>
                                             </action>
                                         </pluginExecution>
                                     </pluginExecutions>
