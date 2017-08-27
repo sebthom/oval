@@ -5,697 +5,456 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.sf.oval</groupId>
-	<artifactId>oval</artifactId>
-	<version>1.88-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>OVal</name>
+    <groupId>net.sf.oval</groupId>
+    <artifactId>oval</artifactId>
+    <version>1.88-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>OVal</name>
 
-	<url>http://oval.sf.net</url>
+    <url>http://oval.sf.net</url>
 
-	<description><![CDATA[OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only JavaBeans).
+    <description><![CDATA[OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only JavaBeans).
 
 Constraints can be declared with annotations (@NotNull, @MaxLength), POJOs or XML.
 
 Custom constraints can be expressed as custom Java classes or by using scripting languages such as JavaScript, Groovy, BeanShell, OGNL or MVEL.
 
 Besides field/property validation OVal implements Programming by Contract features by utilizing AspectJ based aspects. This for example allows runtime validation of method arguments.]]></description>
-	<organization>
-		<name>The OVal Development Team</name>
-		<url>http://oval.sf.net/</url>
-	</organization>
 
-	<licenses>
-		<license>
-			<name>Eclipse Public License - v 1.0</name>
-			<distribution>repo</distribution>
+    <licenses>
+        <license>
+            <name>Eclipse Public License 1.0</name>
+            <distribution>repo</distribution>
 			<!-- <url>http://www.eclipse.org/legal/epl-v10.html</url> -->
-			<url>http://oval.sf.net/license/epl-v10.txt</url>
-		</license>
-	</licenses>
+            <url>http://oval.sf.net/license/epl-v10.txt</url>
+        </license>
+    </licenses>
 
-	<developers>
-		<developer>
-			<id>sebthom</id>
-			<name>Sebastian Thomschke</name>
-			<email>sebthom at users.sourceforge.net</email>
-			<roles>
-				<role>lead</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-1</timezone>
-		</developer>
-		<developer>
-			<id>hriegel</id>
-			<name>Holger Riegel</name>
-			<email>hriegel at users.sourceforge.net</email>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>-1</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>sebthom</id>
+            <name>Sebastian Thomschke</name>
+            <email>sebthom at users.sourceforge.net</email>
+            <url>http://sebthom.de/</url>
+            <roles>
+                <role>lead</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Berlin</timezone>
+        </developer>
+    </developers>
 
-	<contributors>
-		<contributor>
-			<name>Mirko Humbert</name>
-			<url>http://www.mirkohumbert.ch/</url>
-			<roles>
-				<role>Designer of the OVal logo</role>
-			</roles>
-		</contributor>
-	</contributors>
+    <contributors>
+        <contributor>
+            <name>Mirko Humbert</name>
+            <url>http://www.mirkohumbert.ch/</url>
+            <roles>
+                <role>Designer of the OVal logo</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Holger Riegel</name>
+            <email>hriegel at users.sourceforge.net</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Berlin</timezone>
+        </contributor>
+    </contributors>
 
-	<scm>
-		<url>https://github.com/sebthom/oval/</url>
-		<connection>scm:javasvn:https://github.com/sebthom/oval/trunk</connection>
-		<developerConnection>scm:javasvn:https://github.com/sebthom/oval/trunk</developerConnection>
-	</scm>
+    <inceptionYear>2005</inceptionYear>
 
-	<ciManagement>
-		<system>jenkins</system>
-		<url>https://ci.vegardit.com/job/net.sf.oval</url>
-	</ciManagement>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.5</java.version>
+        <java.vendor>sun</java.vendor>
+        <java.version.integration-tests>1.6</java.version.integration-tests>
 
-	<mailingLists>
-		<mailingList>
-			<name>Help</name>
-			<archive>https://sourceforge.net/p/oval/discussion/488110/</archive>
-		</mailingList>
-		<mailingList>
-			<name>Open Discussion</name>
-			<archive>https://sourceforge.net/p/oval/discussion/488109/</archive>
-		</mailingList>
-	</mailingLists>
+		<!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
+		<maven.minimum.version>3.2.2</maven.minimum.version>
 
-	<distributionManagement>
-		<downloadUrl>https://sourceforge.net/projects/oval/files/</downloadUrl>
-		<repository>
-			<id>oval-release</id>
-			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/release</url>
+        <maven.scm.version>1.9.5</maven.scm.version>
+        <maven.scm.svnjava.version>2.1.2</maven.scm.svnjava.version>
+        <maven.wagon.version>3.0.0</maven.wagon.version>
+
+
+        <!-- cannot upgrade, newer versions require Java 7 -->
+        <aspectj.version>1.8.9</aspectj.version>
+
+		<!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+		<!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+        <dependency.details.enabled>false</dependency.details.enabled>
+    </properties>
+
+    <scm>
+		<!-- http://maven.apache.org/scm/subversion.html -->
+        <url>https://github.com/sebthom/oval/</url>
+        <connection>scm:svn:https://github.com/sebthom/oval/trunk</connection>
+        <developerConnection>scm:svn:https://github.com/sebthom/oval/trunk</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <downloadUrl>https://sourceforge.net/projects/oval/files/</downloadUrl>
+        <repository>
+            <id>oval-release</id>
+            <url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/release</url>
 			<!-- <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url> -->
-		</repository>
-		<snapshotRepository>
-			<id>oval-snapshot</id>
-			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/snapshot</url>
+        </repository>
+        <snapshotRepository>
+            <id>oval-snapshot</id>
+            <url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/snapshot</url>
 			<!-- <url>https://oss.sonatype.org/content/repositories/snapshots</url> -->
-		</snapshotRepository>
-		<site>
-			<id>oval-site</id>
-			<url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/site/</url>
-		</site>
-	</distributionManagement>
+        </snapshotRepository>
+        <site>
+            <id>oval-site</id>
+            <url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/site/</url>
+        </site>
+    </distributionManagement>
 
-	<inceptionYear>2005</inceptionYear>
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci.vegardit.com/job/net.sf.oval</url>
+    </ciManagement>
 
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/sebthom/oval/issues/</url>
-	</issueManagement>
+    <issueManagement>
+        <system>github.com</system>
+        <url>https://github.com/sebthom/oval/issues/</url>
+    </issueManagement>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.5</java.version>
-		<aspectj.version>1.8.9</aspectj.version>
-	</properties>
+    <prerequisites>
+		<!-- minimum version for toolchain support -->
+        <maven>${maven.minimum.version}</maven>
+    </prerequisites>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
+    <build>
+        <plugins>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jdmk</groupId>
-					<artifactId>jmxtools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jmx</groupId>
-					<artifactId>jmxri</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.mail</groupId>
-					<artifactId>mail</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.21</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<!-- cannot upgrade to 1.4.5-1.4.9 which results in an xstream internal RuntimeException -->
-			<version>1.4.3</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache-extras.beanshell</groupId>
-			<artifactId>bsh</artifactId>
-			<version>2.0b6</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>ognl</groupId>
-			<artifactId>ognl</artifactId>
-			<!-- cannot upgrade, newer versions require Java6 or higher -->
-			<version>3.1.3</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.jruby</groupId>
-			<artifactId>jruby</artifactId>
-			<!-- cannot upgrade to 1.7, which requires Java6 or higher -->
-			<!-- cannot upgrade to 1.6.6/7/8 because of a bug in jruby's Hash class -->
-			<version>1.6.5</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<!-- cannot upgrade, newer versions require Java6 or higher -->
-			<version>1.7R5</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>commons-jxpath</groupId>
-			<artifactId>commons-jxpath</artifactId>
-			<version>1.3</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<!-- cannot upgrade, newer versions require Java6 or higher -->
-			<groupId>javolution</groupId>
-			<artifactId>javolution</artifactId>
-			<version>5.5.1</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<!-- cannot upgrade, newer versions require Java6 or higher -->
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<!-- cannot upgrade to 4.0, which requires Java6 or higher -->
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>3.2.17.RELEASE</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<!-- cannot upgrade to 4.0, which requires Java6 or higher -->
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>3.2.17.RELEASE</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>aopalliance</groupId>
-			<artifactId>aopalliance</artifactId>
-			<version>1.0</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<!-- cannot upgrade to 2.3, which requires Java6 or higher -->
-			<version>2.2.2</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-jexl</artifactId>
-			<version>2.1.1</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.mvel</groupId>
-			<artifactId>mvel2</artifactId>
-			<!-- 2.0.19 -->
-			<!-- cannot upgrade to 2.1.x-2.2.8.Final because of NPE in MVEL -->
-			<!-- cannot upgrade to 2.3, which requires Java6 or higher -->
-			<version>2.0.19</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.paranamer</groupId>
-			<artifactId>paranamer</artifactId>
-			<version>2.8</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0.2</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.trove4j</groupId>
-			<artifactId>trove4j</artifactId>
-			<version>3.0.3</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.phobos</groupId>
-			<artifactId>jsr223-api</artifactId>
-			<version>1.0</version>
-			<optional>true</optional>
-		</dependency>
-	</dependencies>
+            <plugin>
+                <!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>toolchain@validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>toolchain@verify</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <!-- using a higher JDK version for integration tests -->
+                                    <version>${java.version.integration-tests}</version>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${java.version}</version>
+                            <vendor>${java.vendor}</vendor>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
 
-	<profiles>
-		<profile>
-			<id>m2eclipse</id>
-			<activation>
-				<property>
-					<name>eclipse.application</name>
-				</property>
-			</activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-						<plugin>
-							<groupId>org.eclipse.m2e</groupId>
-							<artifactId>lifecycle-mapping</artifactId>
-							<version>1.0.0</version>
-							<configuration>
-								<lifecycleMappingMetadata>
-									<pluginExecutions>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-enforcer-plugin</artifactId>
-												<versionRange>[1.2,)</versionRange>
-												<goals>
-													<goal>enforce</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.codehaus.mojo</groupId>
-												<artifactId>native2ascii-maven-plugin</artifactId>
-												<versionRange>[1.0-alpha-1,)</versionRange>
-												<goals>
-													<goal>native2ascii</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>com.agilejava.docbkx</groupId>
-												<artifactId>docbkx-maven-plugin</artifactId>
-												<versionRange>[2.0.14,)</versionRange>
-												<goals>
-													<goal>generate-html</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-antrun-plugin</artifactId>
-												<versionRange>[1.7,)</versionRange>
-												<goals>
-													<goal>run</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.codehaus.mojo</groupId>
-												<artifactId>aspectj-maven-plugin</artifactId>
-												<versionRange>[1.2,)</versionRange>
-												<goals>
-													<goal>compile</goal>
-													<goal>test-compile</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-toolchains-plugin</artifactId>
-												<versionRange>[1.0,)</versionRange>
-												<goals>
-													<goal>toolchain</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-									</pluginExecutions>
-								</lifecycleMappingMetadata>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
+            <plugin>
+	            <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/usage.html -->
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>check-base-requirements</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                </requireReleaseDeps>
+                                <banCircularDependencies />
 
-		<profile>
-			<!-- http://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven -->
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<!-- using the assembly plugin instead of maven-repository-plugin:bundle-create which will trigger a complete maven build lifecycle -->
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.6</version>
-						<executions>
-							<execution>
-								<id>Generate repository bundle</id>
-								<goals>
-									<goal>single</goal>
-								</goals>
-								<phase>verify</phase>
-								<configuration>
-									<descriptors>
-										<descriptor>${project.basedir}/src/main/assembly/repository-bundle.xml</descriptor>
-									</descriptors>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
-	<build>
-		<plugins>
-			<plugin>
-				<!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
-				<artifactId>maven-toolchains-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>toolchain</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<toolchains>
-						<jdk>
-							<version>${java.version}</version>
-							<vendor>sun</vendor>
-						</jdk>
-					</toolchains>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>clirr-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<minSeverity>info</minSeverity>
-				</configuration>
-			</plugin>
-
-
-			<!--*********************************************************************
-				phase: validate
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.4.1</version>
-				<executions>
-					<execution>
-						<id>basic-rules</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireReleaseDeps>
-									<message>No Snapshots Allowed!</message>
-								</requireReleaseDeps>
-								<banCircularDependencies />
-								<enforceBytecodeVersion>
-									<maxJdkVersion>${java.version}</maxJdkVersion>
-									<excludes>
+								<!-- extra enforcer rules -->
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>${java.version}</maxJdkVersion>
+                                    <ignoredScopes>
+                                        <ignoredScope>test</ignoredScope>
+                                    </ignoredScopes>
+                                    <excludes>
 										<!-- these artifacts are not referenced in the pom as dependencies but are reported as "banned" by the enforcer - probably a bug -->
-										<exclude>org.apache.commons:commons-lang3</exclude>
-										<exclude>net.sourceforge.cobertura:cobertura</exclude>
-										<exclude>com.sun:tools</exclude>
-									</excludes>
-								</enforceBytecodeVersion>
-							</rules>
-							<fail>true</fail>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
+                                        <exclude>org.apache.commons:commons-lang3</exclude>
+                                        <exclude>net.sourceforge.cobertura:cobertura</exclude>
+                                        <exclude>com.sun:tools</exclude>
+                                    </excludes>
+                                </enforceBytecodeVersion>
+
+								<!-- does currently report duplicate classes if same artifact is transitively referenced in different versions, e.g.
+									[WARNING] Rule 2: org.apache.maven.plugins.enforcer.BanDuplicateClasses failed with message:
+									Duplicate classes found:
+
+									Found in:
+									org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:provided
+									org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.1.Final:provided
+									Duplicate classes:
+									javax/interceptor/Interceptor.class
+
+									http://mojo.codehaus.org/extra-enforcer-rules/banDuplicateClasses.html
+									<banDuplicateClasses>
+										<findAllDuplicates>true</findAllDuplicates>
+									</banDuplicateClasses> -->
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>check-dependency-convergence</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <fail>false</fail>
+                            <rules>
+								<!-- http://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html -->
+                                <DependencyConvergence />
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
 						<!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>extra-enforcer-rules</artifactId>
-						<version>1.0-beta-5</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.0-beta-6</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
-
-			<!--*********************************************************************
-				phase: generate-sources
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<id>Interpolate README.txt</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<target>
-								<copy todir="${project.build.directory}">
-									<fileset dir="${project.basedir}" includes="README.txt" />
-								</copy>
-								<replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>Delete java.time stubs</id>
-						<phase>process-classes</phase>
-						<configuration>
-							<target>
+            <plugin>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12.1</version>
+                <executions>
+                    <execution>
+                        <id>check-changes</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>changes-check</goal>
+                        </goals>
+                        <configuration>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <skipSnapshots>true</skipSnapshots>
+                            <xmlPath>src/site/changes.xml</xmlPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dest>${project.build.directory}/classes</dest>
+                    <src>${project.basedir}/src/main/resources</src>
+                    <includes>
+                        <include>**/*.properties</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/Messages_de.properties</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>Interpolate README.txt</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="${project.build.directory}">
+                                    <fileset dir="${project.basedir}" includes="README.txt" />
+                                </copy>
+                                <replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>Delete java.time stubs</id>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <target>
 								<!-- delete the java.time stubs after compilation, before testing -->
-								<delete dir="${project.build.directory}/classes/java" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+                                <delete dir="${project.build.directory}/classes/java" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+				<!-- version 1.3 - 1.8 will break cobertura reports with
+					[ERROR] java.lang.RuntimeException: Problem processing attributes in oval\target\generated-classes\cobertura\net\sf\oval\guard\ApiUsageAuditor.class
+					[ERROR] at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:387)
+				-->
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <complianceLevel>${java.version}</complianceLevel>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <aspectDirectory>src/main/java</aspectDirectory>
+                    <testAspectDirectory>src/test/java</testAspectDirectory>
+                    <XnoInline>true</XnoInline>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjrt</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <minSeverity>info</minSeverity>
+                </configuration>
+            </plugin>
 
-			<!-- ********************************************************************* -->
-			<!-- phase: generate-resources -->
-			<!-- ********************************************************************* -->
-			<plugin>
+            <plugin>
 				<!-- better docbook support see http://docs.codehaus.org/display/MAVENUSER/Docbkx+Maven+Plugin
 					manual: mvn docbkx:generate-html -->
-				<groupId>com.agilejava.docbkx</groupId>
-				<artifactId>docbkx-maven-plugin</artifactId>
-				<version>2.0.17</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate-html</goal>
-						</goals>
+                <groupId>com.agilejava.docbkx</groupId>
+                <artifactId>docbkx-maven-plugin</artifactId>
+                <version>2.0.17</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-html</goal>
+                        </goals>
 						<!-- needs to be in generate-resources and not pre-site since we also
 							want to include the documentation in the distributions and not just the site -->
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-				<configuration>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+                <configuration>
 					<!-- see http://docbook.sourceforge.net/release/xsl/snapshot/doc/html/
 						and http://www.agilejava.com/docbkx/docbkx-maven-plugin/generate-html-mojo.html -->
-					<sourceDirectory>${project.basedir}/src/site/docbook</sourceDirectory>
-					<targetDirectory>${project.build.directory}/site</targetDirectory>
+                    <sourceDirectory>${project.basedir}/src/site/docbook</sourceDirectory>
+                    <targetDirectory>${project.build.directory}/site</targetDirectory>
 
-					<xincludeSupported>true</xincludeSupported>
-					<useExtensions>1</useExtensions>
-					<calloutsExtension>1</calloutsExtension>
+                    <xincludeSupported>true</xincludeSupported>
+                    <useExtensions>1</useExtensions>
+                    <calloutsExtension>1</calloutsExtension>
 
-					<graphicDefaultExtension>png</graphicDefaultExtension>
-					<tocSectionDepth>2</tocSectionDepth>
+                    <graphicDefaultExtension>png</graphicDefaultExtension>
+                    <tocSectionDepth>2</tocSectionDepth>
 
 					<!-- configure syntax highlighting -->
-					<highlightDefaultLanguage>java</highlightDefaultLanguage>
-					<highlightSource>1</highlightSource>
-					<htmlCustomization>${project.basedir}/src/site/docbook/highlight.xsl</htmlCustomization>
-					<xhtmlCustomization>${project.basedir}/src/site/docbook/highlight.xsl</xhtmlCustomization>
+                    <highlightDefaultLanguage>java</highlightDefaultLanguage>
+                    <highlightSource>1</highlightSource>
+                    <htmlCustomization>${project.basedir}/src/site/docbook/highlight.xsl</htmlCustomization>
+                    <xhtmlCustomization>${project.basedir}/src/site/docbook/highlight.xsl</xhtmlCustomization>
 
 					<!-- Enable auto numbering of section labels -->
-					<sectionAutolabel>1</sectionAutolabel>
+                    <sectionAutolabel>1</sectionAutolabel>
 
 					<!-- Enable CSS support -->
-					<cssDecoration>1</cssDecoration>
-					<htmlStylesheet>css/userguide.css</htmlStylesheet>
-					<tableBordersWithCss>1</tableBordersWithCss>
+                    <cssDecoration>1</cssDecoration>
+                    <htmlStylesheet>css/userguide.css</htmlStylesheet>
+                    <tableBordersWithCss>1</tableBordersWithCss>
 
 					<!-- Turn off rules below/above header/footer - we'll use CSS borders -->
-					<headerRule>0</headerRule>
-					<footerRule>0</footerRule>
+                    <headerRule>0</headerRule>
+                    <footerRule>0</footerRule>
 
 					<!-- Turn off image scaling when generating HTML output -->
-					<makeGraphicViewport>1</makeGraphicViewport>
-					<ignoreImageScaling>1</ignoreImageScaling>
+                    <makeGraphicViewport>1</makeGraphicViewport>
+                    <ignoreImageScaling>1</ignoreImageScaling>
 
 					<!-- Make external links stay within window (don't let them take over entire frame) -->
-					<ulinkTarget>'_self'</ulinkTarget>
+                    <ulinkTarget>'_self'</ulinkTarget>
 
 					<!-- Spend extra CPU time to try and produce valid and pretty HTML -->
-					<htmlCleanup>1</htmlCleanup>
-					<makeValidHtml>1</makeValidHtml>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.docbook</groupId>
-						<artifactId>docbook-xml</artifactId>
-						<version>4.4</version>
-						<scope>runtime</scope>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>native2ascii-maven-plugin</artifactId>
-				<version>1.0-beta-1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>native2ascii</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<dest>${project.build.directory}/classes</dest>
-					<src>${project.basedir}/src/main/resources</src>
-					<includes>
-						<include>**/*.properties</include>
-					</includes>
-					<excludes>
-						<exclude>**/Messages_de.properties</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
+                    <htmlCleanup>1</htmlCleanup>
+                    <makeValidHtml>1</makeValidHtml>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.docbook</groupId>
+                        <artifactId>docbook-xml</artifactId>
+                        <version>4.4</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
 
+        <pluginManagement>
+            <!--
+            ================================================================
+            globally defined plug-in configurations and versions
+            ================================================================
+            -->
+            <plugins>
 
-			<!--*********************************************************************
-				phase: compile
-				********************************************************************* -->
-
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<compilerVersion>${java.version}</compilerVersion>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.2</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <compilerVersion>${java.version}</compilerVersion>
+                        <optimize>true</optimize>
 					<!-- disabled because of bug http://jira.codehaus.org/browse/MCOMPILER-208 -->
 					<!--
 						<compilerId>aspectj</compilerId>
@@ -704,8 +463,17 @@ Besides field/property validation OVal implements Programming by Contract featur
 						<include>**/*.aj</include>
 						</includes>
 					-->
-				</configuration>
-
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>default-compile</id>
+                            <phase>none</phase>
+                        </execution>
+                        <execution>
+                            <id>default-testCompile</id>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
 				<!--
 					<dependencies>
 					<dependency>
@@ -729,430 +497,843 @@ Besides field/property validation OVal implements Programming by Contract featur
 					<version>${aspectj.version}</version>
 					</dependency>
 					</dependencies> -->
-			</plugin>
+                </plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<!-- version 1.3 - 1.8 will break cobertura reports with
-					[ERROR] java.lang.RuntimeException: Problem processing attributes in oval\target\generated-classes\cobertura\net\sf\oval\guard\ApiUsageAuditor.class
-					[ERROR] at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:387)
-				-->
-				<version>1.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>test-compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<showWeaveInfo>true</showWeaveInfo>
-					<complianceLevel>${java.version}</complianceLevel>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<aspectDirectory>src/main/java</aspectDirectory>
-					<testAspectDirectory>src/test/java</testAspectDirectory>
-					<XnoInline>true</XnoInline>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjrt</artifactId>
-						<version>${aspectj.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjtools</artifactId>
-						<version>${aspectj.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-
-
-			<!--*********************************************************************
-				phase: test
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<configuration>
-					<argLine>-Duser.language=en -Duser.region=US</argLine>
-					<excludes>
-						<exclude>**/TestGuardAspect*</exclude>
-						<exclude>**/Abstract*</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<!--*********************************************************************
-				phase: package
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
 					<!-- <useDefaultManifestFile>true</useDefaultManifestFile> -->
-					<archive>
-						<manifestFile>${project.basedir}/src/main/java/META-INF/MANIFEST.MF</manifestFile>
-						<addMavenDescriptor>false</addMavenDescriptor>
-						<manifestEntries>
-							<Bundle-Version>${project.version}</Bundle-Version>
-							<Specification-Title>${project.name}</Specification-Title>
-							<Specification-Version>${project.version}</Specification-Version>
-							<Specification-Vendor>${project.organization.name}</Specification-Vendor>
-							<Specification-URL>${project.url}</Specification-URL>
-							<Implementation-Title>${project.name}</Implementation-Title>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
-							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-							<Implementation-URL>${project.url}</Implementation-URL>
-						</manifestEntries>
-					</archive>
-					<excludes>
-						<exclude>builddef.lst</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<!-- exclude java.time stubs -->
-							<excludePackageNames>java.time</excludePackageNames>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
+                        <archive>
+                            <manifestFile>${project.basedir}/src/main/java/META-INF/MANIFEST.MF</manifestFile>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                            <manifestEntries>
+                                <Bundle-Version>${project.version}</Bundle-Version>
+                                <Specification-Title>${project.name}</Specification-Title>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                                <Specification-URL>${project.url}</Specification-URL>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                                <Implementation-URL>${project.url}</Implementation-URL>
+                            </manifestEntries>
+                        </archive>
+                        <excludes>
+                            <exclude>builddef.lst</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-eclipse-plugin</artifactId>
+                    <version>2.10</version>
+                    <configuration>
+                        <downloadSources>true</downloadSources>
+                        <downloadJavadocs>false</downloadJavadocs>
+                        <classpathContainers>
+                            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
+                        </classpathContainers>
+                        <additionalProjectnatures>
+                            <projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
+                        </additionalProjectnatures>
+                        <additionalBuildcommands>
+                            <buildcommand>org.eclipse.ajdt.core.ajbuilder</buildcommand>
+                        </additionalBuildcommands>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+						<!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
+                        <providerImplementations>
+                            <svn>javasvn</svn>
+                        </providerImplementations>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                            <artifactId>maven-scm-provider-svnjava</artifactId>
+                            <version>${maven.scm.svnjava.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>${maven.scm.version}</version>
+                    <configuration>
+						<!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
+                        <providerImplementations>
+                            <svn>javasvn</svn>
+                        </providerImplementations>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                            <artifactId>maven-scm-provider-svnjava</artifactId>
+                            <version>${maven.scm.svnjava.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
 				<!-- we are generating the site in the package phase because we want to include it in the distribution -->
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.6</version>
+                    <configuration>
 					<!-- https://jira.codehaus.org/browse/WAGON-354 -->
-					<chmod>false</chmod>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<!-- 
-								http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
-								using jar-no-for instead of jar to prevent execution of maven lifecycle twice
-							-->
-							<goal>jar-no-fork</goal>
-						</goals>
-						<configuration>
-							<excludes>
+                        <chmod>false</chmod>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>site</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <configuration>
 								<!-- exclude java.time stubs -->
-								<exclude>java/**/*</exclude>
-								<exclude>java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+                                <excludePackageNames>java.time</excludePackageNames>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
 
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.6</version>
-				<executions>
-					<execution>
-						<id>Generate .tar.gz and .zip files</id>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-									<!-- do not upload during deploy phase -->
-							<attach>false</attach>
-							<descriptors>
-								<descriptor>${project.basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
-								<descriptor>${project.basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<!--*********************************************************************
-				phase: release
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<providerImplementations>
-						<svn>javasvn</svn>
-					</providerImplementations>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-						<artifactId>maven-scm-provider-svnjava</artifactId>
-						<version>2.1.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>Generate .tar.gz and .zip files</id>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                            <phase>package</phase>
+                            <configuration>
+							<!-- do not upload during deploy phase -->
+                                <attach>false</attach>
+                                <descriptors>
+                                    <descriptor>${project.basedir}/src/main/assembly/archive-with-dependencies.xml</descriptor>
+                                    <descriptor>${project.basedir}/src/main/assembly/archive-without-dependencies.xml</descriptor>
+                                </descriptors>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
 
-			<plugin>
-				<artifactId>maven-scm-plugin</artifactId>
-				<version>1.9.4</version>
-				<configuration>
-					<providerImplementations>
-						<svn>javasvn</svn>
-					</providerImplementations>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-						<artifactId>maven-scm-provider-svnjava</artifactId>
-						<version>2.1.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>verify</phase>
+                            <goals>
+								<!--
+									http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+									using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+								-->
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <excludes>
+							<!-- exclude java.time stubs -->
+                            <exclude>java/**/*</exclude>
+                            <exclude>java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
 
-			<plugin>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.12</version>
-				<executions>
-					<execution>
-						<id>check-changes</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>changes-check</goal>
-						</goals>
-						<configuration>
-							<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-							<skipSnapshots>true</skipSnapshots>
-							<xmlPath>src/site/changes.xml</xmlPath>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+                <plugin>
+               	<!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <!-- newer versions crash when running JDK 5 tests -->
+                    <version>2.19.1</version>
+                    <configuration>
+						<argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <excludes>
+                            <exclude>**/*ITest.java</exclude>
+                            <exclude>**/TestGuardAspect*</exclude>
+                            <exclude>**/Abstract*</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+	                <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.20</version>
+                    <configuration>
+	                    <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <includes>
+                            <include>**/*ITest.java</include>
+                        </includes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
-			<!--*********************************************************************
-				phase: manual execution
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<classpathContainers>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
-					</classpathContainers>
-					<additionalProjectnatures>
-						<projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
-					</additionalProjectnatures>
-					<additionalBuildcommands>
-						<buildcommand>org.eclipse.ajdt.core.ajbuilder</buildcommand>
-					</additionalBuildcommands>
-				</configuration>
-			</plugin>
-		</plugins>
-		<extensions>
-			<extension>
+        <extensions>
+            <extension>
+				<!-- measure and report time used by each plugin/goal -->
+                <groupId>co.leantechniques</groupId>
+                <artifactId>maven-buildtime-extension</artifactId>
+                <version>3.0.1</version>
+            </extension>
+
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>${maven.wagon.version}</version>
+            </extension>
+
+            <extension>
 				<!-- sftp support -->
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.10</version>
-			</extension>
-		</extensions>
-	</build>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>${maven.wagon.version}</version>
+            </extension>
+        </extensions>
+    </build>
 
-	<reporting>
-		<plugins>
 
-			<plugin>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
-			</plugin>
+	<!-- global dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+			<!-- cannot upgrade to 1.4.5-1.4.9 which results in an xstream internal RuntimeException -->
+            <version>1.4.3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache-extras.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b6</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+			<!-- cannot upgrade, newer versions require Java6 or higher -->
+            <version>3.1.3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby</artifactId>
+			<!-- cannot upgrade to 1.7, which requires Java6 or higher -->
+			<!-- cannot upgrade to 1.6.6/7/8 because of a bug in jruby's Hash class -->
+            <version>1.6.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+			<!-- cannot upgrade, newer versions require Java6 or higher -->
+            <version>1.7R5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-jxpath</groupId>
+            <artifactId>commons-jxpath</artifactId>
+            <version>1.3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+			<!-- cannot upgrade, newer versions require Java6 or higher -->
+            <groupId>javolution</groupId>
+            <artifactId>javolution</artifactId>
+            <version>5.5.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+			<!-- cannot upgrade, newer versions require Java6 or higher -->
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+			<!-- cannot upgrade to 4.0, which requires Java6 or higher -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>3.2.18.RELEASE</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+			<!-- cannot upgrade to 4.0, which requires Java6 or higher -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.2.18.RELEASE</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+			<!-- cannot upgrade to 2.3, which requires Java6 or higher -->
+            <version>2.2.2</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jexl</artifactId>
+            <version>2.1.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+			<!-- 2.0.19 -->
+			<!-- cannot upgrade to 2.1.x-2.2.8.Final because of NPE in MVEL -->
+			<!-- cannot upgrade to 2.3, which requires Java6 or higher -->
+            <version>2.0.19</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <version>2.8</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0.2</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.phobos</groupId>
+            <artifactId>jsr223-api</artifactId>
+            <version>1.0</version>
+            <optional>true</optional>
+        </dependency>
 
-			<plugin>
-				<!-- Generate Javadoc for the project. -->
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-				<configuration>
-					<stylesheetfile>${project.basedir}/src/site/javadoc/oval-javadoc.css
-					</stylesheetfile>
-					<stylesheet>maven</stylesheet>
-					<linksource>true</linksource>
-					<links>
-						<link>http://java.sun.com/j2se/${java.version}.0/docs/api/</link>
-					</links>
-					<source>${java.version}</source>
-					<destDir>api</destDir>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<id>html</id>
-						<reports>
-							<report>javadoc</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
+		<!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-			<plugin>
-				<!-- Creates an html-based, cross referenced version of Java source code for a project. -->
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<linkJavadoc>true</linkJavadoc>
-					<javadocDir>api</javadocDir>
-				</configuration>
-			</plugin>
 
-			<plugin>
+    <reporting>
+        <plugins>
+            <plugin>
 				<!-- Generate a report based on the results of unit tests. -->
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.19.1</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>report-only</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.20</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report-only</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
 
-			<plugin>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>project-team</report>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12.1</version>
+                <configuration>
+                    <issueLinkTemplate />
+                    <xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+				<!-- Generate Javadoc for the project. -->
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <stylesheetfile>${project.basedir}/src/site/javadoc/oval-javadoc.css
+                    </stylesheetfile>
+                    <stylesheet>maven</stylesheet>
+                    <linksource>true</linksource>
+                    <links>
+                        <link>http://java.sun.com/j2se/${java.version}.0/docs/api/</link>
+                    </links>
+                    <source>${java.version}</source>
+                    <destDir>api</destDir>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>html</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+				<!-- Creates an html-based, cross referenced version of Java source code for a project. -->
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <linkJavadoc>true</linkJavadoc>
+                    <javadocDir>api</javadocDir>
+                </configuration>
+            </plugin>
+
+            <plugin>
 				<!-- TODO, @todo list report -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
 
-			<plugin>
+            <plugin>
 				<!-- JUnit Code Coverage report -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
 				<!-- upgrading to 2.7 results in:
 					Failed to execute goal org.codehaus.mojo:cobertura-maven-plugin:2.7:instrument (null) on project oval: Unable to prepare instrumentation
 					directory. source and destination are the same directory. -> [Help 1]
 				-->
-				<version>2.6</version>
-				<configuration>
-					<instrumentation>
-						<excludes>
-							<exclude>net/sf/oval/test/**/*.class</exclude>
-						</excludes>
-					</instrumentation>
-					<check>
-						<haltOnFailure>true</haltOnFailure>
-					</check>
-				</configuration>
-			</plugin>
+                <version>2.6</version>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>net/sf/oval/test/**/*.class</exclude>
+                        </excludes>
+                    </instrumentation>
+                    <check>
+                        <haltOnFailure>true</haltOnFailure>
+                    </check>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jdepend-maven-plugin</artifactId>
-				<version>2.0</version>
-			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
 
-			<plugin>
+            <plugin>
 				<!-- This plugin produces a nicely formatted metrics report based on your project -->
-				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.6</version>
-				<configuration>
-					<linkXref>true</linkXref>
-					<minimumTokens>100</minimumTokens>
-					<targetJdk>${java.version}</targetJdk>
-				</configuration>
-			</plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.8</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>${java.version}</targetJdk>
+                </configuration>
+            </plugin>
 
-			<plugin>
+            <plugin>
 				<!-- FindBugs looks for bugs in Java programs -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.3</version>
-				<configuration>
-					<excludeFilterFile>${project.basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
-					<xmlOutput>true</xmlOutput>
-					<effort>Max</effort>
-				</configuration>
-			</plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.5</version>
+                <configuration>
+                    <excludeFilterFile>${project.basedir}/src/misc/findbugs-exclude.xml</excludeFilterFile>
+                    <xmlOutput>true</xmlOutput>
+                    <effort>Max</effort>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.17</version>
-				<configuration>
-					<configLocation>${project.basedir}/src/misc/checkstyle-config.xml</configLocation>
-					<enableRSS>false</enableRSS>
-					<failsOnError>false</failsOnError>
-					<linkXref>true</linkXref>
-				</configuration>
-			</plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <configLocation>${project.basedir}/src/misc/checkstyle-config.xml</configLocation>
+                    <enableRSS>false</enableRSS>
+                    <failsOnError>false</failsOnError>
+                    <linkXref>true</linkXref>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>clirr-maven-plugin</artifactId>
-				<version>2.7</version>
-			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.12</version>
-				<configuration>
-
-					<issueLinkTemplate />
-					<xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-
-			<plugin>
+            <plugin>
 				<!--
 					The basic purpose of "Maven Dashboard Report Plugin" is to centralize and share all
 					quality informations generated by other Maven report plugins
 				-->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>dashboard-maven-plugin</artifactId>
-				<version>1.0.0-beta-1</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dashboard-maven-plugin</artifactId>
+                <version>1.0.0-beta-1</version>
 				<!--
 					<groupId>com.thesett</groupId>
 					<artifactId>dashboard-maven-plugin</artifactId>
 					<version>0.8.21</version>
 				-->
-			</plugin>
+            </plugin>
 
-		</plugins>
-	</reporting>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <profile>
+            <id>jrebel-config</id>
+            <activation>
+                <file>
+                    <exists>src/main/resources/rebel-remote.xml</exists>
+                </file>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.zeroturnaround</groupId>
+                        <artifactId>jrebel-maven-plugin</artifactId>
+                        <version>1.1.7</version>
+                        <executions>
+                            <execution>
+                                <id>generate-rebel-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
+                            <alwaysGenerate>false</alwaysGenerate>
+                            <showGenerated>true</showGenerated>
+                            <generateDefaultElements>true</generateDefaultElements>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/rebel.xml</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+		<!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
+			it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
+        <profile>
+            <activation>
+                <property>
+                    <name>!eclipse.application</name>
+                </property>
+            </activation>
+            <properties>
+                <compilerId>eclipse</compilerId>
+                <webClassifier>classes</webClassifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>m2eclipse</id>
+            <activation>
+                <property>
+                    <name>eclipse.application</name>
+                </property>
+            </activation>
+            <properties>
+                <compilerId>javac</compilerId>
+
+				<!-- http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
+                <webClassifier />
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+						<!-- http://stackoverflow.com/questions/7905501/get-rid-of-pom-not-found-warning-for-org-eclipse-m2elifecycle-mapping -->
+						<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+                        <plugin>
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>1.0.0</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-enforcer-plugin</artifactId>
+                                                <versionRange>[1.0,)</versionRange>
+                                                <goals>
+                                                    <goal>enforce</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-toolchains-plugin</artifactId>
+                                                <versionRange>[1.0,)</versionRange>
+                                                <goals>
+                                                    <goal>toolchain</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-antrun-plugin</artifactId>
+                                                <versionRange>[1.7,)</versionRange>
+                                                <goals>
+                                                    <goal>run</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>native2ascii-maven-plugin</artifactId>
+                                                <versionRange>[1.0-alpha-1,)</versionRange>
+                                                <goals>
+                                                    <goal>native2ascii</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>com.agilejava.docbkx</groupId>
+                                                <artifactId>docbkx-maven-plugin</artifactId>
+                                                <versionRange>[2.0.14,)</versionRange>
+                                                <goals>
+                                                    <goal>generate-html</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>aspectj-maven-plugin</artifactId>
+                                                <versionRange>[1.2,)</versionRange>
+                                                <goals>
+                                                    <goal>compile</goal>
+                                                    <goal>test-compile</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.zeroturnaround</groupId>
+                                                <artifactId>jrebel-maven-plugin</artifactId>
+                                                <versionRange>[1.1.5,)</versionRange>
+                                                <goals>
+                                                    <goal>generate</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <execute>
+													<!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
+                                                    <runOnConfiguration>true</runOnConfiguration>
+                                                    <runOnIncremental>true</runOnIncremental>
+                                                </execute>
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
+			<!-- http://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven -->
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+						<!-- using the assembly plugin instead of maven-repository-plugin:bundle-create which will trigger a complete maven build lifecycle -->
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>Generate repository bundle</id>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>${project.basedir}/src/main/assembly/repository-bundle.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
