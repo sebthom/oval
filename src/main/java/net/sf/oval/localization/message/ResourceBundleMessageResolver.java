@@ -130,7 +130,8 @@ public class ResourceBundleMessageResolver implements MessageResolver {
     }
 
     protected String getMessage(final String key, final Locale locale) {
-        Set<ResourceBundle> bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(locale);
+        BundlesAndKeys context = bundlesAndKeys;
+        Set<ResourceBundle> bundlesOfLocale = context.bundlesOfLocales.get(locale);
         if (bundlesOfLocale == null) {
             synchronized (writeLock) {
                 bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(locale);
@@ -148,11 +149,12 @@ public class ResourceBundleMessageResolver implements MessageResolver {
 
                     bundlesAndKeys = copy;
                 }
+                context = bundlesAndKeys;
             }
         }
 
         for (final ResourceBundle bundle : bundlesOfLocale) {
-            final Set<String> keys = bundlesAndKeys.keysOfBundles.get(bundle);
+            final Set<String> keys = context.keysOfBundles.get(bundle);
             if (keys.contains(key))
                 return bundle.getString(key);
         }
