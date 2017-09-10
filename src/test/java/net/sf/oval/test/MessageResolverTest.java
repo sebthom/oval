@@ -39,7 +39,7 @@ public class MessageResolverTest extends TestCase {
          */
         Locale.setDefault(def);
         final ResourceBundleMessageResolver resolver = (ResourceBundleMessageResolver) Validator.getMessageResolver();
-        resolver.addMessageBundle(ResourceBundle.getBundle("net/sf/oval/test/MessageResolverTest", ResourceBundleMessageResolver.ROOT_LOCALE));
+        resolver.addMessageBundle(ResourceBundle.getBundle("net/sf/oval/test/MessageResolverTest", new Locale("", "", "")));
         resolver.addMessageBundle(ResourceBundle.getBundle("net/sf/oval/test/MessageResolverTest", Locale.GERMAN));
 
         Locale.setDefault(Locale.GERMAN);

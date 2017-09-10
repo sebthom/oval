@@ -6,16 +6,17 @@
     </properties>
 
     <body>
-        <release version="1.87" date="2017-08-??">
+        <release version="1.88" date="2017-09-??">
+            <action type="fix" issue="10">Race Condition in ResourceBundleMessageResolver</action>
             <action type="update">upgraded to Spring 3.2.18.RELEASE, SLF4J 1.7.25</action>
             <action type="fix" issue="7">StackOverflowError when using @Guarded(checkInvariants=true) (thanks to Kai Tait)</action>
         </release>
-
+        
         <release version="1.87" date="2017-03-04">
             <action type="add" issue="5">Support for Java 8 java.time Dates in @Future and @Past (thanks to Pyeroh)</action>
             <action type="add" issue="3">Improve performance of ValidateWithMethodCheck (thanks to an-bel)</action>
         </release>
-
+        
         <release version="1.86" date="2016-10-08">
             <action type="add">SpringInjector#initialize(Object)</action>
             <action type="fix" issue="https://sourceforge.net/p/oval/bugs/91">Race condition when initializing ResourceBundleMessageResolver (thanks to Ville Koskela)</action>
