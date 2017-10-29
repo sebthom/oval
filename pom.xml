@@ -68,7 +68,7 @@ Besides field/property validation OVal implements Programming by Contract featur
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
         <java.version>1.5</java.version>
         <java.vendor>sun</java.vendor>
         <java.version.integration-tests>1.6</java.version.integration-tests>
@@ -99,14 +99,19 @@ Besides field/property validation OVal implements Programming by Contract featur
     <distributionManagement>
         <downloadUrl>https://sourceforge.net/projects/oval/files/</downloadUrl>
         <repository>
+            <id>oval-releases-bintray</id>
+            <url>https://api.bintray.com/maven/sebthom/maven/oval/;publish=1</url>
+        </repository>
+        <!--
+        <repository>
             <id>oval-release</id>
             <url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/release</url>
-            <!-- <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url> -->
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
+        -->
         <snapshotRepository>
             <id>oval-snapshot</id>
             <url>sftp://web.sourceforge.net/home/project-web/o/ov/oval/htdocs/mvn-repo/snapshot</url>
-            <!-- <url>https://oss.sonatype.org/content/repositories/snapshots</url> -->
         </snapshotRepository>
         <site>
             <id>oval-site</id>
@@ -241,6 +246,37 @@ Besides field/property validation OVal implements Programming by Contract featur
             </plugin>
 
             <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>DISABLED</phase>
+                    </execution>
+                    <execution>
+                        <id>attach-sources-no-fork</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <!--
+                                http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+                                using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+                            -->
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <!-- exclude java.*, javax.* stubs -->
+                        <exclude>java/**/*</exclude>
+                        <exclude>java</exclude>
+                        <exclude>javax/**/*</exclude>
+                        <exclude>javax</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-changes-plugin</artifactId>
                 <version>2.12.1</version>
                 <executions>
@@ -258,7 +294,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native2ascii-maven-plugin</artifactId>
@@ -282,7 +318,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                     </excludes>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
@@ -321,7 +357,7 @@ Besides field/property validation OVal implements Programming by Contract featur
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <!-- version 1.3 - 1.8 will break cobertura reports with
+                <!-- version 1.3 - 1.10 will break cobertura reports with
                     [ERROR] java.lang.RuntimeException: Problem processing attributes in oval\target\generated-classes\cobertura\net\sf\oval\guard\ApiUsageAuditor.class
                     [ERROR] at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:387)
                 -->
@@ -356,7 +392,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                     </dependency>
                 </dependencies>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>clirr-maven-plugin</artifactId>
@@ -445,13 +481,15 @@ Besides field/property validation OVal implements Programming by Contract featur
 
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.7.0</version>
                     <configuration>
+                    <!-- this configuration is actually taken care of by the toolchain plug-in, however m2eclipse does not seem to realize the correct JDK
+                        if only the toolchain plug-in is configured, therefore we explicitly configure the Java version again -->
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                         <compilerVersion>${java.version}</compilerVersion>
                         <optimize>true</optimize>
-                    <!-- disabled because of bug http://jira.codehaus.org/browse/MCOMPILER-208 -->
+                    <!-- disabled because of bug https://issues.apache.org/jira/browse/MCOMPILER-208 -->
                     <!--
                         <compilerId>aspectj</compilerId>
                         <includes>
@@ -665,8 +703,8 @@ Besides field/property validation OVal implements Programming by Contract featur
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                <!-- exclude java.time stubs -->
-                                <excludePackageNames>java.time</excludePackageNames>
+                                <!-- exclude java.*, javax.* stubs -->
+                                <excludePackageNames>java.*:javax.*</excludePackageNames>
                             </configuration>
                         </execution>
                     </executions>
@@ -695,37 +733,12 @@ Besides field/property validation OVal implements Programming by Contract featur
                 </plugin>
 
                 <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <!--
-                                    http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
-                                    using jar-no-for instead of jar to prevent execution of maven lifecycle twice
-                                -->
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <excludes>
-                            <!-- exclude java.time stubs -->
-                            <exclude>java/**/*</exclude>
-                            <exclude>java</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-
-                <plugin>
                    <!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <!-- newer versions crash when running JDK 5 tests -->
+                    <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
                     <version>2.19.1</version>
                     <configuration>
-                        <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <argLine>-Duser.language=en -Duser.region=US -Xmx768m -noverify</argLine>
                         <excludes>
                             <exclude>**/*ITest.java</exclude>
                             <exclude>**/TestGuardAspect*</exclude>
@@ -736,7 +749,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <plugin>
                     <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.20</version>
+                    <version>2.20.1</version>
                     <configuration>
                         <argLine>-Duser.language=en -Duser.region=US</argLine>
                         <includes>
@@ -972,7 +985,7 @@ Besides field/property validation OVal implements Programming by Contract featur
             <plugin>
                 <!-- Generate a report based on the results of unit tests. -->
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20</version>
+                <version>2.20.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -1164,7 +1177,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                     <plugin>
                         <groupId>org.zeroturnaround</groupId>
                         <artifactId>jrebel-maven-plugin</artifactId>
-                        <version>1.1.7</version>
+                        <version>1.1.8</version>
                         <executions>
                             <execution>
                                 <id>generate-rebel-xml</id>

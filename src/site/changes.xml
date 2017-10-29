@@ -6,17 +6,18 @@
     </properties>
 
     <body>
-        <release version="1.88" date="2017-09-??">
+        <release version="1.90" date="2017-10-19">
+            <action type="add">Support for validation of Bean Validation 2.0 built-in constraints</action>
             <action type="fix" issue="10">Race Condition in ResourceBundleMessageResolver</action>
             <action type="update">upgraded to Spring 3.2.18.RELEASE, SLF4J 1.7.25</action>
             <action type="fix" issue="7">StackOverflowError when using @Guarded(checkInvariants=true) (thanks to Kai Tait)</action>
         </release>
-        
+
         <release version="1.87" date="2017-03-04">
             <action type="add" issue="5">Support for Java 8 java.time Dates in @Future and @Past (thanks to Pyeroh)</action>
             <action type="add" issue="3">Improve performance of ValidateWithMethodCheck (thanks to an-bel)</action>
         </release>
-        
+
         <release version="1.86" date="2016-10-08">
             <action type="add">SpringInjector#initialize(Object)</action>
             <action type="fix" issue="https://sourceforge.net/p/oval/bugs/91">Race condition when initializing ResourceBundleMessageResolver (thanks to Ville Koskela)</action>
@@ -27,16 +28,16 @@
         <release version="1.85" date="2015-10-03">
             <action type="fix" issue="https://sourceforge.net/p/oval/bugs/90">Activation rules are not considered for whole contraints list (thanks to Petras)</action>
             <action type="fix" issue="https://sourceforge.net/p/oval/bugs/85">@Email validation treats + as invalid character (thanks to David van Geest)</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/89">ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists Limiting the nesting
-				level for ConstraintTarget.VALUES (thanks to Petras)
-			</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/88">ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to Petras)</action>
-			<action type="fix">concurrency fix in SerializableMethod/SerializableField/SerializableContructor (thanks to Andrew Malota)</action>
-			<action type="fix">DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)</action>
-			<action type="fix">DigitsCheck's message variables are emtpy (thanks to Dirk Buchhorn)</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/86">Trove is wrongly detected (thanks to Geert Bevin)</action>
-			<action type="update">upgraded to AspectJ 1.8.6, commons-logging 1.2, Groovy 2.2.2, OGNL 3.1, Paranamer 2.8, Rhino 1.7R5, Spring 3.2.14.RELEASE, SLF4J 1.7.12
-			</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/89">ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists Limiting the nesting
+                level for ConstraintTarget.VALUES (thanks to Petras)
+            </action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/88">ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to Petras)</action>
+            <action type="fix">concurrency fix in SerializableMethod/SerializableField/SerializableContructor (thanks to Andrew Malota)</action>
+            <action type="fix">DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)</action>
+            <action type="fix">DigitsCheck's message variables are emtpy (thanks to Dirk Buchhorn)</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/86">Trove is wrongly detected (thanks to Geert Bevin)</action>
+            <action type="update">upgraded to AspectJ 1.8.6, commons-logging 1.2, Groovy 2.2.2, OGNL 3.1, Paranamer 2.8, Rhino 1.7R5, Spring 3.2.14.RELEASE, SLF4J 1.7.12
+            </action>
         </release>
 
         <release version="1.84" date="2013-11-22">
@@ -45,66 +46,66 @@
             <action type="update">upgraded to Spring 3.2.5.RELEASE, Paranamer 2.6, xstream 1.4.5, OGNL 3.0.8</action>
         </release>
 
-		<release version="1.83" date="2013-09-07">
-			<action type="add">added Validator.resolveValue methods</action>
-			<action type="update">upgraded to Spring 3.2.4.RELEASE, Groovy 2.1.6, OGNL 3.0.7, Paranamer 2.5.7, SLF4J 1.7.5, commons-logging 1.1.3</action>
-			<action type="update">small performance improvement in annotation processing in BeanValidationAnnotationsConfigurer</action>
-			<action type="add">added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice managed objects into constraint check
-				implementations
-			</action>
-		</release>
+        <release version="1.83" date="2013-09-07">
+            <action type="add">added Validator.resolveValue methods</action>
+            <action type="update">upgraded to Spring 3.2.4.RELEASE, Groovy 2.1.6, OGNL 3.0.7, Paranamer 2.5.7, SLF4J 1.7.5, commons-logging 1.1.3</action>
+            <action type="update">small performance improvement in annotation processing in BeanValidationAnnotationsConfigurer</action>
+            <action type="add">added net.sf.oval.integration.guice.GuiceCheckInitializationListener to support injection of Guice managed objects into constraint check
+                implementations
+            </action>
+        </release>
 
-		<release version="1.82" date="2013-01-26">
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/78">currentlyCheckingPreConditions in Guard.validateMethodPost</action>
-			<action type="update">made deprecated XML attribute "requireValidElements" of assertValid optional in XSD</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/79">Wrong generic types used in Check-implementations</action>
-			<action type="update">upgraded to AspectJ 1.7.1, JUnit 4.11, Log4J 1.2.17, SLF4J 1.7.2, XStream 1.4.4, Groovy 2.1.0, BeanShell 2.0b5, OGNL 3.0.6, JRuby 1.6.5,
-				Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3
-			</action>
-			<action type="fix">message variable cache invalidation on MatchPatternCheck NotMatchPatternCheck</action>
-			<action type="add" issue="https://sourceforge.net/p/oval/bugs/75">JSR223 Scripting support</action>
-		</release>
+        <release version="1.82" date="2013-01-26">
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/78">currentlyCheckingPreConditions in Guard.validateMethodPost</action>
+            <action type="update">made deprecated XML attribute "requireValidElements" of assertValid optional in XSD</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/79">Wrong generic types used in Check-implementations</action>
+            <action type="update">upgraded to AspectJ 1.7.1, JUnit 4.11, Log4J 1.2.17, SLF4J 1.7.2, XStream 1.4.4, Groovy 2.1.0, BeanShell 2.0b5, OGNL 3.0.6, JRuby 1.6.5,
+                Rhino 1.7R4, Spring 3.2.0.RELEASE, Paranamer 2.5.2, GNU Trove 3.0.3
+            </action>
+            <action type="fix">message variable cache invalidation on MatchPatternCheck NotMatchPatternCheck</action>
+            <action type="add" issue="https://sourceforge.net/p/oval/bugs/75">JSR223 Scripting support</action>
+        </release>
 
-		<release version="1.81" date="2012-02-22">
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/77">xstream alias typo "postExcecution" in XMLConfigurer.java</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/76">UnsupportedOperationException when using inspectInterfaces</action>
-			<action type="fix">default message attribute value on JSR303 annotations being misinterpreted</action>
-			<action type="update">upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6, commons-jexl 2.1.1,
-				Paranamer 2.4.1
-			</action>
-			<action type="add">extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
-			</action>
-		</release>
+        <release version="1.81" date="2012-02-22">
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/77">xstream alias typo "postExcecution" in XMLConfigurer.java</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/76">UnsupportedOperationException when using inspectInterfaces</action>
+            <action type="fix">default message attribute value on JSR303 annotations being misinterpreted</action>
+            <action type="update">upgraded to Spring 3.1.1.RELEASE, AspectJ 1.6.12, JUnit 4.10, XStream 1.4.2, OGNL 3.0.4, CGLib 2.2.2, Groovy 1.8.6, commons-jexl 2.1.1,
+                Paranamer 2.4.1
+            </action>
+            <action type="add">extended BeanValidationAnnotationsConfigurer to support method parameter constraints and return value checks on non-getter methods
+            </action>
+        </release>
 
-		<release version="1.80" date="2011-10-03">
-			<action type="update">upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.4, Groovy 1.8.2, XStream 1.4.1, Rhino 1.7R3, Spring 3.0.6.RELEASE, Javolution 5.5.1
-			</action>
-			<action type="add">added caching of compiled OGNL expressions</action>
-			<action type="add">added caching of compiled MVEL expressions</action>
-			<action type="fix">message attribute on JSR303 annotations being ignored</action>
-			<action type="remove">removed deprecated AssertValid.requireValidElements attribute</action>
-			<action type="remove">removed deprecated class CheckWithMultiple</action>
-			<action type="add">added support for target attribute on constraint annotations</action>
-		</release>
+        <release version="1.80" date="2011-10-03">
+            <action type="update">upgraded to AspectJ 1.6.11, OGNL 3.0.2, JRuby 1.6.4, Groovy 1.8.2, XStream 1.4.1, Rhino 1.7R3, Spring 3.0.6.RELEASE, Javolution 5.5.1
+            </action>
+            <action type="add">added caching of compiled OGNL expressions</action>
+            <action type="add">added caching of compiled MVEL expressions</action>
+            <action type="fix">message attribute on JSR303 annotations being ignored</action>
+            <action type="remove">removed deprecated AssertValid.requireValidElements attribute</action>
+            <action type="remove">removed deprecated class CheckWithMultiple</action>
+            <action type="add">added support for target attribute on constraint annotations</action>
+        </release>
 
-		<release version="1.70" date="2011-04-05">
-			<action type="update">upgraded to AspectJ 1.6.10, Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, Commons JEXL 2.0.1, OGNL 3.0.1, Groovy 1.7.6</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/70">OVal fails to load at bean creation time</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/71">Bug in DigitsCheck</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/72">Bug while retrieving profile names from JSR group</action>
-			<action type="add">added convenience constructors to XMLConfigurer for easier Spring-based configuration</action>
-			<action type="add">added support for Spring dependencies being injected into SimpleCheck instances</action>
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/73">Missing sources JAR for OVal in Maven repository</action>
-			<action type="update">small XSD improvements</action>
-		</release>
+        <release version="1.70" date="2011-04-05">
+            <action type="update">upgraded to AspectJ 1.6.10, Paranamer 2.3, MVEL 2.0.19, Spring 3.0.5.RELEASE, Commons JEXL 2.0.1, OGNL 3.0.1, Groovy 1.7.6</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/70">OVal fails to load at bean creation time</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/71">Bug in DigitsCheck</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/72">Bug while retrieving profile names from JSR group</action>
+            <action type="add">added convenience constructors to XMLConfigurer for easier Spring-based configuration</action>
+            <action type="add">added support for Spring dependencies being injected into SimpleCheck instances</action>
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/73">Missing sources JAR for OVal in Maven repository</action>
+            <action type="update">small XSD improvements</action>
+        </release>
 
-		<release version="1.61" date="2010-11-13">
-			<action type="fix" issue="https://sourceforge.net/p/oval/bugs/69">@NotBlank ignores non-breaking space</action>
-			<action type="fix">@EMail not validating addresses correct if allowPersonalName=true</action>
-		</release>
+        <release version="1.61" date="2010-11-13">
+            <action type="fix" issue="https://sourceforge.net/p/oval/bugs/69">@NotBlank ignores non-breaking space</action>
+            <action type="fix">@EMail not validating addresses correct if allowPersonalName=true</action>
+        </release>
 
-		<release version="0.1alpha" date="2005-08-17">
-			<action type="add">initial release</action>
-		</release>
-	</body>
+        <release version="0.1alpha" date="2005-08-17">
+            <action type="add">initial release</action>
+        </release>
+    </body>
 </document>

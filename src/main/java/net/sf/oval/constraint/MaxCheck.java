@@ -27,6 +27,7 @@ import net.sf.oval.context.OValContext;
 public class MaxCheck extends AbstractAnnotationCheck<Max> {
     private static final long serialVersionUID = 1L;
 
+    private boolean inclusive = true;
     private double max;
 
     @Override
@@ -51,22 +52,34 @@ public class MaxCheck extends AbstractAnnotationCheck<Max> {
         return max;
     }
 
+    public boolean isInclusive() {
+        return inclusive;
+    }
+
     public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
         if (valueToValidate == null)
             return true;
 
         if (valueToValidate instanceof Number) {
             final double doubleValue = ((Number) valueToValidate).doubleValue();
-            return doubleValue <= max;
+            if (inclusive)
+                return doubleValue <= max;
+            return doubleValue < max;
         }
 
         final String stringValue = valueToValidate.toString();
         try {
             final double doubleValue = Double.parseDouble(stringValue);
-            return doubleValue <= max;
+            if (inclusive)
+                return doubleValue <= max;
+            return doubleValue < max;
         } catch (final NumberFormatException e) {
             return false;
         }
+    }
+
+    public void setInclusive(final boolean inclusive) {
+        this.inclusive = inclusive;
     }
 
     public void setMax(final double max) {

@@ -27,6 +27,7 @@ import net.sf.oval.context.OValContext;
 public class MinCheck extends AbstractAnnotationCheck<Min> {
     private static final long serialVersionUID = 1L;
 
+    private boolean inclusive = true;
     private double min;
 
     @Override
@@ -51,22 +52,34 @@ public class MinCheck extends AbstractAnnotationCheck<Min> {
         return min;
     }
 
+    public boolean isInclusive() {
+        return inclusive;
+    }
+
     public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
         if (valueToValidate == null)
             return true;
 
         if (valueToValidate instanceof Number) {
             final double doubleValue = ((Number) valueToValidate).doubleValue();
-            return doubleValue >= min;
+            if (inclusive)
+                return doubleValue >= min;
+            return doubleValue > min;
         }
 
         final String stringValue = valueToValidate.toString();
         try {
             final double doubleValue = Double.parseDouble(stringValue);
-            return doubleValue >= min;
+            if (inclusive)
+                return doubleValue >= min;
+            return doubleValue > min;
         } catch (final NumberFormatException e) {
             return false;
         }
+    }
+
+    public void setInclusive(final boolean inclusive) {
+        this.inclusive = inclusive;
     }
 
     public void setMin(final double min) {

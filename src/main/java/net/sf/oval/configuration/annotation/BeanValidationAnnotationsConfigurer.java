@@ -28,13 +28,21 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Negative;
+import javax.validation.constraints.NegativeOrZero;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Pattern.Flag;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import net.sf.oval.Check;
@@ -51,11 +59,15 @@ import net.sf.oval.constraint.AssertFalseCheck;
 import net.sf.oval.constraint.AssertNullCheck;
 import net.sf.oval.constraint.AssertTrueCheck;
 import net.sf.oval.constraint.AssertValidCheck;
+import net.sf.oval.constraint.DateRangeCheck;
 import net.sf.oval.constraint.DigitsCheck;
 import net.sf.oval.constraint.FutureCheck;
 import net.sf.oval.constraint.MatchPatternCheck;
 import net.sf.oval.constraint.MaxCheck;
 import net.sf.oval.constraint.MinCheck;
+import net.sf.oval.constraint.NotBlankCheck;
+import net.sf.oval.constraint.NotEmptyCheck;
+import net.sf.oval.constraint.NotNegativeCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.SizeCheck;
@@ -64,7 +76,11 @@ import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
- * Constraints configurer that interprets the JSR303 built-in Java Bean Validation annotations:
+ * Constraints configurer that interprets the built-in Java Bean Validation annotations.
+ * Requires validation-api-1.0.0.jar or validation-api-2.0.0.jar to be on the classpath.
+ *
+ * <p>
+ * <b>JSR-303:</b>
  * <ul>
  * <li>javax.validation.constraints.AssertFalse => net.sf.oval.constraint.AssertFalseCheck
  * <li>javax.validation.constraints.AssertTrue => net.sf.oval.constraint.AssertTrueCheck
@@ -81,11 +97,162 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * <li>javax.validation.constraints.Size => net.sf.oval.constraint.SizeCheck
  * <li>javax.validation.Valid => net.sf.oval.constraint.AssertValidCheck
  * </ul>
+ * <p>
+ * <b>JSR-380:</b>
+ * <ul>
+ * <li>javax.validation.constraints.Email => net.sf.oval.constraint.EmailCheck
+ * <li>javax.validation.constraints.FutureOrPresent => net.sf.oval.constraint.DateRangeCheck(min="now")
+ * <li>javax.validation.constraints.Negative => net.sf.oval.constraint.MaxCheck(max=0, inclusive=false)
+ * <li>javax.validation.constraints.NegativeOrZero => net.sf.oval.constraint.MaxCheck(max=0, inclusive=true)
+ * <li>javax.validation.constraints.NotBlank => net.sf.oval.constraint.NotBlankCheck
+ * <li>javax.validation.constraints.NotEmpty => net.sf.oval.constraint.NotEmptyCheck
+ * <li>javax.validation.constraints.PastOrPresent => net.sf.oval.constraint.DateRange(max="now")
+ * <li>javax.validation.constraints.Positive => net.sf.oval.constraint.MinCheck(min=0, inclusive=false)
+ * <li>javax.validation.constraints.PositiveOrZero => net.sf.oval.constraint.NotNegativeCheck
+ * </ul>
  *
  * @author Sebastian Thomschke
  */
 public class BeanValidationAnnotationsConfigurer implements Configurer {
+
+    private interface ConstraintMapper {
+        Check map(final Annotation annotation);
+    }
+
+    private static class JSR303Mapper implements ConstraintMapper {
+
+        public Check map(final Annotation annotation) {
+            if (annotation instanceof NotNull)
+                return new NotNullCheck();
+            if (annotation instanceof Null)
+                return new AssertNullCheck();
+            if (annotation instanceof Valid)
+                return new AssertValidCheck();
+            if (annotation instanceof AssertTrue)
+                return new AssertTrueCheck();
+            if (annotation instanceof AssertFalse)
+                return new AssertFalseCheck();
+            if (annotation instanceof DecimalMax) {
+                final MaxCheck check = new MaxCheck();
+                check.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
+                final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
+                if (getInclusive != null) {
+                    check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
+                }
+                return check;
+            }
+            if (annotation instanceof DecimalMin) {
+                final MinCheck check = new MinCheck();
+                check.setMin(Double.parseDouble(((DecimalMin) annotation).value()));
+                final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
+                if (getInclusive != null) {
+                    check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
+                }
+                return check;
+            }
+            if (annotation instanceof Max) {
+                final MaxCheck check = new MaxCheck();
+                check.setMax(((Max) annotation).value());
+                return check;
+            }
+            if (annotation instanceof Min) {
+                final MinCheck check = new MinCheck();
+                check.setMin(((Min) annotation).value());
+                return check;
+            }
+            if (annotation instanceof Future)
+                return new FutureCheck();
+            if (annotation instanceof Past)
+                return new PastCheck();
+            if (annotation instanceof Pattern) {
+                final MatchPatternCheck check = new MatchPatternCheck();
+                int iflag = 0;
+                for (final Flag flag : ((Pattern) annotation).flags()) {
+                    iflag = iflag | flag.getValue();
+                }
+                check.setPattern(((Pattern) annotation).regexp(), iflag);
+                return check;
+            }
+            if (annotation instanceof Digits) {
+                final DigitsCheck check = new DigitsCheck();
+                check.setMaxFraction(((Digits) annotation).fraction());
+                check.setMaxInteger(((Digits) annotation).integer());
+                return check;
+            }
+            if (annotation instanceof Size) {
+                final SizeCheck check = new SizeCheck();
+                check.setMax(((Size) annotation).max());
+                check.setMin(((Size) annotation).min());
+                return check;
+            }
+            return null;
+        }
+
+    }
+
+    private static class JSR380Mapper extends JSR303Mapper {
+        @Override
+        public Check map(final Annotation annotation) {
+            final Check jsr303check = super.map(annotation);
+            if (jsr303check != null)
+                return jsr303check;
+
+            if (annotation instanceof FutureOrPresent) {
+                final DateRangeCheck check = new DateRangeCheck();
+                check.setMin("now");
+                return check;
+            }
+            if (annotation instanceof Negative) {
+                final MaxCheck check = new MaxCheck();
+                check.setInclusive(false);
+                check.setMax(0);
+                return check;
+            }
+            if (annotation instanceof NegativeOrZero) {
+                final MaxCheck check = new MaxCheck();
+                check.setInclusive(true);
+                check.setMax(0);
+                return check;
+            }
+            if (annotation instanceof NotBlank)
+                return new NotBlankCheck();
+            if (annotation instanceof NotEmpty)
+                return new NotEmptyCheck();
+            if (annotation instanceof PastOrPresent) {
+                final DateRangeCheck check = new DateRangeCheck();
+                check.setMax("now");
+                return check;
+            }
+            if (annotation instanceof Positive) {
+                final MinCheck check = new MinCheck();
+                check.setInclusive(false);
+                check.setMin(0);
+                return check;
+            }
+            if (annotation instanceof PositiveOrZero)
+                return new NotNegativeCheck();
+            return null;
+        }
+    }
+
     private static final Log LOG = Log.getLog(BeanValidationAnnotationsConfigurer.class);
+
+    private static final ConstraintMapper CONSTRAINT_MAPPER;
+    static {
+        ConstraintMapper constraintMapper = null;
+        try {
+            // first try if bean validation API 2.0 is available
+            constraintMapper = new JSR380Mapper();
+        } catch (final LinkageError ex) {
+            // fallback to bean validation API 1.0
+            constraintMapper = new JSR303Mapper();
+        }
+        CONSTRAINT_MAPPER = constraintMapper;
+    }
+
+    public BeanValidationAnnotationsConfigurer() {
+        super();
+    }
 
     private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes) {
         final CollectionFactory cf = getCollectionFactory();
@@ -231,131 +398,55 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
         assert annotation != null;
         assert checks != null;
 
-        // ignore non-bean validation annotations
-        if (!(annotation instanceof Valid) && annotation.annotationType().getAnnotation(javax.validation.Constraint.class) == null)
-            return;
+        final Class<?> annotationClass = annotation.annotationType();
 
-        Class<?>[] groups = null;
-        Check check = null;
-        if (annotation instanceof NotNull) {
-            groups = ((NotNull) annotation).groups();
-            check = new NotNullCheck();
-        } else if (annotation instanceof Null) {
-            groups = ((Null) annotation).groups();
-            check = new AssertNullCheck();
-        } else if (annotation instanceof Valid) {
-            check = new AssertValidCheck();
-        } else if (annotation instanceof AssertTrue) {
-            groups = ((AssertTrue) annotation).groups();
-            check = new AssertTrueCheck();
-        } else if (annotation instanceof AssertFalse) {
-            groups = ((AssertFalse) annotation).groups();
-            check = new AssertFalseCheck();
-        } else if (annotation instanceof DecimalMax) {
-            groups = ((DecimalMax) annotation).groups();
-            final MaxCheck maxCheck = new MaxCheck();
-            maxCheck.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
-            check = maxCheck;
-        } else if (annotation instanceof DecimalMin) {
-            groups = ((DecimalMin) annotation).groups();
-            final MinCheck minCheck = new MinCheck();
-            minCheck.setMin(Double.parseDouble(((DecimalMin) annotation).value()));
-            check = minCheck;
-        } else if (annotation instanceof Max) {
-            groups = ((Max) annotation).groups();
-            final MaxCheck maxCheck = new MaxCheck();
-            maxCheck.setMax(((Max) annotation).value());
-            check = maxCheck;
-        } else if (annotation instanceof Min) {
-            groups = ((Min) annotation).groups();
-            final MinCheck minCheck = new MinCheck();
-            minCheck.setMin(((Min) annotation).value());
-            check = minCheck;
-        } else if (annotation instanceof Future) {
-            groups = ((Future) annotation).groups();
-            check = new FutureCheck();
-        } else if (annotation instanceof Past) {
-            groups = ((Past) annotation).groups();
-            check = new PastCheck();
-        } else if (annotation instanceof Pattern) {
-            groups = ((Pattern) annotation).groups();
-            final MatchPatternCheck matchPatternCheck = new MatchPatternCheck();
-            int iflag = 0;
-            for (final Flag flag : ((Pattern) annotation).flags()) {
-                iflag = iflag | flag.getValue();
-            }
-            matchPatternCheck.setPattern(((Pattern) annotation).regexp(), iflag);
-            check = matchPatternCheck;
-        } else if (annotation instanceof Digits) {
-            groups = ((Digits) annotation).groups();
-            final DigitsCheck digitsCheck = new DigitsCheck();
-            digitsCheck.setMaxFraction(((Digits) annotation).fraction());
-            digitsCheck.setMaxInteger(((Digits) annotation).integer());
-            check = digitsCheck;
-        } else if (annotation instanceof Size) {
-            groups = ((Size) annotation).groups();
-            final SizeCheck sizeCheck = new SizeCheck();
-            sizeCheck.setMax(((Size) annotation).max());
-            sizeCheck.setMin(((Size) annotation).min());
-            check = sizeCheck;
-        }
+        /*
+         * process bean validation annotations
+         */
+        if (annotationClass.getAnnotation(javax.validation.Constraint.class) != null || annotation instanceof Valid) {
 
-        if (check != null) {
-            final Method getMessage = ReflectionUtils.getMethod(annotation.getClass(), "message", (Class<?>[]) null);
-            if (getMessage != null) {
-                final String message = ReflectionUtils.invokeMethod(getMessage, annotation, (Object[]) null);
-                if (message != null && !message.startsWith("{javax.validation.constraints.")) {
-                    check.setMessage(message);
+            final Check check = CONSTRAINT_MAPPER.map(annotation);
+
+            if (check != null) {
+                final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
+                if (getMessage != null) {
+                    final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
+                    if (message != null && !message.startsWith("{javax.validation.constraints.")) {
+                        check.setMessage(message);
+                    }
                 }
-            }
 
-            if (groups != null && groups.length > 0) {
-                final String[] profiles = new String[groups.length];
-                for (int i = 0, l = groups.length; i < l; i++) {
-                    profiles[i] = groups[i].getName();
+                final Method getGroups = ReflectionUtils.getMethod(annotationClass, "groups");
+                if (getGroups != null) {
+                    final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, annotation);
+                    if (groups != null && groups.length > 0) {
+                        final String[] profiles = new String[groups.length];
+                        for (int i = 0, l = groups.length; i < l; i++) {
+                            profiles[i] = groups[i].getName();
+                        }
+                        check.setProfiles(profiles);
+                    }
                 }
-                check.setProfiles(profiles);
+                checks.add(check);
+                return;
             }
-            checks.add(check);
-            return;
-        }
 
-        Annotation[] list = null;
-        if (annotation instanceof AssertFalse.List) {
-            list = ((AssertFalse.List) annotation).value();
-        } else if (annotation instanceof AssertTrue.List) {
-            list = ((AssertTrue.List) annotation).value();
-        } else if (annotation instanceof DecimalMax.List) {
-            list = ((DecimalMax.List) annotation).value();
-        } else if (annotation instanceof DecimalMin.List) {
-            list = ((DecimalMin.List) annotation).value();
-        } else if (annotation instanceof Digits.List) {
-            list = ((Digits.List) annotation).value();
-        } else if (annotation instanceof Future.List) {
-            list = ((Future.List) annotation).value();
-        } else if (annotation instanceof Max.List) {
-            list = ((Max.List) annotation).value();
-        } else if (annotation instanceof Min.List) {
-            list = ((Min.List) annotation).value();
-        } else if (annotation instanceof NotNull.List) {
-            list = ((NotNull.List) annotation).value();
-        } else if (annotation instanceof Null.List) {
-            list = ((Null.List) annotation).value();
-        } else if (annotation instanceof Past.List) {
-            list = ((Past.List) annotation).value();
-        } else if (annotation instanceof Pattern.List) {
-            list = ((Pattern.List) annotation).value();
-        } else if (annotation instanceof Size.List) {
-            list = ((Size.List) annotation).value();
-        }
-
-        if (list != null) {
-            for (final Annotation anno : list) {
-                initializeChecks(anno, checks);
-            }
-        } else {
             LOG.warn("Ignoring unsupported bean validation constraint annotation {1}", annotation);
             return;
+        }
+
+        /*
+         * process bean validation List annotations
+         */
+        if (annotationClass.getPackage().getName().equals("javax.validation.constraints") && "List".equals(annotationClass.getSimpleName()))
+
+        {
+            final Annotation[] list = ReflectionUtils.invokeMethod(ReflectionUtils.getMethod(annotationClass, "value"), annotation);
+            if (list != null) {
+                for (final Annotation anno : list) {
+                    initializeChecks(anno, checks);
+                }
+            }
         }
     }
 }

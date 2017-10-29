@@ -407,12 +407,12 @@ List<ConstraintViolation> violations = validator.validate(entity);
       </section>
 
       <section id="interpreting-bean-validation-annotations">
-      <title>Interpreting Bean Validation (JSR303) annotations</title>
+      <title>Interpreting Bean Validation annotations</title>
 
-      <para>OVal itself is not a JSR303 compliant bean validation framework. However it now comes with a configurer
-      that can translate the JSR303 built-in standard constraints into equivalent OVal constraints.
+      <para>OVal itself is not a JSR303/JSR380 compliant bean validation framework. However it now comes with a configurer
+      that can translate the standard Bean Validation constraints (javax.validation.constraints.*) into equivalent OVal constraints.
       The <command>net.sf.oval.configuration.annotation.BeanValidationAnnotationsConfigurer</command> interprets
-      the JSR303 annotations as follows:</para>
+      the annotations as follows:</para>
 
       <itemizedlist>
         <listitem>
@@ -431,13 +431,31 @@ List<ConstraintViolation> violations = validator.validate(entity);
           <para><command>@javax.validation.constraints.Digits =&gt; @net.sf.oval.constraint.Digits </command></para>
         </listitem>
         <listitem>
+          <para><command>@javax.validation.constraints.Email =&gt; @net.sf.oval.constraint.Email </command></para>
+        </listitem>
+        <listitem>
           <para><command>@javax.validation.constraints.Future =&gt; @net.sf.oval.constraint.Future</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.FutureOrPresent =&gt; @net.sf.oval.constraint.Future(min="now")</command></para>
         </listitem>
         <listitem>
           <para><command>@javax.validation.constraints.Max =&gt; @net.sf.oval.constraint.Max</command></para>
         </listitem>
         <listitem>
           <para><command>@javax.validation.constraints.Min =&gt; @net.sf.oval.constraint.Min</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Negative =&gt; @net.sf.oval.constraint.Max(max=0, inclusive=false)</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.NegativeOrZero =&gt; @net.sf.oval.constraint.Max(max=0, inclusive=true)</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.NotBlank =&gt; @net.sf.oval.constraint.NotBlank</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.NotEmpty =&gt; @net.sf.oval.constraint.NotEmpty</command></para>
         </listitem>
         <listitem>
           <para><command>@javax.validation.constraints.NotNull =&gt; @net.sf.oval.constraint.NotNull</command></para>
@@ -449,10 +467,19 @@ List<ConstraintViolation> violations = validator.validate(entity);
           <para><command>@javax.validation.constraints.Past =&gt; @net.sf.oval.constraint.Past</command></para>
         </listitem>
         <listitem>
+          <para><command>@javax.validation.constraints.PastOrPresent =&gt; @net.sf.oval.constraint.Past(max="now")</command></para>
+        </listitem>
+        <listitem>
           <para><command>@javax.validation.constraints.Pattern =&gt; @net.sf.oval.constraint.Pattern</command></para>
         </listitem>
         <listitem>
           <para><command>@javax.validation.constraints.Size =&gt; @net.sf.oval.constraint.Size</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.Positive =&gt; @net.sf.oval.constraint.Min(min=0, inclusive=false)</command></para>
+        </listitem>
+        <listitem>
+          <para><command>@javax.validation.constraints.PositiveOrZero =&gt; @net.sf.oval.constraint.NotNegative</command></para>
         </listitem>
         <listitem>
           <para><command>@javax.validation.constraints.Valid =&gt; @net.sf.oval.constraint.AssertValid</command></para>
@@ -474,7 +501,7 @@ List<ConstraintViolation> violations = validator.validate(entity);
 
       <para>Example usage:</para>
 
-      <programlisting><![CDATA[// configure OVal to interprete OVal constraint annotations as well as built-in JSR303 annotations
+      <programlisting><![CDATA[// configure OVal to interprete OVal constraint annotations as well as built-in Bean Validation annotations
 Validator validator = new Validator(new AnnotationsConfigurer(), new BeanValidationAnnotationsConfigurer());
 
 MyEntity entity = new MyEntity();
