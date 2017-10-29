@@ -1360,8 +1360,8 @@ Besides field/property validation OVal implements Programming by Contract featur
             </build>
         </profile>
 
+        <!-- http://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven
         <profile>
-            <!-- http://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven -->
             <id>release-sign-artifacts</id>
             <activation>
                 <property>
@@ -1385,7 +1385,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                         </executions>
                     </plugin>
                     <plugin>
-                        <!-- using the assembly plugin instead of maven-repository-plugin:bundle-create which will trigger a complete maven build lifecycle -->
+                        /* using the assembly plugin instead of maven-repository-plugin:bundle-create which will trigger a complete maven build lifecycle */
                         <artifactId>maven-assembly-plugin</artifactId>
                         <executions>
                             <execution>
@@ -1404,7 +1404,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile>-->
     </profiles>
 
 </project>
