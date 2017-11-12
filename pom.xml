@@ -712,12 +712,12 @@ Besides field/property validation OVal implements Programming by Contract featur
                             <goals>
                                 <goal>jar</goal>
                             </goals>
-                            <configuration>
-                                <!-- exclude java.*, javax.* stubs -->
-                                <excludePackageNames>java.*:javax.*</excludePackageNames>
-                            </configuration>
                         </execution>
                     </executions>
+                    <configuration>
+                        <!-- exclude internal package and java.*, javax.* stubs -->
+                        <excludePackageNames>*.internal:java:javax</excludePackageNames>
+                    </configuration>
                 </plugin>
 
                 <plugin>
