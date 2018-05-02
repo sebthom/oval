@@ -1,29 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!-- XSD for OVal -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://oval.sourceforge.net/oval-configuration"
-    xmlns:tns="http://oval.sourceforge.net/oval-configuration">
-	<!--
-	*************************** 
-	top-level configuration element 
-	***************************
-	-->
+<!-- XSD for OVal -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://oval.sf.net/oval-configuration"
+    xmlns:tns="http://oval.sf.net/oval-configuration">
+    <!--
+        ***************************
+        top-level configuration element
+        ***************************
+    -->
     <element name="oval">
         <annotation>
             <documentation>The oval element is the root of the descriptor.</documentation>
         </annotation>
         <complexType>
             <choice minOccurs="0" maxOccurs="unbounded">
-                <element name="class" type="tns:Class" minOccurs="0" />
-                <element name="constraintSet" type="tns:ConstraintSet" minOccurs="0" />
+                <element name="class" type="tns:Class" />
+                <element name="constraintSet" type="tns:ConstraintSet" />
             </choice>
         </complexType>
     </element>
 
-	<!--
-	*************************** 
-	abstract types
-	***************************
-	-->
+    <!--
+        ***************************
+        supporting types
+        ***************************
+    -->
+    <simpleType name="javaIdentifier">
+        <annotation>
+            <documentation>
+                http://stackoverflow.com/questions/5205339/regular-expression-matching-fully-qualified-java-classes
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="[\p{L}_$]+[\p{L}\p{N}_$]*" />
+        </restriction>
+    </simpleType>
+
+    <simpleType name="javaFQIdentifier">
+        <annotation>
+            <documentation>
+                http://stackoverflow.com/questions/5205339/regular-expression-matching-fully-qualified-java-classes
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="([\p{L}_$][\p{L}\p{N}_$]*\.)*[\p{L}_$][\p{L}\p{N}_$]*" />
+        </restriction>
+    </simpleType>
+
+    <!--
+        ***************************
+        abstract types
+        ***************************
+    -->
     <complexType name="ConfigurationElement" abstract="true">
         <attribute name="overwrite" use="optional" type="boolean" />
     </complexType>
@@ -36,38 +63,44 @@
         <complexContent>
             <extension base="tns:ConfigurationElement">
                 <choice minOccurs="0" maxOccurs="unbounded">
-                    <element name="assert" type="tns:Assert" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="assertConstraintSet" type="tns:AssertConstraintSet" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="assertFalse" type="tns:AssertFalse" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="assertFieldConstraints" type="tns:AssertFieldConstraints" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="assertTrue" type="tns:AssertTrue" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="assertURL" type="tns:AssertURL" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="assertValid" type="tns:AssertValid" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="checkWith" type="tns:CheckWith" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="equalToField" type="tns:EqualToField" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="email" type="tns:Email" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="future" type="tns:Future" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="hasSubstring" type="tns:HasSubstring" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="instanceOf" type="tns:InstanceOf" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="instanceOfAny" type="tns:InstanceOfAny" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="length" type="tns:Length" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="matchPattern" type="tns:MatchPattern" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="max" type="tns:Max" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="maxLength" type="tns:MaxLength" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="maxSize" type="tns:MaxSize" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="min" type="tns:Min" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="minLength" type="tns:MinLength" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="minSize" type="tns:MinSize" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="noSelfReference" type="tns:NoSelfReference" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="notEmpty" type="tns:NotEmpty" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="notEqual" type="tns:NotEqual" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="notEqualToField" type="tns:NotEqualToField" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="notNegative" type="tns:NotNegative" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="notNull" type="tns:NotNull" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="past" type="tns:Past" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="range" type="tns:Range" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="size" type="tns:Size" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="validateWithMethod" type="tns:ValidateWithMethod" minOccurs="0" maxOccurs="unbounded" />
+                    <element name="assert" type="tns:Assert" />
+                    <element name="assertConstraintSet" type="tns:AssertConstraintSet" />
+                    <element name="assertFalse" type="tns:AssertFalse" />
+                    <element name="assertFieldConstraints" type="tns:AssertFieldConstraints" />
+                    <element name="assertNull" type="tns:AssertNull" />
+                    <element name="assertTrue" type="tns:AssertTrue" />
+                    <element name="assertURL" type="tns:AssertURL" />
+                    <element name="assertValid" type="tns:AssertValid" />
+                    <element name="checkWith" type="tns:CheckWith" />
+                    <element name="dateRange" type="tns:DateRange" />
+                    <element name="digits" type="tns:Digits" />
+                    <element name="equalToField" type="tns:EqualToField" />
+                    <element name="email" type="tns:Email" />
+                    <element name="future" type="tns:Future" />
+                    <element name="hasSubstring" type="tns:HasSubstring" />
+                    <element name="instanceOf" type="tns:InstanceOf" />
+                    <element name="instanceOfAny" type="tns:InstanceOfAny" />
+                    <element name="length" type="tns:Length" />
+                    <element name="matchPattern" type="tns:MatchPattern" />
+                    <element name="max" type="tns:Max" />
+                    <element name="maxLength" type="tns:MaxLength" />
+                    <element name="maxSize" type="tns:MaxSize" />
+                    <element name="memberOf" type="tns:MemberOf" />
+                    <element name="min" type="tns:Min" />
+                    <element name="minLength" type="tns:MinLength" />
+                    <element name="minSize" type="tns:MinSize" />
+                    <element name="noSelfReference" type="tns:NoSelfReference" />
+                    <element name="notEmpty" type="tns:NotEmpty" />
+                    <element name="notEqual" type="tns:NotEqual" />
+                    <element name="notEqualToField" type="tns:NotEqualToField" />
+                    <element name="notMatchPattern" type="tns:NotMatchPattern" />
+                    <element name="notMemberOf" type="tns:NotMemberOf" />
+                    <element name="notNegative" type="tns:NotNegative" />
+                    <element name="notNull" type="tns:NotNull" />
+                    <element name="past" type="tns:Past" />
+                    <element name="range" type="tns:Range" />
+                    <element name="size" type="tns:Size" />
+                    <element name="validateWithMethod" type="tns:ValidateWithMethod" />
                 </choice>
             </extension>
         </complexContent>
@@ -77,21 +110,75 @@
             <element name="profiles" minOccurs="0" maxOccurs="1" type="tns:Profiles" />
         </sequence>
     </complexType>
-    <complexType name="Constraint" abstract="true">
+    <complexType name="Constraint" mixed="true" abstract="true">
         <complexContent>
             <extension base="tns:ElementsWithProfiles">
+                <choice minOccurs="0" maxOccurs="unbounded">
+                    <element name="appliesTo">
+                        <annotation>
+                            <documentation>
+                                In case the constraint is declared for an array, collection or map this controls how
+                                the constraint is applied to it
+                                and it's child objects.
+                            </documentation>
+                        </annotation>
+                        <complexType>
+                            <sequence>
+                                <element name="constraintTarget" minOccurs="0" maxOccurs="unbounded">
+                                    <simpleType>
+                                        <restriction base="string">
+                                            <enumeration value="CONTAINER">
+                                                <annotation>
+                                                    <documentation>apply the constraint to the collection / map / array object itself</documentation>
+                                                </annotation>
+                                            </enumeration>
+                                            <enumeration value="KEYS">
+                                                <annotation>
+                                                    <documentation>apply the constraint to the keys of a map</documentation>
+                                                </annotation>
+                                            </enumeration>
+                                            <enumeration value="VALUES">
+                                                <annotation>
+                                                    <documentation>apply the constraint to the values of a the map / the items of the collection / the elements
+                                                        of the array
+                                                    </documentation>
+                                                </annotation>
+                                            </enumeration>
+                                        </restriction>
+                                    </simpleType>
+                                </element>
+                            </sequence>
+                        </complexType>
+                    </element>
+                </choice>
                 <attribute name="errorCode" type="string" use="optional" />
                 <attribute name="message" type="string" use="optional" />
                 <attribute name="severity" type="string" use="optional" />
+                <attribute name="target" type="string" use="optional">
+                    <annotation>
+                        <documentation>An expression to specify where in the object graph relative from this object the expression should
+                            be applied.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="when" type="string" use="optional">
+                    <annotation>
+                        <documentation>
+                            Sets the formula returning true if this constraint shall be evaluated and false if it shall be
+                            ignored for the current
+                            validation.
+                        </documentation>
+                    </annotation>
+                </attribute>
             </extension>
         </complexContent>
     </complexType>
 
-	<!--
-	*************************** 
-	basic elements
-	***************************
-	-->
+    <!--
+        ***************************
+        shared elements
+        ***************************
+    -->
     <complexType name="ConstraintSet">
         <annotation>
             <documentation>
@@ -124,11 +211,11 @@
         </restriction>
     </simpleType>
 
-	<!--
-	*************************** 
-	elements with constraints
-	***************************
-	-->
+    <!--
+        ***************************
+        elements with constraints
+        ***************************
+    -->
     <complexType name="Class">
         <annotation>
             <documentation>
@@ -145,11 +232,48 @@
                         <element name="method" type="tns:Method" />
                     </choice>
                 </sequence>
-                <attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false" />
-                <attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false" />
-                <attribute name="assertParametersNotNull" use="optional" type="boolean" default="false" />
-                <attribute name="checkInvariants" use="optional" type="boolean" default="false" />
-                <attribute name="type" use="required" type="string">
+                <attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false">
+                    <annotation>
+                        <documentation>Automatically apply field constraints to the corresponding parameters of constructors declared
+                            within the same class. A
+                            corresponding parameter is a parameter with the same name and type as the field.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false">
+                    <annotation>
+                        <documentation>Automatically apply field constraints to the single parameter of the corresponding setter methods
+                            declared within the same
+                            class. A corresponding setter method is a method following the JavaBean convention and
+                            its parameter has as the same type as the
+                            field.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="assertParametersNotNull" use="optional" type="boolean" default="false">
+                    <annotation>
+                        <documentation>Declares if parameter values of constructors and methods are expected to be not null. This can be
+                            weakened by using the
+                            @net.sf.oval.constraint.exclusion.Nullable annotation on specific parameters.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="checkInvariants" use="optional" type="boolean" default="false">
+                    <annotation>
+                        <documentation>Declares if invariants are automatically checked after constructor execution and prior and after
+                            calls to non-private
+                            methods.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="inspectInterfaces" use="optional" type="boolean" default="false">
+                    <annotation>
+                        <documentation>Declares if annotations can be applied to interfaces that this class implements - supporting a
+                            documentation function
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="type" use="required" type="tns:javaFQIdentifier">
                     <annotation>
                         <documentation source="java:java.lang.Class">The fully qualified name of the class</documentation>
                     </annotation>
@@ -165,7 +289,7 @@
         </annotation>
         <complexContent>
             <extension base="tns:ConfigurationElementWithConstraints">
-                <attribute name="name" use="required" type="QName" />
+                <attribute name="name" use="required" type="tns:javaIdentifier" />
             </extension>
         </complexContent>
     </complexType>
@@ -174,7 +298,8 @@
             <documentation>
                 Constraints configuration for a constructor.
                 To identify the correct constructor you are required to
-                list all parameters in their declared order, including
+                list all parameters in their
+                declared order, including
                 parameters you are not intending to specify constraints for.
             </documentation>
         </annotation>
@@ -190,10 +315,9 @@
     <complexType name="Method">
         <annotation>
             <documentation>
-                Constraints configuration for a method.
-                To identify the correct method you are required to list all
-                parameters,
-                including parameters you are not intending to specify constraints for.
+                Constraints configuration for a method. To identify the correct method you are required to list all
+                parameters, including parameters
+                you are not intending to specify constraints for.
             </documentation>
         </annotation>
         <complexContent>
@@ -204,7 +328,7 @@
                     <element name="returnValue" type="tns:ReturnValue" minOccurs="0" maxOccurs="1" />
                     <element name="postExecution" type="tns:PostExecution" minOccurs="0" maxOccurs="1" />
                 </sequence>
-                <attribute name="name" use="required" type="QName" />
+                <attribute name="name" use="required" type="tns:javaIdentifier" />
                 <attribute name="isInvariant" use="optional" type="boolean" default="false" />
             </extension>
         </complexContent>
@@ -220,7 +344,7 @@
                 <sequence>
                     <element name="nullable" minOccurs="0" maxOccurs="unbounded" type="tns:Nullable" />
                 </sequence>
-                <attribute name="type" use="required" type="string" />
+                <attribute name="type" use="required" type="tns:javaFQIdentifier" />
             </extension>
         </complexContent>
     </complexType>
@@ -272,11 +396,11 @@
         </complexContent>
     </complexType>
 
-	<!--
-	*************************** 
-	constraint elements
-	***************************
-	-->
+    <!--
+        ***************************
+        constraint elements
+        ***************************
+    -->
     <complexType name="Pre" mixed="true">
         <annotation>
             <documentation>method pre condition - special programming by contract constraints</documentation>
@@ -304,7 +428,8 @@
             <documentation>
                 Check if evaluating the expression in the specified expression language returns true.
                 The node body
-                contains the script expression as CDATA.
+                contains the script expression as
+                CDATA.
             </documentation>
         </annotation>
         <complexContent>
@@ -324,8 +449,47 @@
         </annotation>
         <complexContent>
             <extension base="tns:ElementsWithProfiles">
+                <choice minOccurs="0" maxOccurs="unbounded">
+                    <element name="appliesTo">
+                        <annotation>
+                            <documentation>
+                                In case the constraint is declared for an array, collection or map this controls how
+                                the constraint
+                                is applied to it
+                                and it's child objects.
+                            </documentation>
+                        </annotation>
+                        <complexType>
+                            <sequence>
+                                <element name="constraintTarget" minOccurs="0" maxOccurs="unbounded">
+                                    <simpleType>
+                                        <restriction base="string">
+                                            <enumeration value="CONTAINER">
+                                                <annotation>
+                                                    <documentation>apply the constraint to the collection / map / array object itself</documentation>
+                                                </annotation>
+                                            </enumeration>
+                                            <enumeration value="KEYS">
+                                                <annotation>
+                                                    <documentation>apply the constraint to the keys of a map</documentation>
+                                                </annotation>
+                                            </enumeration>
+                                            <enumeration value="VALUES">
+                                                <annotation>
+                                                    <documentation>apply the constraint to the values of a the map / the items of the collection / the elements
+                                                        of the array
+                                                    </documentation>
+                                                </annotation>
+                                            </enumeration>
+                                        </restriction>
+                                    </simpleType>
+                                </element>
+                            </sequence>
+                        </complexType>
+                    </element>
+                </choice>
                 <attribute name="id" type="IDREF" use="required" />
-				<!-- TODO -->
+                <!-- TODO -->
                 <attribute name="source" type="string" use="optional" />
             </extension>
         </complexContent>
@@ -335,7 +499,8 @@
             <documentation>
                 Check if the value is false.
                 Note: This constraint is also satisfied when the value to validate is
-                null, therefore you might also need to declare the NotNull constraint.
+                null, therefore you might also need
+                to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -350,9 +515,19 @@
         </annotation>
         <complexContent>
             <extension base="tns:ElementsWithProfiles">
-                <attribute name="fieldName" type="string" use="required" />
-                <attribute name="declaringClass" type="string" use="required" />
+                <attribute name="fieldName" type="tns:javaIdentifier" use="required" />
+                <attribute name="declaringClass" type="tns:javaFQIdentifier" use="required" />
             </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AssertNull" mixed="true">
+        <annotation>
+            <documentation>
+                Check if null.
+            </documentation>
+        </annotation>
+        <complexContent>
+            <extension base="tns:Constraint" />
         </complexContent>
     </complexType>
     <complexType name="AssertTrue" mixed="true">
@@ -360,7 +535,8 @@
             <documentation>
                 Check if the value is true.
                 Note: This constraint is also satisfied when the value to validate is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore you might also need
+                to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -373,7 +549,8 @@
                 Check if the value is a valid URL.
                 Note: This constraint is also satisfied when the value to validate
                 is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore you might also
+                need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -396,7 +573,11 @@
         </annotation>
         <complexContent>
             <extension base="tns:Constraint">
-                <attribute name="requireValidElements" type="boolean" use="required" />
+                <attribute name="requireValidElements" type="boolean" use="optional">
+                    <annotation>
+                        <documentation>deprecated, use appliesTo</documentation>
+                    </annotation>
+                </attribute>
             </extension>
         </complexContent>
     </complexType>
@@ -422,15 +603,53 @@
                 Name of a class implementing net.sf.oval.constraint.check.CheckWithCheck.SimpleCheck
             </documentation>
         </annotation>
-        <attribute name="class" type="string" />
+        <attribute name="class" type="tns:javaFQIdentifier" />
+    </complexType>
+    <complexType name="DateRange" mixed="true">
+        <annotation>
+            <documentation>
+                Check if the date is within the a date range.
+                Note: This constraint is also satisfied when the value to
+                validate is
+                null, therefore you
+                might also need to declare the
+                NotNull constraint.
+            </documentation>
+        </annotation>
+        <complexContent>
+            <extension base="tns:Constraint">
+                <attribute name="format" type="string" use="optional" />
+                <attribute name="max" type="string" use="optional" />
+                <attribute name="min" type="string" use="optional" />
+                <attribute name="tolerance" type="integer" use="optional" />
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="Digits" mixed="true">
+        <annotation>
+            <documentation>
+                Check if the String representation has the given max/min number of integral and fractional digits.
+                Note: This constraint is also
+                satisfied when the value to validate is null, therefore you might also need to declare
+                the NotNull constraint.
+            </documentation>
+        </annotation>
+        <complexContent>
+            <extension base="tns:Constraint">
+                <attribute name="maxInteger" type="integer" use="optional" />
+                <attribute name="minInteger" type="integer" use="optional" />
+                <attribute name="maxFraction" type="integer" use="optional" />
+                <attribute name="minFraction" type="integer" use="optional" />
+            </extension>
+        </complexContent>
     </complexType>
     <complexType name="Email" mixed="true">
         <annotation>
             <documentation>
                 Check if the string representation is a valid e-mail address.
                 Note: This constraint is also satisfied
-                when the value to validate is null,
-                therefore you might also need to declare the NotNull constraint.
+                when the value to validate is
+                null, therefore you might also need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -448,8 +667,8 @@
         </annotation>
         <complexContent>
             <extension base="tns:Constraint">
-                <attribute name="declaringClass" type="string" use="optional" />
-                <attribute name="fieldName" type="string" use="required" />
+                <attribute name="declaringClass" type="tns:javaFQIdentifier" use="optional" />
+                <attribute name="fieldName" type="tns:javaIdentifier" use="required" />
                 <attribute name="useGetter" type="boolean" use="required" />
             </extension>
         </complexContent>
@@ -460,11 +679,14 @@
                 Check if the date is in the future.
                 Note: This constraint is also satisfied when the value to validate
                 is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore you might also
+                need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
-            <extension base="tns:Constraint" />
+            <extension base="tns:Constraint">
+                <attribute name="tolerance" type="integer" use="optional" />
+            </extension>
         </complexContent>
     </complexType>
     <complexType name="HasSubstring" mixed="true">
@@ -473,7 +695,8 @@
                 Check if the string contains a certain substring.
                 Note: This constraint is also satisfied when the
                 value to validate is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore
+                you might also need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -491,7 +714,8 @@
                 specified interfaces.
                 Note: This constraint is also satisfied when the value to validate is null,
                 therefore you might
-                also need to declare the NotNull constraint.
+                also need to declare the
+                NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -511,7 +735,8 @@
                 </u>
                 of the specified interfaces.
                 Note: This constraint is also satisfied when the value to validate is null, therefore
-                you might also need to declare the
+                you might also need to declare
+                the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -528,7 +753,7 @@
             <element name="types">
                 <complexType>
                     <sequence minOccurs="1" maxOccurs="unbounded">
-                        <element name="java-type" type="string" />
+                        <element name="java-type" type="tns:javaFQIdentifier" />
                     </sequence>
                 </complexType>
             </element>
@@ -539,7 +764,8 @@
             <documentation>
                 Check if the string representation has certain length.
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -555,7 +781,8 @@
             <documentation>
                 Check if the specified regular expression pattern is matched.
                 Note: This constraint is also satisfied
-                when the value to validate is null, therefore you might also need to declare the
+                when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -578,7 +805,8 @@
             <documentation>
                 Check if the number is smaller than or equal to [max].
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -594,7 +822,8 @@
             <documentation>
                 Check if the string representation does not exceed the given length.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate
+                is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -609,7 +838,8 @@
             <documentation>
                 Check if an array or collection does not exceed the given size.
                 Note: This constraint is also satisfied
-                when the value to validate is null, therefore you might also need to declare the
+                when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -629,7 +859,8 @@
             <documentation>
                 Check if the string representation is contained in the given string array.
                 Note: This constraint is
-                also satisfied when the value to validate is null, therefore you might also need to declare the
+                also satisfied when the value to
+                validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -647,7 +878,8 @@
             <documentation>
                 Check if the number is greater than or equal to [min]
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -663,7 +895,8 @@
             <documentation>
                 Check if the string representation has at least the given length.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -678,7 +911,8 @@
             <documentation>
                 Check if the array or collection has at least the given number of elements.
                 Note: This constraint is
-                also satisfied when the value to validate is null, therefore you might also need to declare the
+                also satisfied when the value to
+                validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -705,7 +939,8 @@
             <documentation>
                 Check if the string representation is not empty and does not only contain white spaces.
                 Note: This
-                constraint is also satisfied when the value to validate is null, therefore you might also need to declare the
+                constraint is also satisfied when
+                the value to validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -718,7 +953,8 @@
             <documentation>
                 Check if the string representation is not empty ("").
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -731,7 +967,8 @@
             <documentation>
                 Check if the string representation does not equal a given string.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -747,15 +984,40 @@
             <documentation>
                 Check if value does not equal the value of the referenced field.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
             <extension base="tns:Constraint">
-                <attribute name="fieldName" type="string" use="required" />
-                <attribute name="declaringClass" type="string" use="optional" />
+                <attribute name="fieldName" type="tns:javaIdentifier" use="required" />
+                <attribute name="declaringClass" type="tns:javaFQIdentifier" use="optional" />
                 <attribute name="useGetter" type="boolean" use="required" />
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="NotMatchPattern" mixed="true">
+        <annotation>
+            <documentation>
+                Check if the specified regular expression pattern does not match.
+                Note: This constraint is also
+                satisfied when the value to
+                validate is
+                null, therefore you might also need to declare the
+                NotNull constraint.
+            </documentation>
+        </annotation>
+        <complexContent>
+            <extension base="tns:Constraint">
+                <sequence>
+                    <element name="pattern" minOccurs="0" maxOccurs="unbounded">
+                        <complexType>
+                            <attribute name="flags" type="integer" use="optional" />
+                            <attribute name="pattern" type="string" use="required" />
+                        </complexType>
+                    </element>
+                </sequence>
             </extension>
         </complexContent>
     </complexType>
@@ -764,7 +1026,8 @@
             <documentation>
                 Check if the string representation is not contained in the given string array.
                 Note: This constraint is
-                also satisfied when the value to validate is null, therefore you might also need to declare the
+                also satisfied when the value
+                to validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -782,7 +1045,8 @@
             <documentation>
                 Check if the number is greater or equal zero.
                 Note: This constraint is also satisfied when the value to
-                validate is null, therefore you might also need to declare the
+                validate is null, therefore you
+                might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -805,12 +1069,15 @@
             <documentation>
                 Check if the date is in the past.
                 Note: This constraint is also satisfied when the value to validate is
-                null, therefore you might also need to declare the
+                null, therefore you might also
+                need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
-            <extension base="tns:Constraint" />
+            <extension base="tns:Constraint">
+                <attribute name="tolerance" type="integer" use="optional" />
+            </extension>
         </complexContent>
     </complexType>
     <complexType name="Range" mixed="true">
@@ -818,7 +1085,8 @@
             <documentation>
                 Check if the number is in the given range.
                 Note: This constraint is also satisfied when the value to
-                validate is null, therefore you might also need to declare the
+                validate is null, therefore you
+                might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -855,17 +1123,17 @@
         <complexContent>
             <extension base="tns:Constraint">
                 <attribute name="ignoreIfNull" type="boolean" use="optional" />
-                <attribute name="methodName" type="string" use="required" />
-                <attribute name="parameterType" type="string" use="required" />
+                <attribute name="methodName" type="tns:javaIdentifier" use="required" />
+                <attribute name="parameterType" type="tns:javaFQIdentifier" use="required" />
             </extension>
         </complexContent>
     </complexType>
 
-	<!--
-	*************************** 
-	constraint exclusion elements
-	***************************
-	-->
+    <!--
+        ***************************
+        constraint exclusion elements
+        ***************************
+    -->
     <complexType name="Nullable" mixed="true">
         <annotation>
             <documentation>Allows a value to be nullable.</documentation>
