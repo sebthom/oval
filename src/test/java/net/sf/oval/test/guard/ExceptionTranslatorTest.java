@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.test.guard;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,11 +25,10 @@ import net.sf.oval.guard.Guarded;
 public class ExceptionTranslatorTest extends TestCase {
     @Guarded
     public static final class TestEntity {
-        public void setName(@NotNull(message = "NULL") final String name) {
+        public void setName(@SuppressWarnings("unused") @NotNull(message = "NULL") final String name) {
             //...
         }
 
-        @SuppressWarnings("static-method")
         public void throwCheckedException() throws InvocationTargetException {
             throw new InvocationTargetException(null);
         }

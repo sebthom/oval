@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
- * 
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.test.guard;
 
 import junit.framework.TestCase;
@@ -67,6 +64,7 @@ public class InheritanceTest extends TestCase {
         /**
          * @param name the name to set
          */
+        @Override
         public void setName(final String name) {
             this.name = name;
         }
@@ -86,6 +84,7 @@ public class InheritanceTest extends TestCase {
         /**
          * @param name the name to set
          */
+        @Override
         public void setName(final String name) {
             this.name = name;
         }

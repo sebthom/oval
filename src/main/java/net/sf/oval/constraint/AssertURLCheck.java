@@ -1,16 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *     Makkari - live connect support.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.constraint;
 
 import static net.sf.oval.Validator.*;
@@ -31,6 +27,7 @@ import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Sebastian Thomschke
+ * @author Makkari - live connect support
  */
 public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
     /**
@@ -129,6 +126,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
         return connect;
     }
 
+    @Override
     public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
         if (valueToValidate == null)
             return true;

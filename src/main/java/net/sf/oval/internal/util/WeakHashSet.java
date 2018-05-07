@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.internal.util;
 
 import static java.lang.Boolean.*;
@@ -46,10 +43,12 @@ public final class WeakHashSet<E> implements Set<E>, Serializable {
         map = new WeakHashMap<E, Object>(initialCapacity);
     }
 
+    @Override
     public boolean add(final E o) {
         return map.put(o, TRUE) == null;
     }
 
+    @Override
     public boolean addAll(final Collection<? extends E> c) {
         int count = 0;
         for (final E e : c)
@@ -59,14 +58,17 @@ public final class WeakHashSet<E> implements Set<E>, Serializable {
         return count > 0;
     }
 
+    @Override
     public void clear() {
         map.clear();
     }
 
+    @Override
     public boolean contains(final Object o) {
         return map.containsKey(o);
     }
 
+    @Override
     public boolean containsAll(final Collection<?> c) {
         return map.keySet().containsAll(c);
     }
@@ -97,10 +99,12 @@ public final class WeakHashSet<E> implements Set<E>, Serializable {
         return hash;
     }
 
+    @Override
     public boolean isEmpty() {
         return map.isEmpty();
     }
 
+    @Override
     public Iterator<E> iterator() {
         return map.keySet().iterator();
     }
@@ -123,26 +127,32 @@ public final class WeakHashSet<E> implements Set<E>, Serializable {
         }
     }
 
+    @Override
     public boolean remove(final Object o) {
         return map.remove(o) == TRUE;
     }
 
+    @Override
     public boolean removeAll(final Collection<?> c) {
         return map.keySet().removeAll(c);
     }
 
+    @Override
     public boolean retainAll(final Collection<?> c) {
         return map.keySet().retainAll(c);
     }
 
+    @Override
     public int size() {
         return map.size();
     }
 
+    @Override
     public Object[] toArray() {
         return map.keySet().toArray();
     }
 
+    @Override
     public <T> T[] toArray(final T[] a) {
         return map.keySet().toArray(a);
     }

@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.logging;
 
 import net.sf.oval.internal.util.Assert;
@@ -31,62 +28,77 @@ public class LoggerSLF4JImpl implements Logger {
         slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
     }
 
+    @Override
     public void debug(final String msg) {
         slf4jLogger.debug(msg);
     }
 
+    @Override
     public void debug(final String msg, final Throwable t) {
         slf4jLogger.debug(msg, t);
     }
 
+    @Override
     public void error(final String msg) {
         slf4jLogger.error(msg);
     }
 
+    @Override
     public void error(final String msg, final Throwable t) {
         slf4jLogger.error(msg, t);
     }
 
+    @Override
     public void info(final String msg) {
         slf4jLogger.info(msg);
     }
 
+    @Override
     public void info(final String msg, final Throwable t) {
         slf4jLogger.info(msg, t);
     }
 
+    @Override
     public boolean isDebug() {
         return slf4jLogger.isDebugEnabled();
     }
 
+    @Override
     public boolean isError() {
         return slf4jLogger.isErrorEnabled();
     }
 
+    @Override
     public boolean isInfo() {
         return slf4jLogger.isInfoEnabled();
     }
 
+    @Override
     public boolean isTrace() {
         return slf4jLogger.isTraceEnabled();
     }
 
+    @Override
     public boolean isWarn() {
         return slf4jLogger.isWarnEnabled();
     }
 
+    @Override
     public void trace(final String msg) {
         slf4jLogger.trace(msg);
     }
 
+    @Override
     public void trace(final String msg, final Throwable t) {
         slf4jLogger.trace(msg, t);
     }
 
+    @Override
     public void warn(final String msg) {
         slf4jLogger.warn(msg);
     }
 
+    @Override
     public void warn(final String msg, final Throwable t) {
         slf4jLogger.warn(msg, t);
     }

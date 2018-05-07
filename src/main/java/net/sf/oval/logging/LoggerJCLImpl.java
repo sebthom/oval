@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.logging;
 
 import org.apache.commons.logging.Log;
@@ -35,62 +32,77 @@ public class LoggerJCLImpl implements Logger {
         jclLoggger = LogFactory.getLog(name);
     }
 
+    @Override
     public void debug(final String msg) {
         jclLoggger.debug(msg);
     }
 
+    @Override
     public void debug(final String msg, final Throwable t) {
         jclLoggger.debug(msg, t);
     }
 
+    @Override
     public void error(final String msg) {
         jclLoggger.error(msg);
     }
 
+    @Override
     public void error(final String msg, final Throwable t) {
         jclLoggger.error(msg, t);
     }
 
+    @Override
     public void info(final String msg) {
         jclLoggger.info(msg);
     }
 
+    @Override
     public void info(final String msg, final Throwable t) {
         jclLoggger.info(msg, t);
     }
 
+    @Override
     public boolean isDebug() {
         return jclLoggger.isDebugEnabled();
     }
 
+    @Override
     public boolean isError() {
         return jclLoggger.isErrorEnabled();
     }
 
+    @Override
     public boolean isInfo() {
         return jclLoggger.isInfoEnabled();
     }
 
+    @Override
     public boolean isTrace() {
         return jclLoggger.isTraceEnabled();
     }
 
+    @Override
     public boolean isWarn() {
         return jclLoggger.isWarnEnabled();
     }
 
+    @Override
     public void trace(final String msg) {
         jclLoggger.trace(msg);
     }
 
+    @Override
     public void trace(final String msg, final Throwable t) {
         jclLoggger.trace(msg, t);
     }
 
+    @Override
     public void warn(final String msg) {
         jclLoggger.warn(msg);
     }
 
+    @Override
     public void warn(final String msg, final Throwable t) {
         jclLoggger.warn(msg, t);
     }

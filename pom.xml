@@ -3,31 +3,26 @@
     @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
     @author Holger Riegel
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.sf.oval</groupId>
     <artifactId>oval</artifactId>
-    <version>1.91-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>OVal</name>
 
     <url>http://oval.sf.net</url>
 
-    <description><![CDATA[OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only JavaBeans).
-
-Constraints can be declared with annotations (@NotNull, @MaxLength), POJOs or XML.
-
-Custom constraints can be expressed as custom Java classes or by using scripting languages such as JavaScript, Groovy, BeanShell, OGNL or MVEL.
-
-Besides field/property validation OVal implements Programming by Contract features by utilizing AspectJ based aspects. This for example allows runtime validation of method arguments.]]></description>
+    <description>OVal is a pragmatic and extensible validation framework for Java objects.</description>
 
     <licenses>
         <license>
-            <name>Eclipse Public License 1.0</name>
+            <name>Eclipse Public License 2.0</name>
             <distribution>repo</distribution>
-            <url>http://www.spdx.org/licenses/EPL-1.0</url>
+            <url>https://spdx.org/licenses/EPL-2.0</url>
         </license>
     </licenses>
 
@@ -53,14 +48,6 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <role>Designer of the OVal logo</role>
             </roles>
         </contributor>
-        <contributor>
-            <name>Holger Riegel</name>
-            <email>hriegel at users.sourceforge.net</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>Europe/Berlin</timezone>
-        </contributor>
     </contributors>
 
     <inceptionYear>2005</inceptionYear>
@@ -69,9 +56,10 @@ Besides field/property validation OVal implements Programming by Contract featur
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <java.version>1.5</java.version>
-        <java.vendor>sun</java.vendor>
-        <java.version.integration-tests>1.6</java.version.integration-tests>
+        <java.version>1.6</java.version>
+        <java.vendor>default</java.vendor>
+        <java.version.integration-tests>${java.version}</java.version.integration-tests>
+        <java.vendor.integration-tests>${java.vendor}</java.vendor.integration-tests>
 
         <!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
         <maven.minimum.version>3.2.2</maven.minimum.version>
@@ -79,6 +67,8 @@ Besides field/property validation OVal implements Programming by Contract featur
         <maven.scm.version>1.9.5</maven.scm.version>
         <maven.scm.svnjava.version>2.1.2</maven.scm.svnjava.version>
         <maven.wagon.version>3.0.0</maven.wagon.version>
+
+        <maven.javadoc.skip>false</maven.javadoc.skip>  <!-- required for publishing to maven repo -->
 
         <!-- cannot upgrade, newer versions require Java 7 -->
         <aspectj.version>1.8.9</aspectj.version>
@@ -97,7 +87,7 @@ Besides field/property validation OVal implements Programming by Contract featur
     </scm>
 
     <distributionManagement>
-        <downloadUrl>https://sourceforge.net/projects/oval/files/</downloadUrl>
+        <downloadUrl>http://central.maven.org/maven2/</downloadUrl>
         <repository>
             <id>oval-releases-bintray</id>
             <url>https://api.bintray.com/maven/sebthom/maven/oval/;publish=1</url>
@@ -157,7 +147,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                         </configuration>
                     </execution>
                     <execution>
-                        <id>toolchain@verify</id>
+                        <id>toolchain@pre-integration-test</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>toolchain</goal>
@@ -165,8 +155,9 @@ Besides field/property validation OVal implements Programming by Contract featur
                         <configuration>
                             <toolchains>
                                 <jdk>
-                                    <!-- using a higher JDK version for integration tests -->
+                                    <!-- potentially using a different/higher JDK version for integration tests -->
                                     <version>${java.version.integration-tests}</version>
+                                    <vendor>${java.vendor.integration-tests}</vendor>
                                 </jdk>
                             </toolchains>
                         </configuration>
@@ -188,6 +179,10 @@ Besides field/property validation OVal implements Programming by Contract featur
                             <rules>
                                 <banCircularDependencies />
                                 <banDuplicatePomDependencyVersions />
+
+                                <requireMavenVersion>
+                                    <version>[${maven.minimum.version},)</version>
+                                </requireMavenVersion>
 
                                 <requirePluginVersions>
                                     <message>Always use fixed plug-in versions to ensure repeatable builds.</message>
@@ -219,10 +214,8 @@ Besides field/property validation OVal implements Programming by Contract featur
                                         <ignoredScope>test</ignoredScope>
                                     </ignoredScopes>
                                     <excludes>
-                                        <!-- these artifacts are not referenced in the pom as dependencies but are reported as "banned" by the enforcer - probably a bug -->
-                                        <exclude>org.apache.commons:commons-lang3</exclude>
-                                        <exclude>net.sourceforge.cobertura:cobertura</exclude>
-                                        <exclude>com.sun:tools</exclude>
+                                        <exclude>org.codehaus.groovy:groovy-all</exclude>
+                                        <exclude>com.thoughtworks.xstream:xstream</exclude>
                                     </excludes>
                                 </enforceBytecodeVersion>
 
@@ -263,7 +256,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                         <!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>extra-enforcer-rules</artifactId>
-                        <version>1.0-beta-6</version>
+                        <version>1.0-beta-7</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -347,21 +340,6 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <version>1.8</version>
                 <executions>
                     <execution>
-                        <id>Interpolate README.txt</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <copy todir="${project.build.directory}">
-                                    <fileset dir="${project.basedir}" includes="README.txt" />
-                                </copy>
-                                <replace file="${project.build.directory}/README.txt" token="$VERSION$" value="${project.version}" />
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>Delete java.time stubs</id>
                         <phase>process-classes</phase>
                         <configuration>
@@ -380,11 +358,7 @@ Besides field/property validation OVal implements Programming by Contract featur
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <!-- version 1.3 - 1.10 will break cobertura reports with
-                    [ERROR] java.lang.RuntimeException: Problem processing attributes in oval\target\generated-classes\cobertura\net\sf\oval\guard\ApiUsageAuditor.class
-                    [ERROR] at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:387)
-                -->
-                <version>1.2</version>
+                <version>1.11</version>
                 <executions>
                     <execution>
                         <goals>
@@ -423,6 +397,86 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <configuration>
                     <minSeverity>info</minSeverity>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.1</version>
+                <executions>
+                    <!--
+                        Prepares the property pointing to the JaCoCo runtime agent which
+                        is passed as VM argument when Maven the Surefire plugin is executed.
+                    -->
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                            <!--
+                                Sets the name of the property containing the settings for JaCoCo runtime agent.
+                            -->
+                            <propertyName>jacoco.surefireAgent</propertyName>
+                        </configuration>
+                    </execution>
+                    <!--
+                        Ensures that the code coverage report for unit tests is created after
+                        unit tests have been run.
+                    -->
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                        <!-- The Executions required by unit tests are omitted. -->
+                        <!--
+                            Prepares the property pointing to the JaCoCo runtime agent which
+                            is passed as VM argument when Maven the Failsafe plugin is executed.
+                        -->
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                                  <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+                            <!--
+                                Sets the name of the property containing the settings for JaCoCo runtime agent.
+                            -->
+                            <propertyName>jacoco.failsafeAgent</propertyName>
+                        </configuration>
+                    </execution>
+                    <!--
+                        Ensures that the code coverage report for integration tests after
+                        integration tests have been run.
+                    -->
+                    <execution>
+                        <id>post-integration-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                             <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -558,7 +612,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                     <configuration>
                     <!-- <useDefaultManifestFile>true</useDefaultManifestFile> -->
                         <archive>
@@ -585,12 +639,12 @@ Besides field/property validation OVal implements Programming by Contract featur
 
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
 
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
 
                 <plugin>
@@ -612,6 +666,9 @@ Besides field/property validation OVal implements Programming by Contract featur
                         <providerImplementations>
                             <svn>javasvn</svn>
                         </providerImplementations>
+
+                        <!-- the release profile will be removed from future versions of the super POM so better not rely on it -->
+                        <useReleaseProfile>false</useReleaseProfile>
                     </configuration>
                     <dependencies>
                         <dependency>
@@ -669,7 +726,7 @@ Besides field/property validation OVal implements Programming by Contract featur
 
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.6</version>
+                    <version>3.7.1</version>
                     <configuration>
                         <!-- https://jira.codehaus.org/browse/WAGON-354 -->
                         <chmod>false</chmod>
@@ -687,7 +744,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                         <dependency>
                             <groupId>org.apache.maven.doxia</groupId>
                             <artifactId>doxia-module-confluence</artifactId>
-                            <version>1.7</version>
+                            <version>1.8</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.maven.wagon</groupId>
@@ -705,18 +762,20 @@ Besides field/property validation OVal implements Programming by Contract featur
 
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.0.0</version>
+                    <inherited>false</inherited>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>javadoc-no-fork</goal>
                             </goals>
+                            <phase>package</phase>
                         </execution>
                     </executions>
                     <configuration>
                         <!-- exclude internal package and java.*, javax.* stubs -->
-                        <excludePackageNames>*.internal:java:javax</excludePackageNames>
+                        <excludePackageNames>*.internal:*.internal.*:java:java.*:javax:javax.*</excludePackageNames>
                     </configuration>
                 </plugin>
 
@@ -749,10 +808,9 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <plugin>
                    <!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
-                    <version>2.19.1</version>
+                    <version>2.21.0</version>
                     <configuration>
-                        <argLine>-Xmx768m -Duser.language=en -Duser.region=US -noverify</argLine>
+                        <argLine>-Xmx768m -Djava.awt.headless=true -Duser.language=en -Duser.region=US -noverify ${jacoco.surefireAgent}</argLine>
                         <excludes>
                             <exclude>**/*ITest.java</exclude>
                             <exclude>**/TestGuardAspect*</exclude>
@@ -763,9 +821,9 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <plugin>
                     <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.21.0</version>
                     <configuration>
-                        <argLine>-Xmx768m -Duser.language=en -Duser.region=US -noverify</argLine>
+                        <argLine>-Xmx768m -Djava.awt.headless=true -Duser.language=en -Duser.region=US -noverify ${jacoco.failsafeAgent}</argLine>
                         <includes>
                             <include>**/*ITest.java</include>
                         </includes>
@@ -787,7 +845,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                 <!-- measure and report time used by each plugin/goal -->
                 <groupId>co.leantechniques</groupId>
                 <artifactId>maven-buildtime-extension</artifactId>
-                <version>3.0.1</version>
+                <version>3.0.2</version>
             </extension>
 
             <extension>
@@ -853,8 +911,8 @@ Besides field/property validation OVal implements Programming by Contract featur
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <!-- cannot upgrade to 1.4.5-1.4.9 which results in an xstream internal RuntimeException -->
-            <version>1.4.3</version>
+            <!-- cannot upgrade to 1.4.5-1.4.10 which results in an xstream internal RuntimeException -->
+            <version>1.4.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -866,8 +924,7 @@ Besides field/property validation OVal implements Programming by Contract featur
         <dependency>
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
-            <!-- cannot upgrade, newer versions require Java6 or higher -->
-            <version>3.1.3</version>
+            <version>3.1.17</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -881,8 +938,8 @@ Besides field/property validation OVal implements Programming by Contract featur
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <!-- cannot upgrade, newer versions require Java6 or higher -->
-            <version>1.7R5</version>
+            <!-- cannot upgrade, newer versions require Java7 or higher -->
+            <version>1.7.7.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -892,31 +949,30 @@ Besides field/property validation OVal implements Programming by Contract featur
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade, newer versions require Java6 or higher -->
-            <groupId>javolution</groupId>
-            <artifactId>javolution</artifactId>
-            <version>5.5.1</version>
+            <!-- cannot upgrade, newer versions require Java7 or higher -->
+            <groupId>org.javolution</groupId>
+            <artifactId>javolution-core-java</artifactId>
+            <version>6.0.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade, newer versions require Java6 or higher -->
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0</version>
+            <version>4.1.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade to 4.0, which requires Java6 or higher -->
+            <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>3.2.18.RELEASE</version>
+            <version>4.3.16.RELEASE</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade to 4.0, which requires Java6 or higher -->
+            <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>3.2.18.RELEASE</version>
+            <version>4.3.16.RELEASE</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -926,16 +982,9 @@ Besides field/property validation OVal implements Programming by Contract featur
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <!-- cannot upgrade to 2.3, which requires Java6 or higher -->
-            <version>2.2.2</version>
+            <version>2.4.15</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -947,10 +996,7 @@ Besides field/property validation OVal implements Programming by Contract featur
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
-            <!-- 2.0.19 -->
-            <!-- cannot upgrade to 2.1.x-2.2.8.Final because of NPE in MVEL -->
-            <!-- cannot upgrade to 2.3, which requires Java6 or higher -->
-            <version>2.0.19</version>
+            <version>2.4.0.Final</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -999,7 +1045,7 @@ Besides field/property validation OVal implements Programming by Contract featur
             <plugin>
                 <!-- Generate a report based on the results of unit tests. -->
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20.1</version>
+                <version>2.21.0</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -1082,27 +1128,6 @@ Besides field/property validation OVal implements Programming by Contract featur
             </plugin>
 
             <plugin>
-                <!-- JUnit Code Coverage report -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <!-- upgrading to 2.7 results in:
-                    Failed to execute goal org.codehaus.mojo:cobertura-maven-plugin:2.7:instrument (null) on project oval: Unable to prepare instrumentation
-                    directory. source and destination are the same directory. -> [Help 1]
-                -->
-                <version>2.6</version>
-                <configuration>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>net/sf/oval/test/**/*.class</exclude>
-                        </excludes>
-                    </instrumentation>
-                    <check>
-                        <haltOnFailure>true</haltOnFailure>
-                    </check>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jdepend-maven-plugin</artifactId>
                 <version>2.0</version>
@@ -1149,6 +1174,20 @@ Besides field/property validation OVal implements Programming by Contract featur
             </plugin>
 
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <!-- select non-aggregate reports -->
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
                 <!--
                     The basic purpose of "Maven Dashboard Report Plugin" is to centralize and share all
                     quality informations generated by other Maven report plugins
@@ -1160,7 +1199,7 @@ Besides field/property validation OVal implements Programming by Contract featur
                     <groupId>com.thesett</groupId>
                     <artifactId>dashboard-maven-plugin</artifactId>
                     <version>0.8.21</version>
-                -->
+               -->
             </plugin>
 
         </plugins>
@@ -1369,52 +1408,6 @@ Besides field/property validation OVal implements Programming by Contract featur
                 </pluginManagement>
             </build>
         </profile>
-
-        <!-- http://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven
-        <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        /* using the assembly plugin instead of maven-repository-plugin:bundle-create which will trigger a complete maven build lifecycle */
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Generate repository bundle</id>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <phase>verify</phase>
-                                <configuration>
-                                    <descriptors>
-                                        <descriptor>${project.basedir}/src/main/assembly/repository-bundle.xml</descriptor>
-                                    </descriptors>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>-->
     </profiles>
 
 </project>

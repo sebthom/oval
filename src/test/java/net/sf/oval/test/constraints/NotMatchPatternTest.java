@@ -1,9 +1,21 @@
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.test.constraints;
 
 import java.util.regex.Pattern;
 
 import net.sf.oval.constraint.NotMatchPatternCheck;
 
+/**
+ * @author Sebastian Thomschke
+ */
 public class NotMatchPatternTest extends AbstractContraintsTest {
     public void testMatchPattern() {
         final NotMatchPatternCheck check = new NotMatchPatternCheck();

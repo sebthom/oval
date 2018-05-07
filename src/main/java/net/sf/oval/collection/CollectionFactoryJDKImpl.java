@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.collection;
 
 import java.util.ArrayList;
@@ -24,26 +21,32 @@ import java.util.Set;
  */
 public class CollectionFactoryJDKImpl implements CollectionFactory {
 
+    @Override
     public <ValueType> List<ValueType> createList() {
         return new ArrayList<ValueType>();
     }
 
+    @Override
     public <ValueType> List<ValueType> createList(final int initialCapacity) {
         return new ArrayList<ValueType>(initialCapacity);
     }
 
+    @Override
     public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
         return new LinkedHashMap<KeyType, ValueType>();
     }
 
+    @Override
     public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
         return new LinkedHashMap<KeyType, ValueType>(initialCapacity);
     }
 
+    @Override
     public <ValueType> Set<ValueType> createSet() {
         return new LinkedHashSet<ValueType>();
     }
 
+    @Override
     public <ValueType> Set<ValueType> createSet(final int initialCapacity) {
         return new LinkedHashSet<ValueType>(initialCapacity);
     }

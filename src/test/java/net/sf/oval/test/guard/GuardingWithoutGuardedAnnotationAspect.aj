@@ -22,7 +22,8 @@ public aspect GuardingWithoutGuardedAnnotationAspect extends net.sf.oval.guard.G
 	/* 
 	 * the scope of the aspect are all inner classes of net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest
 	 */
-	protected pointcut scope(): within(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.*);
+	@Override
+    protected pointcut scope(): within(net.sf.oval.test.guard.GuardingWithoutGuardedAnnotationTest.*);
 
 	/* 
 	 * add the IsGuarded marker interface to all inner classes 

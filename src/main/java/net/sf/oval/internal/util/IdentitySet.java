@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.internal.util;
 
 import static net.sf.oval.Validator.*;
@@ -46,11 +43,13 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         map = getCollectionFactory().createMap(initialCapacity);
     }
 
+    @Override
     public boolean add(final E o) {
         final int hash = System.identityHashCode(o);
         return map.put(hash, o) == null;
     }
 
+    @Override
     public boolean addAll(final Collection<? extends E> c) {
         int count = 0;
         for (final E e : c)
@@ -60,23 +59,28 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         return count > 0;
     }
 
+    @Override
     public void clear() {
         map.clear();
     }
 
+    @Override
     public boolean contains(final Object o) {
         final int hash = System.identityHashCode(o);
         return map.containsKey(hash);
     }
 
+    @Override
     public boolean containsAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isEmpty() {
         return map.isEmpty();
     }
 
+    @Override
     public Iterator<E> iterator() {
         return map.values().iterator();
     }
@@ -101,11 +105,13 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         }
     }
 
+    @Override
     public boolean remove(final Object o) {
         final int hash = System.identityHashCode(o);
         return map.remove(hash) != null;
     }
 
+    @Override
     public boolean removeAll(final Collection<?> c) {
         boolean modified = false;
         for (final Object e : c)
@@ -115,18 +121,22 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
         return modified;
     }
 
+    @Override
     public boolean retainAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int size() {
         return map.size();
     }
 
+    @Override
     public Object[] toArray() {
         return map.values().toArray();
     }
 
+    @Override
     public <T> T[] toArray(final T[] a) {
         return map.values().toArray(a);
     }

@@ -12,19 +12,10 @@ jdk:
 cache:
   directories:
   - $HOME/.m2/repository
-  - /tmp/jdk1.5.0_22
 before_cache:
   - rm -rf $HOME/.m2/repository/net/sf/oval
 
 install:
   - ls -l /usr/lib/jvm/
-  # installing java 5 used for compilation and tests
-  - if [ ! -f /tmp/jdk1.5.0_22/bin/java ]; then
-      rm -rf /tmp/jdk1.5.0_22;
-      wget --no-cookies -O /tmp/jdk-1_5_0_22-linux-amd64.bin http://monalisa.cern.ch/MONALISA/download/java/jdk-1_5_0_22-linux-amd64.bin;
-      unzip -d /tmp /tmp/jdk-1_5_0_22-linux-amd64.bin || true;
-      find /tmp/jdk1.5.0_22 -type f -name \*.pack -exec bash -c 'archive="{}"; echo "Extracting $archive..."; unpack200 $archive ${archive/.pack/.jar}' \;;
-    fi
-  - /tmp/jdk1.5.0_22/bin/java -version
 
 script: mvn clean verify -t .travis_toolchains.xml

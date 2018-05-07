@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval;
 
 import static java.lang.Boolean.*;
@@ -115,10 +112,12 @@ public class Validator implements IValidator {
             return delegate;
         }
 
+        @Override
         public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
             return delegate.getParameterNames(constructor);
         }
 
+        @Override
         public String[] getParameterNames(final Method method) throws ReflectionException {
             return delegate.getParameterNames(method);
         }
@@ -740,6 +739,7 @@ public class Validator implements IValidator {
         }
     }
 
+    @Override
     public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException {
         final List<ConstraintViolation> violations = validate(validatedObject);
 
@@ -747,6 +747,7 @@ public class Validator implements IValidator {
             throw translateException(new ConstraintsViolatedException(violations));
     }
 
+    @Override
     public void assertValidFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
             throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException {
         final List<ConstraintViolation> violations = validateFieldValue(validatedObject, validatedField, fieldValueToValidate);
@@ -814,19 +815,22 @@ public class Validator implements IValidator {
 
         if (isContainer && valueToValidate != null)
             if (isCollection) {
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets,
+                ConstraintTarget.RECURSIVE))) {
             for (final Object item : (Collection<?>) valueToValidate) {
             checkConstraint(violations, check, validatedObject, item, context, profiles, true);
             }
             }
             } else if (isMap) {
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS) && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS) && (!isContainerValue || ArrayUtils.containsSame(targets,
+                ConstraintTarget.RECURSIVE))) {
             for (final Object item : ((Map<?, ?>) valueToValidate).keySet()) {
             checkConstraint(violations, check, validatedObject, item, context, profiles, true);
             }
             }
 
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets,
+                ConstraintTarget.RECURSIVE))) {
             for (final Object item : ((Map<?, ?>) valueToValidate).values()) {
             checkConstraint(violations, check, validatedObject, item, context, profiles, true);
             }
@@ -834,7 +838,8 @@ public class Validator implements IValidator {
             } else
             // array
             {
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets,
+                ConstraintTarget.RECURSIVE))) {
             for (final Object item : ArrayUtils.asList(valueToValidate)) {
             checkConstraint(violations, check, validatedObject, item, context, profiles, true);
             }
@@ -1296,6 +1301,7 @@ public class Validator implements IValidator {
         return ex;
     }
 
+    @Override
     public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException {
         Assert.argumentNotNull("validatedObject", validatedObject);
 
@@ -1314,6 +1320,7 @@ public class Validator implements IValidator {
         }
     }
 
+    @Override
     public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws IllegalArgumentException,
             ValidationFailedException {
         Assert.argumentNotNull("validatedObject", validatedObject);
@@ -1333,6 +1340,7 @@ public class Validator implements IValidator {
         }
     }
 
+    @Override
     public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
             throws IllegalArgumentException, ValidationFailedException {
         Assert.argumentNotNull("validatedObject", validatedObject);

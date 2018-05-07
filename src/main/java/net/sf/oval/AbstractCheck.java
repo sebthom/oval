@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval;
 
 import static net.sf.oval.Validator.*;
@@ -47,6 +44,7 @@ public abstract class AbstractCheck implements Check {
         return null;
     }
 
+    @Override
     public ConstraintTarget[] getAppliesTo() {
         return appliesTo == null ? getAppliesToDefault() : appliesTo;
     }
@@ -60,10 +58,12 @@ public abstract class AbstractCheck implements Check {
         return new ConstraintTarget[] { ConstraintTarget.CONTAINER };
     }
 
+    @Override
     public OValContext getContext() {
         return context;
     }
 
+    @Override
     public String getErrorCode() {
         /*
          * if the error code has not been initialized (which might be the case when using XML configuration),
@@ -80,6 +80,7 @@ public abstract class AbstractCheck implements Check {
         return errorCode;
     }
 
+    @Override
     public String getMessage() {
         /*
          * if the message has not been initialized (which might be the case when using XML configuration),
@@ -105,6 +106,7 @@ public abstract class AbstractCheck implements Check {
      *
      * @return an unmodifiable map
      */
+    @Override
     @SuppressWarnings("javadoc")
     public final Map<String, ? extends Serializable> getMessageVariables() {
         if (!messageVariablesUpToDate) {
@@ -119,22 +121,27 @@ public abstract class AbstractCheck implements Check {
         return messageVariablesUnmodifiable;
     }
 
+    @Override
     public String[] getProfiles() {
         return profiles;
     }
 
+    @Override
     public int getSeverity() {
         return severity;
     }
 
+    @Override
     public String getTarget() {
         return target;
     }
 
+    @Override
     public String getWhen() {
         return when;
     }
 
+    @Override
     public boolean isActive(final Object validatedObject, final Object valueToValidate, final Validator validator) {
         if (when == null)
             return true;
@@ -160,34 +167,42 @@ public abstract class AbstractCheck implements Check {
         messageVariablesUpToDate = false;
     }
 
+    @Override
     public void setAppliesTo(final ConstraintTarget... targets) {
         appliesTo = targets;
     }
 
+    @Override
     public void setContext(final OValContext context) {
         this.context = context;
     }
 
+    @Override
     public void setErrorCode(final String failureCode) {
         errorCode = failureCode;
     }
 
+    @Override
     public void setMessage(final String message) {
         this.message = message;
     }
 
+    @Override
     public void setProfiles(final String... profiles) {
         this.profiles = profiles;
     }
 
+    @Override
     public void setSeverity(final int severity) {
         this.severity = severity;
     }
 
+    @Override
     public void setTarget(final String target) {
         this.target = target;
     }
 
+    @Override
     public void setWhen(final String when) {
         synchronized (this) {
             if (when == null || when.length() == 0) {

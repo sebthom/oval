@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2005-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.oval.configuration.xml;
 
 import java.io.BufferedInputStream;
@@ -127,10 +124,12 @@ public class XMLConfigurer implements Configurer {
      */
     protected final class AssertCheckConverter implements Converter {
 
+        @Override
         public boolean canConvert(@SuppressWarnings("rawtypes") final Class clazz) {
             return clazz.equals(AssertCheck.class);
         }
 
+        @Override
         public void marshal(final Object value, final HierarchicalStreamWriter writer, final MarshallingContext context) {
             final AssertCheck assertCheck = (AssertCheck) value;
             writer.addAttribute("lang", assertCheck.getLang());
@@ -169,6 +168,7 @@ public class XMLConfigurer implements Configurer {
             }
         }
 
+        @Override
         public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final AssertCheck assertCheck = new AssertCheck();
             assertCheck.setLang(reader.getAttribute("lang"));
@@ -489,10 +489,12 @@ public class XMLConfigurer implements Configurer {
         pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
     }
 
+    @Override
     public ClassConfiguration getClassConfiguration(final Class<?> clazz) throws InvalidConfigurationException {
         return pojoConfigurer.getClassConfiguration(clazz);
     }
 
+    @Override
     public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId) throws InvalidConfigurationException {
         return pojoConfigurer.getConstraintSetConfiguration(constraintSetId);
     }
