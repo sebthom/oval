@@ -107,8 +107,8 @@ public class DateRangeTest extends AbstractContraintsTest {
         final DateRangeCheck check = new DateRangeCheck();
         check.setMin("now");
         check.setTolerance(4000);
-        assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
+        assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() - 2000), null, null));
         check.setTolerance(0);
-        assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
+        assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() - 2000), null, null));
     }
 }
