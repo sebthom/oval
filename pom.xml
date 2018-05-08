@@ -911,8 +911,8 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <!-- cannot upgrade to 1.4.5-1.4.10 which results in an xstream internal RuntimeException -->
-            <version>1.4.4</version>
+            <!-- cannot upgrade to 1.4.4-1.4.10 which results in an xstream internal RuntimeException -->
+            <version>1.4.3</version>
             <optional>true</optional>
         </dependency>
         <dependency>
