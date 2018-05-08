@@ -7,6 +7,7 @@
 [comment]: # (https://img.shields.io/github/license/sebthom/oval.svg?label=License)
 
 1. [What is it?](#what-is-it)
+1. [Documentation](#docs)
 1. [License](#license)
 
 
@@ -22,6 +23,11 @@ BeanShell, OGNL or MVEL.
 
 Besides field/property validation OVal implements Programming by Contract features by utilizing AspectJ based aspects. 
 This for example allows runtime validation of method arguments.
+
+
+## Documentation
+
+The documentation is available at http://oval.sourceforge.net/userguide.html
 
 
 ## <a name="license"></a>License
