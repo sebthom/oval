@@ -19,7 +19,7 @@ import net.sf.oval.collection.CollectionFactoryTroveImpl;
 
 /**
  * @author Sebastian Thomschke
- * @author Makkari - added AssertURLTest
+ * @author Makkari - added AssertURLITest
  */
 public final class AllTests {
     private static void constraintsTests(final TestSuite suite) throws Exception {
@@ -27,7 +27,7 @@ public final class AllTests {
         suite.addTestSuite(net.sf.oval.test.constraints.AssertNullTest.class);
         suite.addTestSuite(net.sf.oval.test.constraints.AssertTest.class);
         suite.addTestSuite(net.sf.oval.test.constraints.AssertTrueTest.class);
-        suite.addTestSuite(net.sf.oval.test.constraints.AssertURLTest.class);
+        suite.addTestSuite(net.sf.oval.test.constraints.AssertURLITest.class);
         suite.addTestSuite(net.sf.oval.test.constraints.DateRangeTest.class);
         suite.addTestSuite(net.sf.oval.test.constraints.DigitsTest.class);
         suite.addTestSuite(net.sf.oval.test.constraints.EmailTest.class);
