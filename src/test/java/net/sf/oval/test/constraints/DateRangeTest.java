@@ -19,6 +19,7 @@ import net.sf.oval.constraint.DateRangeCheck;
  * @author Sebastian Thomschke
  */
 public class DateRangeTest extends AbstractContraintsTest {
+
     public void testDateRange() {
         final DateRangeCheck check = new DateRangeCheck();
         super.testCheck(check);
@@ -54,48 +55,60 @@ public class DateRangeTest extends AbstractContraintsTest {
         assertFalse(check.isSatisfied(null, "bla", null, null));
     }
 
-    public void testLiterals() {
+    public void testLiteralsWithMax() {
         final DateRangeCheck check = new DateRangeCheck();
         check.setFormat("yyyy-MM-dd HH:mm:ss");
 
-        check.setMin("now");
-        assertTrue(check.isSatisfied(null, new Date(), null, null));
-        check.setMin("today");
-        assertTrue(check.isSatisfied(null, new Date(), null, null));
-        check.setMin("tomorrow");
-        assertFalse(check.isSatisfied(null, new Date(), null, null));
-        check.setMin("yesterday");
-        assertTrue(check.isSatisfied(null, new Date(), null, null));
-        check.setMin("");
-
+        final Date now = new Date();
         check.setMax("now");
         assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() + 4000), null, null));
         assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() - 4000), null, null));
+
         check.setMax("today");
-        assertTrue(check.isSatisfied(null, new Date(), null, null));
+        assertTrue(check.isSatisfied(null, now, null, null));
         assertTrue(check.isSatisfied(null, "2000-03-03 09:09:10", null, null));
+
         check.setMax("tomorrow");
-        assertTrue(check.isSatisfied(null, new Date(), null, null));
+        assertTrue(check.isSatisfied(null, now, null, null));
         assertTrue(check.isSatisfied(null, "2000-03-03 09:09:10", null, null));
+
         check.setMax("yesterday");
-        assertFalse(check.isSatisfied(null, new Date(), null, null));
-        check.setMax("");
+        assertFalse(check.isSatisfied(null, now, null, null));
     }
 
-    public void testTolerance() {
+    public void testLiteralsWithMin() {
+        final DateRangeCheck check = new DateRangeCheck();
+        check.setFormat("yyyy-MM-dd HH:mm:ss");
+
+        final Date now = new Date();
+        check.setMin("now");
+        assertTrue(check.isSatisfied(null, now, null, null));
+
+        check.setMin("today");
+        assertTrue(check.isSatisfied(null, now, null, null));
+
+        check.setMin("tomorrow");
+        assertFalse(check.isSatisfied(null, now, null, null));
+
+        check.setMin("yesterday");
+        assertTrue(check.isSatisfied(null, now, null, null));
+    }
+
+    public void testToleranceWithMax() {
         final DateRangeCheck check = new DateRangeCheck();
         check.setMax("now");
         check.setTolerance(4000);
         assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
         check.setTolerance(0);
         assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
-        check.setMax("");
+    }
 
-        check.setMax("now");
+    public void testToleranceWithMin() {
+        final DateRangeCheck check = new DateRangeCheck();
+        check.setMin("now");
         check.setTolerance(4000);
         assertTrue(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
         check.setTolerance(0);
         assertFalse(check.isSatisfied(null, new Date(System.currentTimeMillis() + 2000), null, null));
-        check.setMax("");
     }
 }
