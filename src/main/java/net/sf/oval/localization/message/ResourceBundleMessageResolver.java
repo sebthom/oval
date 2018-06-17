@@ -103,7 +103,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
                 try {
                     addMessageBundle(copy, ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
                 } catch (final MissingResourceException ex) {
-                    LOG.debug("No message bundle net.sf.oval.Messages for locale [%s] found.", ex, locale);
+                    LOG.debug("No message bundle net.sf.oval.Messages for locale [{1}] found.", ex, locale);
                 }
             }
             addMessageBundle(copy, bundle, locale);
@@ -142,7 +142,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
                     try {
                         addMessageBundle(copy, ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
                     } catch (final MissingResourceException ex) {
-                        LOG.debug("No message bundle net.sf.oval.Messages for locale [%s] found.", ex, locale);
+                        LOG.debug("No message bundle net.sf.oval.Messages for locale [{1}] found.", ex, locale);
                     }
 
                     bundlesAndKeys = copy;
