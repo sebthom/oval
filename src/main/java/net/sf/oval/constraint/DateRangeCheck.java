@@ -39,7 +39,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
 
     private transient Long maxMillis;
     private transient Long minMillis;
-    private long tolerance;
+    private long tolerance = 0;
 
     @Override
     public void configure(final DateRange constraintAnnotation) {
@@ -204,7 +204,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
         if (valueToValidate instanceof Date) {
             valueInMillis = ((Date) valueToValidate).getTime();
         } else if (valueToValidate instanceof Calendar) {
-            valueInMillis = ((Calendar) valueToValidate).getTime().getTime();
+            valueInMillis = ((Calendar) valueToValidate).getTimeInMillis();
         } else {
             // see if we can extract a date based on the object's String representation
             final String stringValue = valueToValidate.toString();

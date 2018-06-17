@@ -39,7 +39,7 @@ public class FutureCheck extends AbstractAnnotationCheck<Future> {
         IS_JAVA_TIME_API_AVAILABLE = hasJavaTimeAPI;
     }
 
-    private long tolerance;
+    private long tolerance = 0;
 
     @Override
     public void configure(final Future constraintAnnotation) {
@@ -93,12 +93,12 @@ public class FutureCheck extends AbstractAnnotationCheck<Future> {
         final long now = System.currentTimeMillis() - tolerance;
 
         // check if the value is a Date
-        if (valueToValidate instanceof Date) // return ((Date) value).after(new Date());
+        if (valueToValidate instanceof Date)
             return ((Date) valueToValidate).getTime() > now;
 
         // check if the value is a Calendar
         if (valueToValidate instanceof Calendar)
-            return ((Calendar) valueToValidate).getTime().getTime() > now;
+            return ((Calendar) valueToValidate).getTimeInMillis() > now;
 
         // check if the value is java.time API value
         if (IS_JAVA_TIME_API_AVAILABLE) {
@@ -110,7 +110,6 @@ public class FutureCheck extends AbstractAnnotationCheck<Future> {
         // see if we can extract a date based on the object's String representation
         final String stringValue = valueToValidate.toString();
         try {
-            // return DateFormat.getDateTimeInstance().parse(stringValue).after(new Date());
             return DateFormat.getDateTimeInstance().parse(stringValue).getTime() > now;
         } catch (final ParseException ex) {
             return false;

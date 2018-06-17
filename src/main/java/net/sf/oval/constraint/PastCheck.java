@@ -35,11 +35,13 @@ public class PastCheck extends AbstractAnnotationCheck<Past> {
             hasJavaTimeAPI = true;
         } catch (final LinkageError ex) {
             // happens if java.time API is not available (i.e. Java < 8)
+        } catch (final SecurityException ex) {
+            // happens when test case is executed in Eclipse
         }
         IS_JAVA_TIME_API_AVAILABLE = hasJavaTimeAPI;
     }
 
-    private long tolerance;
+    private long tolerance = 0;
 
     @Override
     public void configure(final Past constraintAnnotation) {
@@ -93,12 +95,12 @@ public class PastCheck extends AbstractAnnotationCheck<Past> {
         final long now = System.currentTimeMillis() + tolerance;
 
         // check if the value is a Date
-        if (valueToValidate instanceof Date) // return ((Date) value).before(new Date());
+        if (valueToValidate instanceof Date)
             return ((Date) valueToValidate).getTime() < now;
 
         // check if the value is a Calendar
-        if (valueToValidate instanceof Calendar) // return ((Calendar) value).getTime().before(new Date());
-            return ((Calendar) valueToValidate).getTime().getTime() < now;
+        if (valueToValidate instanceof Calendar)
+            return ((Calendar) valueToValidate).getTimeInMillis() < now;
 
         // check if the value is java.time API value
         if (IS_JAVA_TIME_API_AVAILABLE) {
@@ -110,7 +112,6 @@ public class PastCheck extends AbstractAnnotationCheck<Past> {
         // see if we can extract a date based on the object's String representation
         final String stringValue = valueToValidate.toString();
         try {
-            // return DateFormat.getDateTimeInstance().parse(stringValue).before(new Date());
             return DateFormat.getDateTimeInstance().parse(stringValue).getTime() < now;
         } catch (final ParseException ex) {
             return false;
