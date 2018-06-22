@@ -18,34 +18,40 @@ import net.sf.oval.constraint.FutureCheck;
  * @author Sebastian Thomschke
  */
 public class FutureTest extends AbstractContraintsTest {
+
     public void testFuture() {
-        final FutureCheck check = new FutureCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+        final FutureCheck isInFuture = new FutureCheck();
+        super.testCheck(isInFuture);
+
+        assertTrue(isInFuture.isSatisfied(null, null, null, null));
 
         final Calendar cal = Calendar.getInstance();
         cal.roll(Calendar.YEAR, 1);
-        assertTrue(check.isSatisfied(null, cal, null, null));
-        assertTrue(check.isSatisfied(null, cal.getTime(), null, null));
-        assertTrue(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+        assertTrue(isInFuture.isSatisfied(null, cal, null, null));
+        assertTrue(isInFuture.isSatisfied(null, cal.getTime(), null, null));
+        assertTrue(isInFuture.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
         cal.roll(Calendar.YEAR, -2);
-        assertFalse(check.isSatisfied(null, cal, null, null));
-        assertFalse(check.isSatisfied(null, cal.getTime(), null, null));
-        assertFalse(check.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+        assertFalse(isInFuture.isSatisfied(null, cal, null, null));
+        assertFalse(isInFuture.isSatisfied(null, cal.getTime(), null, null));
+        assertFalse(isInFuture.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
 
-        assertFalse(check.isSatisfied(null, "bla", null, null));
+        assertFalse(isInFuture.isSatisfied(null, "bla", null, null));
     }
 
     public void testTolerance() {
-        final FutureCheck check = new FutureCheck();
+        final FutureCheck isInFuture = new FutureCheck();
 
         final Calendar cal = Calendar.getInstance();
-        cal.roll(Calendar.SECOND, -2);
-        assertFalse(check.isSatisfied(null, cal, null, null));
-        check.setTolerance(1500);
-        assertFalse(check.isSatisfied(null, cal, null, null));
-        check.setTolerance(5000);
-        assertTrue(check.isSatisfied(null, cal, null, null));
+        cal.add(Calendar.MILLISECOND, -2000); // roll() does not work with milliseconds
+
+        isInFuture.setTolerance(0);
+        assertFalse(isInFuture.isSatisfied(null, cal, null, null));
+
+        isInFuture.setTolerance(1000);
+        assertFalse(isInFuture.isSatisfied(null, cal, null, null));
+
+        isInFuture.setTolerance(5000);
+        assertTrue(isInFuture.isSatisfied(null, cal, null, null));
     }
 }
