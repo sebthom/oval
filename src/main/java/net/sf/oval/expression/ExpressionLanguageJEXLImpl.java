@@ -11,13 +11,14 @@ package net.sf.oval.expression;
 
 import java.util.Map;
 
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.MapContext;
+
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.ObjectCache;
-
-import org.apache.commons.jexl2.Expression;
-import org.apache.commons.jexl2.JexlEngine;
-import org.apache.commons.jexl2.MapContext;
 
 /**
  * @author Sebastian Thomschke
@@ -25,16 +26,18 @@ import org.apache.commons.jexl2.MapContext;
 public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage {
     private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
 
-    private static final JexlEngine jexl = new JexlEngine();
+    private static final JexlEngine jexl = new JexlBuilder() //
+        .strict(true) //
+        .create();
 
-    private final ObjectCache<String, Expression> expressionCache = new ObjectCache<String, Expression>();
+    private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<String, JexlExpression>();
 
     @Override
     @SuppressWarnings("unchecked")
     public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
         LOG.debug("Evaluating JEXL expression: {1}", expression);
         try {
-            Expression expr = expressionCache.get(expression);
+            JexlExpression expr = expressionCache.get(expression);
             if (expr == null) {
                 expr = jexl.createExpression(expression);
                 expressionCache.put(expression, expr);

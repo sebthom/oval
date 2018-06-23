@@ -51,7 +51,7 @@ public class ExpressionLanguageRegistry {
             return registerExpressionLanguage("jruby", registerExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
         // JEXL2 support
-        if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl2.JexlEngine"))
+        if ("jexl".equals(languageId) && ReflectionUtils.isClassPresent("org.apache.commons.jexl3.JexlEngine"))
             return registerExpressionLanguage("jexl", new ExpressionLanguageJEXLImpl());
 
         // scripting support via JSR223
@@ -76,8 +76,9 @@ public class ExpressionLanguageRegistry {
 
         ExpressionLanguage el = elcache.get(languageId);
 
-        if (el == null)
+        if (el == null) {
             el = _initializeDefaultEL(languageId);
+        }
 
         if (el == null)
             throw new ExpressionLanguageNotAvailableException(languageId);
