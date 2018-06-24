@@ -39,11 +39,17 @@ There exist some articles and blog entries talking about and/or referencing OVal
  <https://de.wikipedia.org/wiki/OVal_(Framework)> [\[English
     Translation\]](https://translate.google.com/translate?sl=de&tl=en&u=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FOVal_%28Framework%29)
 
+- GlueCoders' Spring Boot Guide: Validation of Request Models using OVal (2017) \
+  <https://github.com/GlueCoders/springboot-guide-docs/blob/master/requestvalidation-oval.md>
+
+- A Constraint-Based Approach to Data Quality in Information Systems (2017) \
+  <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/198644/1/Thesis-DavidWeber.pdf>
+
 - How to integrate Oval validation with Spring 3 (2013) \
-  <http://maheshjq.blogspot.de/2013/08/how-to-integrate-oval-validation-with.html>
+  <http://maheshjq.blogspot.com/2013/08/how-to-integrate-oval-validation-with.html>
 
 - OVal - validate your models quickly and effortlessly (2011) \
-  <http://mcl.jogger.pl/2011/07/14/oval-validate-your-models-quickly-and-effortlessly/>
+  <https://touk.pl/blog/2011/07/14/oval-validate-your-models-quickly-and-effortlessly/>
 
 - A Valid Point (2011) \
   <http://www.grinshpoon.com/pblog/2011/06/29/a-valid-point/>
@@ -60,14 +66,14 @@ There exist some articles and blog entries talking about and/or referencing OVal
   <http://vathzala.blogspot.de/2010/03/oval-validation-framework.html>
 
 - OVal - Object Validation With POJO (2009) \
-  <http://bitsofwizardry.wordpress.com/2009/04/14/oval-object-validation-with-pojo/>
-
-- The Developer Information Resource - OVal Learning Roadmap (2009) \
-  <https://sites.google.com/a/thedevinfo.com/thedevinfo/Home/validation-frameworks/oval/oval-learning-roadmap>
+  <https://bitsofwizardry.wordpress.com/2009/04/14/oval-object-validation-with-pojo/>
 
 - Diseño por Contrato con OVal y Spring \[Design by Contract with OVal and Spring\] (2009) \
   <https://dosideas.com/noticias/java/562-diseno-por-contrato-con-oval-y-spring> [\[English
     Translation\]](https://translate.google.com/translate?hl=&sl=es&tl=en&u=https%3A%2F%2Fdosideas.com%2Fnoticias%2Fjava%2F562-diseno-por-contrato-con-oval-y-spring)
+
+- An Aspect-Oriented Infrastructure for Design by Contract in Java \
+  <https://www.semanticscholar.org/paper/An-Aspect-Oriented-Infrastructure-for-Design-by-in-Agostinho/0afb0c0a025b3deb6bb8565ce966bc7ef02e01e5>
 
 - OVal Blog Entry Series at the "JEE, BPEL, SOA" blog (2008) \
   - [JSR 303 and OVal Validation
@@ -78,7 +84,7 @@ There exist some articles and blog entries talking about and/or referencing OVal
     integration](https://lukaszbudnik.blogspot.com/2008/12/springs-piecemeal-validation-and-oval.html)
 
 - Pre and post condition validation with OVal as intruments of software architecture (2008) \
-   <http://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/>
+  <https://stigl.wordpress.com/2008/07/19/pre-and-post-condition-validation-with-oval-as-intruments-of-software-architecture/>
 
 - OVal: The simple validation framework for Java (2008) \
   <http://takezoe.blogspot.com/2008/03/oval-simple-validation-framework-for.html>
@@ -89,26 +95,14 @@ There exist some articles and blog entries talking about and/or referencing OVal
 - Die Pro-Pix Homepage - Design by Contract (2007) \
   <http://pro-pix.de/joomla/index.php?option=com_content&task=view&id=39&Itemid=1>
 
-- Nice library for constraint checking (2007) \
-  <http://rmeindl.wordpress.com/2007/09/06/nice-library-for-constraint-checking/>
-
-- Validation with Aspects & design by contract (2007) \
-  <http://sameertyagi.blogspot.com/2007/05/validation-with-aspects-and-contracts_20.html>
-
 - In pursuit of code quality: Defensive programming with AOP (2007) \
   <http://www.ibm.com/developerworks/library/j-cq01307/>
 
 - OVal e la validazione degli oggetti in Java (2006) \
-  <http://www.keepintech.it/blog/?p=52>
+  <http://www.keepintech.it/2006/12/22/oval-e-la-validazione-degli-oggetti-in-java/>
 
 - Limiting conditional complexity with AOP (2006)\
-  <http://testearly.findtechblogs.com/default.asp?item=412603> \
-  <http://www.nofluffjuststuff.com/blog_detail.jsp?rssItemId=98236> \
-  <http://www.testearly.com/2006/12/31/limiting-conditional-complexity-with-aop/>
-  
-- Metadata and AOP (2005)\
-  <http://www.java.no/web/files/moter/nov05/yngvar_sorensen_metadata_and_aop.pdf>
-
+  <https://nofluffjuststuff.com/blog/paul_duvall/2006/12/limiting_conditional_complexity_with_aop>
 
 ## <a name="projects-using-oval"></a>Projects using OVal
 
