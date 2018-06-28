@@ -15,28 +15,28 @@ import java.lang.reflect.AccessibleObject;
  * @author Sebastian Thomschke
  */
 public class ObjectGraphNavigationResult {
-    public final Object root;
+   public final Object root;
 
-    public final String path;
+   public final String path;
 
-    public final Object targetParent;
+   public final Object targetParent;
 
-    /**
-     * field or method
-     */
-    public final AccessibleObject targetAccessor;
+   /**
+    * field or method
+    */
+   public final AccessibleObject targetAccessor;
 
-    /**
-     * accessor's value
-     */
-    public final Object target;
+   /**
+    * accessor's value
+    */
+   public final Object target;
 
-    public ObjectGraphNavigationResult(final Object root, final String path, final Object targetParent, final AccessibleObject targetAccessor,
-            final Object target) {
-        this.root = root;
-        this.path = path;
-        this.targetParent = targetParent;
-        this.targetAccessor = targetAccessor;
-        this.target = target;
-    }
+   public ObjectGraphNavigationResult(final Object root, final String path, final Object targetParent, final AccessibleObject targetAccessor,
+      final Object target) {
+      this.root = root;
+      this.path = path;
+      this.targetParent = targetParent;
+      this.targetAccessor = targetAccessor;
+      this.target = target;
+   }
 }

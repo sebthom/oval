@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Project configuration improvements
   * Enabled Travis CI builds
   * Replaced Cobertura with JaCoCo for code coverage
-  * Changed to Semantic Versioning 
+  * Changed to Semantic Versioning
+* Applied new checkstyle/formatting rules
 * Updated tested optional dependencies
   * Groovy 2.4.15
   * Guice 4.1.0

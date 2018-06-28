@@ -13,12 +13,12 @@ package net.sf.oval.localization.value;
  * @author Sebastian Thomschke
  */
 public class ToStringMessageValueFormatter implements MessageValueFormatter {
-    public static final ToStringMessageValueFormatter INSTANCE = new ToStringMessageValueFormatter();
+   public static final ToStringMessageValueFormatter INSTANCE = new ToStringMessageValueFormatter();
 
-    @Override
-    public String format(final Object value) {
-        if (value == null)
-            return "null";
-        return value.toString();
-    }
+   @Override
+   public String format(final Object value) {
+      if (value == null)
+         return "null";
+      return value.toString();
+   }
 }

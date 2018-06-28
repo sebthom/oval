@@ -22,43 +22,43 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class MinLengthCheck extends AbstractAnnotationCheck<MinLength> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private int min;
+   private int min;
 
-    @Override
-    public void configure(final MinLength constraintAnnotation) {
-        super.configure(constraintAnnotation);
-        setMin(constraintAnnotation.value());
-    }
+   @Override
+   public void configure(final MinLength constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setMin(constraintAnnotation.value());
+   }
 
-    @Override
-    protected Map<String, String> createMessageVariables() {
-        final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-        messageVariables.put("min", Integer.toString(min));
-        return messageVariables;
-    }
+   @Override
+   protected Map<String, String> createMessageVariables() {
+      final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+      messageVariables.put("min", Integer.toString(min));
+      return messageVariables;
+   }
 
-    @Override
-    protected ConstraintTarget[] getAppliesToDefault() {
-        return new ConstraintTarget[] { ConstraintTarget.VALUES };
-    }
+   @Override
+   protected ConstraintTarget[] getAppliesToDefault() {
+      return new ConstraintTarget[] {ConstraintTarget.VALUES};
+   }
 
-    public int getMin() {
-        return min;
-    }
+   public int getMin() {
+      return min;
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
-            return true;
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
 
-        final int len = valueToValidate.toString().length();
-        return len >= min;
-    }
+      final int len = valueToValidate.toString().length();
+      return len >= min;
+   }
 
-    public void setMin(final int min) {
-        this.min = min;
-        requireMessageVariablesRecreation();
-    }
+   public void setMin(final int min) {
+      this.min = min;
+      requireMessageVariablesRecreation();
+   }
 }

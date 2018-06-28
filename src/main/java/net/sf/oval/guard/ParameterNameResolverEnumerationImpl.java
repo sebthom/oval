@@ -23,39 +23,39 @@ import net.sf.oval.exception.ReflectionException;
  * @author Sebastian Thomschke
  */
 public class ParameterNameResolverEnumerationImpl implements ParameterNameResolver {
-    private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
+   private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
-    @Override
-    public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
-        /*
-         * intentionally the following code is not synchronized
-         */
-        String[] parameterNames = parameterNamesCache.get(constructor);
-        if (parameterNames == null) {
-            final int parameterCount = constructor.getParameterTypes().length;
-            parameterNames = new String[parameterCount];
-            for (int i = 0; i < parameterCount; i++) {
-                parameterNames[i] = "arg" + i;
-            }
-            parameterNamesCache.put(constructor, parameterNames);
-        }
-        return parameterNames;
-    }
+   @Override
+   public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
+      /*
+       * intentionally the following code is not synchronized
+       */
+      String[] parameterNames = parameterNamesCache.get(constructor);
+      if (parameterNames == null) {
+         final int parameterCount = constructor.getParameterTypes().length;
+         parameterNames = new String[parameterCount];
+         for (int i = 0; i < parameterCount; i++) {
+            parameterNames[i] = "arg" + i;
+         }
+         parameterNamesCache.put(constructor, parameterNames);
+      }
+      return parameterNames;
+   }
 
-    @Override
-    public String[] getParameterNames(final Method method) throws ReflectionException {
-        /*
-         * intentionally the following code is not synchronized
-         */
-        String[] parameterNames = parameterNamesCache.get(method);
-        if (parameterNames == null) {
-            final int parameterCount = method.getParameterTypes().length;
-            parameterNames = new String[parameterCount];
-            for (int i = 0; i < parameterCount; i++) {
-                parameterNames[i] = "arg" + i;
-            }
-            parameterNamesCache.put(method, parameterNames);
-        }
-        return parameterNames;
-    }
+   @Override
+   public String[] getParameterNames(final Method method) throws ReflectionException {
+      /*
+       * intentionally the following code is not synchronized
+       */
+      String[] parameterNames = parameterNamesCache.get(method);
+      if (parameterNames == null) {
+         final int parameterCount = method.getParameterTypes().length;
+         parameterNames = new String[parameterCount];
+         for (int i = 0; i < parameterCount; i++) {
+            parameterNames[i] = "arg" + i;
+         }
+         parameterNamesCache.put(method, parameterNames);
+      }
+      return parameterNames;
+   }
 }

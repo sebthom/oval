@@ -29,97 +29,97 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * @author Sebastian Thomschke
  */
 public class ParameterNameResolverAspectJImpl implements ParameterNameResolver {
-    private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
+   private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
 
-    private void determineParamterNames(final Class<?> clazz) throws IllegalArgumentException, IllegalAccessException {
-        assert clazz != null;
+   private void determineParamterNames(final Class<?> clazz) throws IllegalArgumentException, IllegalAccessException {
+      assert clazz != null;
 
-        for (final Field field : clazz.getDeclaredFields()) {
-            // search for static fields of type JoinPoint.StaticPart
-            if (ReflectionUtils.isStatic(field) && field.getType() == JoinPoint.StaticPart.class) {
-                // access the StaticPart object
-                field.setAccessible(true);
-                final JoinPoint.StaticPart staticPart = (JoinPoint.StaticPart) field.get(null);
-                if (staticPart == null) {
-                    break;
-                }
-
-                if (staticPart.getSignature() instanceof ConstructorSignature) {
-                    final ConstructorSignature sig = (ConstructorSignature) staticPart.getSignature();
-                    final String[] parameterNames = sig.getParameterNames();
-
-                    final Constructor<?> constr = sig.getConstructor();
-
-                    if (parameterNames.length > 0) {
-                        parameterNamesCache.put(constr, parameterNames);
-                    }
-                } else if (staticPart.getSignature() instanceof MethodSignature) {
-                    final MethodSignature sig = (MethodSignature) staticPart.getSignature();
-                    final String[] parameterNames = sig.getParameterNames();
-
-                    final Method method = sig.getMethod();
-
-                    if (parameterNames.length > 0) {
-                        parameterNamesCache.put(method, parameterNames);
-                    }
-                }
+      for (final Field field : clazz.getDeclaredFields()) {
+         // search for static fields of type JoinPoint.StaticPart
+         if (ReflectionUtils.isStatic(field) && field.getType() == JoinPoint.StaticPart.class) {
+            // access the StaticPart object
+            field.setAccessible(true);
+            final JoinPoint.StaticPart staticPart = (JoinPoint.StaticPart) field.get(null);
+            if (staticPart == null) {
+               break;
             }
-        }
-    }
 
-    @Override
-    public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
-        /*
-         * intentionally the following code is not synchronized
-         */
-        String[] parameterNames = parameterNamesCache.get(constructor);
-        if (parameterNames == null) {
-            try {
-                determineParamterNames(constructor.getDeclaringClass());
-                parameterNames = parameterNamesCache.get(constructor);
-            } catch (final IllegalArgumentException e) {
-                throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
-            } catch (final IllegalAccessException e) {
-                throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
-            }
-        }
+            if (staticPart.getSignature() instanceof ConstructorSignature) {
+               final ConstructorSignature sig = (ConstructorSignature) staticPart.getSignature();
+               final String[] parameterNames = sig.getParameterNames();
 
-        if (parameterNames == null) {
-            final int parameterCount = constructor.getParameterTypes().length;
-            parameterNames = new String[parameterCount];
-            for (int i = 0; i < parameterCount; i++) {
-                parameterNames[i] = "parameter" + i;
-            }
-            parameterNamesCache.put(constructor, parameterNames);
-        }
-        return parameterNames;
-    }
+               final Constructor<?> constr = sig.getConstructor();
 
-    @Override
-    public String[] getParameterNames(final Method method) throws ReflectionException {
-        /*
-         * intentionally the following code is not synchronized
-         */
-        String[] parameterNames = parameterNamesCache.get(method);
-        if (parameterNames == null) {
-            try {
-                determineParamterNames(method.getDeclaringClass());
-                parameterNames = parameterNamesCache.get(method);
-            } catch (final IllegalArgumentException e) {
-                throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
-            } catch (final IllegalAccessException e) {
-                throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
-            }
-        }
+               if (parameterNames.length > 0) {
+                  parameterNamesCache.put(constr, parameterNames);
+               }
+            } else if (staticPart.getSignature() instanceof MethodSignature) {
+               final MethodSignature sig = (MethodSignature) staticPart.getSignature();
+               final String[] parameterNames = sig.getParameterNames();
 
-        if (parameterNames == null) {
-            final int parameterCount = method.getParameterTypes().length;
-            parameterNames = new String[parameterCount];
-            for (int i = 0; i < parameterCount; i++) {
-                parameterNames[i] = "parameter" + i;
+               final Method method = sig.getMethod();
+
+               if (parameterNames.length > 0) {
+                  parameterNamesCache.put(method, parameterNames);
+               }
             }
-            parameterNamesCache.put(method, parameterNames);
-        }
-        return parameterNames;
-    }
+         }
+      }
+   }
+
+   @Override
+   public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
+      /*
+       * intentionally the following code is not synchronized
+       */
+      String[] parameterNames = parameterNamesCache.get(constructor);
+      if (parameterNames == null) {
+         try {
+            determineParamterNames(constructor.getDeclaringClass());
+            parameterNames = parameterNamesCache.get(constructor);
+         } catch (final IllegalArgumentException e) {
+            throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
+         } catch (final IllegalAccessException e) {
+            throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
+         }
+      }
+
+      if (parameterNames == null) {
+         final int parameterCount = constructor.getParameterTypes().length;
+         parameterNames = new String[parameterCount];
+         for (int i = 0; i < parameterCount; i++) {
+            parameterNames[i] = "parameter" + i;
+         }
+         parameterNamesCache.put(constructor, parameterNames);
+      }
+      return parameterNames;
+   }
+
+   @Override
+   public String[] getParameterNames(final Method method) throws ReflectionException {
+      /*
+       * intentionally the following code is not synchronized
+       */
+      String[] parameterNames = parameterNamesCache.get(method);
+      if (parameterNames == null) {
+         try {
+            determineParamterNames(method.getDeclaringClass());
+            parameterNames = parameterNamesCache.get(method);
+         } catch (final IllegalArgumentException e) {
+            throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
+         } catch (final IllegalAccessException e) {
+            throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
+         }
+      }
+
+      if (parameterNames == null) {
+         final int parameterCount = method.getParameterTypes().length;
+         parameterNames = new String[parameterCount];
+         for (int i = 0; i < parameterCount; i++) {
+            parameterNames[i] = "parameter" + i;
+         }
+         parameterNamesCache.put(method, parameterNames);
+      }
+      return parameterNames;
+   }
 }

@@ -31,164 +31,164 @@ import net.sf.oval.internal.util.Assert;
  */
 public class ResourceBundleMessageResolver implements MessageResolver {
 
-    private static class BundlesAndKeys {
-        private final Map<Locale, Set<ResourceBundle>> bundlesOfLocales = getCollectionFactory().createMap(8);
-        private final Map<ResourceBundle, Set<String>> keysOfBundles = getCollectionFactory().createMap(8);
+   private static class BundlesAndKeys {
+      private final Map<Locale, Set<ResourceBundle>> bundlesOfLocales = getCollectionFactory().createMap(8);
+      private final Map<ResourceBundle, Set<String>> keysOfBundles = getCollectionFactory().createMap(8);
 
-        @Override
-        public BundlesAndKeys clone() {
-            final BundlesAndKeys clone = new BundlesAndKeys();
-            for (final Entry<Locale, Set<ResourceBundle>> entry : bundlesOfLocales.entrySet()) {
-                final Set<ResourceBundle> keys = getCollectionFactory().createSet();
-                keys.addAll(entry.getValue());
-                clone.bundlesOfLocales.put(entry.getKey(), keys);
-            }
-            clone.keysOfBundles.putAll(keysOfBundles);
-            return clone;
-        }
-    }
+      @Override
+      public BundlesAndKeys clone() {
+         final BundlesAndKeys clone = new BundlesAndKeys();
+         for (final Entry<Locale, Set<ResourceBundle>> entry : bundlesOfLocales.entrySet()) {
+            final Set<ResourceBundle> keys = getCollectionFactory().createSet();
+            keys.addAll(entry.getValue());
+            clone.bundlesOfLocales.put(entry.getKey(), keys);
+         }
+         clone.keysOfBundles.putAll(keysOfBundles);
+         return clone;
+      }
+   }
 
-    private static final Log LOG = Log.getLog(ResourceBundleMessageResolver.class);
+   private static final Log LOG = Log.getLog(ResourceBundleMessageResolver.class);
 
-    public static final ResourceBundleMessageResolver INSTANCE = new ResourceBundleMessageResolver();
+   public static final ResourceBundleMessageResolver INSTANCE = new ResourceBundleMessageResolver();
 
-    protected static final Locale ROOT_LOCALE = new Locale("", "", "");
+   protected static final Locale ROOT_LOCALE = new Locale("", "", "");
 
-    private BundlesAndKeys bundlesAndKeys = new BundlesAndKeys();
-    private final Object writeLock = new Object();
+   private BundlesAndKeys bundlesAndKeys = new BundlesAndKeys();
+   private final Object writeLock = new Object();
 
-    protected void addMessageBundle(final BundlesAndKeys context, final ResourceBundle bundle, final Locale locale) {
-        Set<ResourceBundle> bundlesOfLocale = context.bundlesOfLocales.get(locale);
-        if (bundlesOfLocale == null) {
+   protected void addMessageBundle(final BundlesAndKeys context, final ResourceBundle bundle, final Locale locale) {
+      Set<ResourceBundle> bundlesOfLocale = context.bundlesOfLocales.get(locale);
+      if (bundlesOfLocale == null) {
+         bundlesOfLocale = getCollectionFactory().createSet();
+         context.bundlesOfLocales.put(locale, bundlesOfLocale);
+      }
+
+      if (bundlesOfLocale.contains(bundle))
+         return;
+
+      bundlesOfLocale.add(bundle);
+      final Set<String> keys = getCollectionFactory().createSet();
+      for (final Enumeration<String> keysEnum = bundle.getKeys(); keysEnum.hasMoreElements();) {
+         keys.add(keysEnum.nextElement());
+      }
+      context.keysOfBundles.put(bundle, keys);
+   }
+
+   /**
+    * Adds a message bundle
+    *
+    * @return true if the bundle was registered and false if it was already registered
+    */
+   public boolean addMessageBundle(final ResourceBundle bundle) {
+      Assert.argumentNotNull("bundle", bundle);
+
+      return addMessageBundle(bundle, bundle.getLocale());
+   }
+
+   protected boolean addMessageBundle(final ResourceBundle bundle, final Locale locale) {
+      synchronized (writeLock) {
+         // check if bundle is already registered for this locale
+         Set<ResourceBundle> bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(locale);
+         if (bundlesOfLocale != null && bundlesOfLocale.contains(bundle))
+            return false;
+
+         final BundlesAndKeys copy = bundlesAndKeys.clone();
+         bundlesOfLocale = copy.bundlesOfLocales.get(locale);
+         if (bundlesOfLocale == null) {
             bundlesOfLocale = getCollectionFactory().createSet();
-            context.bundlesOfLocales.put(locale, bundlesOfLocale);
-        }
+            copy.bundlesOfLocales.put(locale, bundlesOfLocale);
 
-        if (bundlesOfLocale.contains(bundle))
-            return;
+            // add the message bundle for the pre-built constraints
+            try {
+               addMessageBundle(copy, ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
+            } catch (final MissingResourceException ex) {
+               LOG.debug("No message bundle net.sf.oval.Messages for locale [{1}] found.", ex, locale);
+            }
+         }
+         addMessageBundle(copy, bundle, locale);
 
-        bundlesOfLocale.add(bundle);
-        final Set<String> keys = getCollectionFactory().createSet();
-        for (final Enumeration<String> keysEnum = bundle.getKeys(); keysEnum.hasMoreElements();) {
-            keys.add(keysEnum.nextElement());
-        }
-        context.keysOfBundles.put(bundle, keys);
-    }
+         bundlesAndKeys = copy;
+      }
+      return true;
+   }
 
-    /**
-     * Adds a message bundle
-     *
-     * @return true if the bundle was registered and false if it was already registered
-     */
-    public boolean addMessageBundle(final ResourceBundle bundle) {
-        Assert.argumentNotNull("bundle", bundle);
+   @Override
+   public String getMessage(final String key) {
+      final Locale currentLocale = Validator.getLocaleProvider().getLocale();
+      final String msg = getMessage(key, currentLocale);
+      if (msg != null)
+         return msg;
 
-        return addMessageBundle(bundle, bundle.getLocale());
-    }
+      final Locale defaultLocale = Locale.getDefault();
+      if (!currentLocale.equals(defaultLocale))
+         return getMessage(key, defaultLocale);
 
-    protected boolean addMessageBundle(final ResourceBundle bundle, final Locale locale) {
-        synchronized (writeLock) {
-            // check if bundle is already registered for this locale
-            Set<ResourceBundle> bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(locale);
-            if (bundlesOfLocale != null && bundlesOfLocale.contains(bundle))
-                return false;
+      return null;
+   }
 
-            final BundlesAndKeys copy = bundlesAndKeys.clone();
-            bundlesOfLocale = copy.bundlesOfLocales.get(locale);
+   protected String getMessage(final String key, final Locale locale) {
+      BundlesAndKeys context = bundlesAndKeys;
+      Set<ResourceBundle> bundlesOfLocale = context.bundlesOfLocales.get(locale);
+      if (bundlesOfLocale == null) {
+         synchronized (writeLock) {
+            bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(locale);
             if (bundlesOfLocale == null) {
-                bundlesOfLocale = getCollectionFactory().createSet();
-                copy.bundlesOfLocales.put(locale, bundlesOfLocale);
+               final BundlesAndKeys copy = bundlesAndKeys.clone();
+               bundlesOfLocale = getCollectionFactory().createSet();
+               copy.bundlesOfLocales.put(locale, bundlesOfLocale);
 
-                // add the message bundle for the pre-built constraints
-                try {
-                    addMessageBundle(copy, ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
-                } catch (final MissingResourceException ex) {
-                    LOG.debug("No message bundle net.sf.oval.Messages for locale [{1}] found.", ex, locale);
-                }
+               // add the message bundle for the pre-built constraints
+               try {
+                  addMessageBundle(copy, ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
+               } catch (final MissingResourceException ex) {
+                  LOG.debug("No message bundle net.sf.oval.Messages for locale [{1}] found.", ex, locale);
+               }
+
+               bundlesAndKeys = copy;
             }
-            addMessageBundle(copy, bundle, locale);
+            context = bundlesAndKeys;
+         }
+      }
 
-            bundlesAndKeys = copy;
-        }
-        return true;
-    }
+      for (final ResourceBundle bundle : bundlesOfLocale) {
+         final Set<String> keys = context.keysOfBundles.get(bundle);
+         if (keys.contains(key))
+            return bundle.getString(key);
+      }
 
-    @Override
-    public String getMessage(final String key) {
-        final Locale currentLocale = Validator.getLocaleProvider().getLocale();
-        final String msg = getMessage(key, currentLocale);
-        if (msg != null)
-            return msg;
+      // fallback from 'en_US' to 'en' locale
+      if (locale.getCountry().length() > 0)
+         return getMessage(key, new Locale(locale.getLanguage(), "", ""));
 
-        final Locale defaultLocale = Locale.getDefault();
-        if (!currentLocale.equals(defaultLocale))
-            return getMessage(key, defaultLocale);
+      if (locale.getLanguage().length() > 0)
+         return getMessage(key, ROOT_LOCALE);
 
-        return null;
-    }
+      return null;
+   }
 
-    protected String getMessage(final String key, final Locale locale) {
-        BundlesAndKeys context = bundlesAndKeys;
-        Set<ResourceBundle> bundlesOfLocale = context.bundlesOfLocales.get(locale);
-        if (bundlesOfLocale == null) {
-            synchronized (writeLock) {
-                bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(locale);
-                if (bundlesOfLocale == null) {
-                    final BundlesAndKeys copy = bundlesAndKeys.clone();
-                    bundlesOfLocale = getCollectionFactory().createSet();
-                    copy.bundlesOfLocales.put(locale, bundlesOfLocale);
+   /**
+    * Removes the message bundle
+    *
+    * @return true if the bundle was registered and false if it wasn't registered
+    */
+   public boolean removeMessageBundle(final ResourceBundle bundle) {
+      Assert.argumentNotNull("bundle", bundle);
 
-                    // add the message bundle for the pre-built constraints
-                    try {
-                        addMessageBundle(copy, ResourceBundle.getBundle("net/sf/oval/Messages", locale), locale);
-                    } catch (final MissingResourceException ex) {
-                        LOG.debug("No message bundle net.sf.oval.Messages for locale [{1}] found.", ex, locale);
-                    }
+      final Locale bundleLocale = bundle.getLocale();
 
-                    bundlesAndKeys = copy;
-                }
-                context = bundlesAndKeys;
-            }
-        }
+      synchronized (writeLock) {
+         // check if bundle is registered for this locale
+         final Set<ResourceBundle> bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(bundleLocale);
+         if (bundlesOfLocale == null || !bundlesOfLocale.contains(bundle))
+            return false;
 
-        for (final ResourceBundle bundle : bundlesOfLocale) {
-            final Set<String> keys = context.keysOfBundles.get(bundle);
-            if (keys.contains(key))
-                return bundle.getString(key);
-        }
+         final BundlesAndKeys copy = bundlesAndKeys.clone();
+         copy.bundlesOfLocales.get(bundleLocale).remove(bundle);
+         copy.keysOfBundles.remove(bundle);
 
-        // fallback from 'en_US' to 'en' locale
-        if (locale.getCountry().length() > 0)
-            return getMessage(key, new Locale(locale.getLanguage(), "", ""));
-
-        if (locale.getLanguage().length() > 0)
-            return getMessage(key, ROOT_LOCALE);
-
-        return null;
-    }
-
-    /**
-     * Removes the message bundle
-     *
-     * @return true if the bundle was registered and false if it wasn't registered
-     */
-    public boolean removeMessageBundle(final ResourceBundle bundle) {
-        Assert.argumentNotNull("bundle", bundle);
-
-        final Locale bundleLocale = bundle.getLocale();
-
-        synchronized (writeLock) {
-            // check if bundle is registered for this locale
-            final Set<ResourceBundle> bundlesOfLocale = bundlesAndKeys.bundlesOfLocales.get(bundleLocale);
-            if (bundlesOfLocale == null || !bundlesOfLocale.contains(bundle))
-                return false;
-
-            final BundlesAndKeys copy = bundlesAndKeys.clone();
-            copy.bundlesOfLocales.get(bundleLocale).remove(bundle);
-            copy.keysOfBundles.remove(bundle);
-
-            bundlesAndKeys = copy;
-        }
-        return true;
-    }
+         bundlesAndKeys = copy;
+      }
+      return true;
+   }
 }

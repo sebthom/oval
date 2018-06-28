@@ -10,7 +10,7 @@ set -e # abort script at first error
 set -o pipefail # causes a pipeline to return the exit status of the last command in the pipe that returned a non-zero return value
 
 if [[ -f ./.travis/release-trigger.sh ]]; then
-    echo "Sourcing [./release-trigger.sh]..." 
+    echo "Sourcing [./.travis/release-trigger.sh]..." 
     source ./.travis/release-trigger.sh
 fi
 

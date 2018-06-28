@@ -27,88 +27,89 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * @author Sebastian Thomschke
  */
 public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final Map<Class<?>, Method> validationMethodsByClass = new WeakHashMap<Class<?>, Method>();
+   private final Map<Class<?>, Method> validationMethodsByClass = new WeakHashMap<Class<?>, Method>();
 
-    private boolean ignoreIfNull;
-    private String methodName;
-    private Class<?> parameterType;
+   private boolean ignoreIfNull;
+   private String methodName;
+   private Class<?> parameterType;
 
-    @Override
-    public void configure(final ValidateWithMethod constraintAnnotation) {
-        super.configure(constraintAnnotation);
-        setMethodName(constraintAnnotation.methodName());
-        setParameterType(constraintAnnotation.parameterType());
-        setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
-    }
+   @Override
+   public void configure(final ValidateWithMethod constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setMethodName(constraintAnnotation.methodName());
+      setParameterType(constraintAnnotation.parameterType());
+      setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
+   }
 
-    @Override
-    protected Map<String, String> createMessageVariables() {
-        final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
-        messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-        messageVariables.put("methodName", methodName);
-        messageVariables.put("parameterType", parameterType.getName());
-        return messageVariables;
-    }
+   @Override
+   protected Map<String, String> createMessageVariables() {
+      final Map<String, String> messageVariables = getCollectionFactory().createMap(4);
+      messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+      messageVariables.put("methodName", methodName);
+      messageVariables.put("parameterType", parameterType.getName());
+      return messageVariables;
+   }
 
-    @Override
-    protected ConstraintTarget[] getAppliesToDefault() {
-        return new ConstraintTarget[] { ConstraintTarget.VALUES };
-    }
+   @Override
+   protected ConstraintTarget[] getAppliesToDefault() {
+      return new ConstraintTarget[] {ConstraintTarget.VALUES};
+   }
 
-    public String getMethodName() {
-        return methodName;
-    }
+   public String getMethodName() {
+      return methodName;
+   }
 
-    public Class<?> getParameterType() {
-        return parameterType;
-    }
+   public Class<?> getParameterType() {
+      return parameterType;
+   }
 
-    public boolean isIgnoreIfNull() {
-        return ignoreIfNull;
-    }
+   public boolean isIgnoreIfNull() {
+      return ignoreIfNull;
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-            throws ReflectionException {
-        if (valueToValidate == null && ignoreIfNull)
-            return true;
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+      throws ReflectionException {
+      if (valueToValidate == null && ignoreIfNull)
+         return true;
 
-        final Class<?> clazz = validatedObject.getClass();
-        Method method;
-        synchronized (validationMethodsByClass) {
-            method = validationMethodsByClass.get(clazz);
-            if (method == null) {
-                method = ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
-                validationMethodsByClass.put(clazz, method);
-            }
-        }
-        if (method == null)
-            throw new InvalidConfigurationException("Method " + clazz.getName() + "." + methodName + "(" + parameterType + ") not found. Is [" + parameterType
-                    + "] the correct value for [@ValidateWithMethod.parameterType]?");
-        //explicit cast to workaround: type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object
-        return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
-    }
+      final Class<?> clazz = validatedObject.getClass();
+      Method method;
+      synchronized (validationMethodsByClass) {
+         method = validationMethodsByClass.get(clazz);
+         if (method == null) {
+            method = ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
+            validationMethodsByClass.put(clazz, method);
+         }
+      }
+      if (method == null)
+         throw new InvalidConfigurationException("Method " + clazz.getName() + "." + methodName + "(" + parameterType + ") not found. Is [" + parameterType
+            + "] the correct value for [@ValidateWithMethod.parameterType]?");
+      // explicit cast to workaround:
+      // "type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object"
+      return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
+   }
 
-    public void setIgnoreIfNull(final boolean ignoreIfNull) {
-        this.ignoreIfNull = ignoreIfNull;
-        requireMessageVariablesRecreation();
-    }
+   public void setIgnoreIfNull(final boolean ignoreIfNull) {
+      this.ignoreIfNull = ignoreIfNull;
+      requireMessageVariablesRecreation();
+   }
 
-    public void setMethodName(final String methodName) {
-        this.methodName = methodName;
-        synchronized (validationMethodsByClass) {
-            validationMethodsByClass.clear();
-        }
-        requireMessageVariablesRecreation();
-    }
+   public void setMethodName(final String methodName) {
+      this.methodName = methodName;
+      synchronized (validationMethodsByClass) {
+         validationMethodsByClass.clear();
+      }
+      requireMessageVariablesRecreation();
+   }
 
-    public void setParameterType(final Class<?> parameterType) {
-        this.parameterType = parameterType;
-        synchronized (validationMethodsByClass) {
-            validationMethodsByClass.clear();
-        }
-        requireMessageVariablesRecreation();
-    }
+   public void setParameterType(final Class<?> parameterType) {
+      this.parameterType = parameterType;
+      synchronized (validationMethodsByClass) {
+         validationMethodsByClass.clear();
+      }
+      requireMessageVariablesRecreation();
+   }
 }

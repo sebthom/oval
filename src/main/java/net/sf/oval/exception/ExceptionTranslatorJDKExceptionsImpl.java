@@ -30,39 +30,39 @@ import net.sf.oval.internal.Log;
  * @author Sebastian Thomschke
  */
 public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator {
-    private static final Log LOG = Log.getLog(ExceptionTranslatorJDKExceptionsImpl.class);
+   private static final Log LOG = Log.getLog(ExceptionTranslatorJDKExceptionsImpl.class);
 
-    @Override
-    public RuntimeException translateException(final OValException ex) {
-        // translate ConstraintsViolatedException based on the validation context
-        if (ex instanceof ConstraintsViolatedException) {
-            final ConstraintsViolatedException cex = (ConstraintsViolatedException) ex;
-            final ConstraintViolation cv = cex.getConstraintViolations()[0];
-            final OValContext ctx = cv.getContext();
+   @Override
+   public RuntimeException translateException(final OValException ex) {
+      // translate ConstraintsViolatedException based on the validation context
+      if (ex instanceof ConstraintsViolatedException) {
+         final ConstraintsViolatedException cex = (ConstraintsViolatedException) ex;
+         final ConstraintViolation cv = cex.getConstraintViolations()[0];
+         final OValContext ctx = cv.getContext();
 
-            // translate exceptions for preconditions to IllegalArgumentExceptions
-            if (ctx instanceof MethodParameterContext || ctx instanceof ConstructorParameterContext || ctx instanceof MethodEntryContext) {
-                final IllegalArgumentException iaex = new IllegalArgumentException(cv.getMessage(), ex.getCause());
-                iaex.setStackTrace(ex.getStackTrace());
-                LOG.debug("Translated Exception {1} to {2}", ex, iaex);
-                return iaex;
-            }
+         // translate exceptions for preconditions to IllegalArgumentExceptions
+         if (ctx instanceof MethodParameterContext || ctx instanceof ConstructorParameterContext || ctx instanceof MethodEntryContext) {
+            final IllegalArgumentException iaex = new IllegalArgumentException(cv.getMessage(), ex.getCause());
+            iaex.setStackTrace(ex.getStackTrace());
+            LOG.debug("Translated Exception {1} to {2}", ex, iaex);
+            return iaex;
+         }
 
-            // translate invariant exceptions to IllegalStateExceptions
-            if (ctx instanceof FieldContext || ctx instanceof MethodReturnValueContext) {
-                final IllegalStateException ise = new IllegalStateException(cv.getMessage(), ex.getCause());
-                ise.setStackTrace(ex.getStackTrace());
-                LOG.debug("Translated Exception {1} to {2}", ex, ise);
-                return ise;
-            }
-        }
+         // translate invariant exceptions to IllegalStateExceptions
+         if (ctx instanceof FieldContext || ctx instanceof MethodReturnValueContext) {
+            final IllegalStateException ise = new IllegalStateException(cv.getMessage(), ex.getCause());
+            ise.setStackTrace(ex.getStackTrace());
+            LOG.debug("Translated Exception {1} to {2}", ex, ise);
+            return ise;
+         }
+      }
 
-        // translate all other messages to runtime exceptions
-        {
-            final RuntimeException rex = new RuntimeException(ex.getMessage(), ex.getCause());
-            rex.setStackTrace(ex.getStackTrace());
-            LOG.debug("Translated Exception {1} to {2}", ex, rex);
-            return rex;
-        }
-    }
+      // translate all other messages to runtime exceptions
+      {
+         final RuntimeException rex = new RuntimeException(ex.getMessage(), ex.getCause());
+         rex.setStackTrace(ex.getStackTrace());
+         LOG.debug("Translated Exception {1} to {2}", ex, rex);
+         return rex;
+      }
+   }
 }

@@ -24,55 +24,55 @@ import net.sf.oval.internal.Log;
  * @author Sebastian Thomschke
  */
 public class SpringValidator implements org.springframework.validation.Validator, InitializingBean {
-    private static final Log LOG = Log.getLog(SpringValidator.class);
+   private static final Log LOG = Log.getLog(SpringValidator.class);
 
-    private Validator validator;
+   private Validator validator;
 
-    public SpringValidator() {
-        super();
-    }
+   public SpringValidator() {
+      super();
+   }
 
-    public SpringValidator(final Validator validator) {
-        this.validator = validator;
-    }
+   public SpringValidator(final Validator validator) {
+      this.validator = validator;
+   }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Assert.notNull(validator, "Property [validator] must be set");
-    }
+   @Override
+   public void afterPropertiesSet() throws Exception {
+      Assert.notNull(validator, "Property [validator] must be set");
+   }
 
-    public Validator getValidator() {
-        return validator;
-    }
+   public Validator getValidator() {
+      return validator;
+   }
 
-    public void setValidator(final Validator validator) {
-        this.validator = validator;
-    }
+   public void setValidator(final Validator validator) {
+      this.validator = validator;
+   }
 
-    @Override
-    public boolean supports(@SuppressWarnings("rawtypes") final Class clazz) {
-        return true;
-    }
+   @Override
+   public boolean supports(@SuppressWarnings("rawtypes") final Class clazz) {
+      return true;
+   }
 
-    @Override
-    public void validate(final Object objectToValidate, final Errors errors) {
-        try {
-            for (final ConstraintViolation violation : validator.validate(objectToValidate)) {
-                final OValContext ctx = violation.getContext();
-                final String errorCode = violation.getErrorCode();
-                final String errorMessage = violation.getMessage();
+   @Override
+   public void validate(final Object objectToValidate, final Errors errors) {
+      try {
+         for (final ConstraintViolation violation : validator.validate(objectToValidate)) {
+            final OValContext ctx = violation.getContext();
+            final String errorCode = violation.getErrorCode();
+            final String errorMessage = violation.getMessage();
 
-                if (ctx instanceof FieldContext) {
-                    final String fieldName = ((FieldContext) ctx).getField().getName();
-                    errors.rejectValue(fieldName, errorCode, errorMessage);
-                } else {
-                    errors.reject(errorCode, errorMessage);
-                }
+            if (ctx instanceof FieldContext) {
+               final String fieldName = ((FieldContext) ctx).getField().getName();
+               errors.rejectValue(fieldName, errorCode, errorMessage);
+            } else {
+               errors.reject(errorCode, errorMessage);
             }
-        } catch (final ValidationFailedException ex) {
-            LOG.error("Unexpected error during validation", ex);
+         }
+      } catch (final ValidationFailedException ex) {
+         LOG.error("Unexpected error during validation", ex);
 
-            errors.reject(ex.getMessage());
-        }
-    }
+         errors.reject(ex.getMessage());
+      }
+   }
 }

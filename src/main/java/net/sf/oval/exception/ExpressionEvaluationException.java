@@ -13,13 +13,13 @@ package net.sf.oval.exception;
  * @author Sebastian Thomschke
  */
 public class ExpressionEvaluationException extends OValException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public ExpressionEvaluationException(final String message) {
-        super(message);
-    }
+   public ExpressionEvaluationException(final String message) {
+      super(message);
+   }
 
-    public ExpressionEvaluationException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+   public ExpressionEvaluationException(final String message, final Throwable cause) {
+      super(message, cause);
+   }
 }

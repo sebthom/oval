@@ -13,21 +13,21 @@ package net.sf.oval.context;
  * @author Sebastian Thomschke
  */
 public class ClassContext extends OValContext {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final Class<?> clazz;
+   private final Class<?> clazz;
 
-    public ClassContext(final Class<?> clazz) {
-        this.clazz = clazz;
-        compileTimeType = clazz;
-    }
+   public ClassContext(final Class<?> clazz) {
+      this.clazz = clazz;
+      compileTimeType = clazz;
+   }
 
-    public Class<?> getClazz() {
-        return clazz;
-    }
+   public Class<?> getClazz() {
+      return clazz;
+   }
 
-    @Override
-    public String toString() {
-        return clazz.getName();
-    }
+   @Override
+   public String toString() {
+      return clazz.getName();
+   }
 }

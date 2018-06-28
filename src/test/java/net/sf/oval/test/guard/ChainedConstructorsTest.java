@@ -18,23 +18,23 @@ import net.sf.oval.guard.Guarded;
  */
 @SuppressWarnings("unused")
 public class ChainedConstructorsTest extends TestCase {
-    @Guarded
-    public static final class Entity {
-        public Entity(@NotNull final Object param) {
-            this(param.toString(), "whatever");
-        }
+   @Guarded
+   public static final class Entity {
+      public Entity(@NotNull final Object param) {
+         this(param.toString(), "whatever");
+      }
 
-        public Entity(@NotNull final String param1, @NotNull final String params2) {
-            // do stuff
-        }
-    }
+      public Entity(@NotNull final String param1, @NotNull final String params2) {
+         // do stuff
+      }
+   }
 
-    public void testConstructorChaining() {
-        try {
-            new Entity(null);
-            fail();
-        } catch (final Exception ex) {
-            // TODO: currently fails with an NPE instead of a ConstraintViolationException https://sourceforge.net/p/oval/bugs/83/
-        }
-    }
+   public void testConstructorChaining() {
+      try {
+         new Entity(null);
+         fail();
+      } catch (final Exception ex) {
+         // TODO: currently fails with an NPE instead of a ConstraintViolationException https://sourceforge.net/p/oval/bugs/83/
+      }
+   }
 }

@@ -17,12 +17,11 @@ import net.sf.oval.guard.Guarded;
  */
 public aspect TestGuardAspect extends GuardAspect
 {
-	// only guard classes in the package net.sf.oval.test.guard that are annotated with @Guarded
-	@Override
+    // only guard classes in the package net.sf.oval.test.guard that are annotated with @Guarded
+    @Override
     protected pointcut scope(): within(net.sf.oval.test.guard.*) && @within(Guarded);
 
-	public TestGuardAspect()
-	{
-		super();
-	}
+    public TestGuardAspect() {
+        super();
+    }
 }

@@ -19,91 +19,91 @@ import net.sf.oval.internal.util.Assert;
  * @author Sebastian Thomschke
  */
 public class LoggerL4JImpl implements Logger {
-    private static final String WRAPPER = "net.sf.oval.logging";
+   private static final String WRAPPER = "net.sf.oval.logging";
 
-    private final org.apache.log4j.Logger log4jLogger;
+   private final org.apache.log4j.Logger log4jLogger;
 
-    /**
-     * @param name the name of the logger
-     * @throws IllegalArgumentException if <code>name == null</code>
-     */
-    public LoggerL4JImpl(final String name) throws IllegalArgumentException {
-        Assert.argumentNotNull("name", name);
-        log4jLogger = org.apache.log4j.Logger.getLogger(name);
-    }
+   /**
+    * @param name the name of the logger
+    * @throws IllegalArgumentException if <code>name == null</code>
+    */
+   public LoggerL4JImpl(final String name) throws IllegalArgumentException {
+      Assert.argumentNotNull("name", name);
+      log4jLogger = org.apache.log4j.Logger.getLogger(name);
+   }
 
-    @Override
-    public void debug(final String msg) {
-        log4jLogger.log(WRAPPER, Level.DEBUG, msg, null);
-    }
+   @Override
+   public void debug(final String msg) {
+      log4jLogger.log(WRAPPER, Level.DEBUG, msg, null);
+   }
 
-    @Override
-    public void debug(final String msg, final Throwable t) {
-        log4jLogger.log(WRAPPER, Level.DEBUG, msg, t);
-    }
+   @Override
+   public void debug(final String msg, final Throwable t) {
+      log4jLogger.log(WRAPPER, Level.DEBUG, msg, t);
+   }
 
-    @Override
-    public void error(final String msg) {
-        log4jLogger.log(WRAPPER, Level.ERROR, msg, null);
-    }
+   @Override
+   public void error(final String msg) {
+      log4jLogger.log(WRAPPER, Level.ERROR, msg, null);
+   }
 
-    @Override
-    public void error(final String msg, final Throwable t) {
-        log4jLogger.log(WRAPPER, Level.ERROR, msg, t);
-    }
+   @Override
+   public void error(final String msg, final Throwable t) {
+      log4jLogger.log(WRAPPER, Level.ERROR, msg, t);
+   }
 
-    @Override
-    public void info(final String msg) {
-        log4jLogger.log(WRAPPER, Level.INFO, msg, null);
-    }
+   @Override
+   public void info(final String msg) {
+      log4jLogger.log(WRAPPER, Level.INFO, msg, null);
+   }
 
-    @Override
-    public void info(final String msg, final Throwable t) {
-        log4jLogger.log(WRAPPER, Level.INFO, msg, t);
-    }
+   @Override
+   public void info(final String msg, final Throwable t) {
+      log4jLogger.log(WRAPPER, Level.INFO, msg, t);
+   }
 
-    @Override
-    public boolean isDebug() {
-        return log4jLogger.isDebugEnabled();
-    }
+   @Override
+   public boolean isDebug() {
+      return log4jLogger.isDebugEnabled();
+   }
 
-    @Override
-    public boolean isError() {
-        return log4jLogger.isEnabledFor(Level.ERROR);
-    }
+   @Override
+   public boolean isError() {
+      return log4jLogger.isEnabledFor(Level.ERROR);
+   }
 
-    @Override
-    public boolean isInfo() {
-        return log4jLogger.isInfoEnabled();
-    }
+   @Override
+   public boolean isInfo() {
+      return log4jLogger.isInfoEnabled();
+   }
 
-    @Override
-    public boolean isTrace() {
-        return log4jLogger.isTraceEnabled();
-    }
+   @Override
+   public boolean isTrace() {
+      return log4jLogger.isTraceEnabled();
+   }
 
-    @Override
-    public boolean isWarn() {
-        return log4jLogger.isEnabledFor(Level.WARN);
-    }
+   @Override
+   public boolean isWarn() {
+      return log4jLogger.isEnabledFor(Level.WARN);
+   }
 
-    @Override
-    public void trace(final String msg) {
-        log4jLogger.log(WRAPPER, Level.TRACE, msg, null);
-    }
+   @Override
+   public void trace(final String msg) {
+      log4jLogger.log(WRAPPER, Level.TRACE, msg, null);
+   }
 
-    @Override
-    public void trace(final String msg, final Throwable t) {
-        log4jLogger.log(WRAPPER, Level.TRACE, msg, t);
-    }
+   @Override
+   public void trace(final String msg, final Throwable t) {
+      log4jLogger.log(WRAPPER, Level.TRACE, msg, t);
+   }
 
-    @Override
-    public void warn(final String msg) {
-        log4jLogger.log(WRAPPER, Level.WARN, msg, null);
-    }
+   @Override
+   public void warn(final String msg) {
+      log4jLogger.log(WRAPPER, Level.WARN, msg, null);
+   }
 
-    @Override
-    public void warn(final String msg, final Throwable t) {
-        log4jLogger.log(WRAPPER, Level.WARN, msg, t);
-    }
+   @Override
+   public void warn(final String msg, final Throwable t) {
+      log4jLogger.log(WRAPPER, Level.WARN, msg, t);
+   }
 }

@@ -16,5 +16,5 @@ import net.sf.oval.Check;
  */
 public interface CheckInitializationListener {
 
-    void onCheckInitialized(Check check);
+   void onCheckInitialized(Check check);
 }

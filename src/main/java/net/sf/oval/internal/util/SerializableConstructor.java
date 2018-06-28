@@ -22,64 +22,64 @@ import net.sf.oval.internal.Log;
  * @author Sebastian Thomschke
  */
 public final class SerializableConstructor implements Serializable {
-    private static final Log LOG = Log.getLog(SerializableConstructor.class);
+   private static final Log LOG = Log.getLog(SerializableConstructor.class);
 
-    private static final WeakHashMap<Constructor<?>, SerializableConstructor> CACHE = //
-            new WeakHashMap<Constructor<?>, SerializableConstructor>();
+   private static final WeakHashMap<Constructor<?>, SerializableConstructor> CACHE = //
+      new WeakHashMap<Constructor<?>, SerializableConstructor>();
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static SerializableConstructor getInstance(final Constructor<?> constructor) {
-        synchronized (CACHE) {
-            SerializableConstructor sm = CACHE.get(constructor);
-            if (sm == null) {
-                sm = new SerializableConstructor(constructor);
-                CACHE.put(constructor, sm);
-            }
-            return sm;
-        }
-    }
+   public static SerializableConstructor getInstance(final Constructor<?> constructor) {
+      synchronized (CACHE) {
+         SerializableConstructor sm = CACHE.get(constructor);
+         if (sm == null) {
+            sm = new SerializableConstructor(constructor);
+            CACHE.put(constructor, sm);
+         }
+         return sm;
+      }
+   }
 
-    private transient Constructor<?> constructor;
+   private transient Constructor<?> constructor;
 
-    private final Class<?> declaringClass;
+   private final Class<?> declaringClass;
 
-    private final Class<?>[] parameterTypes;
+   private final Class<?>[] parameterTypes;
 
-    private SerializableConstructor(final Constructor<?> constructor) {
-        this.constructor = constructor;
-        parameterTypes = constructor.getParameterTypes();
-        declaringClass = constructor.getDeclaringClass();
-    }
+   private SerializableConstructor(final Constructor<?> constructor) {
+      this.constructor = constructor;
+      parameterTypes = constructor.getParameterTypes();
+      declaringClass = constructor.getDeclaringClass();
+   }
 
-    /**
-     * @return the constructor
-     */
-    public Constructor<?> getConstructor() {
-        return constructor;
-    }
+   /**
+    * @return the constructor
+    */
+   public Constructor<?> getConstructor() {
+      return constructor;
+   }
 
-    /**
-     * @return the declaringClass
-     */
-    public Class<?> getDeclaringClass() {
-        return declaringClass;
-    }
+   /**
+    * @return the declaringClass
+    */
+   public Class<?> getDeclaringClass() {
+      return declaringClass;
+   }
 
-    /**
-     * @return the parameterTypes
-     */
-    public Class<?>[] getParameterTypes() {
-        return parameterTypes;
-    }
+   /**
+    * @return the parameterTypes
+    */
+   public Class<?>[] getParameterTypes() {
+      return parameterTypes;
+   }
 
-    private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        try {
-            constructor = declaringClass.getDeclaredConstructor(parameterTypes);
-        } catch (final NoSuchMethodException ex) {
-            LOG.debug("Unexpected NoSuchMethodException occured", ex);
-            throw new IOException(ex.getMessage());
-        }
-    }
+   private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+      in.defaultReadObject();
+      try {
+         constructor = declaringClass.getDeclaredConstructor(parameterTypes);
+      } catch (final NoSuchMethodException ex) {
+         LOG.debug("Unexpected NoSuchMethodException occured", ex);
+         throw new IOException(ex.getMessage());
+      }
+   }
 }

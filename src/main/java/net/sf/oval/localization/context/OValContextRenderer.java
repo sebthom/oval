@@ -23,5 +23,5 @@ import net.sf.oval.context.OValContext;
  * @see Validator
  */
 public interface OValContextRenderer {
-    String render(OValContext context);
+   String render(OValContext context);
 }

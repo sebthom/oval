@@ -21,92 +21,87 @@ import net.sf.oval.guard.Guard;
  * @author Sebastian Thomschke
  */
 public class GuardingWithoutGuardedAnnotationTest extends TestCase {
-    public static class TestEntity {
-        @NotNull(message = "NOT_NULL")
-        private String name = "";
+   public static class TestEntity {
+      @NotNull(message = "NOT_NULL")
+      private String name = "";
 
-        /**
-         * Constructor 1
-         *
-         * @param name
-         */
-        public TestEntity(@NotNull(message = "NOT_NULL") final String name) {
-            this.name = name;
-        }
+      /**
+       * Constructor 1
+       */
+      public TestEntity(@NotNull(message = "NOT_NULL") final String name) {
+         this.name = name;
+      }
 
-        /**
-         * Constructor 2
-         *
-         * @param name
-         * @param bla
-         */
-        public TestEntity(final String name, final int bla) {
-            this.name = name;
-        }
+      /**
+       * Constructor 2
+       */
+      public TestEntity(final String name, @SuppressWarnings("unused") final int bla) {
+         this.name = name;
+      }
 
-        public void setName(@NotNull(message = "NOT_NULL") @Length(max = 4, message = "LENGTH") final String name) {
-            this.name = name;
-        }
-    }
+      public void setName(@NotNull(message = "NOT_NULL") @Length(max = 4, message = "LENGTH") final String name) {
+         this.name = name;
+      }
+   }
 
-    @SuppressWarnings("unused")
-    public void testConstructorParameterConstraints() {
-        final Guard guard = new Guard();
-        guard.setInvariantsEnabled(TestEntity.class, true);
-        GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
+   @SuppressWarnings("unused")
+   public void testConstructorParameterConstraints() {
+      final Guard guard = new Guard();
+      guard.setInvariantsEnabled(TestEntity.class, true);
+      GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
 
-        /*
-         * Testing Constructor 1
-         */
-        try {
-            new TestEntity(null);
-            fail();
-        } catch (final ConstraintsViolatedException e) {
-            final ConstraintViolation[] violations = e.getConstraintViolations();
-            assertNotNull(violations);
-            assertEquals(1, violations.length);
-            assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-            assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
-        }
+      /*
+       * Testing Constructor 1
+       */
+      try {
+         new TestEntity(null);
+         fail();
+      } catch (final ConstraintsViolatedException e) {
+         final ConstraintViolation[] violations = e.getConstraintViolations();
+         assertNotNull(violations);
+         assertEquals(1, violations.length);
+         assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+         assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
+      }
 
-        new TestEntity("test");
+      new TestEntity("test");
 
-        /*
-         * Testing Constructor 2
-         */
-        try {
-            new TestEntity(null, 100);
-            fail(); // invariant check on name fails
-        } catch (final ConstraintsViolatedException ex) {
-            // expected
-        }
-    }
+      /*
+       * Testing Constructor 2
+       */
+      try {
+         new TestEntity(null, 100);
+         fail(); // invariant check on name fails
+      } catch (final ConstraintsViolatedException ex) {
+         // expected
+      }
+   }
 
-    public void testMethodParameterConstraints() {
-        final Guard guard = new Guard();
-        guard.setInvariantsEnabled(TestEntity.class, true);
-        GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
+   public void testMethodParameterConstraints() {
+      final Guard guard = new Guard();
+      guard.setInvariantsEnabled(TestEntity.class, true);
+      GuardingWithoutGuardedAnnotationAspect.aspectOf().setGuard(guard);
 
-        try {
-            final TestEntity t1 = new TestEntity("");
-            t1.setName(null);
-            fail();
-        } catch (final ConstraintsViolatedException e) {
-            final ConstraintViolation[] violations = e.getConstraintViolations();
-            assertNotNull(violations);
-            assertTrue(violations.length > 0);
-            assertTrue(violations[0].getMessage().equals("NOT_NULL"));
-        }
+      try {
+         final TestEntity t1 = new TestEntity("");
+         t1.setName(null);
+         fail();
+      } catch (final ConstraintsViolatedException e) {
+         final ConstraintViolation[] violations = e.getConstraintViolations();
+         assertNotNull(violations);
+         assertTrue(violations.length > 0);
+         assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+      }
 
-        try {
-            final TestEntity t1 = new TestEntity("");
-            t1.setName("12345678");
-            fail();
-        } catch (final ConstraintsViolatedException e) {
-            final ConstraintViolation[] violations = e.getConstraintViolations();
-            assertNotNull(violations);
-            assertTrue(violations.length > 0);
-            assertTrue(violations[0].getMessage().equals("LENGTH"));
-        }
-    }
+      try {
+         final TestEntity t1 = new TestEntity("");
+         t1.setName("12345678");
+         fail();
+      } catch (final ConstraintsViolatedException e) {
+         final ConstraintViolation[] violations = e.getConstraintViolations();
+         assertNotNull(violations);
+         assertTrue(violations.length > 0);
+         assertTrue(violations[0].getMessage().equals("LENGTH"));
+      }
+   }
 }

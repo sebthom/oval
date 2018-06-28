@@ -18,20 +18,20 @@ import net.sf.oval.internal.util.StringUtils;
  * @author Sebastian Thomschke
  */
 public class MethodEntryContext extends OValContext {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final SerializableMethod method;
+   private final SerializableMethod method;
 
-    public MethodEntryContext(final Method method) {
-        this.method = SerializableMethod.getInstance(method);
-    }
+   public MethodEntryContext(final Method method) {
+      this.method = SerializableMethod.getInstance(method);
+   }
 
-    public Method getMethod() {
-        return method.getMethod();
-    }
+   public Method getMethod() {
+      return method.getMethod();
+   }
 
-    @Override
-    public String toString() {
-        return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.implode(method.getParameterTypes(), ",") + ")";
-    }
+   @Override
+   public String toString() {
+      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.implode(method.getParameterTypes(), ",") + ")";
+   }
 }

@@ -29,226 +29,226 @@ import net.sf.oval.internal.Log;
  * @author Sebastian Thomschke
  */
 public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
-    private static final Log LOG = Log.getLog(DateRangeCheck.class);
+   private static final Log LOG = Log.getLog(DateRangeCheck.class);
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private String format;
-    private String max;
-    private String min;
+   private String format;
+   private String max;
+   private String min;
 
-    private transient Long maxMillis;
-    private transient Long minMillis;
-    private long tolerance = 0;
+   private transient Long maxMillis;
+   private transient Long minMillis;
+   private long tolerance = 0;
 
-    @Override
-    public void configure(final DateRange constraintAnnotation) {
-        super.configure(constraintAnnotation);
-        setMin(constraintAnnotation.min());
-        setMax(constraintAnnotation.max());
-        setFormat(constraintAnnotation.format());
-        setTolerance(constraintAnnotation.tolerance());
-    }
+   @Override
+   public void configure(final DateRange constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setMin(constraintAnnotation.min());
+      setMax(constraintAnnotation.max());
+      setFormat(constraintAnnotation.format());
+      setTolerance(constraintAnnotation.tolerance());
+   }
 
-    @Override
-    protected Map<String, String> createMessageVariables() {
-        final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
-        messageVariables.put("min", min == null ? ".." : min);
-        messageVariables.put("max", max == null ? ".." : max);
-        messageVariables.put("format", format);
-        return messageVariables;
-    }
+   @Override
+   protected Map<String, String> createMessageVariables() {
+      final Map<String, String> messageVariables = getCollectionFactory().createMap(3);
+      messageVariables.put("min", min == null ? ".." : min);
+      messageVariables.put("max", max == null ? ".." : max);
+      messageVariables.put("format", format);
+      return messageVariables;
+   }
 
-    @Override
-    protected ConstraintTarget[] getAppliesToDefault() {
-        return new ConstraintTarget[] { ConstraintTarget.VALUES };
-    }
+   @Override
+   protected ConstraintTarget[] getAppliesToDefault() {
+      return new ConstraintTarget[] {ConstraintTarget.VALUES};
+   }
 
-    public String getFormat() {
-        return format;
-    }
+   public String getFormat() {
+      return format;
+   }
 
-    public String getMax() {
-        return max;
-    }
+   public String getMax() {
+      return max;
+   }
 
-    private long getMaxMillis() throws InvalidConfigurationException {
-        if (maxMillis == null) {
-            if (max == null || max.length() == 0)
-                return Long.MAX_VALUE;
+   private long getMaxMillis() throws InvalidConfigurationException {
+      if (maxMillis == null) {
+         if (max == null || max.length() == 0)
+            return Long.MAX_VALUE;
 
-            if ("now".equals(max))
-                return System.currentTimeMillis() + tolerance;
+         if ("now".equals(max))
+            return System.currentTimeMillis() + tolerance;
 
-            if ("today".equals(max)) {
-                final Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-                cal.add(Calendar.MILLISECOND, -1);
-                return cal.getTimeInMillis() + tolerance;
-            }
+         if ("today".equals(max)) {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            cal.add(Calendar.MILLISECOND, -1);
+            return cal.getTimeInMillis() + tolerance;
+         }
 
-            if ("tomorrow".equals(max)) {
-                final Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                cal.add(Calendar.DAY_OF_YEAR, 2);
-                cal.add(Calendar.MILLISECOND, -1);
-                return cal.getTimeInMillis() + tolerance;
-            }
+         if ("tomorrow".equals(max)) {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.DAY_OF_YEAR, 2);
+            cal.add(Calendar.MILLISECOND, -1);
+            return cal.getTimeInMillis() + tolerance;
+         }
 
-            if ("yesterday".equals(max)) {
-                final Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                cal.add(Calendar.MILLISECOND, -1);
-                return cal.getTimeInMillis() + tolerance;
-            }
+         if ("yesterday".equals(max)) {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.MILLISECOND, -1);
+            return cal.getTimeInMillis() + tolerance;
+         }
 
-            if (format != null && format.length() > 0) {
-                final SimpleDateFormat sdf = new SimpleDateFormat(format);
-                try {
-                    maxMillis = sdf.parse(max).getTime() + tolerance;
-                } catch (final ParseException e) {
-                    throw new InvalidConfigurationException("Unable to parse the max Date String", e);
-                }
-            } else {
-                try {
-                    maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime() + tolerance;
-                } catch (final ParseException e) {
-                    throw new InvalidConfigurationException("Unable to parse the max Date String", e);
-                }
-            }
-        }
-        return maxMillis;
-    }
-
-    public String getMin() {
-        return min;
-    }
-
-    private long getMinMillis() throws InvalidConfigurationException {
-        if (minMillis == null) {
-            if (min == null || min.length() == 0)
-                return 0L;
-
-            if ("now".equals(min))
-                return System.currentTimeMillis() - tolerance;
-
-            if ("today".equals(min)) {
-                final Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                return cal.getTimeInMillis() - tolerance;
-            }
-
-            if ("tomorrow".equals(min)) {
-                final Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-                return cal.getTimeInMillis() - tolerance;
-            }
-
-            if ("yesterday".equals(min)) {
-                final Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                cal.add(Calendar.DAY_OF_YEAR, -1);
-                return cal.getTimeInMillis() - tolerance;
-            }
-
-            if (format != null && format.length() > 0) {
-                final SimpleDateFormat sdf = new SimpleDateFormat(format);
-                try {
-                    minMillis = sdf.parse(min).getTime() - tolerance;
-                } catch (final ParseException e) {
-                    throw new InvalidConfigurationException("Unable to parse the min Date String", e);
-                }
-            } else {
-                try {
-                    minMillis = DateFormat.getDateTimeInstance().parse(min).getTime() - tolerance;
-                } catch (final ParseException e) {
-                    throw new InvalidConfigurationException("Unable to parse the min Date String", e);
-                }
-            }
-        }
-        return minMillis;
-    }
-
-    public long getTolerance() {
-        return tolerance;
-    }
-
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
-            return true;
-
-        long valueInMillis = -1;
-
-        // check if the value is a Date
-        if (valueToValidate instanceof Date) {
-            valueInMillis = ((Date) valueToValidate).getTime();
-        } else if (valueToValidate instanceof Calendar) {
-            valueInMillis = ((Calendar) valueToValidate).getTimeInMillis();
-        } else {
-            // see if we can extract a date based on the object's String representation
-            final String stringValue = valueToValidate.toString();
+         if (format != null && format.length() > 0) {
+            final SimpleDateFormat sdf = new SimpleDateFormat(format);
             try {
-                if (format != null) {
-                    try {
-                        valueInMillis = new SimpleDateFormat(format).parse(stringValue).getTime();
-                    } catch (final ParseException ex) {
-                        LOG.debug("valueToValidate not parsable with specified format {1}", format, ex);
-                    }
-                }
-
-                if (valueInMillis == -1) {
-                    valueInMillis = DateFormat.getDateTimeInstance().parse(stringValue).getTime();
-                }
-            } catch (final ParseException ex) {
-                LOG.debug("valueToValidate is unparsable.", ex);
-                return false;
+               maxMillis = sdf.parse(max).getTime() + tolerance;
+            } catch (final ParseException e) {
+               throw new InvalidConfigurationException("Unable to parse the max Date String", e);
             }
-        }
+         } else {
+            try {
+               maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime() + tolerance;
+            } catch (final ParseException e) {
+               throw new InvalidConfigurationException("Unable to parse the max Date String", e);
+            }
+         }
+      }
+      return maxMillis;
+   }
 
-        return valueInMillis >= getMinMillis() && valueInMillis <= getMaxMillis();
-    }
+   public String getMin() {
+      return min;
+   }
 
-    public void setFormat(final String format) {
-        this.format = format;
-        requireMessageVariablesRecreation();
-    }
+   private long getMinMillis() throws InvalidConfigurationException {
+      if (minMillis == null) {
+         if (min == null || min.length() == 0)
+            return 0L;
 
-    public void setMax(final String max) {
-        this.max = max;
-        maxMillis = null;
-        requireMessageVariablesRecreation();
-    }
+         if ("now".equals(min))
+            return System.currentTimeMillis() - tolerance;
 
-    public void setMin(final String min) {
-        this.min = min;
-        minMillis = null;
-        requireMessageVariablesRecreation();
-    }
+         if ("today".equals(min)) {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTimeInMillis() - tolerance;
+         }
 
-    public void setTolerance(final long tolerance) {
-        this.tolerance = tolerance;
-        minMillis = null;
-        maxMillis = null;
-    }
+         if ("tomorrow".equals(min)) {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            return cal.getTimeInMillis() - tolerance;
+         }
+
+         if ("yesterday".equals(min)) {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+            return cal.getTimeInMillis() - tolerance;
+         }
+
+         if (format != null && format.length() > 0) {
+            final SimpleDateFormat sdf = new SimpleDateFormat(format);
+            try {
+               minMillis = sdf.parse(min).getTime() - tolerance;
+            } catch (final ParseException e) {
+               throw new InvalidConfigurationException("Unable to parse the min Date String", e);
+            }
+         } else {
+            try {
+               minMillis = DateFormat.getDateTimeInstance().parse(min).getTime() - tolerance;
+            } catch (final ParseException e) {
+               throw new InvalidConfigurationException("Unable to parse the min Date String", e);
+            }
+         }
+      }
+      return minMillis;
+   }
+
+   public long getTolerance() {
+      return tolerance;
+   }
+
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
+
+      long valueInMillis = -1;
+
+      // check if the value is a Date
+      if (valueToValidate instanceof Date) {
+         valueInMillis = ((Date) valueToValidate).getTime();
+      } else if (valueToValidate instanceof Calendar) {
+         valueInMillis = ((Calendar) valueToValidate).getTimeInMillis();
+      } else {
+         // see if we can extract a date based on the object's String representation
+         final String stringValue = valueToValidate.toString();
+         try {
+            if (format != null) {
+               try {
+                  valueInMillis = new SimpleDateFormat(format).parse(stringValue).getTime();
+               } catch (final ParseException ex) {
+                  LOG.debug("valueToValidate not parsable with specified format {1}", format, ex);
+               }
+            }
+
+            if (valueInMillis == -1) {
+               valueInMillis = DateFormat.getDateTimeInstance().parse(stringValue).getTime();
+            }
+         } catch (final ParseException ex) {
+            LOG.debug("valueToValidate is unparsable.", ex);
+            return false;
+         }
+      }
+
+      return valueInMillis >= getMinMillis() && valueInMillis <= getMaxMillis();
+   }
+
+   public void setFormat(final String format) {
+      this.format = format;
+      requireMessageVariablesRecreation();
+   }
+
+   public void setMax(final String max) {
+      this.max = max;
+      maxMillis = null;
+      requireMessageVariablesRecreation();
+   }
+
+   public void setMin(final String min) {
+      this.min = min;
+      minMillis = null;
+      requireMessageVariablesRecreation();
+   }
+
+   public void setTolerance(final long tolerance) {
+      this.tolerance = tolerance;
+      minMillis = null;
+      maxMillis = null;
+   }
 }

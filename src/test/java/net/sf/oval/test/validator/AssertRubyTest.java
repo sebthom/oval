@@ -20,50 +20,50 @@ import net.sf.oval.constraint.Assert;
  * @author Sebastian Thomschke
  */
 public class AssertRubyTest extends TestCase {
-    @net.sf.oval.constraint.Assert(expr = "_this.firstName!=nil && _this.lastName && (_this.firstName + _this.lastName).length > 9", lang = "ruby", message = "C0")
-    public static class Person {
-        @Assert(expr = "_value != nil", lang = "ruby", message = "C1")
-        public String firstName;
+   @Assert(expr = "_this.firstName!=nil && _this.lastName && (_this.firstName + _this.lastName).length > 9", lang = "ruby", message = "C0")
+   public static class Person {
+      @Assert(expr = "_value != nil", lang = "ruby", message = "C1")
+      public String firstName;
 
-        @Assert(expr = "_value != nil", lang = "ruby", message = "C2")
-        public String lastName;
+      @Assert(expr = "_value != nil", lang = "ruby", message = "C2")
+      public String lastName;
 
-        @Assert(expr = "_value != nil && _value.length>0 && _value.length<7", lang = "ruby", message = "C3")
-        public String zipCode;
-    }
+      @Assert(expr = "_value != nil && _value.length>0 && _value.length<7", lang = "ruby", message = "C3")
+      public String zipCode;
+   }
 
-    public void testRubyExpression() {
-        final Validator validator = new Validator();
+   public void testRubyExpression() {
+      final Validator validator = new Validator();
 
-        // test not null
-        final Person p = new Person();
-        List<ConstraintViolation> violations = validator.validate(p);
-        assertTrue(violations.size() == 4);
+      // test not null
+      final Person p = new Person();
+      List<ConstraintViolation> violations = validator.validate(p);
+      assertTrue(violations.size() == 4);
 
-        // test max length
-        p.firstName = "Mike";
-        p.lastName = "Mahoney";
-        p.zipCode = "1234567";
-        violations = validator.validate(p);
-        assertTrue(violations.size() == 1);
-        assertTrue(violations.get(0).getMessage().equals("C3"));
+      // test max length
+      p.firstName = "Mike";
+      p.lastName = "Mahoney";
+      p.zipCode = "1234567";
+      violations = validator.validate(p);
+      assertTrue(violations.size() == 1);
+      assertTrue(violations.get(0).getMessage().equals("C3"));
 
-        // test not empty
-        p.zipCode = "";
-        violations = validator.validate(p);
-        assertTrue(violations.size() == 1);
-        assertTrue(violations.get(0).getMessage().equals("C3"));
+      // test not empty
+      p.zipCode = "";
+      violations = validator.validate(p);
+      assertTrue(violations.size() == 1);
+      assertTrue(violations.get(0).getMessage().equals("C3"));
 
-        // test ok
-        p.zipCode = "wqeew";
-        violations = validator.validate(p);
-        assertTrue(violations.size() == 0);
+      // test ok
+      p.zipCode = "wqeew";
+      violations = validator.validate(p);
+      assertTrue(violations.size() == 0);
 
-        // test object-level constraint
-        p.firstName = "12345";
-        p.lastName = "1234";
-        violations = validator.validate(p);
-        assertTrue(violations.size() == 1);
-        assertTrue(violations.get(0).getMessage().equals("C0"));
-    }
+      // test object-level constraint
+      p.firstName = "12345";
+      p.lastName = "1234";
+      violations = validator.validate(p);
+      assertTrue(violations.size() == 1);
+      assertTrue(violations.get(0).getMessage().equals("C0"));
+   }
 }

@@ -38,90 +38,90 @@ import net.sf.oval.internal.util.Invocable;
  */
 @Aspect
 public abstract class GuardAspect2 extends ApiUsageAuditor2 {
-    private static final class ProceedInvocable implements Invocable {
-        final ProceedingJoinPoint thisJoinPoint;
+   private static final class ProceedInvocable implements Invocable {
+      final ProceedingJoinPoint thisJoinPoint;
 
-        protected ProceedInvocable(final ProceedingJoinPoint thisJoinPoint) {
-            this.thisJoinPoint = thisJoinPoint;
-        }
+      protected ProceedInvocable(final ProceedingJoinPoint thisJoinPoint) {
+         this.thisJoinPoint = thisJoinPoint;
+      }
 
-        @Override
-        public Object invoke() throws Throwable {
-            return thisJoinPoint.proceed();
-        }
-    }
+      @Override
+      public Object invoke() throws Throwable {
+         return thisJoinPoint.proceed();
+      }
+   }
 
-    private static final Log LOG = Log.getLog(GuardAspect2.class);
+   private static final Log LOG = Log.getLog(GuardAspect2.class);
 
-    // add the IsGuarded marker interface to all classes annotated with @Guarded
-    @DeclareParents("(@net.sf.oval.guard.Guarded *)")
-    private IsGuarded implementedInterface;
+   // add the IsGuarded marker interface to all classes annotated with @Guarded
+   @DeclareParents("(@net.sf.oval.guard.Guarded *)")
+   private IsGuarded implementedInterface;
 
-    private Guard guard;
+   private Guard guard;
 
-    /**
-     * Constructor instantiating a new Guard object.
-     */
-    public GuardAspect2() {
-        this(new Guard());
-        getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
-    }
+   /**
+    * Constructor instantiating a new Guard object.
+    */
+   public GuardAspect2() {
+      this(new Guard());
+      getGuard().setParameterNameResolver(new ParameterNameResolverAspectJImpl());
+   }
 
-    /**
-     * Constructor using the given Guard object
-     *
-     * @param guard the guard to use
-     */
-    public GuardAspect2(final Guard guard) {
-        LOG.info("Instantiated");
+   /**
+    * Constructor using the given Guard object
+    *
+    * @param guard the guard to use
+    */
+   public GuardAspect2(final Guard guard) {
+      LOG.info("Instantiated");
 
-        setGuard(guard);
-    }
+      setGuard(guard);
+   }
 
-    @Around("execution((@net.sf.oval.guard.Guarded *).new(..))")
-    public Object allConstructors(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
-        final ConstructorSignature signature = (ConstructorSignature) thisJoinPoint.getSignature();
+   @Around("execution((@net.sf.oval.guard.Guarded *).new(..))")
+   public Object allConstructors(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
+      final ConstructorSignature signature = (ConstructorSignature) thisJoinPoint.getSignature();
 
-        LOG.debug("aroundConstructor() {1}", signature);
+      LOG.debug("aroundConstructor() {1}", signature);
 
-        final Constructor<?> ctor = signature.getConstructor();
-        final Object[] args = thisJoinPoint.getArgs();
-        final Object target = thisJoinPoint.getTarget();
+      final Constructor<?> ctor = signature.getConstructor();
+      final Object[] args = thisJoinPoint.getArgs();
+      final Object target = thisJoinPoint.getTarget();
 
-        // pre conditions
-        {
-            guard.guardConstructorPre(target, ctor, args);
-        }
+      // pre conditions
+      {
+         guard.guardConstructorPre(target, ctor, args);
+      }
 
-        final Object result = thisJoinPoint.proceed();
+      final Object result = thisJoinPoint.proceed();
 
-        // post conditions
-        {
-            guard.guardConstructorPost(target, ctor, args);
-        }
+      // post conditions
+      {
+         guard.guardConstructorPost(target, ctor, args);
+      }
 
-        return result;
-    }
+      return result;
+   }
 
-    @SuppressAjWarnings("adviceDidNotMatch")
-    @Around("execution(* (@net.sf.oval.guard.Guarded *).*(..))")
-    public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
-        final MethodSignature signature = (MethodSignature) thisJoinPoint.getSignature();
+   @SuppressAjWarnings("adviceDidNotMatch")
+   @Around("execution(* (@net.sf.oval.guard.Guarded *).*(..))")
+   public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
+      final MethodSignature signature = (MethodSignature) thisJoinPoint.getSignature();
 
-        LOG.debug("aroundMethod() {1}", signature);
+      LOG.debug("aroundMethod() {1}", signature);
 
-        final Method method = signature.getMethod();
-        final Object[] args = thisJoinPoint.getArgs();
-        final Object target = thisJoinPoint.getTarget();
+      final Method method = signature.getMethod();
+      final Object[] args = thisJoinPoint.getArgs();
+      final Object target = thisJoinPoint.getTarget();
 
-        return guard.guardMethod(target, method, args, new ProceedInvocable(thisJoinPoint));
-    }
+      return guard.guardMethod(target, method, args, new ProceedInvocable(thisJoinPoint));
+   }
 
-    public Guard getGuard() {
-        return guard;
-    }
+   public Guard getGuard() {
+      return guard;
+   }
 
-    public final void setGuard(final Guard guard) {
-        this.guard = guard;
-    }
+   public final void setGuard(final Guard guard) {
+      this.guard = guard;
+   }
 }

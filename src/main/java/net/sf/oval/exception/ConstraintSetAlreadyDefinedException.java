@@ -15,9 +15,9 @@ import net.sf.oval.internal.MessageRenderer;
  * @author Sebastian Thomschke
  */
 public class ConstraintSetAlreadyDefinedException extends InvalidConfigurationException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public ConstraintSetAlreadyDefinedException(final String contraintSetId) {
-        super(MessageRenderer.renderMessage("net.sf.oval.exception.ConstraintSetAlreadyDefinedException.message", "contraintSetId", contraintSetId));
-    }
+   public ConstraintSetAlreadyDefinedException(final String contraintSetId) {
+      super(MessageRenderer.renderMessage("net.sf.oval.exception.ConstraintSetAlreadyDefinedException.message", "contraintSetId", contraintSetId));
+   }
 }

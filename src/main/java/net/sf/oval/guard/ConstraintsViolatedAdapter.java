@@ -21,25 +21,25 @@ import net.sf.oval.internal.util.ArrayUtils;
  * @author Sebastian Thomschke
  */
 public class ConstraintsViolatedAdapter implements ConstraintsViolatedListener {
-    private final List<ConstraintsViolatedException> violationExceptions = getCollectionFactory().createList(8);
-    private final List<ConstraintViolation> violations = getCollectionFactory().createList(8);
+   private final List<ConstraintsViolatedException> violationExceptions = getCollectionFactory().createList(8);
+   private final List<ConstraintViolation> violations = getCollectionFactory().createList(8);
 
-    public void clear() {
-        violationExceptions.clear();
-        violations.clear();
-    }
+   public void clear() {
+      violationExceptions.clear();
+      violations.clear();
+   }
 
-    public List<ConstraintsViolatedException> getConstraintsViolatedExceptions() {
-        return violationExceptions;
-    }
+   public List<ConstraintsViolatedException> getConstraintsViolatedExceptions() {
+      return violationExceptions;
+   }
 
-    public List<ConstraintViolation> getConstraintViolations() {
-        return violations;
-    }
+   public List<ConstraintViolation> getConstraintViolations() {
+      return violations;
+   }
 
-    @Override
-    public void onConstraintsViolatedException(final ConstraintsViolatedException exception) {
-        violationExceptions.add(exception);
-        violations.addAll(ArrayUtils.asList(exception.getConstraintViolations()));
-    }
+   @Override
+   public void onConstraintsViolatedException(final ConstraintsViolatedException exception) {
+      violationExceptions.add(exception);
+      violations.addAll(ArrayUtils.asList(exception.getConstraintViolations()));
+   }
 }

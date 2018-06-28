@@ -21,20 +21,20 @@ import net.sf.oval.internal.Log;
  * @author Sebastian Thomschke
  */
 public class ExpressionLanguageBeanShellImpl extends AbstractExpressionLanguage {
-    private static final Log LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
+   private static final Log LOG = Log.getLog(ExpressionLanguageBeanShellImpl.class);
 
-    @Override
-    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
-        LOG.debug("Evaluating BeanShell expression: {1}", expression);
-        try {
-            final Interpreter interpreter = new Interpreter();
-            interpreter.eval("setAccessibility(true)"); // turn off access restrictions
-            for (final Entry<String, ?> entry : values.entrySet()) {
-                interpreter.set(entry.getKey(), entry.getValue());
-            }
-            return interpreter.eval(expression);
-        } catch (final EvalError ex) {
-            throw new ExpressionEvaluationException("Evaluating BeanShell expression failed: " + expression, ex);
-        }
-    }
+   @Override
+   public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
+      LOG.debug("Evaluating BeanShell expression: {1}", expression);
+      try {
+         final Interpreter interpreter = new Interpreter();
+         interpreter.eval("setAccessibility(true)"); // turn off access restrictions
+         for (final Entry<String, ?> entry : values.entrySet()) {
+            interpreter.set(entry.getKey(), entry.getValue());
+         }
+         return interpreter.eval(expression);
+      } catch (final EvalError ex) {
+         throw new ExpressionEvaluationException("Evaluating BeanShell expression failed: " + expression, ex);
+      }
+   }
 }

@@ -15,5 +15,5 @@ import net.sf.oval.exception.ConstraintsViolatedException;
  * @author Sebastian Thomschke
  */
 public interface ConstraintsViolatedListener {
-    void onConstraintsViolatedException(ConstraintsViolatedException exception);
+   void onConstraintsViolatedException(ConstraintsViolatedException exception);
 }

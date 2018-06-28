@@ -23,49 +23,49 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class MaxSizeCheck extends AbstractAnnotationCheck<MaxSize> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private int max;
+   private int max;
 
-    @Override
-    public void configure(final MaxSize constraintAnnotation) {
-        super.configure(constraintAnnotation);
-        setMax(constraintAnnotation.value());
-    }
+   @Override
+   public void configure(final MaxSize constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setMax(constraintAnnotation.value());
+   }
 
-    @Override
-    protected Map<String, String> createMessageVariables() {
-        final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-        messageVariables.put("max", Integer.toString(max));
-        return messageVariables;
-    }
+   @Override
+   protected Map<String, String> createMessageVariables() {
+      final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+      messageVariables.put("max", Integer.toString(max));
+      return messageVariables;
+   }
 
-    public int getMax() {
-        return max;
-    }
+   public int getMax() {
+      return max;
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
-            return true;
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
 
-        if (valueToValidate instanceof Collection) {
-            final int size = ((Collection<?>) valueToValidate).size();
-            return size <= max;
-        }
-        if (valueToValidate instanceof Map) {
-            final int size = ((Map<?, ?>) valueToValidate).size();
-            return size <= max;
-        }
-        if (valueToValidate.getClass().isArray()) {
-            final int size = Array.getLength(valueToValidate);
-            return size <= max;
-        }
-        return false;
-    }
+      if (valueToValidate instanceof Collection) {
+         final int size = ((Collection<?>) valueToValidate).size();
+         return size <= max;
+      }
+      if (valueToValidate instanceof Map) {
+         final int size = ((Map<?, ?>) valueToValidate).size();
+         return size <= max;
+      }
+      if (valueToValidate.getClass().isArray()) {
+         final int size = Array.getLength(valueToValidate);
+         return size <= max;
+      }
+      return false;
+   }
 
-    public void setMax(final int max) {
-        this.max = max;
-        requireMessageVariablesRecreation();
-    }
+   public void setMax(final int max) {
+      this.max = max;
+      requireMessageVariablesRecreation();
+   }
 }

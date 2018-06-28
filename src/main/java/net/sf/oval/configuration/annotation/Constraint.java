@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Constraint {
 
-    /**
-     * The class implementing the constraint logic.
-     * It can check if a value satisfies the constraint.
-     */
-    Class<? extends AnnotationCheck<? extends Annotation>> checkWith();
+   /**
+    * The class implementing the constraint logic.
+    * It can check if a value satisfies the constraint.
+    */
+   Class<? extends AnnotationCheck<? extends Annotation>> checkWith();
 }

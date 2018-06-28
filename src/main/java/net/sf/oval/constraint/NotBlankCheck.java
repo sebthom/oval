@@ -18,27 +18,27 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class NotBlankCheck extends AbstractAnnotationCheck<NotBlank> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    @Override
-    protected ConstraintTarget[] getAppliesToDefault() {
-        return new ConstraintTarget[] { ConstraintTarget.VALUES };
-    }
+   @Override
+   protected ConstraintTarget[] getAppliesToDefault() {
+      return new ConstraintTarget[] {ConstraintTarget.VALUES};
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
+
+      final String str = valueToValidate.toString();
+
+      final int l = str.length();
+      for (int i = 0; i < l; i++) {
+         final char ch = str.charAt(i);
+         if (!(Character.isSpaceChar(ch) || Character.isWhitespace(ch)))
             return true;
+      }
 
-        final String str = valueToValidate.toString();
-
-        final int l = str.length();
-        for (int i = 0; i < l; i++) {
-            final char ch = str.charAt(i);
-            if (!(Character.isSpaceChar(ch) || Character.isWhitespace(ch)))
-                return true;
-        }
-
-        return false;
-    }
+      return false;
+   }
 }

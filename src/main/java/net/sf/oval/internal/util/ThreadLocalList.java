@@ -18,8 +18,8 @@ import java.util.List;
  */
 public final class ThreadLocalList<T> extends ThreadLocal<List<T>> {
 
-    @Override
-    public List<T> initialValue() {
-        return getCollectionFactory().createList();
-    }
+   @Override
+   public List<T> initialValue() {
+      return getCollectionFactory().createList();
+   }
 }

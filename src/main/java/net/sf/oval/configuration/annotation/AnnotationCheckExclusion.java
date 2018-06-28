@@ -21,11 +21,11 @@ import net.sf.oval.exception.InvalidConfigurationException;
  */
 public interface AnnotationCheckExclusion<ExclusionAnnotation extends Annotation> extends CheckExclusion {
 
-    /**
-     * Configures the check exclusion based on the given exclusion annotation.
-     *
-     * @param exclusionAnnotation the exclusion annotation to use for configuration
-     * @throws InvalidConfigurationException in case of an illegal configuration setting
-     */
-    void configure(ExclusionAnnotation exclusionAnnotation) throws InvalidConfigurationException;
+   /**
+    * Configures the check exclusion based on the given exclusion annotation.
+    *
+    * @param exclusionAnnotation the exclusion annotation to use for configuration
+    * @throws InvalidConfigurationException in case of an illegal configuration setting
+    */
+   void configure(ExclusionAnnotation exclusionAnnotation) throws InvalidConfigurationException;
 }

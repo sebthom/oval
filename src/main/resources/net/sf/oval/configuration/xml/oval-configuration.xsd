@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 Copyright 2005-2018 by Sebastian Thomschke and others.
 
 This program and the accompanying materials are made
@@ -173,7 +173,8 @@ SPDX-License-Identifier: EPL-2.0
                     <annotation>
                         <documentation>
                             Sets the formula returning true if this constraint shall be evaluated and false if it shall be
-                            ignored for the current validation.
+                            ignored for the current
+                            validation.
                         </documentation>
                     </annotation>
                 </attribute>
@@ -242,29 +243,34 @@ SPDX-License-Identifier: EPL-2.0
                 <attribute name="applyFieldConstraintsToConstructors" use="optional" type="boolean" default="false">
                     <annotation>
                         <documentation>Automatically apply field constraints to the corresponding parameters of constructors declared
-                            within the same class. A corresponding parameter is a parameter with the same name and type as the field.
+                            within the same class. A
+                            corresponding parameter is a parameter with the same name and type as the field.
                         </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="applyFieldConstraintsToSetters" use="optional" type="boolean" default="false">
                     <annotation>
                         <documentation>Automatically apply field constraints to the single parameter of the corresponding setter methods
-                            declared within the same class. A corresponding setter method is a method following the JavaBean convention and
-                            its parameter has as the same type as the field.
+                            declared within the same
+                            class. A corresponding setter method is a method following the JavaBean convention and
+                            its parameter has as the same type as the
+                            field.
                         </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="assertParametersNotNull" use="optional" type="boolean" default="false">
                     <annotation>
                         <documentation>Declares if parameter values of constructors and methods are expected to be not null. This can be
-                            weakened by using the @net.sf.oval.constraint.exclusion.Nullable annotation on specific parameters.
+                            weakened by using the
+                            @net.sf.oval.constraint.exclusion.Nullable annotation on specific parameters.
                         </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="checkInvariants" use="optional" type="boolean" default="false">
                     <annotation>
                         <documentation>Declares if invariants are automatically checked after constructor execution and prior and after
-                            calls to non-private methods.
+                            calls to non-private
+                            methods.
                         </documentation>
                     </annotation>
                 </attribute>
@@ -300,7 +306,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Constraints configuration for a constructor.
                 To identify the correct constructor you are required to
-                list all parameters in their declared order, including
+                list all parameters in their
+                declared order, including
                 parameters you are not intending to specify constraints for.
             </documentation>
         </annotation>
@@ -317,7 +324,8 @@ SPDX-License-Identifier: EPL-2.0
         <annotation>
             <documentation>
                 Constraints configuration for a method. To identify the correct method you are required to list all
-                parameters, including parameters you are not intending to specify constraints for.
+                parameters, including parameters
+                you are not intending to specify constraints for.
             </documentation>
         </annotation>
         <complexContent>
@@ -428,7 +436,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if evaluating the expression in the specified expression language returns true.
                 The node body
-                contains the script expression as CDATA.
+                contains the script expression as
+                CDATA.
             </documentation>
         </annotation>
         <complexContent>
@@ -454,7 +463,8 @@ SPDX-License-Identifier: EPL-2.0
                             <documentation>
                                 In case the constraint is declared for an array, collection or map this controls how
                                 the constraint
-                                is applied to it and it's child objects.
+                                is applied to it
+                                and it's child objects.
                             </documentation>
                         </annotation>
                         <complexType>
@@ -497,7 +507,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the value is false.
                 Note: This constraint is also satisfied when the value to validate is
-                null, therefore you might also need to declare the NotNull constraint.
+                null, therefore you might also need
+                to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -532,7 +543,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the value is true.
                 Note: This constraint is also satisfied when the value to validate is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore you might also need
+                to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -545,7 +557,8 @@ SPDX-License-Identifier: EPL-2.0
                 Check if the value is a valid URL.
                 Note: This constraint is also satisfied when the value to validate
                 is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore you might also
+                need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -606,7 +619,8 @@ SPDX-License-Identifier: EPL-2.0
                 Check if the date is within the a date range.
                 Note: This constraint is also satisfied when the value to
                 validate is
-                null, therefore you might also need to declare the
+                null, therefore you
+                might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -623,7 +637,8 @@ SPDX-License-Identifier: EPL-2.0
         <annotation>
             <documentation>
                 Check if the String representation has the given max/min number of integral and fractional digits.
-                Note: This constraint is also satisfied when the value to validate is null, therefore you might also need to declare
+                Note: This constraint is also
+                satisfied when the value to validate is null, therefore you might also need to declare
                 the NotNull constraint.
             </documentation>
         </annotation>
@@ -641,7 +656,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation is a valid e-mail address.
                 Note: This constraint is also satisfied
-                when the value to validate is null, therefore you might also need to declare the NotNull constraint.
+                when the value to validate is
+                null, therefore you might also need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -671,7 +687,8 @@ SPDX-License-Identifier: EPL-2.0
                 Check if the date is in the future.
                 Note: This constraint is also satisfied when the value to validate
                 is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore you might also
+                need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -686,7 +703,8 @@ SPDX-License-Identifier: EPL-2.0
                 Check if the string contains a certain substring.
                 Note: This constraint is also satisfied when the
                 value to validate is null,
-                therefore you might also need to declare the NotNull constraint.
+                therefore
+                you might also need to declare the NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -704,7 +722,8 @@ SPDX-License-Identifier: EPL-2.0
                 specified interfaces.
                 Note: This constraint is also satisfied when the value to validate is null,
                 therefore you might
-                also need to declare the NotNull constraint.
+                also need to declare the
+                NotNull constraint.
             </documentation>
         </annotation>
         <complexContent>
@@ -724,7 +743,8 @@ SPDX-License-Identifier: EPL-2.0
                 </u>
                 of the specified interfaces.
                 Note: This constraint is also satisfied when the value to validate is null, therefore
-                you might also need to declare the
+                you might also need to declare
+                the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -752,7 +772,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation has certain length.
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -768,7 +789,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the specified regular expression pattern is matched.
                 Note: This constraint is also satisfied
-                when the value to validate is null, therefore you might also need to declare the
+                when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -791,7 +813,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the number is smaller than or equal to [max].
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -807,7 +830,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation does not exceed the given length.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate
+                is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -822,7 +846,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if an array or collection does not exceed the given size.
                 Note: This constraint is also satisfied
-                when the value to validate is null, therefore you might also need to declare the
+                when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -842,7 +867,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation is contained in the given string array.
                 Note: This constraint is
-                also satisfied when the value to validate is null, therefore you might also need to declare the
+                also satisfied when the value to
+                validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -860,7 +886,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the number is greater than or equal to [min]
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -876,7 +903,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation has at least the given length.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -891,7 +919,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the array or collection has at least the given number of elements.
                 Note: This constraint is
-                also satisfied when the value to validate is null, therefore you might also need to declare the
+                also satisfied when the value to
+                validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -918,7 +947,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation is not empty and does not only contain white spaces.
                 Note: This
-                constraint is also satisfied when the value to validate is null, therefore you might also need to declare the
+                constraint is also satisfied when
+                the value to validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -931,7 +961,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation is not empty ("").
                 Note: This constraint is also satisfied when the
-                value to validate is null, therefore you might also need to declare the
+                value to validate is null,
+                therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -944,7 +975,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation does not equal a given string.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -960,7 +992,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if value does not equal the value of the referenced field.
                 Note: This constraint is also
-                satisfied when the value to validate is null, therefore you might also need to declare the
+                satisfied when the value to validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -978,7 +1011,8 @@ SPDX-License-Identifier: EPL-2.0
                 Check if the specified regular expression pattern does not match.
                 Note: This constraint is also
                 satisfied when the value to
-                validate is null, therefore you might also need to declare the
+                validate is
+                null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -1000,7 +1034,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the string representation is not contained in the given string array.
                 Note: This constraint is
-                also satisfied when the value to validate is null, therefore you might also need to declare the
+                also satisfied when the value
+                to validate is null, therefore you might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -1018,7 +1053,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the number is greater or equal zero.
                 Note: This constraint is also satisfied when the value to
-                validate is null, therefore you might also need to declare the
+                validate is null, therefore you
+                might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -1041,7 +1077,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the date is in the past.
                 Note: This constraint is also satisfied when the value to validate is
-                null, therefore you might also need to declare the
+                null, therefore you might also
+                need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>
@@ -1056,7 +1093,8 @@ SPDX-License-Identifier: EPL-2.0
             <documentation>
                 Check if the number is in the given range.
                 Note: This constraint is also satisfied when the value to
-                validate is null, therefore you might also need to declare the
+                validate is null, therefore you
+                might also need to declare the
                 NotNull constraint.
             </documentation>
         </annotation>

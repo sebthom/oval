@@ -16,10 +16,10 @@ package net.sf.oval.exception;
  * @author Sebastian Thomschke
  */
 public interface ExceptionTranslator {
-    /**
-     * If this method returns null, the original exception is thrown.
-     *
-     * @return the exception to throw
-     */
-    RuntimeException translateException(final OValException ex);
+   /**
+    * If this method returns null, the original exception is thrown.
+    *
+    * @return the exception to throw
+    */
+   RuntimeException translateException(OValException ex);
 }

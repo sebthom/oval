@@ -24,28 +24,28 @@ import ognl.OgnlException;
  *
  */
 public class ExpressionLanguageOGNLImpl extends AbstractExpressionLanguage {
-    private static final Log LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
+   private static final Log LOG = Log.getLog(ExpressionLanguageOGNLImpl.class);
 
-    private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>();
+   private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>();
 
-    @Override
-    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
-        LOG.debug("Evaluating OGNL expression: {1}", expression);
-        try {
-            final OgnlContext ctx = (OgnlContext) Ognl.createDefaultContext(null);
+   @Override
+   public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
+      LOG.debug("Evaluating OGNL expression: {1}", expression);
+      try {
+         final OgnlContext ctx = (OgnlContext) Ognl.createDefaultContext(null);
 
-            for (final Entry<String, ?> entry : values.entrySet()) {
-                ctx.put(entry.getKey(), entry.getValue());
-            }
+         for (final Entry<String, ?> entry : values.entrySet()) {
+            ctx.put(entry.getKey(), entry.getValue());
+         }
 
-            Object expr = expressionCache.get(expression);
-            if (expr == null) {
-                expr = Ognl.parseExpression(expression);
-                expressionCache.put(expression, expr);
-            }
-            return Ognl.getValue(expr, ctx);
-        } catch (final OgnlException ex) {
-            throw new ExpressionEvaluationException("Evaluating MVEL expression failed: " + expression, ex);
-        }
-    }
+         Object expr = expressionCache.get(expression);
+         if (expr == null) {
+            expr = Ognl.parseExpression(expression);
+            expressionCache.put(expression, expr);
+         }
+         return Ognl.getValue(expr, ctx);
+      } catch (final OgnlException ex) {
+         throw new ExpressionEvaluationException("Evaluating MVEL expression failed: " + expression, ex);
+      }
+   }
 }

@@ -35,60 +35,62 @@ import net.sf.oval.integration.guice.GuiceCheckInitializationListener;
  * @author Sebastian Thomschke
  */
 public class GuiceInjectorTest extends TestCase {
-    public static class Entity {
-        @GuiceNullContraint
-        protected String field;
-    }
+   public static class Entity {
+      @GuiceNullContraint
+      protected String field;
+   }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.FIELD })
-    @Constraint(checkWith = GuiceNullContraintCheck.class)
-    public @interface GuiceNullContraint {
-        //nothing
-    }
+   @Retention(RetentionPolicy.RUNTIME)
+   @Target({ElementType.FIELD})
+   @Constraint(checkWith = GuiceNullContraintCheck.class)
+   public @interface GuiceNullContraint {
+      //nothing
+   }
 
-    /**
-     * constraint check implementation requiring Guice injected members
-     */
-    public static class GuiceNullContraintCheck extends AbstractAnnotationCheck<GuiceNullContraint> {
-        private static final long serialVersionUID = 1L;
+   /**
+    * constraint check implementation requiring Guice injected members
+    */
+   public static class GuiceNullContraintCheck extends AbstractAnnotationCheck<GuiceNullContraint> {
+      private static final long serialVersionUID = 1L;
 
-        @Inject
-        @Named("GUICE_MANAGED_OBJECT")
-        private Integer guiceManagedObject;
+      @Inject
+      @Named("GUICE_MANAGED_OBJECT")
+      private Integer guiceManagedObject;
 
-        @Override
-        public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-                throws OValException {
-            return guiceManagedObject == 10 && valueToValidate != null;
-        }
-    }
+      @Override
+      public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+         throws OValException {
+         return guiceManagedObject == 10 && valueToValidate != null;
+      }
+   }
 
-    public void testWithGuiceInjector() {
-        final Injector injector = Guice.createInjector(new Module() {
-            @Override
-            public void configure(final Binder binder) {
-                binder.bind(Integer.class).annotatedWith(Names.named("GUICE_MANAGED_OBJECT")).toInstance(10);
-            }
-        });
+   public void testWithGuiceInjector() {
+      final Injector injector = Guice.createInjector(new Module() {
+         @Override
+         public void configure(final Binder binder) {
+            binder.bind(Integer.class).annotatedWith(Names.named("GUICE_MANAGED_OBJECT")).toInstance(10);
+         }
+      });
 
-        final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
-        myConfigurer.addCheckInitializationListener(new GuiceCheckInitializationListener(injector));
-        final Validator v = new Validator(myConfigurer);
+      final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
+      myConfigurer.addCheckInitializationListener(new GuiceCheckInitializationListener(injector));
+      final Validator v = new Validator(myConfigurer);
 
-        final Entity e = new Entity();
-        assertEquals(1, v.validate(e).size());
-        e.field = "whatever";
-        assertEquals(0, v.validate(e).size());
-    }
+      final Entity e = new Entity();
+      assertEquals(1, v.validate(e).size());
+      e.field = "whatever";
+      assertEquals(0, v.validate(e).size());
+   }
 
-    public void testWithoutGuiceInjector() {
-        final Validator v = new Validator();
-        final Entity e = new Entity();
-        try {
-            v.validate(e);
-            fail("NPE expected.");
-        } catch (final NullPointerException ex) {}
-    }
+   public void testWithoutGuiceInjector() {
+      final Validator v = new Validator();
+      final Entity e = new Entity();
+      try {
+         v.validate(e);
+         fail("NPE expected.");
+      } catch (final NullPointerException ex) {
+         // expected
+      }
+   }
 
 }

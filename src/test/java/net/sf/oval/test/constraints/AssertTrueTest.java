@@ -15,16 +15,16 @@ import net.sf.oval.constraint.AssertTrueCheck;
  * @author Sebastian Thomschke
  */
 public class AssertTrueTest extends AbstractContraintsTest {
-    public void testAssertTrue() {
-        final AssertTrueCheck check = new AssertTrueCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+   public void testAssertTrue() {
+      final AssertTrueCheck check = new AssertTrueCheck();
+      super.testCheck(check);
+      assertTrue(check.isSatisfied(null, null, null, null));
 
-        assertTrue(check.isSatisfied(null, true, null, null));
-        assertFalse(check.isSatisfied(null, false, null, null));
-        assertTrue(check.isSatisfied(null, Boolean.TRUE, null, null));
-        assertFalse(check.isSatisfied(null, Boolean.FALSE, null, null));
-        assertTrue(check.isSatisfied(null, "true", null, null));
-        assertFalse(check.isSatisfied(null, "bla", null, null));
-    }
+      assertTrue(check.isSatisfied(null, true, null, null));
+      assertFalse(check.isSatisfied(null, false, null, null));
+      assertTrue(check.isSatisfied(null, Boolean.TRUE, null, null));
+      assertFalse(check.isSatisfied(null, Boolean.FALSE, null, null));
+      assertTrue(check.isSatisfied(null, "true", null, null));
+      assertFalse(check.isSatisfied(null, "bla", null, null));
+   }
 }

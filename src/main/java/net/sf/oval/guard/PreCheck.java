@@ -18,39 +18,39 @@ import net.sf.oval.exception.OValException;
  * @author Sebastian Thomschke
  */
 public class PreCheck extends AbstractCheck {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private String expression;
-    private String language;
+   private String expression;
+   private String language;
 
-    public void configure(final Pre constraintAnnotation) {
-        setMessage(constraintAnnotation.message());
-        setErrorCode(constraintAnnotation.errorCode());
-        setSeverity(constraintAnnotation.severity());
-        setExpression(constraintAnnotation.expr());
-        setLanguage(constraintAnnotation.lang());
-        setProfiles(constraintAnnotation.profiles());
-    }
+   public void configure(final Pre constraintAnnotation) {
+      setMessage(constraintAnnotation.message());
+      setErrorCode(constraintAnnotation.errorCode());
+      setSeverity(constraintAnnotation.severity());
+      setExpression(constraintAnnotation.expr());
+      setLanguage(constraintAnnotation.lang());
+      setProfiles(constraintAnnotation.profiles());
+   }
 
-    public String getExpression() {
-        return expression;
-    }
+   public String getExpression() {
+      return expression;
+   }
 
-    public String getLanguage() {
-        return language;
-    }
+   public String getLanguage() {
+      return language;
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-            throws OValException {
-        throw new UnsupportedOperationException();
-    }
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+      throws OValException {
+      throw new UnsupportedOperationException();
+   }
 
-    public void setExpression(final String condition) {
-        expression = condition;
-    }
+   public void setExpression(final String condition) {
+      expression = condition;
+   }
 
-    public void setLanguage(final String language) {
-        this.language = language;
-    }
+   public void setLanguage(final String language) {
+      this.language = language;
+   }
 }

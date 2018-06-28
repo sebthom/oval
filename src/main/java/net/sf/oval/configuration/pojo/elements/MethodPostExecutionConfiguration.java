@@ -17,10 +17,10 @@ import net.sf.oval.guard.PostCheck;
  * @author Sebastian Thomschke
  */
 public class MethodPostExecutionConfiguration extends ConfigurationElement {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    /**
-     * checks that need to be verified after method execution
-     */
-    public List<PostCheck> checks;
+   /**
+    * checks that need to be verified after method execution
+    */
+   public List<PostCheck> checks;
 }

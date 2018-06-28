@@ -19,40 +19,40 @@ import net.sf.oval.ConstraintViolation;
  * @author Sebastian Thomschke
  */
 public class ConstraintsViolatedException extends OValException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final long causingThreadId = Thread.currentThread().getId();
+   private final long causingThreadId = Thread.currentThread().getId();
 
-    private final ConstraintViolation[] constraintViolations;
+   private final ConstraintViolation[] constraintViolations;
 
-    /**
-     * @param constraintViolations must not be null
-     */
-    public ConstraintsViolatedException(final ConstraintViolation... constraintViolations) {
-        // the message of the first occurring constraint violation will be used
-        super(constraintViolations[0].getMessage());
+   /**
+    * @param constraintViolations must not be null
+    */
+   public ConstraintsViolatedException(final ConstraintViolation... constraintViolations) {
+      // the message of the first occurring constraint violation will be used
+      super(constraintViolations[0].getMessage());
 
-        this.constraintViolations = constraintViolations;
-    }
+      this.constraintViolations = constraintViolations;
+   }
 
-    /**
-     * @param constraintViolations must not be null
-     */
-    public ConstraintsViolatedException(final List<ConstraintViolation> constraintViolations) {
-        // the message of the first occurring constraint violation will be used
-        super(constraintViolations.get(0).getMessage());
+   /**
+    * @param constraintViolations must not be null
+    */
+   public ConstraintsViolatedException(final List<ConstraintViolation> constraintViolations) {
+      // the message of the first occurring constraint violation will be used
+      super(constraintViolations.get(0).getMessage());
 
-        this.constraintViolations = constraintViolations.toArray(new ConstraintViolation[constraintViolations.size()]);
-    }
+      this.constraintViolations = constraintViolations.toArray(new ConstraintViolation[constraintViolations.size()]);
+   }
 
-    /**
-     * @return the id of the thread in which the violations occurred
-     */
-    public long getCausingThreadId() {
-        return causingThreadId;
-    }
+   /**
+    * @return the id of the thread in which the violations occurred
+    */
+   public long getCausingThreadId() {
+      return causingThreadId;
+   }
 
-    public ConstraintViolation[] getConstraintViolations() {
-        return constraintViolations.clone();
-    }
+   public ConstraintViolation[] getConstraintViolations() {
+      return constraintViolations.clone();
+   }
 }

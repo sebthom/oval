@@ -15,40 +15,40 @@ import net.sf.oval.constraint.InstanceOfCheck;
  * @author Sebastian Thomschke
  */
 public class InstanceOfTest extends AbstractContraintsTest {
-    public static class ClassA implements InterfaceA {
-        //
-    }
+   public static class ClassA implements InterfaceA {
+      //
+   }
 
-    public static class ClassB implements InterfaceA, InterfaceB {
-        //
-    }
+   public static class ClassB implements InterfaceA, InterfaceB {
+      //
+   }
 
-    public interface InterfaceA {
-        //
-    }
+   public interface InterfaceA {
+      //
+   }
 
-    public interface InterfaceB {
-        //
-    }
+   public interface InterfaceB {
+      //
+   }
 
-    public void testInstanceOf() {
-        final InstanceOfCheck check = new InstanceOfCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+   public void testInstanceOf() {
+      final InstanceOfCheck check = new InstanceOfCheck();
+      super.testCheck(check);
+      assertTrue(check.isSatisfied(null, null, null, null));
 
-        check.setTypes(InterfaceA.class);
-        assertEquals(InterfaceA.class, check.getTypes()[0]);
+      check.setTypes(InterfaceA.class);
+      assertEquals(InterfaceA.class, check.getTypes()[0]);
 
-        assertTrue(check.isSatisfied(null, new ClassA(), null, null));
-        assertTrue(check.isSatisfied(null, new ClassB(), null, null));
-        assertFalse(check.isSatisfied(null, "bla", null, null));
+      assertTrue(check.isSatisfied(null, new ClassA(), null, null));
+      assertTrue(check.isSatisfied(null, new ClassB(), null, null));
+      assertFalse(check.isSatisfied(null, "bla", null, null));
 
-        check.setTypes(new Class<?>[] { InterfaceA.class, InterfaceB.class });
-        assertEquals(InterfaceA.class, check.getTypes()[0]);
-        assertEquals(InterfaceB.class, check.getTypes()[1]);
+      check.setTypes(new Class<?>[] {InterfaceA.class, InterfaceB.class});
+      assertEquals(InterfaceA.class, check.getTypes()[0]);
+      assertEquals(InterfaceB.class, check.getTypes()[1]);
 
-        assertFalse(check.isSatisfied(null, new ClassA(), null, null));
-        assertTrue(check.isSatisfied(null, new ClassB(), null, null));
-        assertFalse(check.isSatisfied(null, "bla", null, null));
-    }
+      assertFalse(check.isSatisfied(null, new ClassA(), null, null));
+      assertTrue(check.isSatisfied(null, new ClassB(), null, null));
+      assertFalse(check.isSatisfied(null, "bla", null, null));
+   }
 }

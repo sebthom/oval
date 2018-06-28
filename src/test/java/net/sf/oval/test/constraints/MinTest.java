@@ -18,45 +18,45 @@ import net.sf.oval.constraint.MinCheck;
  * @author Sebastian Thomschke
  */
 public class MinTest extends AbstractContraintsTest {
-    public void testMax() {
-        final MinCheck check = new MinCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+   public void testMax() {
+      final MinCheck check = new MinCheck();
+      super.testCheck(check);
+      assertTrue(check.isSatisfied(null, null, null, null));
 
-        check.setMin(40);
-        assertEquals(40.0, check.getMin());
+      check.setMin(40);
+      assertEquals(40.0, check.getMin());
 
-        assertTrue(check.isSatisfied(null, "40", null, null));
-        assertTrue(check.isSatisfied(null, 40, null, null));
-        assertTrue(check.isSatisfied(null, (byte) 40, null, null));
-        assertTrue(check.isSatisfied(null, (short) 40, null, null));
-        assertTrue(check.isSatisfied(null, (float) 40.0, null, null));
-        assertTrue(check.isSatisfied(null, 40.0, null, null));
-        assertTrue(check.isSatisfied(null, BigDecimal.valueOf(40), null, null));
-        assertTrue(check.isSatisfied(null, BigDecimal.valueOf(40.0), null, null));
-        assertTrue(check.isSatisfied(null, BigInteger.valueOf(40), null, null));
+      assertTrue(check.isSatisfied(null, "40", null, null));
+      assertTrue(check.isSatisfied(null, 40, null, null));
+      assertTrue(check.isSatisfied(null, (byte) 40, null, null));
+      assertTrue(check.isSatisfied(null, (short) 40, null, null));
+      assertTrue(check.isSatisfied(null, (float) 40.0, null, null));
+      assertTrue(check.isSatisfied(null, 40.0, null, null));
+      assertTrue(check.isSatisfied(null, BigDecimal.valueOf(40), null, null));
+      assertTrue(check.isSatisfied(null, BigDecimal.valueOf(40.0), null, null));
+      assertTrue(check.isSatisfied(null, BigInteger.valueOf(40), null, null));
 
-        assertTrue(check.isSatisfied(null, "50", null, null));
-        assertTrue(check.isSatisfied(null, 50, null, null));
-        assertTrue(check.isSatisfied(null, (byte) 50, null, null));
-        assertTrue(check.isSatisfied(null, (short) 50, null, null));
-        assertTrue(check.isSatisfied(null, (float) 50.0, null, null));
-        assertTrue(check.isSatisfied(null, 50.0, null, null));
-        assertTrue(check.isSatisfied(null, BigDecimal.valueOf(50), null, null));
-        assertTrue(check.isSatisfied(null, BigDecimal.valueOf(50.0), null, null));
-        assertTrue(check.isSatisfied(null, BigInteger.valueOf(50), null, null));
+      assertTrue(check.isSatisfied(null, "50", null, null));
+      assertTrue(check.isSatisfied(null, 50, null, null));
+      assertTrue(check.isSatisfied(null, (byte) 50, null, null));
+      assertTrue(check.isSatisfied(null, (short) 50, null, null));
+      assertTrue(check.isSatisfied(null, (float) 50.0, null, null));
+      assertTrue(check.isSatisfied(null, 50.0, null, null));
+      assertTrue(check.isSatisfied(null, BigDecimal.valueOf(50), null, null));
+      assertTrue(check.isSatisfied(null, BigDecimal.valueOf(50.0), null, null));
+      assertTrue(check.isSatisfied(null, BigInteger.valueOf(50), null, null));
 
-        assertFalse(check.isSatisfied(null, "20", null, null));
-        assertFalse(check.isSatisfied(null, 20, null, null));
-        assertFalse(check.isSatisfied(null, (byte) 20, null, null));
-        assertFalse(check.isSatisfied(null, (short) 20, null, null));
-        assertFalse(check.isSatisfied(null, (float) 20.0, null, null));
-        assertFalse(check.isSatisfied(null, 20.0, null, null));
-        assertFalse(check.isSatisfied(null, BigDecimal.valueOf(20), null, null));
-        assertFalse(check.isSatisfied(null, BigDecimal.valueOf(20.0), null, null));
-        assertFalse(check.isSatisfied(null, BigInteger.valueOf(20), null, null));
+      assertFalse(check.isSatisfied(null, "20", null, null));
+      assertFalse(check.isSatisfied(null, 20, null, null));
+      assertFalse(check.isSatisfied(null, (byte) 20, null, null));
+      assertFalse(check.isSatisfied(null, (short) 20, null, null));
+      assertFalse(check.isSatisfied(null, (float) 20.0, null, null));
+      assertFalse(check.isSatisfied(null, 20.0, null, null));
+      assertFalse(check.isSatisfied(null, BigDecimal.valueOf(20), null, null));
+      assertFalse(check.isSatisfied(null, BigDecimal.valueOf(20.0), null, null));
+      assertFalse(check.isSatisfied(null, BigInteger.valueOf(20), null, null));
 
-        assertFalse(check.isSatisfied(null, "", null, null));
-        assertFalse(check.isSatisfied(null, "sdfQ", null, null));
-    }
+      assertFalse(check.isSatisfied(null, "", null, null));
+      assertFalse(check.isSatisfied(null, "sdfQ", null, null));
+   }
 }

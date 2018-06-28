@@ -22,61 +22,61 @@ import net.sf.oval.internal.Log;
  * @author Sebastian Thomschke
  */
 public final class SerializableField implements Serializable {
-    private static final Log LOG = Log.getLog(SerializableField.class);
+   private static final Log LOG = Log.getLog(SerializableField.class);
 
-    private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
+   private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static SerializableField getInstance(final Field field) {
-        synchronized (CACHE) {
-            SerializableField sm = CACHE.get(field);
-            if (sm == null) {
-                sm = new SerializableField(field);
-                CACHE.put(field, sm);
-            }
-            return sm;
-        }
-    }
+   public static SerializableField getInstance(final Field field) {
+      synchronized (CACHE) {
+         SerializableField sm = CACHE.get(field);
+         if (sm == null) {
+            sm = new SerializableField(field);
+            CACHE.put(field, sm);
+         }
+         return sm;
+      }
+   }
 
-    private final Class<?> declaringClass;
-    private transient Field field;
-    private final String name;
+   private final Class<?> declaringClass;
+   private transient Field field;
+   private final String name;
 
-    private SerializableField(final Field field) {
-        this.field = field;
-        name = field.getName();
-        declaringClass = field.getDeclaringClass();
-    }
+   private SerializableField(final Field field) {
+      this.field = field;
+      name = field.getName();
+      declaringClass = field.getDeclaringClass();
+   }
 
-    /**
-     * @return the declaringClass
-     */
-    public Class<?> getDeclaringClass() {
-        return declaringClass;
-    }
+   /**
+    * @return the declaringClass
+    */
+   public Class<?> getDeclaringClass() {
+      return declaringClass;
+   }
 
-    /**
-     * @return the field
-     */
-    public Field getField() {
-        return field;
-    }
+   /**
+    * @return the field
+    */
+   public Field getField() {
+      return field;
+   }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+   /**
+    * @return the name
+    */
+   public String getName() {
+      return name;
+   }
 
-    private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        try {
-            field = declaringClass.getDeclaredField(name);
-        } catch (final NoSuchFieldException ex) {
-            LOG.debug("Unexpected NoSuchFieldException occured", ex);
-            throw new IOException(ex.getMessage());
-        }
-    }
+   private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+      in.defaultReadObject();
+      try {
+         field = declaringClass.getDeclaredField(name);
+      } catch (final NoSuchFieldException ex) {
+         LOG.debug("Unexpected NoSuchFieldException occured", ex);
+         throw new IOException(ex.getMessage());
+      }
+   }
 }

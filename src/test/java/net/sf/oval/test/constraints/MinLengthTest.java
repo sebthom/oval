@@ -15,16 +15,16 @@ import net.sf.oval.constraint.MinLengthCheck;
  * @author Sebastian Thomschke
  */
 public class MinLengthTest extends AbstractContraintsTest {
-    public void testMinLength() {
-        final MinLengthCheck check = new MinLengthCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+   public void testMinLength() {
+      final MinLengthCheck check = new MinLengthCheck();
+      super.testCheck(check);
+      assertTrue(check.isSatisfied(null, null, null, null));
 
-        check.setMin(3);
-        assertEquals(3, check.getMin());
+      check.setMin(3);
+      assertEquals(3, check.getMin());
 
-        assertTrue(check.isSatisfied(null, "1234", null, null));
-        assertFalse(check.isSatisfied(null, "12", null, null));
-        assertFalse(check.isSatisfied(null, "", null, null));
-    }
+      assertTrue(check.isSatisfied(null, "1234", null, null));
+      assertFalse(check.isSatisfied(null, "12", null, null));
+      assertFalse(check.isSatisfied(null, "", null, null));
+   }
 }

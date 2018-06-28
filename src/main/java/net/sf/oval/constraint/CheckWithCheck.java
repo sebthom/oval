@@ -25,88 +25,88 @@ import net.sf.oval.internal.util.Assert;
  * @author Sebastian Thomschke
  */
 public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
-    public interface SimpleCheck extends Serializable {
-        boolean isSatisfied(Object validatedObject, Object value);
-    }
+   public interface SimpleCheck extends Serializable {
+      boolean isSatisfied(Object validatedObject, Object value);
+   }
 
-    public interface SimpleCheckWithMessageVariables extends SimpleCheck {
-        Map<String, ? extends Serializable> createMessageVariables();
-    }
+   public interface SimpleCheckWithMessageVariables extends SimpleCheck {
+      Map<String, ? extends Serializable> createMessageVariables();
+   }
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private boolean ignoreIfNull;
-    private SimpleCheck simpleCheck;
+   private boolean ignoreIfNull;
+   private SimpleCheck simpleCheck;
 
-    @Override
-    public void configure(final CheckWith constraintAnnotation) {
-        super.configure(constraintAnnotation);
-        setSimpleCheck(constraintAnnotation.value());
-        setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
-    }
+   @Override
+   public void configure(final CheckWith constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setSimpleCheck(constraintAnnotation.value());
+      setIgnoreIfNull(constraintAnnotation.ignoreIfNull());
+   }
 
-    @Override
-    public Map<String, ? extends Serializable> createMessageVariables() {
-        final Map<String, Serializable> messageVariables = getCollectionFactory().createMap(4);
+   @Override
+   public Map<String, ? extends Serializable> createMessageVariables() {
+      final Map<String, Serializable> messageVariables = getCollectionFactory().createMap(4);
 
-        if (simpleCheck instanceof SimpleCheckWithMessageVariables) {
-            final Map<String, ? extends Serializable> simpleCheckMessageVariables = ((SimpleCheckWithMessageVariables) simpleCheck).createMessageVariables();
-            if (simpleCheckMessageVariables != null) {
-                messageVariables.putAll(simpleCheckMessageVariables);
-            }
-        }
-        messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
-        messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
-        return messageVariables;
-    }
+      if (simpleCheck instanceof SimpleCheckWithMessageVariables) {
+         final Map<String, ? extends Serializable> simpleCheckMessageVariables = ((SimpleCheckWithMessageVariables) simpleCheck).createMessageVariables();
+         if (simpleCheckMessageVariables != null) {
+            messageVariables.putAll(simpleCheckMessageVariables);
+         }
+      }
+      messageVariables.put("ignoreIfNull", Boolean.toString(ignoreIfNull));
+      messageVariables.put("simpleCheck", simpleCheck.getClass().getName());
+      return messageVariables;
+   }
 
-    public SimpleCheck getSimpleCheck() {
-        return simpleCheck;
-    }
+   public SimpleCheck getSimpleCheck() {
+      return simpleCheck;
+   }
 
-    public boolean isIgnoreIfNull() {
-        return ignoreIfNull;
-    }
+   public boolean isIgnoreIfNull() {
+      return ignoreIfNull;
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-            throws ReflectionException {
-        if (valueToValidate == null && ignoreIfNull)
-            return true;
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
+      throws ReflectionException {
+      if (valueToValidate == null && ignoreIfNull)
+         return true;
 
-        return simpleCheck.isSatisfied(validatedObject, valueToValidate);
-    }
+      return simpleCheck.isSatisfied(validatedObject, valueToValidate);
+   }
 
-    public void setIgnoreIfNull(final boolean ignoreIfNull) {
-        this.ignoreIfNull = ignoreIfNull;
-        requireMessageVariablesRecreation();
-    }
+   public void setIgnoreIfNull(final boolean ignoreIfNull) {
+      this.ignoreIfNull = ignoreIfNull;
+      requireMessageVariablesRecreation();
+   }
 
-    /**
-     * @param simpleCheckType the simpleCheckType to set
-     * @throws IllegalArgumentException if <code>simpleCheckType == null</code>
-     */
-    public void setSimpleCheck(final Class<? extends SimpleCheck> simpleCheckType) throws ReflectionException, IllegalArgumentException {
-        Assert.argumentNotNull("simpleCheckType", simpleCheckType);
+   /**
+    * @param simpleCheckType the simpleCheckType to set
+    * @throws IllegalArgumentException if <code>simpleCheckType == null</code>
+    */
+   public void setSimpleCheck(final Class<? extends SimpleCheck> simpleCheckType) throws ReflectionException, IllegalArgumentException {
+      Assert.argumentNotNull("simpleCheckType", simpleCheckType);
 
-        try {
-            final Constructor<? extends SimpleCheck> ctor = simpleCheckType.getDeclaredConstructor((Class<?>[]) null);
-            ctor.setAccessible(true);
-            simpleCheck = ctor.newInstance();
-        } catch (final Exception ex) {
-            throw new ReflectionException("Cannot instantiate an object of type  " + simpleCheckType.getName(), ex);
-        }
-        requireMessageVariablesRecreation();
-    }
+      try {
+         final Constructor<? extends SimpleCheck> ctor = simpleCheckType.getDeclaredConstructor((Class<?>[]) null);
+         ctor.setAccessible(true);
+         simpleCheck = ctor.newInstance();
+      } catch (final Exception ex) {
+         throw new ReflectionException("Cannot instantiate an object of type  " + simpleCheckType.getName(), ex);
+      }
+      requireMessageVariablesRecreation();
+   }
 
-    /**
-     * @param simpleCheck the simpleCheck to set
-     * @throws IllegalArgumentException if <code>simpleCheck == null</code>
-     */
-    public void setSimpleCheck(final SimpleCheck simpleCheck) throws IllegalArgumentException {
-        Assert.argumentNotNull("simpleCheck", simpleCheck);
+   /**
+    * @param simpleCheck the simpleCheck to set
+    * @throws IllegalArgumentException if <code>simpleCheck == null</code>
+    */
+   public void setSimpleCheck(final SimpleCheck simpleCheck) throws IllegalArgumentException {
+      Assert.argumentNotNull("simpleCheck", simpleCheck);
 
-        this.simpleCheck = simpleCheck;
-        requireMessageVariablesRecreation();
-    }
+      this.simpleCheck = simpleCheck;
+      requireMessageVariablesRecreation();
+   }
 }

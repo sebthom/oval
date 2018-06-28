@@ -18,17 +18,17 @@ import net.sf.oval.exception.InvokingMethodFailedException;
  * @author Sebastian Thomschke
  */
 public final class MethodInvocationCommand {
-    private final Object target;
-    private final Method method;
-    private final Object[] args;
+   private final Object target;
+   private final Method method;
+   private final Object[] args;
 
-    public MethodInvocationCommand(final Object target, final Method method, final Object[] args) {
-        this.target = target;
-        this.method = method;
-        this.args = args;
-    }
+   public MethodInvocationCommand(final Object target, final Method method, final Object[] args) {
+      this.target = target;
+      this.method = method;
+      this.args = args;
+   }
 
-    public Object execute() throws InvokingMethodFailedException, ConstraintsViolatedException {
-        return ReflectionUtils.invokeMethod(method, target, args);
-    }
+   public Object execute() throws InvokingMethodFailedException, ConstraintsViolatedException {
+      return ReflectionUtils.invokeMethod(method, target, args);
+   }
 }

@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Exclusion {
 
-    /**
-     * The class implementing the logic to exclude a constraint.
-     */
-    Class<? extends AnnotationCheckExclusion<? extends Annotation>> excludeWith();
+   /**
+    * The class implementing the logic to exclude a constraint.
+    */
+   Class<? extends AnnotationCheckExclusion<? extends Annotation>> excludeWith();
 }

@@ -21,59 +21,59 @@ import net.sf.oval.expression.ExpressionLanguage;
  * @author Sebastian Thomschke
  */
 public abstract class AbstractCheckExclusion implements CheckExclusion {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private String[] profiles;
+   private String[] profiles;
 
-    private String when;
-    private String whenFormula;
-    private String whenLang;
+   private String when;
+   private String whenFormula;
+   private String whenLang;
 
-    public Map<String, String> getMessageVariables() {
-        return null;
-    }
+   public Map<String, String> getMessageVariables() {
+      return null;
+   }
 
-    @Override
-    public String[] getProfiles() {
-        return profiles;
-    }
+   @Override
+   public String[] getProfiles() {
+      return profiles;
+   }
 
-    @Override
-    public String getWhen() {
-        return whenLang + ":" + when;
-    }
+   @Override
+   public String getWhen() {
+      return whenLang + ":" + when;
+   }
 
-    @Override
-    public boolean isActive(final Object validatedObject, final Object valueToValidate, final Validator validator) {
-        if (when == null)
-            return true;
+   @Override
+   public boolean isActive(final Object validatedObject, final Object valueToValidate, final Validator validator) {
+      if (when == null)
+         return true;
 
-        final Map<String, Object> values = getCollectionFactory().createMap();
-        values.put("_value", valueToValidate);
-        values.put("_this", validatedObject);
+      final Map<String, Object> values = getCollectionFactory().createMap();
+      values.put("_value", valueToValidate);
+      values.put("_this", validatedObject);
 
-        final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
-        return el.evaluateAsBoolean(whenFormula, values);
-    }
+      final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
+      return el.evaluateAsBoolean(whenFormula, values);
+   }
 
-    @Override
-    public void setProfiles(final String... profiles) {
-        this.profiles = profiles;
-    }
+   @Override
+   public void setProfiles(final String... profiles) {
+      this.profiles = profiles;
+   }
 
-    @Override
-    public void setWhen(final String when) {
-        if (when == null || when.length() == 0) {
-            this.when = null;
-            whenFormula = null;
-            whenLang = null;
-        } else {
-            this.when = when;
-            final String[] parts = when.split(":", 2);
-            if (parts.length == 0)
-                throw new IllegalArgumentException("[when] is missing the scripting language declaration");
-            whenLang = parts[0];
-            whenFormula = parts[1];
-        }
-    }
+   @Override
+   public void setWhen(final String when) {
+      if (when == null || when.length() == 0) {
+         this.when = null;
+         whenFormula = null;
+         whenLang = null;
+      } else {
+         this.when = when;
+         final String[] parts = when.split(":", 2);
+         if (parts.length == 0)
+            throw new IllegalArgumentException("[when] is missing the scripting language declaration");
+         whenLang = parts[0];
+         whenFormula = parts[1];
+      }
+   }
 }

@@ -21,68 +21,68 @@ import net.sf.oval.constraint.NotNull;
  * @author Sebastian Thomschke
  */
 public class StaticFieldsAndGettersTest extends TestCase {
-    protected static class TestEntity {
-        @NotNull
-        static String staticA;
+   protected static class TestEntity {
+      @NotNull
+      static String staticA;
 
-        static String staticB;
+      static String staticB;
 
-        /**
-         * @return the staticB
-         */
-        @IsInvariant
-        @NotNull
-        public static String getStaticB() {
-            return staticB;
-        }
+      /**
+       * @return the staticB
+       */
+      @IsInvariant
+      @NotNull
+      public static String getStaticB() {
+         return staticB;
+      }
 
-        @NotNull
-        protected String nonstaticA;
+      @NotNull
+      protected String nonstaticA;
 
-        protected String nonstaticB;
+      protected String nonstaticB;
 
-        /**
-         * @return the nonstaticB
-         */
-        @IsInvariant
-        @NotNull
-        public String getNonstaticB() {
-            return nonstaticB;
-        }
-    }
+      /**
+       * @return the nonstaticB
+       */
+      @IsInvariant
+      @NotNull
+      public String getNonstaticB() {
+         return nonstaticB;
+      }
+   }
 
-    public void testNonstaticValidation() {
-        final Validator validator = new Validator();
+   public void testNonstaticValidation() {
+      final Validator validator = new Validator();
 
-        TestEntity.staticA = null;
-        TestEntity.staticB = null;
+      TestEntity.staticA = null;
+      TestEntity.staticB = null;
 
-        // test that only non static fields are validated
-        final TestEntity t = new TestEntity();
-        List<ConstraintViolation> violations = validator.validate(t);
-        assertTrue(violations.size() == 2);
+      // test that only non static fields are validated
+      final TestEntity t = new TestEntity();
+      List<ConstraintViolation> violations = validator.validate(t);
+      assertTrue(violations.size() == 2);
 
-        t.nonstaticA = "";
-        t.nonstaticB = "";
+      t.nonstaticA = "";
+      t.nonstaticB = "";
 
-        violations = validator.validate(t);
-        assertTrue(violations.size() == 0);
-    }
+      violations = validator.validate(t);
+      assertTrue(violations.size() == 0);
+   }
 
-    public void testStaticValidation() {
-        final Validator validator = new Validator();
+   public void testStaticValidation() {
+      final Validator validator = new Validator();
 
-        TestEntity.staticA = null;
-        TestEntity.staticB = null;
+      TestEntity.staticA = null;
+      TestEntity.staticB = null;
 
-        // test that only static fields are validated
-        List<ConstraintViolation> violations = validator.validate(TestEntity.class);
-        assertTrue(violations.size() == 2);
+      // test that only static fields are validated
+      List<ConstraintViolation> violations = validator.validate(TestEntity.class);
+      assertTrue(violations.size() == 2);
 
-        TestEntity.staticA = "";
-        TestEntity.staticB = "";
+      TestEntity.staticA = "";
+      TestEntity.staticB = "";
 
-        violations = validator.validate(TestEntity.class);
-        assertTrue(violations.size() == 0);
-    }
+      violations = validator.validate(TestEntity.class);
+      assertTrue(violations.size() == 0);
+   }
 }

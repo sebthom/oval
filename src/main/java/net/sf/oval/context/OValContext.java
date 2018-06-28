@@ -17,11 +17,11 @@ import java.io.Serializable;
  * @author Sebastian Thomschke
  */
 public abstract class OValContext implements Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    protected Class<?> compileTimeType;
+   protected Class<?> compileTimeType;
 
-    public Class<?> getCompileTimeType() {
-        return compileTimeType;
-    }
+   public Class<?> getCompileTimeType() {
+      return compileTimeType;
+   }
 }

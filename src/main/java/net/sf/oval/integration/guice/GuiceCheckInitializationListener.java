@@ -9,11 +9,11 @@
  *********************************************************************/
 package net.sf.oval.integration.guice;
 
+import com.google.inject.Injector;
+
 import net.sf.oval.Check;
 import net.sf.oval.configuration.CheckInitializationListener;
 import net.sf.oval.constraint.CheckWithCheck;
-
-import com.google.inject.Injector;
 
 /**
  * Injects Guice bean dependencies into {@link Check} instances.
@@ -23,19 +23,19 @@ import com.google.inject.Injector;
  * @author Sebastian Thomschke
  */
 public class GuiceCheckInitializationListener implements CheckInitializationListener {
-    private final Injector injector;
+   private final Injector injector;
 
-    public GuiceCheckInitializationListener(final Injector injector) {
-        this.injector = injector;
-    }
+   public GuiceCheckInitializationListener(final Injector injector) {
+      this.injector = injector;
+   }
 
-    @Override
-    public void onCheckInitialized(final Check check) {
-        injector.injectMembers(check);
+   @Override
+   public void onCheckInitialized(final Check check) {
+      injector.injectMembers(check);
 
-        if (check instanceof CheckWithCheck) {
-            final CheckWithCheck checkWith = (CheckWithCheck) check;
-            injector.injectMembers(checkWith.getSimpleCheck());
-        }
-    }
+      if (check instanceof CheckWithCheck) {
+         final CheckWithCheck checkWith = (CheckWithCheck) check;
+         injector.injectMembers(checkWith.getSimpleCheck());
+      }
+   }
 }

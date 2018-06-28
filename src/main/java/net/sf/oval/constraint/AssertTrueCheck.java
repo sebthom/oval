@@ -18,21 +18,21 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class AssertTrueCheck extends AbstractAnnotationCheck<AssertTrue> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    @Override
-    protected ConstraintTarget[] getAppliesToDefault() {
-        return new ConstraintTarget[] { ConstraintTarget.VALUES };
-    }
+   @Override
+   protected ConstraintTarget[] getAppliesToDefault() {
+      return new ConstraintTarget[] {ConstraintTarget.VALUES};
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
-            return true;
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
 
-        if (valueToValidate instanceof Boolean)
-            return (Boolean) valueToValidate;
+      if (valueToValidate instanceof Boolean)
+         return (Boolean) valueToValidate;
 
-        return Boolean.parseBoolean(valueToValidate.toString());
-    }
+      return Boolean.parseBoolean(valueToValidate.toString());
+   }
 }

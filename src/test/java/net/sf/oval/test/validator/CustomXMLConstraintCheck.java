@@ -18,17 +18,17 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class CustomXMLConstraintCheck extends AbstractAnnotationCheck<Constraint> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    @Override
-    public String getMessage() {
-        return "Value must have more than 4 characters!";
-    }
+   @Override
+   public String getMessage() {
+      return "Value must have more than 4 characters!";
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
-            return true;
-        return valueToValidate.toString().length() > 4;
-    }
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
+      return valueToValidate.toString().length() > 4;
+   }
 }

@@ -19,35 +19,36 @@ import net.sf.oval.internal.util.StringUtils;
  * @author Sebastian Thomschke
  */
 public class ConstructorParameterContext extends OValContext {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final SerializableConstructor constructor;
-    private final int parameterIndex;
-    private final String parameterName;
+   private final SerializableConstructor constructor;
+   private final int parameterIndex;
+   private final String parameterName;
 
-    public ConstructorParameterContext(final Constructor<?> constructor, final int parameterIndex, final String parameterName) {
-        this.constructor = SerializableConstructor.getInstance(constructor);
-        this.parameterIndex = parameterIndex;
-        this.parameterName = parameterName;
-        compileTimeType = constructor.getParameterTypes()[parameterIndex];
-    }
+   public ConstructorParameterContext(final Constructor<?> constructor, final int parameterIndex, final String parameterName) {
+      this.constructor = SerializableConstructor.getInstance(constructor);
+      this.parameterIndex = parameterIndex;
+      this.parameterName = parameterName;
+      compileTimeType = constructor.getParameterTypes()[parameterIndex];
+   }
 
-    public Constructor<?> getConstructor() {
-        return constructor.getConstructor();
-    }
+   public Constructor<?> getConstructor() {
+      return constructor.getConstructor();
+   }
 
-    public int getParameterIndex() {
-        return parameterIndex;
-    }
+   public int getParameterIndex() {
+      return parameterIndex;
+   }
 
-    public String getParameterName() {
-        return parameterName;
-    }
+   public String getParameterName() {
+      return parameterName;
+   }
 
-    @Override
-    public String toString() {
-        return constructor.getDeclaringClass().getName() + "(" + StringUtils.implode(constructor.getParameterTypes(), ",") + ") " + Validator
-            .getMessageResolver().getMessage("net.sf.oval.context.ConstructorParameterContext.parameter") + " " + parameterIndex + (parameterName == null
-                    || parameterName.length() == 0 ? "" : " (" + parameterName + ")");
-    }
+   @Override
+   public String toString() {
+      return constructor.getDeclaringClass().getName() + "(" + StringUtils.implode(constructor.getParameterTypes(), ",") + ") " + Validator.getMessageResolver()
+         .getMessage("net.sf.oval.context.ConstructorParameterContext.parameter") + " " + parameterIndex + (parameterName == null || parameterName.length() == 0
+            ? ""
+            : " (" + parameterName + ")");
+   }
 }

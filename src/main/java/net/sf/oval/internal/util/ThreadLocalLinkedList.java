@@ -16,8 +16,8 @@ import java.util.LinkedList;
  */
 public final class ThreadLocalLinkedList<T> extends ThreadLocal<LinkedList<T>> {
 
-    @Override
-    public LinkedList<T> initialValue() {
-        return new LinkedList<T>();
-    }
+   @Override
+   public LinkedList<T> initialValue() {
+      return new LinkedList<T>();
+   }
 }

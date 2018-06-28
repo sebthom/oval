@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public final class ThreadLocalMap<K, V> extends ThreadLocal<Map<K, V>> {
 
-    @Override
-    public Map<K, V> initialValue() {
-        return getCollectionFactory().createMap();
-    }
+   @Override
+   public Map<K, V> initialValue() {
+      return getCollectionFactory().createMap();
+   }
 }

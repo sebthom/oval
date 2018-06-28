@@ -22,22 +22,22 @@ import net.sf.oval.constraint.MaxLength;
  * @author Sebastian Thomschke
  */
 public class ConstraintViolationOrderTest extends TestCase {
-    protected static class TestEntity {
-        @MaxLength(value = 5, message = "VIO1")
-        @EqualToField(value = "value", message = "VIO2")
-        @HasSubstring(value = "foo", message = "VIO3")
-        public String name = "12345678";
+   protected static class TestEntity {
+      @MaxLength(value = 5, message = "VIO1")
+      @EqualToField(value = "value", message = "VIO2")
+      @HasSubstring(value = "foo", message = "VIO3")
+      public String name = "12345678";
 
-        public String value = "123";
-    }
+      public String value = "123";
+   }
 
-    public void testConstraintViolationOrder() {
-        final TestEntity e = new TestEntity();
-        final Validator v = new Validator();
-        final List<ConstraintViolation> violations = v.validate(e);
-        assertEquals(3, violations.size());
-        assertEquals("VIO1", violations.get(0).getMessage());
-        assertEquals("VIO2", violations.get(1).getMessage());
-        assertEquals("VIO3", violations.get(2).getMessage());
-    }
+   public void testConstraintViolationOrder() {
+      final TestEntity e = new TestEntity();
+      final Validator v = new Validator();
+      final List<ConstraintViolation> violations = v.validate(e);
+      assertEquals(3, violations.size());
+      assertEquals("VIO1", violations.get(0).getMessage());
+      assertEquals("VIO2", violations.get(1).getMessage());
+      assertEquals("VIO3", violations.get(2).getMessage());
+   }
 }

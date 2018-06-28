@@ -35,37 +35,37 @@ import net.sf.oval.internal.Log;
  */
 @Component
 public class SpringInjector {
-    private static final Log LOG = Log.getLog(SpringInjector.class);
+   private static final Log LOG = Log.getLog(SpringInjector.class);
 
-    private static SpringInjector INSTANCE;
+   private static SpringInjector instance;
 
-    public static SpringInjector get() {
-        Assert.notNull(INSTANCE, "No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
-                + "\" /> to your spring configuration!");
+   public static SpringInjector get() {
+      Assert.notNull(instance, "No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
+         + "\" /> to your spring configuration!");
 
-        return INSTANCE;
-    }
+      return instance;
+   }
 
-    @Autowired
-    private AutowireCapableBeanFactory beanFactory;
+   @Autowired
+   private AutowireCapableBeanFactory beanFactory;
 
-    private SpringInjector() {
-        LOG.info("Instantiated.");
+   protected SpringInjector() {
+      LOG.info("Instantiated.");
 
-        INSTANCE = this;
-    }
+      instance = this;
+   }
 
-    /**
-     * processes @PostConstruct, InitializingBean#afterPropertiesSet
-     */
-    public void initialize(final Object unmanagedBean) {
-        beanFactory.initializeBean(unmanagedBean, "bean");
-    }
+   /**
+    * processes @PostConstruct, InitializingBean#afterPropertiesSet
+    */
+   public void initialize(final Object unmanagedBean) {
+      beanFactory.initializeBean(unmanagedBean, "bean");
+   }
 
-    /**
-     * processes @Autowired, @Inject
-     */
-    public void inject(final Object unmanagedBean) {
-        beanFactory.autowireBean(unmanagedBean);
-    }
+   /**
+    * processes @Autowired, @Inject
+    */
+   public void inject(final Object unmanagedBean) {
+      beanFactory.autowireBean(unmanagedBean);
+   }
 }

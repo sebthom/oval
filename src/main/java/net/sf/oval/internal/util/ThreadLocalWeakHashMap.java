@@ -16,8 +16,8 @@ import java.util.WeakHashMap;
  */
 public final class ThreadLocalWeakHashMap<K, V> extends ThreadLocal<WeakHashMap<K, V>> {
 
-    @Override
-    public WeakHashMap<K, V> initialValue() {
-        return new WeakHashMap<K, V>();
-    }
+   @Override
+   public WeakHashMap<K, V> initialValue() {
+      return new WeakHashMap<K, V>();
+   }
 }

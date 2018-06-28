@@ -23,13 +23,13 @@ import net.sf.oval.guard.GuardAspect2;
 @Aspect
 public class TestGuardAspect extends GuardAspect2
 {
-	public TestGuardAspect()
-	{
-		super();
-	}
+    public TestGuardAspect()
+    {
+        super();
+    }
 
-	public static TestGuardAspect aspectOf()
-	{
-		return Aspects.aspectOf(TestGuardAspect.class);
-	}
+    public static TestGuardAspect aspectOf()
+    {
+        return Aspects.aspectOf(TestGuardAspect.class);
+    }
 }

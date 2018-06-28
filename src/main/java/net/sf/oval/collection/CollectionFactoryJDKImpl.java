@@ -21,33 +21,33 @@ import java.util.Set;
  */
 public class CollectionFactoryJDKImpl implements CollectionFactory {
 
-    @Override
-    public <ValueType> List<ValueType> createList() {
-        return new ArrayList<ValueType>();
-    }
+   @Override
+   public <ValueType> List<ValueType> createList() {
+      return new ArrayList<ValueType>();
+   }
 
-    @Override
-    public <ValueType> List<ValueType> createList(final int initialCapacity) {
-        return new ArrayList<ValueType>(initialCapacity);
-    }
+   @Override
+   public <ValueType> List<ValueType> createList(final int initialCapacity) {
+      return new ArrayList<ValueType>(initialCapacity);
+   }
 
-    @Override
-    public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
-        return new LinkedHashMap<KeyType, ValueType>();
-    }
+   @Override
+   public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
+      return new LinkedHashMap<KeyType, ValueType>();
+   }
 
-    @Override
-    public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
-        return new LinkedHashMap<KeyType, ValueType>(initialCapacity);
-    }
+   @Override
+   public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
+      return new LinkedHashMap<KeyType, ValueType>(initialCapacity);
+   }
 
-    @Override
-    public <ValueType> Set<ValueType> createSet() {
-        return new LinkedHashSet<ValueType>();
-    }
+   @Override
+   public <ValueType> Set<ValueType> createSet() {
+      return new LinkedHashSet<ValueType>();
+   }
 
-    @Override
-    public <ValueType> Set<ValueType> createSet(final int initialCapacity) {
-        return new LinkedHashSet<ValueType>(initialCapacity);
-    }
+   @Override
+   public <ValueType> Set<ValueType> createSet(final int initialCapacity) {
+      return new LinkedHashSet<ValueType>(initialCapacity);
+   }
 }

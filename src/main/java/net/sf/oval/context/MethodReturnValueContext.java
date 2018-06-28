@@ -17,21 +17,21 @@ import net.sf.oval.internal.util.SerializableMethod;
  * @author Sebastian Thomschke
  */
 public class MethodReturnValueContext extends OValContext {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final SerializableMethod method;
+   private final SerializableMethod method;
 
-    public MethodReturnValueContext(final Method method) {
-        this.method = SerializableMethod.getInstance(method);
-        compileTimeType = method.getReturnType();
-    }
+   public MethodReturnValueContext(final Method method) {
+      this.method = SerializableMethod.getInstance(method);
+      compileTimeType = method.getReturnType();
+   }
 
-    public Method getMethod() {
-        return method.getMethod();
-    }
+   public Method getMethod() {
+      return method.getMethod();
+   }
 
-    @Override
-    public String toString() {
-        return method.getDeclaringClass().getName() + "." + method.getName() + "()";
-    }
+   @Override
+   public String toString() {
+      return method.getDeclaringClass().getName() + "." + method.getName() + "()";
+   }
 }

@@ -25,30 +25,30 @@ import net.sf.oval.exception.ReflectionException;
  * @author Sebastian Thomschke
  */
 public class ParameterNameResolverParanamerImpl implements ParameterNameResolver {
-    private static final ParameterNameResolver FALLBACK = new ParameterNameResolverEnumerationImpl();
+   private static final ParameterNameResolver FALLBACK = new ParameterNameResolverEnumerationImpl();
 
-    private final Paranamer paranamer;
+   private final Paranamer paranamer;
 
-    public ParameterNameResolverParanamerImpl() {
-        paranamer = new CachingParanamer(new BytecodeReadingParanamer());
-    }
+   public ParameterNameResolverParanamerImpl() {
+      paranamer = new CachingParanamer(new BytecodeReadingParanamer());
+   }
 
-    public ParameterNameResolverParanamerImpl(final Paranamer paranamer) {
-        this.paranamer = paranamer;
-    }
+   public ParameterNameResolverParanamerImpl(final Paranamer paranamer) {
+      this.paranamer = paranamer;
+   }
 
-    @Override
-    public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
-        return FALLBACK.getParameterNames(constructor);
-    }
+   @Override
+   public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {
+      return FALLBACK.getParameterNames(constructor);
+   }
 
-    @Override
-    public String[] getParameterNames(final Method method) throws ReflectionException {
-        final String[] parameterNames = paranamer.lookupParameterNames(method);
+   @Override
+   public String[] getParameterNames(final Method method) throws ReflectionException {
+      final String[] parameterNames = paranamer.lookupParameterNames(method);
 
-        if (parameterNames == null)
-            return FALLBACK.getParameterNames(method);
+      if (parameterNames == null)
+         return FALLBACK.getParameterNames(method);
 
-        return parameterNames;
-    }
+      return parameterNames;
+   }
 }

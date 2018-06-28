@@ -15,13 +15,13 @@ import net.sf.oval.constraint.NoSelfReferenceCheck;
  * @author Sebastian Thomschke
  */
 public class NoSelfReferenceTest extends AbstractContraintsTest {
-    public void testNoSelfReference() {
-        final NoSelfReferenceCheck check = new NoSelfReferenceCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+   public void testNoSelfReference() {
+      final NoSelfReferenceCheck check = new NoSelfReferenceCheck();
+      super.testCheck(check);
+      assertTrue(check.isSatisfied(null, null, null, null));
 
-        assertTrue(check.isSatisfied(this, null, null, null));
-        assertFalse(check.isSatisfied(this, this, null, null));
-        assertTrue(check.isSatisfied(this, "bla", null, null));
-    }
+      assertTrue(check.isSatisfied(this, null, null, null));
+      assertFalse(check.isSatisfied(this, this, null, null));
+      assertTrue(check.isSatisfied(this, "bla", null, null));
+   }
 }

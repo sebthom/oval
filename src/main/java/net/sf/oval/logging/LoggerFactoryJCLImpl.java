@@ -14,8 +14,8 @@ package net.sf.oval.logging;
  */
 public class LoggerFactoryJCLImpl implements LoggerFactory {
 
-    @Override
-    public Logger createLogger(final String name) {
-        return new LoggerJCLImpl(name);
-    }
+   @Override
+   public Logger createLogger(final String name) {
+      return new LoggerJCLImpl(name);
+   }
 }

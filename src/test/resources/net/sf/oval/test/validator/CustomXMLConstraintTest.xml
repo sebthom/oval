@@ -1,6 +1,6 @@
 <oval xmlns="http://oval.sf.net/oval-configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
-http://oval.sf.net/oval-configuration 
+http://oval.sf.net/oval-configuration
 ../../../../../../../main/resources/net/sf/oval/configuration/xml/oval-configuration.xsd
 ">
 

@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
+@Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
 public @interface SuppressOValWarnings {
-    //
+   //
 }

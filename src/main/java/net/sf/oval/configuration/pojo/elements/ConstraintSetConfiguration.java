@@ -17,12 +17,12 @@ import net.sf.oval.Check;
  * @author Sebastian Thomschke
  */
 public class ConstraintSetConfiguration extends ConfigurationElement {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public List<Check> checks;
+   public List<Check> checks;
 
-    /**
-     * the id of the constraint set
-     */
-    public String id;
+   /**
+    * the id of the constraint set
+    */
+   public String id;
 }

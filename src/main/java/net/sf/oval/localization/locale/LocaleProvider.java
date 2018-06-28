@@ -15,5 +15,5 @@ import java.util.Locale;
  * @author Sebastian Thomschke
  */
 public interface LocaleProvider {
-    Locale getLocale();
+   Locale getLocale();
 }

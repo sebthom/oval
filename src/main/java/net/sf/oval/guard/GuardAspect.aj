@@ -12,128 +12,118 @@ package net.sf.oval.guard;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import net.sf.oval.internal.Log;
-
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import net.sf.oval.internal.Log;
+
 /**
- * This aspect intercepts calls to constructors and methods annotated with @net.sf.oval.annotations.Guarded 
+ * This aspect intercepts calls to constructors and methods annotated with @net.sf.oval.annotations.Guarded
  * for automatic runtime validation of constraints defined for constructor/method parameters and method return values.
  * 
  * @author Sebastian Thomschke
  */
-public abstract aspect GuardAspect extends ApiUsageAuditor
-{
-	private final static Log LOG = Log.getLog(GuardAspect.class);
+public abstract aspect GuardAspect extends ApiUsageAuditor {
+    private final static Log LOG = Log.getLog(GuardAspect.class);
 
-	private final static ParameterNameResolverAspectJImpl PARAMETER_NAME_RESOLVER = new ParameterNameResolverAspectJImpl();
-	
-	private Guard guard;
+    private final static ParameterNameResolverAspectJImpl PARAMETER_NAME_RESOLVER = new ParameterNameResolverAspectJImpl();
 
-	public GuardAspect()
-	{
-		this(new Guard());
-		getGuard().setParameterNameResolver(PARAMETER_NAME_RESOLVER);
-	}
+    private Guard guard;
 
-	public GuardAspect(final Guard guard)
-	{
-		LOG.info("Instantiated");
+    public GuardAspect() {
+        this(new Guard());
+        getGuard().setParameterNameResolver(PARAMETER_NAME_RESOLVER);
+    }
 
-		setGuard(guard);
-	}
+    public GuardAspect(final Guard guard) {
+        LOG.info("Instantiated");
 
-	/**
-	 * @return the guard
-	 */
-	public Guard getGuard()
-	{
-		return guard;
-	}
+        setGuard(guard);
+    }
 
-	public void setGuard(final Guard guard)
-	{
-		this.guard = guard;
-		getGuard().setParameterNameResolver(PARAMETER_NAME_RESOLVER);
-	}
+    /**
+     * @return the guard
+     */
+    public Guard getGuard() {
+        return guard;
+    }
 
-	/* ****************
-	 * POINT CUTS
-	 * ****************/
-	
-	// the scope of the aspect are all classes annotated with @Guarded
-	protected pointcut scope(): @within(Guarded);
+    public void setGuard(final Guard guard) {
+        this.guard = guard;
+        getGuard().setParameterNameResolver(PARAMETER_NAME_RESOLVER);
+    }
 
-	private pointcut allConstructors() : execution(*.new(..));
+    /* ****************
+     * POINT CUTS
+     * ****************/
 
-	private pointcut allMethods() : execution(* *.*(..));
+    // the scope of the aspect are all classes annotated with @Guarded
+    protected pointcut scope(): @within(Guarded);
 
-	/* ****************
-	 * ADVICES
-	 * ****************/
-	
-	// add the IsGuarded marker interface to all classes annotated with @Guarded
-	declare parents: (@Guarded *) implements IsGuarded; 
+    private pointcut allConstructors() : execution(*.new(..));
 
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): scope() && allConstructors()
-	{
-		final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
+    private pointcut allMethods() : execution(* *.*(..));
 
-		LOG.debug("aroundCounstructor() {1}", SIGNATURE);
+    /* ****************
+     * ADVICES
+     * ****************/
 
-		final Constructor<?> CONSTRUCTOR = SIGNATURE.getConstructor();
-		final Object[] args = thisJoinPoint.getArgs();
-		final Object TARGET = thisJoinPoint.getTarget();
+    // add the IsGuarded marker interface to all classes annotated with @Guarded
+    declare parents: (@Guarded *) implements IsGuarded;
 
-		// pre conditions
-		getGuard().guardConstructorPre(TARGET, CONSTRUCTOR, args);
+    @SuppressAjWarnings("adviceDidNotMatch")
+    Object around(): scope() && allConstructors() {
+        final ConstructorSignature SIGNATURE = (ConstructorSignature) thisJoinPoint.getSignature();
 
-		final Object result = proceed();
+        LOG.debug("aroundCounstructor() {1}", SIGNATURE);
 
-		// post conditions
-		getGuard().guardConstructorPost(TARGET, CONSTRUCTOR, args);
+        final Constructor<?> CONSTRUCTOR = SIGNATURE.getConstructor();
+        final Object[] args = thisJoinPoint.getArgs();
+        final Object TARGET = thisJoinPoint.getTarget();
 
-		return result;
-	}
-	
-	@SuppressAjWarnings("adviceDidNotMatch")
-	Object around(): scope() && allMethods()
-	{
-		final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
+        // pre conditions
+        getGuard().guardConstructorPre(TARGET, CONSTRUCTOR, args);
 
-		LOG.debug("aroundMethod() {1}", SIGNATURE);
-		
-		final Method METHOD = SIGNATURE.getMethod();
-		final Object[] args = thisJoinPoint.getArgs();
-		final Object TARGET = thisJoinPoint.getTarget();
-		
-		/* Because of a limitation in AspectJ the following does not compile currently. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=240608
-		    return guard.guardMethod(TARGET, METHOD, args, new Invocable()
-			{
-				public Object invoke() throws Throwable
-				{
-					// invoke the advised method and return the result
-					return proceed();
-				}
-			});
-		 */
-		
-		// pre conditions
-		final Guard.GuardMethodPreResult preResult = getGuard().guardMethodPre(TARGET, METHOD, args);
-		if(preResult == Guard.DO_NOT_PROCEED) 
-		{
-			LOG.debug("not proceeding with method execution");
-			return null;
-		}
-		
-		final Object result = proceed();
+        final Object result = proceed();
 
-		// post conditions
-		getGuard().guardMethodPost(result, preResult);
+        // post conditions
+        getGuard().guardConstructorPost(TARGET, CONSTRUCTOR, args);
 
-		return result;
-	}
+        return result;
+    }
+
+    @SuppressAjWarnings("adviceDidNotMatch")
+    Object around(): scope() && allMethods() {
+        final MethodSignature SIGNATURE = (MethodSignature) thisJoinPoint.getSignature();
+
+        LOG.debug("aroundMethod() {1}", SIGNATURE);
+
+        final Method METHOD = SIGNATURE.getMethod();
+        final Object[] args = thisJoinPoint.getArgs();
+        final Object TARGET = thisJoinPoint.getTarget();
+
+        /* Because of a limitation in AspectJ the following does not compile currently. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=240608
+            return guard.guardMethod(TARGET, METHOD, args, new Invocable() {
+                public Object invoke() throws Throwable {
+                    // invoke the advised method and return the result
+                    return proceed();
+                }
+            });
+         */
+
+        // pre conditions
+        final Guard.GuardMethodPreResult preResult = getGuard().guardMethodPre(TARGET, METHOD, args);
+        if(preResult == Guard.DO_NOT_PROCEED) {
+            LOG.debug("not proceeding with method execution");
+            return null;
+        }
+
+        final Object result = proceed();
+
+        // post conditions
+        getGuard().guardMethodPost(result, preResult);
+
+        return result;
+    }
 }

@@ -15,10 +15,10 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class ToStringValidationContextRenderer implements OValContextRenderer {
-    public static final ToStringValidationContextRenderer INSTANCE = new ToStringValidationContextRenderer();
+   public static final ToStringValidationContextRenderer INSTANCE = new ToStringValidationContextRenderer();
 
-    @Override
-    public String render(final OValContext ovalContext) {
-        return ovalContext.toString();
-    }
+   @Override
+   public String render(final OValContext ovalContext) {
+      return ovalContext.toString();
+   }
 }

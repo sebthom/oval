@@ -20,79 +20,79 @@ import net.sf.oval.guard.Guarded;
  */
 public class InnerClassTest extends TestCase {
 
-    @Guarded
-    protected static class TestEntity {
-        @Guarded(applyFieldConstraintsToSetters = true)
-        protected static class InnerClassGuarded {
-            @NotNull
-            protected String name;
+   @Guarded
+   protected static class TestEntity {
+      @Guarded(applyFieldConstraintsToSetters = true)
+      protected static class InnerClassGuarded {
+         @NotNull
+         protected String name;
 
-            protected InnerClassGuarded(final String name) {
-                this.name = name;
-            }
+         protected InnerClassGuarded(final String name) {
+            this.name = name;
+         }
 
-            /**
-             * @param name the name to set
-             */
-            public void setName(final String name) {
-                this.name = name;
-            }
-        }
+         /**
+          * @param name the name to set
+          */
+         public void setName(final String name) {
+            this.name = name;
+         }
+      }
 
-        protected static class InnerClassNotGuarded {
-            @NotNull
-            protected String name;
+      protected static class InnerClassNotGuarded {
+         @NotNull
+         protected String name;
 
-            /**
-             * the @PostValidateObject annotation should lead to a warning by the ApiUsageAuditor
-             */
-            protected InnerClassNotGuarded(final String name) {
-                this.name = name;
-            }
+         /**
+          * the @PostValidateObject annotation should lead to a warning by the ApiUsageAuditor
+          */
+         protected InnerClassNotGuarded(final String name) {
+            this.name = name;
+         }
 
-            /**
-             * @param name the name to set
-             */
-            public void setName(final String name) {
-                this.name = name;
-            }
-        }
-    }
+         /**
+          * @param name the name to set
+          */
+         public void setName(final String name) {
+            this.name = name;
+         }
+      }
+   }
 
-    @SuppressWarnings("unused")
-    public void testInnerClassGuarded() {
-        final Guard guard = new Guard();
-        TestGuardAspect.aspectOf().setGuard(guard);
-        guard.setInvariantsEnabled(true);
+   @SuppressWarnings("unused")
+   public void testInnerClassGuarded() {
+      final Guard guard = new Guard();
+      TestGuardAspect.aspectOf().setGuard(guard);
+      guard.setInvariantsEnabled(true);
 
-        try {
-            new TestEntity.InnerClassGuarded(null);
-            fail();
-        } catch (final ConstraintsViolatedException ex) {
-            // expected
-        }
+      try {
+         new TestEntity.InnerClassGuarded(null);
+         fail();
+      } catch (final ConstraintsViolatedException ex) {
+         // expected
+      }
 
-        TestEntity.InnerClassGuarded instance = null;
+      TestEntity.InnerClassGuarded instance = null;
 
-        instance = new TestEntity.InnerClassGuarded("");
+      instance = new TestEntity.InnerClassGuarded("");
 
-        try {
-            instance.setName(null);
-            fail();
-        } catch (final ConstraintsViolatedException ex) {
-            // expected
-        }
-    }
+      try {
+         instance.setName(null);
+         fail();
+      } catch (final ConstraintsViolatedException ex) {
+         // expected
+      }
+   }
 
-    /**
-     * test that specified constraints for inner classes not marked with @Constrained
-     * are ignored
-     */
-    public void testInnerClassNotGuarded() {
-        final Guard guard = new Guard();
-        TestGuardAspect.aspectOf().setGuard(guard);
+   /**
+    * test that specified constraints for inner classes not marked with @Constrained
+    * are ignored
+    */
+   public void testInnerClassNotGuarded() {
+      final Guard guard = new Guard();
+      TestGuardAspect.aspectOf().setGuard(guard);
 
-        final TestEntity.InnerClassNotGuarded instance = new TestEntity.InnerClassNotGuarded(null);
-        instance.setName(null);
-    }
+      final TestEntity.InnerClassNotGuarded instance = new TestEntity.InnerClassNotGuarded(null);
+      instance.setName(null);
+   }
 }

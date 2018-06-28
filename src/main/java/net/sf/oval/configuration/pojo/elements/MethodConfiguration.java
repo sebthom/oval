@@ -15,17 +15,17 @@ import java.util.List;
  * @author Sebastian Thomschke
  */
 public class MethodConfiguration extends ConfigurationElement {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public String name;
-    public Boolean isInvariant;
+   public String name;
+   public Boolean isInvariant;
 
-    public List<ParameterConfiguration> parameterConfigurations;
-    public MethodReturnValueConfiguration returnValueConfiguration;
+   public List<ParameterConfiguration> parameterConfigurations;
+   public MethodReturnValueConfiguration returnValueConfiguration;
 
-    public Boolean postCheckInvariants;
-    public MethodPostExecutionConfiguration postExecutionConfiguration;
+   public Boolean postCheckInvariants;
+   public MethodPostExecutionConfiguration postExecutionConfiguration;
 
-    public Boolean preCheckInvariants;
-    public MethodPreExecutionConfiguration preExecutionConfiguration;
+   public Boolean preCheckInvariants;
+   public MethodPreExecutionConfiguration preExecutionConfiguration;
 }

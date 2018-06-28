@@ -21,38 +21,42 @@ import net.sf.oval.localization.value.MessageValueFormatter;
  *
  */
 public final class MessageRenderer {
-    public static String renderMessage(final String messageKey, final Map<String, ?> messageValues) {
-        String message = Validator.getMessageResolver().getMessage(messageKey);
-        if (message == null)
-            message = messageKey;
+   public static String renderMessage(final String messageKey, final Map<String, ?> messageValues) {
+      String message = Validator.getMessageResolver().getMessage(messageKey);
+      if (message == null) {
+         message = messageKey;
+      }
 
-        final MessageValueFormatter formatter = Validator.getMessageValueFormatter();
+      final MessageValueFormatter formatter = Validator.getMessageValueFormatter();
 
-        // if there are no place holders in the message simply return it
-        if (message.indexOf('{') == -1)
-            return message;
+      // if there are no place holders in the message simply return it
+      if (message.indexOf('{') == -1)
+         return message;
 
-        if (messageValues != null && messageValues.size() > 0)
-            for (final Entry<String, ?> entry : messageValues.entrySet())
+      if (messageValues != null && messageValues.size() > 0) {
+         for (final Entry<String, ?> entry : messageValues.entrySet()) {
             message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", formatter.format(entry.getValue()));
-        return message;
-    }
+         }
+      }
+      return message;
+   }
 
-    public static String renderMessage(final String messageKey, final String messageValueName, final String messageValue) {
-        String message = Validator.getMessageResolver().getMessage(messageKey);
-        if (message == null)
-            message = messageKey;
+   public static String renderMessage(final String messageKey, final String messageValueName, final String messageValue) {
+      String message = Validator.getMessageResolver().getMessage(messageKey);
+      if (message == null) {
+         message = messageKey;
+      }
 
-        // if there are no place holders in the message simply return it
-        if (message.indexOf('{') == -1)
-            return message;
+      // if there are no place holders in the message simply return it
+      if (message.indexOf('{') == -1)
+         return message;
 
-        message = StringUtils.replaceAll(message, "{" + messageValueName + "}", messageValue);
+      message = StringUtils.replaceAll(message, "{" + messageValueName + "}", messageValue);
 
-        return message;
-    }
+      return message;
+   }
 
-    private MessageRenderer() {
-        super();
-    }
+   private MessageRenderer() {
+      super();
+   }
 }

@@ -22,33 +22,33 @@ import javolution.util.FastTable;
  */
 public class CollectionFactoryJavolutionImpl implements CollectionFactory {
 
-    @Override
-    public <ItemType> List<ItemType> createList() {
-        return new FastTable<ItemType>();
-    }
+   @Override
+   public <ItemType> List<ItemType> createList() {
+      return new FastTable<ItemType>();
+   }
 
-    @Override
-    public <ItemType> List<ItemType> createList(final int initialCapacity) {
-        return new FastTable<ItemType>();
-    }
+   @Override
+   public <ItemType> List<ItemType> createList(final int initialCapacity) {
+      return new FastTable<ItemType>();
+   }
 
-    @Override
-    public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
-        return new FastMap<KeyType, ValueType>();
-    }
+   @Override
+   public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
+      return new FastMap<KeyType, ValueType>();
+   }
 
-    @Override
-    public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
-        return new FastMap<KeyType, ValueType>();
-    }
+   @Override
+   public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
+      return new FastMap<KeyType, ValueType>();
+   }
 
-    @Override
-    public <ItemType> Set<ItemType> createSet() {
-        return new FastSet<ItemType>();
-    }
+   @Override
+   public <ItemType> Set<ItemType> createSet() {
+      return new FastSet<ItemType>();
+   }
 
-    @Override
-    public <ItemType> Set<ItemType> createSet(final int initialCapacity) {
-        return new FastSet<ItemType>();
-    }
+   @Override
+   public <ItemType> Set<ItemType> createSet(final int initialCapacity) {
+      return new FastSet<ItemType>();
+   }
 }

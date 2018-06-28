@@ -20,11 +20,11 @@ import net.sf.oval.exception.OValException;
  * @author Sebastian Thomschke
  */
 public class NullableExclusion extends AbstractAnnotationCheckExclusion<Nullable> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    @Override
-    public boolean isCheckExcluded(final Check check, final Object validatedObject, final Object valueToValidate, final OValContext context,
-            final Validator validator) throws OValException {
-        return check instanceof NotNullCheck;
-    }
+   @Override
+   public boolean isCheckExcluded(final Check check, final Object validatedObject, final Object valueToValidate, final OValContext context,
+      final Validator validator) throws OValException {
+      return check instanceof NotNullCheck;
+   }
 }

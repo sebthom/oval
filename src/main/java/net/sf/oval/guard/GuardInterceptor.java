@@ -25,65 +25,65 @@ import net.sf.oval.internal.util.Invocable;
  * @author Sebastian Thomschke
  */
 public class GuardInterceptor implements MethodInterceptor, ConstructorInterceptor {
-    protected static final class MethodInvocable implements Invocable {
-        private final MethodInvocation methodInvocation;
+   protected static final class MethodInvocable implements Invocable {
+      private final MethodInvocation methodInvocation;
 
-        protected MethodInvocable(final MethodInvocation methodInvocation) {
-            this.methodInvocation = methodInvocation;
-        }
+      protected MethodInvocable(final MethodInvocation methodInvocation) {
+         this.methodInvocation = methodInvocation;
+      }
 
-        @Override
-        public Object invoke() throws Throwable {
-            return methodInvocation.proceed();
-        }
-    }
+      @Override
+      public Object invoke() throws Throwable {
+         return methodInvocation.proceed();
+      }
+   }
 
-    private static final Log LOG = Log.getLog(GuardInterceptor.class);
+   private static final Log LOG = Log.getLog(GuardInterceptor.class);
 
-    private Guard guard;
+   private Guard guard;
 
-    public GuardInterceptor() {
-        this(new Guard());
-    }
+   public GuardInterceptor() {
+      this(new Guard());
+   }
 
-    public GuardInterceptor(final Guard guard) {
-        LOG.info("Instantiated");
+   public GuardInterceptor(final Guard guard) {
+      LOG.info("Instantiated");
 
-        setGuard(guard);
-    }
+      setGuard(guard);
+   }
 
-    @Override
-    public Object construct(final ConstructorInvocation constructorInvocation) throws Throwable {
-        final Constructor<?> ctor = constructorInvocation.getConstructor();
-        final Object[] args = constructorInvocation.getArguments();
-        final Object target = constructorInvocation.getThis();
+   @Override
+   public Object construct(final ConstructorInvocation constructorInvocation) throws Throwable {
+      final Constructor<?> ctor = constructorInvocation.getConstructor();
+      final Object[] args = constructorInvocation.getArguments();
+      final Object target = constructorInvocation.getThis();
 
-        // pre conditions
-        {
-            guard.guardConstructorPre(target, ctor, args);
-        }
+      // pre conditions
+      {
+         guard.guardConstructorPre(target, ctor, args);
+      }
 
-        final Object result = constructorInvocation.proceed();
+      final Object result = constructorInvocation.proceed();
 
-        // post conditions
-        {
-            guard.guardConstructorPost(target, ctor, args);
-        }
+      // post conditions
+      {
+         guard.guardConstructorPost(target, ctor, args);
+      }
 
-        return result;
-    }
+      return result;
+   }
 
-    public Guard getGuard() {
-        return guard;
-    }
+   public Guard getGuard() {
+      return guard;
+   }
 
-    @Override
-    public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
-        return guard.guardMethod(methodInvocation.getThis(), methodInvocation.getMethod(), methodInvocation.getArguments(), new MethodInvocable(
-            methodInvocation));
-    }
+   @Override
+   public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
+      return guard.guardMethod(methodInvocation.getThis(), methodInvocation.getMethod(), methodInvocation.getArguments(), new MethodInvocable(
+         methodInvocation));
+   }
 
-    public void setGuard(final Guard guard) {
-        this.guard = guard;
-    }
+   public void setGuard(final Guard guard) {
+      this.guard = guard;
+   }
 }

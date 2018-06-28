@@ -14,8 +14,8 @@ package net.sf.oval.internal.util;
  */
 public final class ThreadLocalIdentitySet<T> extends ThreadLocal<IdentitySet<T>> {
 
-    @Override
-    public IdentitySet<T> initialValue() {
-        return new IdentitySet<T>();
-    }
+   @Override
+   public IdentitySet<T> initialValue() {
+      return new IdentitySet<T>();
+   }
 }

@@ -15,20 +15,20 @@ import net.sf.oval.constraint.NotEqualCheck;
  * @author Sebastian Thomschke
  */
 public class NotEqualTest extends AbstractContraintsTest {
-    public void testNotEqual() {
-        final NotEqualCheck check = new NotEqualCheck();
-        super.testCheck(check);
-        assertTrue(check.isSatisfied(null, null, null, null));
+   public void testNotEqual() {
+      final NotEqualCheck check = new NotEqualCheck();
+      super.testCheck(check);
+      assertTrue(check.isSatisfied(null, null, null, null));
 
-        check.setTestString("TEST");
-        check.setIgnoreCase(false);
-        assertTrue(check.isSatisfied(null, 10, null, null));
-        assertTrue(check.isSatisfied(null, "", null, null));
-        assertTrue(check.isSatisfied(null, "test", null, null));
-        assertFalse(check.isSatisfied(null, "TEST", null, null));
+      check.setTestString("TEST");
+      check.setIgnoreCase(false);
+      assertTrue(check.isSatisfied(null, 10, null, null));
+      assertTrue(check.isSatisfied(null, "", null, null));
+      assertTrue(check.isSatisfied(null, "test", null, null));
+      assertFalse(check.isSatisfied(null, "TEST", null, null));
 
-        check.setIgnoreCase(true);
-        assertFalse(check.isSatisfied(null, "test", null, null));
-        assertFalse(check.isSatisfied(null, "TEST", null, null));
-    }
+      check.setIgnoreCase(true);
+      assertFalse(check.isSatisfied(null, "test", null, null));
+      assertFalse(check.isSatisfied(null, "TEST", null, null));
+   }
 }

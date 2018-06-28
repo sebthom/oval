@@ -112,341 +112,339 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class BeanValidationAnnotationsConfigurer implements Configurer {
 
-    private interface ConstraintMapper {
-        Check map(final Annotation annotation);
-    }
+   private interface ConstraintMapper {
+      Check map(Annotation annotation);
+   }
 
-    private static class JSR303Mapper implements ConstraintMapper {
+   private static class JSR303Mapper implements ConstraintMapper {
 
-        @Override
-        public Check map(final Annotation annotation) {
-            if (annotation instanceof NotNull)
-                return new NotNullCheck();
-            if (annotation instanceof Null)
-                return new AssertNullCheck();
-            if (annotation instanceof Valid)
-                return new AssertValidCheck();
-            if (annotation instanceof AssertTrue)
-                return new AssertTrueCheck();
-            if (annotation instanceof AssertFalse)
-                return new AssertFalseCheck();
-            if (annotation instanceof DecimalMax) {
-                final MaxCheck check = new MaxCheck();
-                check.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
-                final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
-                if (getInclusive != null) {
-                    check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
-                }
-                return check;
+      @Override
+      public Check map(final Annotation annotation) {
+         if (annotation instanceof NotNull)
+            return new NotNullCheck();
+         if (annotation instanceof Null)
+            return new AssertNullCheck();
+         if (annotation instanceof Valid)
+            return new AssertValidCheck();
+         if (annotation instanceof AssertTrue)
+            return new AssertTrueCheck();
+         if (annotation instanceof AssertFalse)
+            return new AssertFalseCheck();
+         if (annotation instanceof DecimalMax) {
+            final MaxCheck check = new MaxCheck();
+            check.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
+            final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
+            if (getInclusive != null) {
+               check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
             }
-            if (annotation instanceof DecimalMin) {
-                final MinCheck check = new MinCheck();
-                check.setMin(Double.parseDouble(((DecimalMin) annotation).value()));
-                final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
-                if (getInclusive != null) {
-                    check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
-                }
-                return check;
+            return check;
+         }
+         if (annotation instanceof DecimalMin) {
+            final MinCheck check = new MinCheck();
+            check.setMin(Double.parseDouble(((DecimalMin) annotation).value()));
+            final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
+            if (getInclusive != null) {
+               check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
             }
-            if (annotation instanceof Max) {
-                final MaxCheck check = new MaxCheck();
-                check.setMax(((Max) annotation).value());
-                return check;
+            return check;
+         }
+         if (annotation instanceof Max) {
+            final MaxCheck check = new MaxCheck();
+            check.setMax(((Max) annotation).value());
+            return check;
+         }
+         if (annotation instanceof Min) {
+            final MinCheck check = new MinCheck();
+            check.setMin(((Min) annotation).value());
+            return check;
+         }
+         if (annotation instanceof Future)
+            return new FutureCheck();
+         if (annotation instanceof Past)
+            return new PastCheck();
+         if (annotation instanceof Pattern) {
+            final MatchPatternCheck check = new MatchPatternCheck();
+            int iflag = 0;
+            for (final Flag flag : ((Pattern) annotation).flags()) {
+               iflag = iflag | flag.getValue();
             }
-            if (annotation instanceof Min) {
-                final MinCheck check = new MinCheck();
-                check.setMin(((Min) annotation).value());
-                return check;
-            }
-            if (annotation instanceof Future)
-                return new FutureCheck();
-            if (annotation instanceof Past)
-                return new PastCheck();
-            if (annotation instanceof Pattern) {
-                final MatchPatternCheck check = new MatchPatternCheck();
-                int iflag = 0;
-                for (final Flag flag : ((Pattern) annotation).flags()) {
-                    iflag = iflag | flag.getValue();
-                }
-                check.setPattern(((Pattern) annotation).regexp(), iflag);
-                return check;
-            }
-            if (annotation instanceof Digits) {
-                final DigitsCheck check = new DigitsCheck();
-                check.setMaxFraction(((Digits) annotation).fraction());
-                check.setMaxInteger(((Digits) annotation).integer());
-                return check;
-            }
-            if (annotation instanceof Size) {
-                final SizeCheck check = new SizeCheck();
-                check.setMax(((Size) annotation).max());
-                check.setMin(((Size) annotation).min());
-                return check;
-            }
-            return null;
-        }
+            check.setPattern(((Pattern) annotation).regexp(), iflag);
+            return check;
+         }
+         if (annotation instanceof Digits) {
+            final DigitsCheck check = new DigitsCheck();
+            check.setMaxFraction(((Digits) annotation).fraction());
+            check.setMaxInteger(((Digits) annotation).integer());
+            return check;
+         }
+         if (annotation instanceof Size) {
+            final SizeCheck check = new SizeCheck();
+            check.setMax(((Size) annotation).max());
+            check.setMin(((Size) annotation).min());
+            return check;
+         }
+         return null;
+      }
 
-    }
+   }
 
-    private static class JSR380Mapper extends JSR303Mapper {
-        @Override
-        public Check map(final Annotation annotation) {
-            final Check jsr303check = super.map(annotation);
-            if (jsr303check != null)
-                return jsr303check;
+   private static class JSR380Mapper extends JSR303Mapper {
+      @Override
+      public Check map(final Annotation annotation) {
+         final Check jsr303check = super.map(annotation);
+         if (jsr303check != null)
+            return jsr303check;
 
-            if (annotation instanceof FutureOrPresent) {
-                final DateRangeCheck check = new DateRangeCheck();
-                check.setMin("now");
-                return check;
-            }
-            if (annotation instanceof Negative) {
-                final MaxCheck check = new MaxCheck();
-                check.setInclusive(false);
-                check.setMax(0);
-                return check;
-            }
-            if (annotation instanceof NegativeOrZero) {
-                final MaxCheck check = new MaxCheck();
-                check.setInclusive(true);
-                check.setMax(0);
-                return check;
-            }
-            if (annotation instanceof NotBlank)
-                return new NotBlankCheck();
-            if (annotation instanceof NotEmpty)
-                return new NotEmptyCheck();
-            if (annotation instanceof PastOrPresent) {
-                final DateRangeCheck check = new DateRangeCheck();
-                check.setMax("now");
-                return check;
-            }
-            if (annotation instanceof Positive) {
-                final MinCheck check = new MinCheck();
-                check.setInclusive(false);
-                check.setMin(0);
-                return check;
-            }
-            if (annotation instanceof PositiveOrZero)
-                return new NotNegativeCheck();
-            return null;
-        }
-    }
+         if (annotation instanceof FutureOrPresent) {
+            final DateRangeCheck check = new DateRangeCheck();
+            check.setMin("now");
+            return check;
+         }
+         if (annotation instanceof Negative) {
+            final MaxCheck check = new MaxCheck();
+            check.setInclusive(false);
+            check.setMax(0);
+            return check;
+         }
+         if (annotation instanceof NegativeOrZero) {
+            final MaxCheck check = new MaxCheck();
+            check.setInclusive(true);
+            check.setMax(0);
+            return check;
+         }
+         if (annotation instanceof NotBlank)
+            return new NotBlankCheck();
+         if (annotation instanceof NotEmpty)
+            return new NotEmptyCheck();
+         if (annotation instanceof PastOrPresent) {
+            final DateRangeCheck check = new DateRangeCheck();
+            check.setMax("now");
+            return check;
+         }
+         if (annotation instanceof Positive) {
+            final MinCheck check = new MinCheck();
+            check.setInclusive(false);
+            check.setMin(0);
+            return check;
+         }
+         if (annotation instanceof PositiveOrZero)
+            return new NotNegativeCheck();
+         return null;
+      }
+   }
 
-    private static final Log LOG = Log.getLog(BeanValidationAnnotationsConfigurer.class);
+   private static final Log LOG = Log.getLog(BeanValidationAnnotationsConfigurer.class);
 
-    private static final ConstraintMapper CONSTRAINT_MAPPER;
-    static {
-        ConstraintMapper constraintMapper = null;
-        try {
-            // first try if bean validation API 2.0 is available
-            constraintMapper = new JSR380Mapper();
-        } catch (final LinkageError ex) {
-            // fallback to bean validation API 1.0
-            constraintMapper = new JSR303Mapper();
-        }
-        CONSTRAINT_MAPPER = constraintMapper;
-    }
+   private static final ConstraintMapper CONSTRAINT_MAPPER;
+   static {
+      ConstraintMapper constraintMapper = null;
+      try {
+         // first try if bean validation API 2.0 is available
+         constraintMapper = new JSR380Mapper();
+      } catch (final LinkageError ex) {
+         // fallback to bean validation API 1.0
+         constraintMapper = new JSR303Mapper();
+      }
+      CONSTRAINT_MAPPER = constraintMapper;
+   }
 
-    public BeanValidationAnnotationsConfigurer() {
-        super();
-    }
+   public BeanValidationAnnotationsConfigurer() {
+      super();
+   }
 
-    private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes) {
-        final CollectionFactory cf = getCollectionFactory();
+   private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes) {
+      final CollectionFactory cf = getCollectionFactory();
 
-        final List<ParameterConfiguration> paramCfg = cf.createList(paramAnnotations.length);
+      final List<ParameterConfiguration> paramCfg = cf.createList(paramAnnotations.length);
 
-        List<Check> paramChecks = cf.createList(2);
+      List<Check> paramChecks = cf.createList(2);
 
-        // loop over all parameters of the current constructor
-        for (int i = 0; i < paramAnnotations.length; i++) {
-            // loop over all annotations of the current constructor parameter
-            for (final Annotation annotation : paramAnnotations[i]) {
-                initializeChecks(annotation, paramChecks);
-            }
+      // loop over all parameters of the current constructor
+      for (int i = 0; i < paramAnnotations.length; i++) {
+         // loop over all annotations of the current constructor parameter
+         for (final Annotation annotation : paramAnnotations[i]) {
+            initializeChecks(annotation, paramChecks);
+         }
 
-            final ParameterConfiguration pc = new ParameterConfiguration();
-            paramCfg.add(pc);
-            pc.type = parameterTypes[i];
-            if (paramChecks.size() > 0) {
-                pc.checks = paramChecks;
-                paramChecks = cf.createList(2); // create a new list for the next parameter having checks
-            }
-        }
-        return paramCfg;
-    }
+         final ParameterConfiguration pc = new ParameterConfiguration();
+         paramCfg.add(pc);
+         pc.type = parameterTypes[i];
+         if (paramChecks.size() > 0) {
+            pc.checks = paramChecks;
+            paramChecks = cf.createList(2); // create a new list for the next parameter having checks
+         }
+      }
+      return paramCfg;
+   }
 
-    protected void configureConstructorParameterChecks(final ClassConfiguration classCfg) {
-        final CollectionFactory cf = getCollectionFactory();
+   protected void configureConstructorParameterChecks(final ClassConfiguration classCfg) {
+      final CollectionFactory cf = getCollectionFactory();
 
-        for (final Constructor<?> ctor : classCfg.type.getDeclaredConstructors()) {
-            final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(), ctor.getParameterTypes());
+      for (final Constructor<?> ctor : classCfg.type.getDeclaredConstructors()) {
+         final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(), ctor.getParameterTypes());
 
-            if (paramCfg.size() > 0) {
-                if (classCfg.constructorConfigurations == null) {
-                    classCfg.constructorConfigurations = cf.createSet(2);
-                }
-
-                final ConstructorConfiguration cc = new ConstructorConfiguration();
-                cc.parameterConfigurations = paramCfg;
-                cc.postCheckInvariants = false;
-                classCfg.constructorConfigurations.add(cc);
-            }
-        }
-    }
-
-    protected void configureFieldChecks(final ClassConfiguration classCfg) {
-        final CollectionFactory cf = getCollectionFactory();
-
-        List<Check> checks = cf.createList(2);
-
-        for (final Field field : classCfg.type.getDeclaredFields()) {
-            // loop over all annotations of the current field
-            for (final Annotation annotation : field.getAnnotations()) {
-                initializeChecks(annotation, checks);
+         if (paramCfg.size() > 0) {
+            if (classCfg.constructorConfigurations == null) {
+               classCfg.constructorConfigurations = cf.createSet(2);
             }
 
-            if (checks.size() > 0) {
-                if (classCfg.fieldConfigurations == null) {
-                    classCfg.fieldConfigurations = cf.createSet(2);
-                }
+            final ConstructorConfiguration cc = new ConstructorConfiguration();
+            cc.parameterConfigurations = paramCfg;
+            cc.postCheckInvariants = false;
+            classCfg.constructorConfigurations.add(cc);
+         }
+      }
+   }
 
-                final FieldConfiguration fc = new FieldConfiguration();
-                fc.name = field.getName();
-                fc.checks = checks;
-                classCfg.fieldConfigurations.add(fc);
-                checks = cf.createList(2); // create a new list for the next field with checks
-            }
-        }
-    }
+   protected void configureFieldChecks(final ClassConfiguration classCfg) {
+      final CollectionFactory cf = getCollectionFactory();
 
-    /**
-     * configure method return value and parameter checks
-     */
-    protected void configureMethodChecks(final ClassConfiguration classCfg) {
-        final CollectionFactory cf = getCollectionFactory();
+      List<Check> checks = cf.createList(2);
 
-        List<Check> returnValueChecks = cf.createList(2);
+      for (final Field field : classCfg.type.getDeclaredFields()) {
+         // loop over all annotations of the current field
+         for (final Annotation annotation : field.getAnnotations()) {
+            initializeChecks(annotation, checks);
+         }
 
-        for (final Method method : classCfg.type.getDeclaredMethods()) {
-            // loop over all annotations
-            for (final Annotation annotation : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
-                initializeChecks(annotation, returnValueChecks);
+         if (checks.size() > 0) {
+            if (classCfg.fieldConfigurations == null) {
+               classCfg.fieldConfigurations = cf.createSet(2);
             }
 
-            /*
-             * determine parameter checks
-             */
-            final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(
-                classCfg.inspectInterfaces)), method.getParameterTypes());
+            final FieldConfiguration fc = new FieldConfiguration();
+            fc.name = field.getName();
+            fc.checks = checks;
+            classCfg.fieldConfigurations.add(fc);
+            checks = cf.createList(2); // create a new list for the next field with checks
+         }
+      }
+   }
 
-            // check if anything has been configured for this method at all
-            if (paramCfg.size() > 0 || returnValueChecks.size() > 0) {
-                if (classCfg.methodConfigurations == null) {
-                    classCfg.methodConfigurations = cf.createSet(2);
-                }
+   /**
+    * configure method return value and parameter checks
+    */
+   protected void configureMethodChecks(final ClassConfiguration classCfg) {
+      final CollectionFactory cf = getCollectionFactory();
 
-                final MethodConfiguration mc = new MethodConfiguration();
-                mc.name = method.getName();
-                mc.parameterConfigurations = paramCfg;
-                mc.isInvariant = ReflectionUtils.isGetter(method);
-                if (returnValueChecks.size() > 0) {
-                    mc.returnValueConfiguration = new MethodReturnValueConfiguration();
-                    mc.returnValueConfiguration.checks = returnValueChecks;
-                    returnValueChecks = cf.createList(2); // create a new list for the next method having return value checks
-                }
-                classCfg.methodConfigurations.add(mc);
-            }
-        }
-    }
+      List<Check> returnValueChecks = cf.createList(2);
 
-    @Override
-    public ClassConfiguration getClassConfiguration(final Class<?> clazz) {
-        final ClassConfiguration classCfg = new ClassConfiguration();
-        classCfg.type = clazz;
+      for (final Method method : classCfg.type.getDeclaredMethods()) {
+         // loop over all annotations
+         for (final Annotation annotation : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
+            initializeChecks(annotation, returnValueChecks);
+         }
 
-        final Guarded guarded = clazz.getAnnotation(Guarded.class);
+         /*
+          * determine parameter checks
+          */
+         final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(
+            classCfg.inspectInterfaces)), method.getParameterTypes());
 
-        if (guarded == null) {
-            classCfg.applyFieldConstraintsToConstructors = false;
-            classCfg.applyFieldConstraintsToSetters = false;
-            classCfg.assertParametersNotNull = false;
-            classCfg.checkInvariants = false;
-            classCfg.inspectInterfaces = false;
-        } else {
-            classCfg.applyFieldConstraintsToConstructors = guarded.applyFieldConstraintsToConstructors();
-            classCfg.applyFieldConstraintsToSetters = guarded.applyFieldConstraintsToSetters();
-            classCfg.assertParametersNotNull = guarded.assertParametersNotNull();
-            classCfg.checkInvariants = guarded.checkInvariants();
-            classCfg.inspectInterfaces = guarded.inspectInterfaces();
-        }
-
-        configureFieldChecks(classCfg);
-        configureConstructorParameterChecks(classCfg);
-        configureMethodChecks(classCfg);
-
-        return classCfg;
-    }
-
-    @Override
-    public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId) {
-        return null;
-    }
-
-    protected void initializeChecks(final Annotation annotation, final Collection<Check> checks) {
-        assert annotation != null;
-        assert checks != null;
-
-        final Class<?> annotationClass = annotation.annotationType();
-
-        /*
-         * process bean validation annotations
-         */
-        if (annotationClass.getAnnotation(javax.validation.Constraint.class) != null || annotation instanceof Valid) {
-
-            final Check check = CONSTRAINT_MAPPER.map(annotation);
-
-            if (check != null) {
-                final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
-                if (getMessage != null) {
-                    final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
-                    if (message != null && !message.startsWith("{javax.validation.constraints.")) {
-                        check.setMessage(message);
-                    }
-                }
-
-                final Method getGroups = ReflectionUtils.getMethod(annotationClass, "groups");
-                if (getGroups != null) {
-                    final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, annotation);
-                    if (groups != null && groups.length > 0) {
-                        final String[] profiles = new String[groups.length];
-                        for (int i = 0, l = groups.length; i < l; i++) {
-                            profiles[i] = groups[i].getName();
-                        }
-                        check.setProfiles(profiles);
-                    }
-                }
-                checks.add(check);
-                return;
+         // check if anything has been configured for this method at all
+         if (paramCfg.size() > 0 || returnValueChecks.size() > 0) {
+            if (classCfg.methodConfigurations == null) {
+               classCfg.methodConfigurations = cf.createSet(2);
             }
 
-            LOG.warn("Ignoring unsupported bean validation constraint annotation {1}", annotation);
+            final MethodConfiguration mc = new MethodConfiguration();
+            mc.name = method.getName();
+            mc.parameterConfigurations = paramCfg;
+            mc.isInvariant = ReflectionUtils.isGetter(method);
+            if (returnValueChecks.size() > 0) {
+               mc.returnValueConfiguration = new MethodReturnValueConfiguration();
+               mc.returnValueConfiguration.checks = returnValueChecks;
+               returnValueChecks = cf.createList(2); // create a new list for the next method having return value checks
+            }
+            classCfg.methodConfigurations.add(mc);
+         }
+      }
+   }
+
+   @Override
+   public ClassConfiguration getClassConfiguration(final Class<?> clazz) {
+      final ClassConfiguration classCfg = new ClassConfiguration();
+      classCfg.type = clazz;
+
+      final Guarded guarded = clazz.getAnnotation(Guarded.class);
+
+      if (guarded == null) {
+         classCfg.applyFieldConstraintsToConstructors = false;
+         classCfg.applyFieldConstraintsToSetters = false;
+         classCfg.assertParametersNotNull = false;
+         classCfg.checkInvariants = false;
+         classCfg.inspectInterfaces = false;
+      } else {
+         classCfg.applyFieldConstraintsToConstructors = guarded.applyFieldConstraintsToConstructors();
+         classCfg.applyFieldConstraintsToSetters = guarded.applyFieldConstraintsToSetters();
+         classCfg.assertParametersNotNull = guarded.assertParametersNotNull();
+         classCfg.checkInvariants = guarded.checkInvariants();
+         classCfg.inspectInterfaces = guarded.inspectInterfaces();
+      }
+
+      configureFieldChecks(classCfg);
+      configureConstructorParameterChecks(classCfg);
+      configureMethodChecks(classCfg);
+
+      return classCfg;
+   }
+
+   @Override
+   public ConstraintSetConfiguration getConstraintSetConfiguration(final String constraintSetId) {
+      return null;
+   }
+
+   protected void initializeChecks(final Annotation annotation, final Collection<Check> checks) {
+      assert annotation != null;
+      assert checks != null;
+
+      final Class<?> annotationClass = annotation.annotationType();
+
+      /*
+       * process bean validation annotations
+       */
+      if (annotationClass.getAnnotation(javax.validation.Constraint.class) != null || annotation instanceof Valid) {
+
+         final Check check = CONSTRAINT_MAPPER.map(annotation);
+
+         if (check != null) {
+            final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
+            if (getMessage != null) {
+               final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
+               if (message != null && !message.startsWith("{javax.validation.constraints.")) {
+                  check.setMessage(message);
+               }
+            }
+
+            final Method getGroups = ReflectionUtils.getMethod(annotationClass, "groups");
+            if (getGroups != null) {
+               final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, annotation);
+               if (groups != null && groups.length > 0) {
+                  final String[] profiles = new String[groups.length];
+                  for (int i = 0, l = groups.length; i < l; i++) {
+                     profiles[i] = groups[i].getName();
+                  }
+                  check.setProfiles(profiles);
+               }
+            }
+            checks.add(check);
             return;
-        }
+         }
 
-        /*
-         * process bean validation List annotations
-         */
-        if (annotationClass.getPackage().getName().equals("javax.validation.constraints") && "List".equals(annotationClass.getSimpleName()))
+         LOG.warn("Ignoring unsupported bean validation constraint annotation {1}", annotation);
+         return;
+      }
 
-        {
-            final Annotation[] list = ReflectionUtils.invokeMethod(ReflectionUtils.getMethod(annotationClass, "value"), annotation);
-            if (list != null) {
-                for (final Annotation anno : list) {
-                    initializeChecks(anno, checks);
-                }
+      /*
+       * process bean validation List annotations
+       */
+      if (annotationClass.getPackage().getName().equals("javax.validation.constraints") && "List".equals(annotationClass.getSimpleName())) {
+         final Annotation[] list = ReflectionUtils.invokeMethod(ReflectionUtils.getMethod(annotationClass, "value"), annotation);
+         if (list != null) {
+            for (final Annotation anno : list) {
+               initializeChecks(anno, checks);
             }
-        }
-    }
+         }
+      }
+   }
 }

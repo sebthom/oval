@@ -22,64 +22,64 @@ import net.sf.oval.guard.PostValidateThis;
  */
 public class CheckInvariantsTest extends TestCase {
 
-    @Guarded(checkInvariants = true)
-    public static class TestEntity {
+   @Guarded(checkInvariants = true)
+   public static class TestEntity {
 
-        private String fieldA;
+      private String fieldA;
 
-        @NotNull(when = "javascript:_this.fieldA != null", message = "NOT_NULL")
-        private String fieldB;
+      @NotNull(when = "javascript:_this.fieldA != null", message = "NOT_NULL")
+      private String fieldB;
 
-        @PostValidateThis
-        public TestEntity(final String fieldA, final String fieldB) {
-            this.fieldA = fieldA;
-            this.fieldB = fieldB;
-        }
+      @PostValidateThis
+      public TestEntity(final String fieldA, final String fieldB) {
+         this.fieldA = fieldA;
+         this.fieldB = fieldB;
+      }
 
-        public String getFieldA() {
-            return fieldA;
-        }
+      public String getFieldA() {
+         return fieldA;
+      }
 
-        public String getFieldB() {
-            return fieldB;
-        }
+      public String getFieldB() {
+         return fieldB;
+      }
 
-        public void setFieldA(final String fieldA) {
-            this.fieldA = fieldA;
-        }
+      public void setFieldA(final String fieldA) {
+         this.fieldA = fieldA;
+      }
 
-        public void setFieldB(final String fieldB) {
-            this.fieldB = fieldB;
-        }
-    }
+      public void setFieldB(final String fieldB) {
+         this.fieldB = fieldB;
+      }
+   }
 
-    @SuppressWarnings("unused")
-    public void testCheckInvariants() {
+   @SuppressWarnings("unused")
+   public void testCheckInvariants() {
 
-        try {
-            new TestEntity("a", null);
-            fail();
-        } catch (final ConstraintsViolatedException ex) {
-            final ConstraintViolation[] violations = ex.getConstraintViolations();
-            assertNotNull(violations);
-            assertEquals(1, violations.length);
-            assertEquals("NOT_NULL", violations[0].getMessage());
-            assertTrue(violations[0].getContext() instanceof FieldContext);
-        }
+      try {
+         new TestEntity("a", null);
+         fail();
+      } catch (final ConstraintsViolatedException ex) {
+         final ConstraintViolation[] violations = ex.getConstraintViolations();
+         assertNotNull(violations);
+         assertEquals(1, violations.length);
+         assertEquals("NOT_NULL", violations[0].getMessage());
+         assertTrue(violations[0].getContext() instanceof FieldContext);
+      }
 
-        new TestEntity(null, null);
+      new TestEntity(null, null);
 
-        final TestEntity e = new TestEntity("a", "b");
-        try {
-            e.setFieldB(null);
-            fail();
-        } catch (final ConstraintsViolatedException ex) {
-            final ConstraintViolation[] violations = ex.getConstraintViolations();
-            assertNotNull(violations);
-            assertEquals(1, violations.length);
-            assertEquals("NOT_NULL", violations[0].getMessage());
-            assertTrue(violations[0].getContext() instanceof FieldContext);
-        }
-    }
+      final TestEntity e = new TestEntity("a", "b");
+      try {
+         e.setFieldB(null);
+         fail();
+      } catch (final ConstraintsViolatedException ex) {
+         final ConstraintViolation[] violations = ex.getConstraintViolations();
+         assertNotNull(violations);
+         assertEquals(1, violations.length);
+         assertEquals("NOT_NULL", violations[0].getMessage());
+         assertTrue(violations[0].getContext() instanceof FieldContext);
+      }
+   }
 
 }

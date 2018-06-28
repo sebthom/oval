@@ -14,9 +14,9 @@ package net.sf.oval.guard;
  * to indicate that constraints are actually enforced via AOP.<br>
  * <br>
  * <b>Important:</b> Do NOT directly implement this interface in your classes.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public interface IsGuarded {
-    //	
+   //
 }

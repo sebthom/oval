@@ -22,43 +22,43 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public class MaxLengthCheck extends AbstractAnnotationCheck<MaxLength> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private int max;
+   private int max;
 
-    @Override
-    public void configure(final MaxLength constraintAnnotation) {
-        super.configure(constraintAnnotation);
-        setMax(constraintAnnotation.value());
-    }
+   @Override
+   public void configure(final MaxLength constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setMax(constraintAnnotation.value());
+   }
 
-    @Override
-    protected Map<String, String> createMessageVariables() {
-        final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-        messageVariables.put("max", Integer.toString(max));
-        return messageVariables;
-    }
+   @Override
+   protected Map<String, String> createMessageVariables() {
+      final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+      messageVariables.put("max", Integer.toString(max));
+      return messageVariables;
+   }
 
-    @Override
-    protected ConstraintTarget[] getAppliesToDefault() {
-        return new ConstraintTarget[] { ConstraintTarget.VALUES };
-    }
+   @Override
+   protected ConstraintTarget[] getAppliesToDefault() {
+      return new ConstraintTarget[] {ConstraintTarget.VALUES};
+   }
 
-    public int getMax() {
-        return max;
-    }
+   public int getMax() {
+      return max;
+   }
 
-    @Override
-    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
-        if (valueToValidate == null)
-            return true;
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      if (valueToValidate == null)
+         return true;
 
-        final int len = valueToValidate.toString().length();
-        return len <= max;
-    }
+      final int len = valueToValidate.toString().length();
+      return len <= max;
+   }
 
-    public void setMax(final int max) {
-        this.max = max;
-        requireMessageVariablesRecreation();
-    }
+   public void setMax(final int max) {
+      this.max = max;
+      requireMessageVariablesRecreation();
+   }
 }

@@ -24,27 +24,27 @@ import net.sf.oval.internal.util.ObjectCache;
  * @author Sebastian Thomschke
  */
 public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage {
-    private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
+   private static final Log LOG = Log.getLog(ExpressionLanguageJEXLImpl.class);
 
-    private static final JexlEngine jexl = new JexlBuilder() //
-        .strict(true) //
-        .create();
+   private static final JexlEngine JEXL = new JexlBuilder() //
+      .strict(true) //
+      .create();
 
-    private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<String, JexlExpression>();
+   private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<String, JexlExpression>();
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
-        LOG.debug("Evaluating JEXL expression: {1}", expression);
-        try {
-            JexlExpression expr = expressionCache.get(expression);
-            if (expr == null) {
-                expr = jexl.createExpression(expression);
-                expressionCache.put(expression, expr);
-            }
-            return expr.evaluate(new MapContext((Map<String, Object>) values));
-        } catch (final Exception ex) {
-            throw new ExpressionEvaluationException("Evaluating JEXL expression failed: " + expression, ex);
-        }
-    }
+   @Override
+   @SuppressWarnings("unchecked")
+   public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
+      LOG.debug("Evaluating JEXL expression: {1}", expression);
+      try {
+         JexlExpression expr = expressionCache.get(expression);
+         if (expr == null) {
+            expr = JEXL.createExpression(expression);
+            expressionCache.put(expression, expr);
+         }
+         return expr.evaluate(new MapContext((Map<String, Object>) values));
+      } catch (final Exception ex) {
+         throw new ExpressionEvaluationException("Evaluating JEXL expression failed: " + expression, ex);
+      }
+   }
 }
