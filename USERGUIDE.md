@@ -1299,4 +1299,4 @@ Here is an example setting up a validator with XML based constraint configuratio
 ### <a name="apache-struts-integration"></a>Apache Struts 2 integration
 
 Musachy Barroso has developed an OVal Plug-in for Apache Struts 2, which is documented at
-<https://cwiki.apache.org//confluence/display/S2PLUGINS/OVal+Plugin>
+<https://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin>

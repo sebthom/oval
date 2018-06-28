@@ -106,18 +106,18 @@ There exist some articles and blog entries talking about and/or referencing OVal
 
 ## <a name="projects-using-oval"></a>Projects using OVal
 
+- Arena Persistence <http://arena-pers.uqbar.org/>
 - Jadira Framework <http://jadira.sourceforge.net/>
 - Omniproperties - a lightweight configuration utility <https://github.com/siemens/omniproperties>
 - fustewa - A full web stack based on Spring <https://github.com/opensource21/fuwesta>
 - eSciDoc <https://www.escidoc.org/>
 - SaferJava <http://code.google.com/p/saferjava/>
-- Pinky <https://github.com/pk11/pinky>
 - JProvocateur <http://www.jprovocateur.org/>
-- NexOpen <http://nexopen.sourceforge.net/> 
-- gdv.xport <http://repository.agentes.de/gdv/gdv-xport/site/>
+- NexOpen <https://sourceforge.net/projects/nexopen/> 
+- gdv.xport <https://github.com/oboehm/gdv.xport>
 - suz-lab-gae <http://code.google.com/p/suz-lab-gae/>
 - Cubby Simple Web Application Framework <http://cubby.seasar.org/20x/cubby-oval/index.html>
-- Metawidget <http://metawidget.org>
+- Metawidget <https://github.com/metawidget/metawidget>
 - Struts 2 OVal Plug-in <http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin>
 - Play! Framework 1.x <http://www.playframework.org/>
 - Cayenne annotations <http://sourceforge.net/projects/cayannotations/>
