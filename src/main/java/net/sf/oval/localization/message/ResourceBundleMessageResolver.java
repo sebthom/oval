@@ -31,7 +31,7 @@ import net.sf.oval.internal.util.Assert;
  */
 public class ResourceBundleMessageResolver implements MessageResolver {
 
-   private static class BundlesAndKeys {
+   private static class BundlesAndKeys implements Cloneable {
       private final Map<Locale, Set<ResourceBundle>> bundlesOfLocales = getCollectionFactory().createMap(8);
       private final Map<ResourceBundle, Set<String>> keysOfBundles = getCollectionFactory().createMap(8);
 
