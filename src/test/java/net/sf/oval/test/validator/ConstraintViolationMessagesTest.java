@@ -22,6 +22,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class ConstraintViolationMessagesTest extends TestCase {
 
+   @SuppressWarnings("unchecked")
    public void testMessages() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       final ResourceBundle bundle = ResourceBundle.getBundle("net.sf.oval.Messages");
       for (final Enumeration<String> en = bundle.getKeys(); en.hasMoreElements();) {
@@ -29,7 +30,6 @@ public class ConstraintViolationMessagesTest extends TestCase {
          if (key.endsWith(".violated")) {
             final String className = key.substring(0, key.length() - 9);
 
-            @SuppressWarnings("unchecked")
             final Class<Annotation> annotationClass = (Class<Annotation>) Class.forName(className);
 
             // check that the default message defined on the annotation is the same as the key read from the bundle
