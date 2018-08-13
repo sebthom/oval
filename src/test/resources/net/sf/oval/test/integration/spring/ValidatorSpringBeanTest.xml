@@ -9,7 +9,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
     <bean id="xmlConfigurer1" class="net.sf.oval.configuration.xml.XMLConfigurer" />
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" p:targetObject-ref="xmlConfigurer1" p:targetMethod="fromXML">
         <property name="arguments">
-            <value type="java.io.InputStream">classpath:net/sf/oval/test/validator/XMLConfigurationTest.inc.xml</value>
+            <value type="java.io.InputStream">classpath:net/sf/oval/test/validator/XMLConfigurationTest1.inc.xml</value>
         </property>
     </bean>
 
@@ -19,7 +19,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
                 <ref bean="xmlConfigurer1" />
 
                 <bean class="net.sf.oval.configuration.xml.XMLConfigurer">
-                    <constructor-arg type="java.io.InputStream" value="classpath:net/sf/oval/test/validator/XMLConfigurationTest.xml" />
+                    <constructor-arg type="java.io.InputStream" value="classpath:net/sf/oval/test/validator/XMLConfigurationTest2.inc.xml" />
                 </bean>
             </list>
         </constructor-arg>
