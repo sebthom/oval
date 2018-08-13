@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 * net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener - use net.sf.oval.integration.spring.SpringCheckInitializationListener instead
 
+### Fixed
+* warnings declared by ApiUsageAuditor aspect are incomplete
+
 
 ## [1.90] - 2017-10-19
 
