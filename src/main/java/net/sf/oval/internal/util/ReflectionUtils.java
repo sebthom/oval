@@ -285,6 +285,7 @@ public final class ReflectionUtils {
     * @return an array of arrays that represent the annotations on the formal parameters, in declaration order,
     *         of the method represented by this method.
     */
+   @SuppressWarnings("unchecked")
    public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces) {
       if (!inspectInterfaces || !isPublic(method))
          return method.getParameterAnnotations();
@@ -293,7 +294,6 @@ public final class ReflectionUtils {
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
       final int methodParameterTypesCount = methodParameterTypes.length;
 
-      @SuppressWarnings("unchecked")
       final HashSet<Annotation>[] methodParameterAnnotations = new HashSet[methodParameterTypesCount];
 
       final Class<?> clazz = method.getDeclaringClass();

@@ -276,6 +276,7 @@ public class AnnotationsConfigurer implements Configurer {
       return null;
    }
 
+   @SuppressWarnings("unchecked")
    protected <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(final ConstraintAnnotation constraintAnnotation)
       throws ReflectionException {
       assert constraintAnnotation != null;
@@ -283,7 +284,6 @@ public class AnnotationsConfigurer implements Configurer {
       final Constraint constraint = constraintAnnotation.annotationType().getAnnotation(Constraint.class);
 
       // determine the check class
-      @SuppressWarnings("unchecked")
       final Class<AnnotationCheck<ConstraintAnnotation>> checkClass = (Class<AnnotationCheck<ConstraintAnnotation>>) constraint.checkWith();
 
       // instantiate the appropriate check for the found constraint
@@ -319,6 +319,7 @@ public class AnnotationsConfigurer implements Configurer {
       }
    }
 
+   @SuppressWarnings("unchecked")
    protected <ExclusionAnnotation extends Annotation> AnnotationCheckExclusion<ExclusionAnnotation> initializeExclusion(
       final ExclusionAnnotation exclusionAnnotation) throws ReflectionException {
       assert exclusionAnnotation != null;
@@ -330,7 +331,6 @@ public class AnnotationsConfigurer implements Configurer {
 
       try {
          // instantiate the appropriate exclusion for the found annotation
-         @SuppressWarnings("unchecked")
          final AnnotationCheckExclusion<ExclusionAnnotation> exclusion = (AnnotationCheckExclusion<ExclusionAnnotation>) exclusionClass.newInstance();
          exclusion.configure(exclusionAnnotation);
          return exclusion;

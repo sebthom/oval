@@ -118,12 +118,12 @@ public final class ClassChecks {
       this.parameterNameResolver = parameterNameResolver;
    }
 
+   @SuppressWarnings("unchecked")
    private void _addConstructorParameterCheckExclusions(final Constructor<?> constructor, final int parameterIndex, final Object exclusions)
       throws InvalidConfigurationException {
       final ParameterChecks checksOfConstructorParameter = _getChecksOfConstructorParameter(constructor, parameterIndex);
 
       if (exclusions instanceof Collection<?>) {
-         @SuppressWarnings("unchecked")
          final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
          checksOfConstructorParameter.checkExclusions.addAll(exclusionsColl);
       } else {
@@ -189,12 +189,12 @@ public final class ClassChecks {
       }
    }
 
+   @SuppressWarnings("unchecked")
    private void _addMethodParameterCheckExclusions(final Method method, final int parameterIndex, final Object exclusions)
       throws InvalidConfigurationException {
       final ParameterChecks checksOfMethodParameter = _getChecksOfMethodParameter(method, parameterIndex);
 
       if (exclusions instanceof Collection<?>) {
-         @SuppressWarnings("unchecked")
          final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
          checksOfMethodParameter.checkExclusions.addAll(exclusionsColl);
       } else {
