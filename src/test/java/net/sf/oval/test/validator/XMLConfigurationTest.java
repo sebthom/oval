@@ -11,6 +11,7 @@ package net.sf.oval.test.validator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import net.sf.oval.constraint.NotNullCheck;
  * @author Sebastian Thomschke
  */
 public class XMLConfigurationTest extends TestCase {
+
    public static class User {
       // added @Length to test if overwrite=true works
       @Length(min = 10, max = 10)
@@ -62,12 +64,18 @@ public class XMLConfigurationTest extends TestCase {
       }
    }
 
-   public void testImportedFile() {
+   public void testMultipleXMLFiles() {
       final XMLConfigurer x1 = new XMLConfigurer();
-      x1.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.inc.xml"));
+      x1.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest1.inc.xml"));
       final XMLConfigurer x2 = new XMLConfigurer();
-      x2.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
+      x2.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest2.inc.xml"));
       validateUser(new Validator(x1, x2));
+   }
+
+   public void testMultipleXMLFilesWithXIncluded() {
+      final XMLConfigurer x1 = new XMLConfigurer();
+      x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest.xml"));
+      validateUser(new Validator(x1));
    }
 
    public void testSerializedObjectConfiguration() throws Exception {

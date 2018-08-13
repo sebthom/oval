@@ -9,10 +9,7 @@
  *********************************************************************/
 package net.sf.oval.configuration.xml;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -34,19 +31,14 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
-import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.XppDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 import net.sf.oval.AbstractCheck;
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
 import net.sf.oval.ConstraintTarget;
-import net.sf.oval.Validator;
 import net.sf.oval.configuration.CheckInitializationListener;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -107,7 +99,6 @@ import net.sf.oval.constraint.exclusion.NullableExclusion;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
-import net.sf.oval.internal.Log;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.ReflectionUtils;
 
@@ -262,8 +253,6 @@ public class XMLConfigurer implements Configurer {
       }
    }
 
-   private static final Log LOG = Log.getLog(Validator.class);
-
    protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<CheckInitializationListener>(2);
    private POJOConfigurer pojoConfigurer = new POJOConfigurer();
    private final XStream xStream;
@@ -276,16 +265,11 @@ public class XMLConfigurer implements Configurer {
     * @see com.thoughtworks.xstream.io.xml.StaxDriver
     */
    public XMLConfigurer() {
-      final HierarchicalStreamDriver xmlDriver = //
-         ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader") ? new StaxDriver() : //
-            ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
-               new DomDriver();
-      LOG.info("XML driver implementation: {1}", xmlDriver.getClass().getName());
-      xStream = new XStream(new XStreamReflectionProvider(), xmlDriver);
+      xStream = new XStream(new XStreamReflectionProvider(), new XIncludeAwareDOMDriver());
       configureXStream();
    }
 
-   public XMLConfigurer(final File xmlConfigFile) throws IOException {
+   public XMLConfigurer(final File xmlConfigFile) {
       this();
       fromXML(xmlConfigFile);
    }
@@ -468,13 +452,8 @@ public class XMLConfigurer implements Configurer {
       }
    }
 
-   public void fromXML(final File input) throws IOException {
-      final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(input));
-      try {
-         fromXML(bis);
-      } finally {
-         bis.close();
-      }
+   public void fromXML(final File input) {
+      pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
    }
 
    public void fromXML(final InputStream input) {

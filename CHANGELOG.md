@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+* [github Issue #13](https://github.com/sebthom/oval/issues/13) Support for XInclude in XML config files
+
+
 ### Changed
 * Raised minimum JRE from Java 5 to **Java 6**
 * Changed from EPL1.0 to EPL2.0 license
