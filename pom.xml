@@ -489,14 +489,14 @@ SPDX-License-Identifier: EPL-2.0
             <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>4.3.16.RELEASE</version>
+            <version>4.3.18.RELEASE</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>4.3.16.RELEASE</version>
+            <version>4.3.18.RELEASE</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -506,6 +506,7 @@ SPDX-License-Identifier: EPL-2.0
             <optional>true</optional>
         </dependency>
         <dependency>
+            <!-- cannot upgrade to 2.5.x, which requires Java7 or higher -->
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>2.4.15</version>

@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * MVEL 2.4.0
   * OGNL 3.1.17
   * Rhino 1.7.7.2
-  * Spring Framework 4.3.16.RELEASE
+  * Spring Framework 4.3.18.RELEASE
   * commons-jexl3 3.1
 
 ### Removed
