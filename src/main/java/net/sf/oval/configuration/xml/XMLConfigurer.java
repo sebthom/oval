@@ -116,7 +116,7 @@ public class XMLConfigurer implements Configurer {
    protected final class AssertCheckConverter implements Converter {
 
       @Override
-      public boolean canConvert(@SuppressWarnings("rawtypes") final Class clazz) {
+      public boolean canConvert(final Class clazz) {
          return clazz.equals(AssertCheck.class);
       }
 
@@ -212,7 +212,7 @@ public class XMLConfigurer implements Configurer {
       }
 
       @Override
-      public boolean canConvert(@SuppressWarnings("rawtypes") final Class type) {
+      public boolean canConvert(final Class type) {
          return List.class.isAssignableFrom(type);
       }
    }
@@ -223,7 +223,7 @@ public class XMLConfigurer implements Configurer {
    protected static final class XStreamReflectionProvider extends Sun14ReflectionProvider {
       @SuppressWarnings("unchecked")
       @Override
-      public Object newInstance(@SuppressWarnings("rawtypes") final Class type) {
+      public Object newInstance(final Class type) {
          final Object instance = super.newInstance(type);
 
          // test if a AnnotationCheck instance is requested
