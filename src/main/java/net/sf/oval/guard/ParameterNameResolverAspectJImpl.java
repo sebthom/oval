@@ -13,12 +13,13 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import net.sf.oval.Validator;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.internal.util.ReflectionUtils;
 
@@ -29,7 +30,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * @author Sebastian Thomschke
  */
 public class ParameterNameResolverAspectJImpl implements ParameterNameResolver {
-   private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
+   private final ConcurrentMap<AccessibleObject, String[]> parameterNamesCache = Validator.getCollectionFactory().createConcurrentMap();
 
    private void determineParamterNames(final Class<?> clazz) throws IllegalArgumentException, IllegalAccessException {
       assert clazz != null;
@@ -47,20 +48,14 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver {
             if (staticPart.getSignature() instanceof ConstructorSignature) {
                final ConstructorSignature sig = (ConstructorSignature) staticPart.getSignature();
                final String[] parameterNames = sig.getParameterNames();
-
-               final Constructor<?> constr = sig.getConstructor();
-
                if (parameterNames.length > 0) {
-                  parameterNamesCache.put(constr, parameterNames);
+                  parameterNamesCache.put(sig.getConstructor(), parameterNames);
                }
             } else if (staticPart.getSignature() instanceof MethodSignature) {
                final MethodSignature sig = (MethodSignature) staticPart.getSignature();
                final String[] parameterNames = sig.getParameterNames();
-
-               final Method method = sig.getMethod();
-
                if (parameterNames.length > 0) {
-                  parameterNamesCache.put(method, parameterNames);
+                  parameterNamesCache.put(sig.getMethod(), parameterNames);
                }
             }
          }

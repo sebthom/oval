@@ -12,7 +12,6 @@ package net.sf.oval.internal.util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.WeakHashMap;
 
 import net.sf.oval.internal.Log;
 
@@ -24,48 +23,26 @@ import net.sf.oval.internal.Log;
 public final class SerializableField implements Serializable {
    private static final Log LOG = Log.getLog(SerializableField.class);
 
-   private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
-
    private static final long serialVersionUID = 1L;
-
-   public static SerializableField getInstance(final Field field) {
-      synchronized (CACHE) {
-         SerializableField sm = CACHE.get(field);
-         if (sm == null) {
-            sm = new SerializableField(field);
-            CACHE.put(field, sm);
-         }
-         return sm;
-      }
-   }
 
    private final Class<?> declaringClass;
    private transient Field field;
    private final String name;
 
-   private SerializableField(final Field field) {
+   public SerializableField(final Field field) {
       this.field = field;
       name = field.getName();
       declaringClass = field.getDeclaringClass();
    }
 
-   /**
-    * @return the declaringClass
-    */
    public Class<?> getDeclaringClass() {
       return declaringClass;
    }
 
-   /**
-    * @return the field
-    */
    public Field getField() {
       return field;
    }
 
-   /**
-    * @return the name
-    */
    public String getName() {
       return name;
    }
@@ -75,7 +52,7 @@ public final class SerializableField implements Serializable {
       try {
          field = declaringClass.getDeclaredField(name);
       } catch (final NoSuchFieldException ex) {
-         LOG.debug("Unexpected NoSuchFieldException occured", ex);
+         LOG.debug("Unexpected NoSuchFieldException occurred.", ex);
          throw new IOException(ex.getMessage());
       }
    }

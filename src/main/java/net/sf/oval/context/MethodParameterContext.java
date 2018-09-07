@@ -26,7 +26,7 @@ public class MethodParameterContext extends OValContext {
    private final String parameterName;
 
    public MethodParameterContext(final Method method, final int parameterIndex, final String parameterName) {
-      this.method = SerializableMethod.getInstance(method);
+      this.method = new SerializableMethod(method);
       this.parameterIndex = parameterIndex;
       this.parameterName = parameterName == null ? "param" + parameterIndex : parameterName;
       compileTimeType = method.getParameterTypes()[parameterIndex];

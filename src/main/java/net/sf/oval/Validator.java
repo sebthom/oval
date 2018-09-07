@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.collection.CollectionFactoryJDKImpl;
@@ -240,24 +240,19 @@ public class Validator implements IValidator {
       Validator.messageValueFormatter = formatter;
    }
 
-   private final Map<Class<?>, ClassChecks> checksByClass = new WeakHashMap<Class<?>, ClassChecks>();
-
+   private final ConcurrentMap<Class<?>, ClassChecks> checksByClass = collectionFactory.createConcurrentMap();
    private final Set<Configurer> configurers = new LinkedHashSet<Configurer>(4);
-
-   private final Map<String, ConstraintSet> constraintSetsById = collectionFactory.createMap(4);
+   private final Map<String, ConstraintSet> constraintSetsById = collectionFactory.createConcurrentMap(4);
 
    protected final ThreadLocalLinkedList<Set<Object>> currentlyValidatedObjects = new ThreadLocalLinkedList<Set<Object>>();
-
    protected final ThreadLocalLinkedList<List<ConstraintViolation>> currentViolations = new ThreadLocalLinkedList<List<ConstraintViolation>>();
-
-   private final Set<String> disabledProfiles = collectionFactory.createSet();
-
-   private final Set<String> enabledProfiles = collectionFactory.createSet();
 
    private ExceptionTranslator exceptionTranslator;
 
    protected final ExpressionLanguageRegistry expressionLanguageRegistry = new ExpressionLanguageRegistry();
 
+   private final Set<String> disabledProfiles = collectionFactory.createSet();
+   private final Set<String> enabledProfiles = collectionFactory.createSet();
    private boolean isAllProfilesEnabledByDefault = true;
 
    /**
@@ -732,12 +727,10 @@ public class Validator implements IValidator {
       Assert.argumentNotNull("constraintSet", constraintSet);
       Assert.argumentNotEmpty("constraintSet.id", constraintSet.getId());
 
-      synchronized (constraintSetsById) {
-         if (!overwrite && constraintSetsById.containsKey(constraintSet.getId()))
-            throw new ConstraintSetAlreadyDefinedException(constraintSet.getId());
+      if (!overwrite && constraintSetsById.containsKey(constraintSet.getId()))
+         throw new ConstraintSetAlreadyDefinedException(constraintSet.getId());
 
-         constraintSetsById.put(constraintSet.getId(), constraintSet);
-      }
+      constraintSetsById.put(constraintSet.getId(), constraintSet);
    }
 
    @Override
@@ -988,6 +981,13 @@ public class Validator implements IValidator {
       }
    }
 
+   //CHECKSTYLE:IGNORE NoFinalize FOR NEXT LINE
+   @Override
+   protected void finalize() throws Throwable {
+      // to lower the risk of potential memory leaks on hot-reloading/redeployment of validated classes
+      ContextCache.clear();
+   }
+
    /**
     * Gets the object-level constraint checks for the given class
     *
@@ -1034,8 +1034,7 @@ public class Validator implements IValidator {
    }
 
    /**
-    * Returns the ClassChecks object for the particular class,
-    * allowing you to modify the checks
+    * Returns the ClassChecks object for the particular class, allowing you to modify the checks
     *
     * @param clazz cannot be null
     * @return returns the ClassChecks for the given class
@@ -1044,31 +1043,21 @@ public class Validator implements IValidator {
    protected ClassChecks getClassChecks(final Class<?> clazz) throws IllegalArgumentException, InvalidConfigurationException, ReflectionException {
       Assert.argumentNotNull("clazz", clazz);
 
-      synchronized (checksByClass) {
-         ClassChecks cc = checksByClass.get(clazz);
+      ClassChecks cc = checksByClass.get(clazz);
 
-         if (cc == null) {
-            cc = new ClassChecks(clazz, parameterNameResolver);
+      if (cc == null) {
+         cc = new ClassChecks(clazz, parameterNameResolver);
 
-            for (final Configurer configurer : configurers) {
-               final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
-               if (classConfig != null) {
-                  _addChecks(cc, classConfig);
-               }
+         for (final Configurer configurer : configurers) {
+            final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
+            if (classConfig != null) {
+               _addChecks(cc, classConfig);
             }
-
-            checksByClass.put(clazz, cc);
          }
-
-         return cc;
+         checksByClass.put(clazz, cc);
       }
-   }
 
-   /**
-    * @return the internal linked set with the registered configurers
-    */
-   public Set<Configurer> getConfigurers() {
-      return configurers;
+      return cc;
    }
 
    /**
@@ -1079,42 +1068,31 @@ public class Validator implements IValidator {
     * @throws IllegalArgumentException if <code>constraintSetId</code> is null
     */
    public ConstraintSet getConstraintSet(final String constraintSetId) throws InvalidConfigurationException, IllegalArgumentException {
-      Assert.argumentNotNull("constraintSetsById", constraintSetsById);
-      synchronized (constraintSetsById) {
-         ConstraintSet cs = constraintSetsById.get(constraintSetId);
+      Assert.argumentNotNull("constraintSetId", constraintSetId);
 
-         if (cs == null) {
-            for (final Configurer configurer : configurers) {
-               final ConstraintSetConfiguration csc = configurer.getConstraintSetConfiguration(constraintSetId);
-               if (csc != null) {
-                  cs = new ConstraintSet(csc.id);
-                  cs.setChecks(csc.checks);
+      ConstraintSet cs = constraintSetsById.get(constraintSetId);
+      if (cs == null) {
+         for (final Configurer configurer : configurers) {
+            final ConstraintSetConfiguration csc = configurer.getConstraintSetConfiguration(constraintSetId);
+            if (csc != null) {
+               cs = new ConstraintSet(csc.id);
+               cs.setChecks(csc.checks);
 
-                  addConstraintSet(cs, csc.overwrite != null && csc.overwrite);
-               }
+               addConstraintSet(cs, csc.overwrite != null && csc.overwrite);
             }
          }
-         return cs;
       }
+      return cs;
    }
 
-   /**
-    * @return the exceptionProcessor
-    */
    public ExceptionTranslator getExceptionTranslator() {
       return exceptionTranslator;
    }
 
-   /**
-    * @return the expressionLanguageRegistry
-    */
    public ExpressionLanguageRegistry getExpressionLanguageRegistry() {
       return expressionLanguageRegistry;
    }
 
-   /**
-    * @return the objectGraphNavigatorRegistry
-    */
    public ObjectGraphNavigatorRegistry getObjectGraphNavigatorRegistry() {
       return ognRegistry;
    }
@@ -1177,12 +1155,9 @@ public class Validator implements IValidator {
     * currently registered configurers will automatically happen
     */
    public void reconfigureChecks() {
-      synchronized (checksByClass) {
-         checksByClass.clear();
-      }
-      synchronized (constraintSetsById) {
-         constraintSetsById.clear();
-      }
+      checksByClass.clear();
+
+      constraintSetsById.clear();
    }
 
    /**
@@ -1232,9 +1207,7 @@ public class Validator implements IValidator {
    public ConstraintSet removeConstraintSet(final String id) throws IllegalArgumentException {
       Assert.argumentNotNull("id", id);
 
-      synchronized (constraintSetsById) {
-         return constraintSetsById.remove(id);
-      }
+      return constraintSetsById.remove(id);
    }
 
    protected String renderMessage(final OValContext context, final Object value, final String messageKey, final Map<String, ?> messageValues) {
@@ -1277,9 +1250,6 @@ public class Validator implements IValidator {
       return ReflectionUtils.invokeMethod(ctx.getMethod(), validatedObject);
    }
 
-   /**
-    * @param exceptionTranslator the exceptionTranslator to set
-    */
    public void setExceptionTranslator(final ExceptionTranslator exceptionTranslator) {
       this.exceptionTranslator = exceptionTranslator;
    }
@@ -1367,8 +1337,7 @@ public class Validator implements IValidator {
 
    /**
     * validates the field and getter constrains of the given object.
-    * if the given object is a class the static fields and getters
-    * are validated.
+    * if the given object is a class the static fields and getters are validated.
     *
     * @param validatedObject the object to validate, cannot be null
     * @throws IllegalArgumentException if <code>validatedObject == null</code>
@@ -1384,5 +1353,4 @@ public class Validator implements IValidator {
          _validateObjectInvariants(validatedObject, validatedObject.getClass(), violations, profiles);
       }
    }
-
 }

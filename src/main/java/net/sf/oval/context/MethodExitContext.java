@@ -23,7 +23,7 @@ public class MethodExitContext extends OValContext {
    private final SerializableMethod method;
 
    public MethodExitContext(final Method method) {
-      this.method = SerializableMethod.getInstance(method);
+      this.method = new SerializableMethod(method);
    }
 
    public Method getMethod() {

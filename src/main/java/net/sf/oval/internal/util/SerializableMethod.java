@@ -12,7 +12,6 @@ package net.sf.oval.internal.util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.WeakHashMap;
 
 import net.sf.oval.internal.Log;
 
@@ -24,20 +23,7 @@ import net.sf.oval.internal.Log;
 public final class SerializableMethod implements Serializable {
    private static final Log LOG = Log.getLog(SerializableMethod.class);
 
-   private static final WeakHashMap<Method, SerializableMethod> CACHE = new WeakHashMap<Method, SerializableMethod>();
-
    private static final long serialVersionUID = 1L;
-
-   public static SerializableMethod getInstance(final Method method) {
-      synchronized (CACHE) {
-         SerializableMethod sm = CACHE.get(method);
-         if (sm == null) {
-            sm = new SerializableMethod(method);
-            CACHE.put(method, sm);
-         }
-         return sm;
-      }
-   }
 
    private final Class<?> declaringClass;
    private transient Method method;
@@ -45,37 +31,25 @@ public final class SerializableMethod implements Serializable {
 
    private final Class<?>[] parameterTypes;
 
-   private SerializableMethod(final Method method) {
+   public SerializableMethod(final Method method) {
       this.method = method;
       name = method.getName();
       parameterTypes = method.getParameterTypes();
       declaringClass = method.getDeclaringClass();
    }
 
-   /**
-    * @return the declaringClass
-    */
    public Class<?> getDeclaringClass() {
       return declaringClass;
    }
 
-   /**
-    * @return the method
-    */
    public Method getMethod() {
       return method;
    }
 
-   /**
-    * @return the name
-    */
    public String getName() {
       return name;
    }
 
-   /**
-    * @return the parameterTypes
-    */
    public Class<?>[] getParameterTypes() {
       return parameterTypes;
    }
@@ -85,7 +59,7 @@ public final class SerializableMethod implements Serializable {
       try {
          method = declaringClass.getDeclaredMethod(name, parameterTypes);
       } catch (final NoSuchMethodException ex) {
-         LOG.debug("Unexpected NoSuchMethodException occured.", ex);
+         LOG.debug("Unexpected NoSuchMethodException occurred.", ex);
          throw new IOException(ex.getMessage());
       }
    }

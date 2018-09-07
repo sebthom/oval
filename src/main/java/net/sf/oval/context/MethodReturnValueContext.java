@@ -22,7 +22,7 @@ public class MethodReturnValueContext extends OValContext {
    private final SerializableMethod method;
 
    public MethodReturnValueContext(final Method method) {
-      this.method = SerializableMethod.getInstance(method);
+      this.method = new SerializableMethod(method);
       compileTimeType = method.getReturnType();
    }
 

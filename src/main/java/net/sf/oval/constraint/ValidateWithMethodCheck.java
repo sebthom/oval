@@ -13,7 +13,7 @@ import static net.sf.oval.Validator.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
@@ -29,7 +29,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
 public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWithMethod> {
    private static final long serialVersionUID = 1L;
 
-   private final Map<Class<?>, Method> validationMethodsByClass = new WeakHashMap<Class<?>, Method>();
+   private final ConcurrentMap<Class<?>, Method> validationMethodsByClass = Validator.getCollectionFactory().createConcurrentMap();
 
    private boolean ignoreIfNull;
    private String methodName;
@@ -76,14 +76,12 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
          return true;
 
       final Class<?> clazz = validatedObject.getClass();
-      Method method;
-      synchronized (validationMethodsByClass) {
-         method = validationMethodsByClass.get(clazz);
-         if (method == null) {
-            method = ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
-            validationMethodsByClass.put(clazz, method);
-         }
+      Method method = validationMethodsByClass.get(clazz);
+      if (method == null) {
+         method = ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
+         validationMethodsByClass.put(clazz, method);
       }
+
       if (method == null)
          throw new InvalidConfigurationException("Method " + clazz.getName() + "." + methodName + "(" + parameterType + ") not found. Is [" + parameterType
             + "] the correct value for [@ValidateWithMethod.parameterType]?");

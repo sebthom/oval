@@ -12,8 +12,9 @@ package net.sf.oval.guard;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import net.sf.oval.Validator;
 import net.sf.oval.exception.ReflectionException;
 
 /**
@@ -23,7 +24,7 @@ import net.sf.oval.exception.ReflectionException;
  * @author Sebastian Thomschke
  */
 public class ParameterNameResolverEnumerationImpl implements ParameterNameResolver {
-   private final WeakHashMap<AccessibleObject, String[]> parameterNamesCache = new WeakHashMap<AccessibleObject, String[]>();
+   private final ConcurrentMap<AccessibleObject, String[]> parameterNamesCache = Validator.getCollectionFactory().createConcurrentMap();
 
    @Override
    public String[] getParameterNames(final Constructor<?> constructor) throws ReflectionException {

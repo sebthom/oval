@@ -66,7 +66,7 @@ public class ParameterConstraintsTest extends TestCase {
          final ConstraintViolation[] violations = e.getConstraintViolations();
          assertNotNull(violations);
          assertEquals(1, violations.length);
-         assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+         assertEquals("NOT_NULL", violations[0].getMessage());
          assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
       }
 
@@ -83,7 +83,7 @@ public class ParameterConstraintsTest extends TestCase {
          final ConstraintViolation[] violations = e.getConstraintViolations();
          assertNotNull(violations);
          assertEquals(1, violations.length);
-         assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+         assertEquals("NOT_NULL", violations[0].getMessage());
          assertTrue(violations[0].getContext() instanceof FieldContext);
       }
    }
@@ -100,7 +100,7 @@ public class ParameterConstraintsTest extends TestCase {
          final ConstraintViolation[] violations = e.getConstraintViolations();
          assertNotNull(violations);
          assertTrue(violations.length > 0);
-         assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+         assertEquals("NOT_NULL", violations[0].getMessage());
       }
 
       try {
@@ -111,7 +111,7 @@ public class ParameterConstraintsTest extends TestCase {
          final ConstraintViolation[] violations = e.getConstraintViolations();
          assertNotNull(violations);
          assertTrue(violations.length > 0);
-         assertTrue(violations[0].getMessage().equals("LENGTH"));
+         assertEquals("LENGTH", violations[0].getMessage());
       }
    }
 
@@ -129,9 +129,9 @@ public class ParameterConstraintsTest extends TestCase {
       entity.setName(null);
       entity.setName("12345678");
       final List<ConstraintViolation> violations = va.getConstraintViolations();
-      assertTrue(violations.size() == 2);
-      assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
-      assertTrue(violations.get(1).getMessage().equals("LENGTH"));
+      assertEquals(2, violations.size());
+      assertEquals("NOT_NULL", violations.get(0).getMessage());
+      assertEquals("LENGTH", violations.get(1).getMessage());
 
       guard.removeListener(va, entity);
    }

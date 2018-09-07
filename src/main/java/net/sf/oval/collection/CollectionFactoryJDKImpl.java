@@ -15,11 +15,23 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Sebastian Thomschke
  */
 public class CollectionFactoryJDKImpl implements CollectionFactory {
+
+   @Override
+   public <KeyType, ValueType> ConcurrentMap<KeyType, ValueType> createConcurrentMap() {
+      return new ConcurrentHashMap<KeyType, ValueType>();
+   }
+
+   @Override
+   public <KeyType, ValueType> ConcurrentMap<KeyType, ValueType> createConcurrentMap(final int initialCapacity) {
+      return new ConcurrentHashMap<KeyType, ValueType>(initialCapacity);
+   }
 
    @Override
    public <ValueType> List<ValueType> createList() {

@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
@@ -42,6 +41,7 @@ import net.sf.oval.internal.Log;
 import net.sf.oval.internal.ParameterChecks;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.ConcurrentMultiValueMap;
 import net.sf.oval.internal.util.IdentitySet;
 import net.sf.oval.internal.util.Invocable;
 import net.sf.oval.internal.util.ReflectionUtils;
@@ -122,13 +122,11 @@ public class Guard extends Validator {
    private boolean isProbeModeFeatureUsed = false;
 
    private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(4);
-
-   private final Map<Class<?>, Set<ConstraintsViolatedListener>> listenersByClass = new WeakHashMap<Class<?>, Set<ConstraintsViolatedListener>>(4);
-
-   private final Map<Object, Set<ConstraintsViolatedListener>> listenersByObject = new WeakHashMap<Object, Set<ConstraintsViolatedListener>>(4);
+   private final ConcurrentMultiValueMap<Class<?>, ConstraintsViolatedListener> listenersByClass = ConcurrentMultiValueMap.create();
+   private final ConcurrentMultiValueMap<Object, ConstraintsViolatedListener> listenersByObject = ConcurrentMultiValueMap.create();
 
    /**
-    * Objects for OVal suppresses occurring ConstraintViolationExceptions for pre condition violations on setter methods
+    * Objects for OVal suppresses occurring ConstraintViolationExceptions for pre-condition violations on setter methods
     * for the current thread.
     */
    private final ThreadLocalWeakHashMap<Object, ProbeModeListener> objectsInProbeMode = new ThreadLocalWeakHashMap<Object, ProbeModeListener>();
@@ -307,16 +305,7 @@ public class Guard extends Validator {
       Assert.argumentNotNull("guardedClass", guardedClass);
 
       isListenersFeatureUsed = true;
-
-      synchronized (listenersByClass) {
-         Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedClass);
-
-         if (classListeners == null) {
-            classListeners = getCollectionFactory().createSet();
-            listenersByClass.put(guardedClass, classListeners);
-         }
-         return classListeners.add(listener);
-      }
+      return listenersByClass.add(guardedClass, listener);
    }
 
    /**
@@ -331,16 +320,7 @@ public class Guard extends Validator {
       Assert.argumentNotNull("guardedObject", guardedObject);
 
       isListenersFeatureUsed = true;
-
-      synchronized (listenersByObject) {
-         Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
-
-         if (objectListeners == null) {
-            objectListeners = getCollectionFactory().createSet(2);
-            listenersByObject.put(guardedObject, objectListeners);
-         }
-         return objectListeners.add(listener);
-      }
+      return listenersByObject.add(guardedObject, listener);
    }
 
    /**
@@ -789,12 +769,7 @@ public class Guard extends Validator {
       Assert.argumentNotNull("listener", listener);
       Assert.argumentNotNull("guardedClass", guardedClass);
 
-      final Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedClass);
-
-      if (classListeners == null)
-         return false;
-
-      return classListeners.contains(listener);
+      return listenersByClass.containsValue(guardedClass, listener);
    }
 
    /**
@@ -805,12 +780,7 @@ public class Guard extends Validator {
       Assert.argumentNotNull("listener", listener);
       Assert.argumentNotNull("guardedObject", guardedObject);
 
-      final Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
-
-      if (objectListeners == null)
-         return false;
-
-      return objectListeners.contains(listener);
+      return listenersByObject.containsValue(guardedObject, listener);
    }
 
    public boolean isActivated() {
@@ -868,29 +838,14 @@ public class Guard extends Validator {
       final LinkedHashSet<ConstraintsViolatedListener> listenersToNotify = new LinkedHashSet<ConstraintsViolatedListener>();
 
       // get the object listeners
-      {
-         final Set<ConstraintsViolatedListener> objectListeners = listenersByObject.get(guardedObject);
-         if (objectListeners != null) {
-            listenersToNotify.addAll(objectListeners);
-         }
-      }
+      listenersByObject.addAllTo(guardedObject, listenersToNotify);
 
       // get the class listeners
-      {
-         final Set<ConstraintsViolatedListener> classListeners = listenersByClass.get(guardedObject.getClass());
-         if (classListeners != null) {
-            listenersToNotify.addAll(classListeners);
-         }
-      }
+      listenersByClass.addAllTo(guardedObject.getClass(), listenersToNotify);
 
       // get the interface listeners
-      {
-         for (final Class<?> interfaze : guardedObject.getClass().getInterfaces()) {
-            final Set<ConstraintsViolatedListener> interfaceListeners = listenersByClass.get(interfaze);
-            if (interfaceListeners != null) {
-               listenersToNotify.addAll(interfaceListeners);
-            }
-         }
+      for (final Class<?> iface : guardedObject.getClass().getInterfaces()) {
+         listenersByClass.addAllTo(iface, listenersToNotify);
       }
 
       // get the global listeners
@@ -1005,9 +960,7 @@ public class Guard extends Validator {
       Assert.argumentNotNull("listener", listener);
       Assert.argumentNotNull("guardedClass", guardedClass);
 
-      final Set<ConstraintsViolatedListener> currentListeners = listenersByClass.get(guardedClass);
-
-      return currentListeners == null ? false : currentListeners.remove(listener);
+      return listenersByClass.remove(guardedClass, listener);
    }
 
    /**
@@ -1020,9 +973,7 @@ public class Guard extends Validator {
       Assert.argumentNotNull("listener", listener);
       Assert.argumentNotNull("guardedObject", guardedObject);
 
-      final Set<ConstraintsViolatedListener> currentListeners = listenersByObject.get(guardedObject);
-
-      return currentListeners == null ? false : currentListeners.remove(listener);
+      return listenersByObject.remove(guardedObject, listener);
    }
 
    /**

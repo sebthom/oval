@@ -24,12 +24,12 @@ public class FieldContext extends OValContext {
 
    public FieldContext(final Class<?> declaringClass, final String fieldName) {
       final Field field = ReflectionUtils.getField(declaringClass, fieldName);
-      this.field = SerializableField.getInstance(field);
+      this.field = new SerializableField(field);
       compileTimeType = field.getType();
    }
 
    public FieldContext(final Field field) {
-      this.field = SerializableField.getInstance(field);
+      this.field = new SerializableField(field);
       compileTimeType = field.getType();
    }
 
@@ -39,6 +39,6 @@ public class FieldContext extends OValContext {
 
    @Override
    public String toString() {
-      return field.getDeclaringClass().getName() + "." + field.getName();
+      return field.getDeclaringClass().getName() + '.' + field.getName();
    }
 }

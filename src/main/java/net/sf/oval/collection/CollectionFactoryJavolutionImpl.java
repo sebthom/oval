@@ -12,6 +12,7 @@ package net.sf.oval.collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import javolution.util.FastMap;
 import javolution.util.FastSet;
@@ -21,6 +22,16 @@ import javolution.util.FastTable;
  * @author Sebastian Thomschke
  */
 public class CollectionFactoryJavolutionImpl implements CollectionFactory {
+
+   @Override
+   public <KeyType, ValueType> ConcurrentMap<KeyType, ValueType> createConcurrentMap() {
+      return new FastMap<KeyType, ValueType>();
+   }
+
+   @Override
+   public <KeyType, ValueType> ConcurrentMap<KeyType, ValueType> createConcurrentMap(final int initialCapacity) {
+      return new FastMap<KeyType, ValueType>();
+   }
 
    @Override
    public <ItemType> List<ItemType> createList() {

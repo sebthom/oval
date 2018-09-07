@@ -26,7 +26,7 @@ public class ConstructorParameterContext extends OValContext {
    private final String parameterName;
 
    public ConstructorParameterContext(final Constructor<?> constructor, final int parameterIndex, final String parameterName) {
-      this.constructor = SerializableConstructor.getInstance(constructor);
+      this.constructor = new SerializableConstructor(constructor);
       this.parameterIndex = parameterIndex;
       this.parameterName = parameterName;
       compileTimeType = constructor.getParameterTypes()[parameterIndex];
