@@ -9,7 +9,6 @@
  *********************************************************************/
 package net.sf.oval.internal.util;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,9 +18,7 @@ import java.util.List;
  * @author Sebastian Thomschke
  */
 public final class ArrayUtils {
-   public static final Method[] EMPTY_METHOD_ARRAY = {};
    public static final Object[] EMPTY_OBJECT_ARRAY = {};
-   public static final String[] EMPTY_STRING_ARRAY = {};
 
    /**
     * @throws IllegalArgumentException if <code>collection == null</code>
@@ -32,8 +29,9 @@ public final class ArrayUtils {
 
       int count = 0;
       for (final T elem : elements)
-         if (collection.add(elem))
+         if (collection.add(elem)) {
             count++;
+         }
       return count;
    }
 
@@ -47,57 +45,65 @@ public final class ArrayUtils {
       if (array instanceof byte[]) {
          final byte[] arrayCasted = (byte[]) array;
          final List<Byte> result = new ArrayList<Byte>(arrayCasted.length);
-         for (final byte i : arrayCasted)
+         for (final byte i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof char[]) {
          final char[] arrayCasted = (char[]) array;
          final List<Character> result = new ArrayList<Character>(arrayCasted.length);
-         for (final char i : arrayCasted)
+         for (final char i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof short[]) {
          final short[] arrayCasted = (short[]) array;
          final List<Short> result = new ArrayList<Short>(arrayCasted.length);
-         for (final short i : arrayCasted)
+         for (final short i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof int[]) {
          final int[] arrayCasted = (int[]) array;
          final List<Integer> result = new ArrayList<Integer>(arrayCasted.length);
-         for (final int i : arrayCasted)
+         for (final int i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof long[]) {
          final long[] arrayCasted = (long[]) array;
          final List<Long> result = new ArrayList<Long>(arrayCasted.length);
-         for (final long i : arrayCasted)
+         for (final long i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof double[]) {
          final double[] arrayCasted = (double[]) array;
          final List<Double> result = new ArrayList<Double>(arrayCasted.length);
-         for (final double i : arrayCasted)
+         for (final double i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof float[]) {
          final float[] arrayCasted = (float[]) array;
          final List<Float> result = new ArrayList<Float>(arrayCasted.length);
-         for (final float i : arrayCasted)
+         for (final float i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
       if (array instanceof boolean[]) {
          final boolean[] arrayCasted = (boolean[]) array;
          final List<Boolean> result = new ArrayList<Boolean>(arrayCasted.length);
-         for (final boolean i : arrayCasted)
+         for (final boolean i : arrayCasted) {
             result.add(i);
+         }
          return result;
       }
 
