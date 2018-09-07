@@ -15,10 +15,10 @@ import java.security.PrivilegedAction;
 /**
  * @author Sebastian Thomschke
  */
-public final class SetAccessibleAction implements PrivilegedAction<Object> {
+final class SetAccessibleAction implements PrivilegedAction<Object> {
    private final AccessibleObject ao;
 
-   public SetAccessibleAction(final AccessibleObject ao) {
+   SetAccessibleAction(final AccessibleObject ao) {
       this.ao = ao;
    }
 
