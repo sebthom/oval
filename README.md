@@ -1,4 +1,4 @@
-# OVal - the object validation framework for Java 6 or later
+# OVal - the object validation framework for Java 8 or later
 
 [![Build Status](https://travis-ci.org/sebthom/oval.svg?branch=master)](https://travis-ci.org/sebthom/oval)
 [![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%202.0-blue.svg)](LICENSE.txt)

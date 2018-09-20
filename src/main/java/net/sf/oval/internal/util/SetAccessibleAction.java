@@ -15,16 +15,22 @@ import java.security.PrivilegedAction;
 /**
  * @author Sebastian Thomschke
  */
-final class SetAccessibleAction implements PrivilegedAction<Object> {
+public final class SetAccessibleAction implements PrivilegedAction<Object> {
    private final AccessibleObject ao;
+   private boolean accessible = true;
 
-   SetAccessibleAction(final AccessibleObject ao) {
+   public SetAccessibleAction(final AccessibleObject ao) {
       this.ao = ao;
+   }
+
+   public SetAccessibleAction(final AccessibleObject ao, final boolean accessible) {
+      this.ao = ao;
+      this.accessible = accessible;
    }
 
    @Override
    public Object run() {
-      ao.setAccessible(true);
+      ao.setAccessible(accessible);
       return null;
    }
 }

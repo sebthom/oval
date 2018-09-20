@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ### Changed
-* Raised minimum JRE from Java 5 to **Java 6**
+* Raised minimum JRE from Java 5 to **Java 8**
 * Changed from EPL1.0 to EPL2.0 license
 * Project configuration improvements
   * Enabled Travis CI builds
@@ -21,14 +21,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * Changed to Semantic Versioning
 * Applied new checkstyle/formatting rules
 * Updated tested optional dependencies
-  * Groovy 2.4.15
-  * Guice 4.1.0
+  * AspectJ 1.9.1
+  * commons-jexl3 3.1
+  * Groovy 2.5.2
+  * Guice 4.2.0
   * Javolution 6.0.0
-  * MVEL 2.4.0
+  * MVEL 2.4.2
   * OGNL 3.1.17
   * Rhino 1.7.7.2
-  * Spring Framework 4.3.18.RELEASE
-  * commons-jexl3 3.1
+  * Spring Framework 5.0.9.RELEASE
+  * trove4j 3.1.0
+  * javax.validation-api 2.0.0.Final
 
 ### Removed
 * net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener - use net.sf.oval.integration.spring.SpringCheckInitializationListener instead

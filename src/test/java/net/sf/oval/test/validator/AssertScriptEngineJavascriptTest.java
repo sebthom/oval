@@ -24,17 +24,17 @@ import net.sf.oval.constraint.Assert;
 public class AssertScriptEngineJavascriptTest extends TestCase {
    @Assert( //
       expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", //
-      lang = "Groovy", //
+      lang = "groovy", //
       errorCode = "C0" //
    )
    public static class Person {
-      @Assert(expr = "_value!=null", lang = "Groovy", errorCode = "C1")
+      @Assert(expr = "_value!=null", lang = "groovy", errorCode = "C1")
       public String firstName;
 
-      @Assert(expr = "_value!=null", lang = "Groovy", errorCode = "C2")
+      @Assert(expr = "_value!=null", lang = "groovy", errorCode = "C2")
       public String lastName;
 
-      @Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "Groovy", errorCode = "C3")
+      @Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "groovy", errorCode = "C3")
       public String zipCode;
    }
 

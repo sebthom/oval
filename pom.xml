@@ -71,10 +71,9 @@ SPDX-License-Identifier: EPL-2.0
 
 
     <properties>
-        <java.version>1.6</java.version>
+        <java.version>1.8</java.version>
 
-        <!-- cannot upgrade, newer versions require Java 7 -->
-        <aspectj.version>1.8.9</aspectj.version>
+        <aspectj.version>1.9.1</aspectj.version>
 
         <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value -> 
@@ -447,7 +446,7 @@ SPDX-License-Identifier: EPL-2.0
         <dependency>
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
-            <version>3.1.17</version>
+            <version>3.2.6</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -461,8 +460,7 @@ SPDX-License-Identifier: EPL-2.0
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <!-- cannot upgrade, newer versions require Java7 or higher -->
-            <version>1.7.7.2</version>
+            <version>1.7.10</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -472,31 +470,28 @@ SPDX-License-Identifier: EPL-2.0
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade, newer versions require Java7 or higher -->
             <groupId>org.javolution</groupId>
             <artifactId>javolution-core-java</artifactId>
             <version>6.0.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade, newer versions require Java7 or higher -->
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>4.1.0</version>
+            <version>4.2.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>4.3.18.RELEASE</version>
+            <version>5.0.9.RELEASE</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>4.3.18.RELEASE</version>
+            <version>5.0.9.RELEASE</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -506,10 +501,9 @@ SPDX-License-Identifier: EPL-2.0
             <optional>true</optional>
         </dependency>
         <dependency>
-            <!-- cannot upgrade to 2.5.x, which requires Java7 or higher -->
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.4.15</version>
+            <artifactId>groovy-jsr223</artifactId>
+            <version>2.5.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -521,7 +515,7 @@ SPDX-License-Identifier: EPL-2.0
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
-            <version>2.4.0.Final</version>
+            <version>2.4.2.Final</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -538,14 +532,14 @@ SPDX-License-Identifier: EPL-2.0
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
-            <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
+            <artifactId>core</artifactId>
+            <version>3.1.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
+            <version>2.0.0.Final</version>
             <optional>true</optional>
         </dependency>
         <dependency>

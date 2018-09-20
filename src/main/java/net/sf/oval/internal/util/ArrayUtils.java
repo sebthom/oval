@@ -23,6 +23,7 @@ public final class ArrayUtils {
    /**
     * @throws IllegalArgumentException if <code>collection == null</code>
     */
+   @SafeVarargs
    public static <T> int addAll(final Collection<T> collection, final T... elements) throws IllegalArgumentException {
       if (elements == null)
          return 0;
@@ -38,13 +39,13 @@ public final class ArrayUtils {
    public static List<?> asList(final Object array) {
       if (array instanceof Object[]) {
          final Object[] arrayCasted = (Object[]) array;
-         final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+         final List<Object> result = new ArrayList<>(arrayCasted.length);
          Collections.addAll(result, arrayCasted);
          return result;
       }
       if (array instanceof byte[]) {
          final byte[] arrayCasted = (byte[]) array;
-         final List<Byte> result = new ArrayList<Byte>(arrayCasted.length);
+         final List<Byte> result = new ArrayList<>(arrayCasted.length);
          for (final byte i : arrayCasted) {
             result.add(i);
          }
@@ -52,7 +53,7 @@ public final class ArrayUtils {
       }
       if (array instanceof char[]) {
          final char[] arrayCasted = (char[]) array;
-         final List<Character> result = new ArrayList<Character>(arrayCasted.length);
+         final List<Character> result = new ArrayList<>(arrayCasted.length);
          for (final char i : arrayCasted) {
             result.add(i);
          }
@@ -60,7 +61,7 @@ public final class ArrayUtils {
       }
       if (array instanceof short[]) {
          final short[] arrayCasted = (short[]) array;
-         final List<Short> result = new ArrayList<Short>(arrayCasted.length);
+         final List<Short> result = new ArrayList<>(arrayCasted.length);
          for (final short i : arrayCasted) {
             result.add(i);
          }
@@ -68,7 +69,7 @@ public final class ArrayUtils {
       }
       if (array instanceof int[]) {
          final int[] arrayCasted = (int[]) array;
-         final List<Integer> result = new ArrayList<Integer>(arrayCasted.length);
+         final List<Integer> result = new ArrayList<>(arrayCasted.length);
          for (final int i : arrayCasted) {
             result.add(i);
          }
@@ -76,7 +77,7 @@ public final class ArrayUtils {
       }
       if (array instanceof long[]) {
          final long[] arrayCasted = (long[]) array;
-         final List<Long> result = new ArrayList<Long>(arrayCasted.length);
+         final List<Long> result = new ArrayList<>(arrayCasted.length);
          for (final long i : arrayCasted) {
             result.add(i);
          }
@@ -84,7 +85,7 @@ public final class ArrayUtils {
       }
       if (array instanceof double[]) {
          final double[] arrayCasted = (double[]) array;
-         final List<Double> result = new ArrayList<Double>(arrayCasted.length);
+         final List<Double> result = new ArrayList<>(arrayCasted.length);
          for (final double i : arrayCasted) {
             result.add(i);
          }
@@ -92,7 +93,7 @@ public final class ArrayUtils {
       }
       if (array instanceof float[]) {
          final float[] arrayCasted = (float[]) array;
-         final List<Float> result = new ArrayList<Float>(arrayCasted.length);
+         final List<Float> result = new ArrayList<>(arrayCasted.length);
          for (final float i : arrayCasted) {
             result.add(i);
          }
@@ -100,7 +101,7 @@ public final class ArrayUtils {
       }
       if (array instanceof boolean[]) {
          final boolean[] arrayCasted = (boolean[]) array;
-         final List<Boolean> result = new ArrayList<Boolean>(arrayCasted.length);
+         final List<Boolean> result = new ArrayList<>(arrayCasted.length);
          for (final boolean i : arrayCasted) {
             result.add(i);
          }
@@ -111,7 +112,7 @@ public final class ArrayUtils {
    }
 
    public static <T> List<T> asList(final T[] array) {
-      final List<T> result = new ArrayList<T>(array.length);
+      final List<T> result = new ArrayList<>(array.length);
       Collections.addAll(result, array);
       return result;
    }

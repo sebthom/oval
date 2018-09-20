@@ -12,6 +12,7 @@ package net.sf.oval.internal.util;
 import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -172,9 +173,7 @@ public final class ReflectionUtils {
 
    public static Object getFieldValue(final Field field, final Object target) throws AccessingFieldValueFailedException {
       try {
-         if (!field.isAccessible()) {
-            AccessController.doPrivileged(new SetAccessibleAction(field));
-         }
+         setAccessible(field, true);
          return field.get(target);
       } catch (final Exception ex) {
          throw new AccessingFieldValueFailedException(field.getName(), target, ContextCache.getFieldContext(field), ex);
@@ -307,7 +306,7 @@ public final class ReflectionUtils {
                if (paramAnnos.length > 0) {
                   HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
                   if (cummulatedParamAnnos == null) {
-                     methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
+                     methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<>();
                   }
                   for (final Annotation anno : paramAnnos) {
                      cummulatedParamAnnos.add(anno);
@@ -411,9 +410,8 @@ public final class ReflectionUtils {
    public static <T> T invokeMethod(final Method method, final Object obj, final Object... args) throws InvokingMethodFailedException,
       ConstraintsViolatedException {
       try {
-         if (!method.isAccessible()) {
-            AccessController.doPrivileged(new SetAccessibleAction(method));
-         }
+         setAccessible(method, true);
+
          return (T) method.invoke(obj, args);
       } catch (final Exception ex) {
          if (ex.getCause() instanceof ConstraintsViolatedException)
@@ -538,6 +536,13 @@ public final class ReflectionUtils {
     */
    public static boolean isVoidMethod(final Method method) {
       return method.getReturnType() == void.class;
+   }
+
+   public static void setAccessible(final AccessibleObject obj, final boolean accessible) {
+      if (obj.isAccessible() == accessible)
+         return;
+
+      AccessController.doPrivileged(new SetAccessibleAction(obj, accessible));
    }
 
    public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue) {
