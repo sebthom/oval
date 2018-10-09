@@ -43,6 +43,7 @@ public class PrePostRubyTest extends TestCase {
          return value;
       }
 
+      // java_import 'java.lang.System'; System.out.println _old.key?(\"value\"); System.out.println _old.keys; System.out.println _old.values;
       @Post(expr = "!_this.valuePostWithOld.nil? && !_old['value'].nil?", old = "{ 'value' => _this.value }", lang = "ruby", message = "POST")
       public BigDecimal getValuePostWithOld() {
          return value;
@@ -56,10 +57,11 @@ public class PrePostRubyTest extends TestCase {
       @Pre(expr = "!_this.value.nil? && !value2add.nil? && !_args[0].nil?", lang = "ruby", message = "PRE")
       @Post(expr = "_this.value>_old['value']", old = "{ 'value' => _this.value }", lang = "ruby", message = "POST")
       public void increase(@Assert(expr = "!_value.nil?", lang = "ruby", message = "ASSERT") final BigDecimal value2add) {
-         if (buggyMode)
+         if (buggyMode) {
             value = value.subtract(value2add);
-         else
+         } else {
             value = value.add(value2add);
+         }
       }
    }
 

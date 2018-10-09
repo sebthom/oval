@@ -99,8 +99,8 @@ SPDX-License-Identifier: EPL-2.0
 
 
    <scm>
-        <!-- http://maven.apache.org/scm/subversion.html -->
-        <!-- http://maven.apache.org/scm/git.html -->
+      <!-- http://maven.apache.org/scm/subversion.html -->
+      <!-- http://maven.apache.org/scm/git.html -->
       <url>https://github.com/sebthom/oval</url>
       <connection>scm:git:https://github.com/sebthom/oval.git</connection>
       <developerConnection>scm:git:https://github.com/sebthom/oval.git</developerConnection>
@@ -209,10 +209,10 @@ SPDX-License-Identifier: EPL-2.0
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-                <!-- 
-                    Overriding the ecj compile executions defined in the parent project with ajc compiler calls. 
-                    Not using aspectj-maven-plugin or plexus-compiler-aspectj which are not toolchain aware.
-                -->
+            <!-- 
+               Overriding the ecj compile executions defined in the parent project with ajc compiler calls. 
+               Not using aspectj-maven-plugin or plexus-compiler-aspectj which are not toolchain aware.
+            -->
             <executions>
                <execution>
                   <id>ecj@compile</id>
@@ -225,11 +225,11 @@ SPDX-License-Identifier: EPL-2.0
                      <executable>java</executable>
                      <classpathScope>compile</classpathScope>
                      <arguments>
-                                <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
+                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <argument>-jar</argument>
                         <argument>${custom.ajcJarPath}</argument>
 
-                                <!-- ajc compatible ecj options -->
+                        <!-- ajc compatible ecj options -->
                         <argument>-bootclasspath</argument>
                         <argument>${custom.compileBootClasspath}</argument>
                         <argument>-encoding</argument>
@@ -248,7 +248,7 @@ SPDX-License-Identifier: EPL-2.0
                         <argument>-cp</argument>
                         <argument>${custom.compileClasspathElements}</argument> <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
 
-                                <!-- ajc specific options -->
+                        <!-- ajc specific options -->
                         <argument>-outxml</argument> <!-- generate META-INF/aop.xml -->
                         <argument>-XnoInline</argument> <!-- do not inline around advice  -->
                         <argument>-showWeaveInfo</argument>
@@ -268,11 +268,11 @@ SPDX-License-Identifier: EPL-2.0
                      <executable>java</executable>
                      <classpathScope>compile</classpathScope>
                      <arguments>
-                                <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
+                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <argument>-jar</argument>
                         <argument>${custom.ajcJarPath}</argument>
 
-                                <!-- ajc compatible ecj options -->
+                        <!-- ajc compatible ecj options -->
                         <arguemt>-bootclasspath</arguemt>
                         <argument>${custom.testCompileBootClasspath}</argument>
                         <argument>-encoding</argument>
@@ -291,7 +291,7 @@ SPDX-License-Identifier: EPL-2.0
                         <argument>-cp</argument>
                         <argument>${custom.testClasspathElements}</argument> <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
 
-                                <!-- ajc specific options -->
+                        <!-- ajc specific options -->
                         <argument>-outxml</argument> <!-- generate META-INF/aop.xml -->
                         <argument>-XnoInline</argument> <!-- do not inline around advice  -->
                         <argument>-showWeaveInfo</argument>
@@ -335,7 +335,7 @@ SPDX-License-Identifier: EPL-2.0
          <plugins>
 
             <plugin>
-                   <!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
+               <!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
                <artifactId>maven-surefire-plugin</artifactId>
                <configuration>
                   <excludes>
@@ -355,7 +355,7 @@ SPDX-License-Identifier: EPL-2.0
                </configuration>
             </plugin>
 
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+            <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
             <plugin>
                <groupId>org.eclipse.m2e</groupId>
                <artifactId>lifecycle-mapping</artifactId>
@@ -385,7 +385,7 @@ SPDX-License-Identifier: EPL-2.0
    </build>
 
 
-    <!-- global dependencies -->
+   <!-- global dependencies -->
    <dependencies>
       <dependency>
          <groupId>log4j</groupId>
@@ -432,12 +432,12 @@ SPDX-License-Identifier: EPL-2.0
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
          <artifactId>xstream</artifactId>
-            <!-- cannot upgrade to 1.4.4-1.4.10 which results in an xstream internal RuntimeException -->
+         <!-- cannot upgrade to 1.4.4-1.4.10 which results in an xstream internal RuntimeException -->
          <version>1.4.3</version>
          <optional>true</optional>
       </dependency>
       <dependency>
-            <!-- https://github.com/beanshell/beanshell -->
+         <!-- https://github.com/beanshell/beanshell -->
          <groupId>org.apache-extras.beanshell</groupId>
          <artifactId>bsh</artifactId>
          <version>2.0b6</version>
@@ -452,8 +452,7 @@ SPDX-License-Identifier: EPL-2.0
       <dependency>
          <groupId>org.jruby</groupId>
          <artifactId>jruby</artifactId>
-            <!-- cannot upgrade to 1.7, which requires Java6 or higher -->
-            <!-- cannot upgrade to 1.6.6/7/8 because of a bug in jruby's Hash class -->
+         <!-- cannot upgrade to newer releases because of a bug in jruby's Hash class -->
          <version>1.6.5</version>
          <optional>true</optional>
       </dependency>
@@ -482,7 +481,6 @@ SPDX-License-Identifier: EPL-2.0
          <optional>true</optional>
       </dependency>
       <dependency>
-         <!-- cannot upgrade to 5.0, which requires Java7 or higher -->
          <groupId>org.springframework</groupId>
          <artifactId>spring-aop</artifactId>
          <version>5.0.9.RELEASE</version>
@@ -555,7 +553,7 @@ SPDX-License-Identifier: EPL-2.0
          <optional>true</optional>
       </dependency>
 
-        <!-- test dependencies -->
+      <!-- test dependencies -->
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
