@@ -345,7 +345,7 @@ public class Guard extends Validator {
 
          for (final PostCheck check : postChecks)
             if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null && check.getOld().length() > 0) {
-               final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLang());
+               final ExpressionLanguage el = expressionLanguageRegistry.getExpressionLanguage(check.getLang());
                final Map<String, Object> values = getCollectionFactory().createMap();
                values.put("_this", validatedObject);
                if (hasParameters) {
@@ -357,7 +357,7 @@ public class Guard extends Validator {
                   values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
                }
 
-               oldValues.put(check, eng.evaluate(check.getOld(), values));
+               oldValues.put(check, el.evaluate(check.getOld(), values));
             }
 
          return oldValues;
