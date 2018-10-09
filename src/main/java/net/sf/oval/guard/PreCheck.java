@@ -20,24 +20,24 @@ import net.sf.oval.exception.OValException;
 public class PreCheck extends AbstractCheck {
    private static final long serialVersionUID = 1L;
 
-   private String expression;
-   private String language;
+   private String expr;
+   private String lang;
 
    public void configure(final Pre constraintAnnotation) {
       setMessage(constraintAnnotation.message());
       setErrorCode(constraintAnnotation.errorCode());
       setSeverity(constraintAnnotation.severity());
-      setExpression(constraintAnnotation.expr());
-      setLanguage(constraintAnnotation.lang());
+      setExpr(constraintAnnotation.expr());
+      setLang(constraintAnnotation.lang());
       setProfiles(constraintAnnotation.profiles());
    }
 
-   public String getExpression() {
-      return expression;
+   public String getExpr() {
+      return expr;
    }
 
-   public String getLanguage() {
-      return language;
+   public String getLang() {
+      return lang;
    }
 
    @Override
@@ -46,11 +46,11 @@ public class PreCheck extends AbstractCheck {
       throw new UnsupportedOperationException();
    }
 
-   public void setExpression(final String condition) {
-      expression = condition;
+   public void setExpr(final String condition) {
+      expr = condition;
    }
 
-   public void setLanguage(final String language) {
-      this.language = language;
+   public void setLang(final String language) {
+      lang = language;
    }
 }

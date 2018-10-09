@@ -95,17 +95,17 @@ public class Guard extends Validator {
    /**
     * string based on validated object hashcode + method hashcode for currently validated method return values
     */
-   private static final ThreadLocalList<String> CURRENTLY_CHECKED_METHOD_RETURN_VALUES = new ThreadLocalList<String>();
+   private static final ThreadLocalList<String> CURRENTLY_CHECKED_METHOD_RETURN_VALUES = new ThreadLocalList<>();
 
    /**
     * string based on validated object hashcode + method hashcode for currently validated method pre-conditions
     */
-   private static final ThreadLocalList<String> CURRENTLY_CHECKED_PRE_CONDITIONS = new ThreadLocalList<String>();
+   private static final ThreadLocalList<String> CURRENTLY_CHECKED_PRE_CONDITIONS = new ThreadLocalList<>();
 
    /**
     * string based on validated object hashcode + method hashcode for currently validated method post-conditions
     */
-   private static final ThreadLocalList<String> CURRENTLY_CHECKED_POST_CONDITIONS = new ThreadLocalList<String>();
+   private static final ThreadLocalList<String> CURRENTLY_CHECKED_POST_CONDITIONS = new ThreadLocalList<>();
 
    private boolean isActivated = true;
    private boolean isInvariantsEnabled = true;
@@ -121,7 +121,7 @@ public class Guard extends Validator {
     */
    private boolean isProbeModeFeatureUsed = false;
 
-   private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<ConstraintsViolatedListener>(4);
+   private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<>(4);
    private final ConcurrentMultiValueMap<Class<?>, ConstraintsViolatedListener> listenersByClass = ConcurrentMultiValueMap.create();
    private final ConcurrentMultiValueMap<Object, ConstraintsViolatedListener> listenersByObject = ConcurrentMultiValueMap.create();
 
@@ -129,7 +129,7 @@ public class Guard extends Validator {
     * Objects for OVal suppresses occurring ConstraintViolationExceptions for pre-condition violations on setter methods
     * for the current thread.
     */
-   private final ThreadLocalWeakHashMap<Object, ProbeModeListener> objectsInProbeMode = new ThreadLocalWeakHashMap<Object, ProbeModeListener>();
+   private final ThreadLocalWeakHashMap<Object, ProbeModeListener> objectsInProbeMode = new ThreadLocalWeakHashMap<>();
 
    /**
     * Constructs a new guard object and uses a new instance of AnnotationsConfigurer
@@ -147,7 +147,7 @@ public class Guard extends Validator {
    }
 
    private List<CheckExclusion> _getActiveExclusions(final Set<CheckExclusion> exclusions) {
-      final List<CheckExclusion> activeExclusions = new LinkedList<CheckExclusion>(exclusions);
+      final List<CheckExclusion> activeExclusions = new LinkedList<>(exclusions);
       for (final Iterator<CheckExclusion> it = activeExclusions.iterator(); it.hasNext();) {
          final CheckExclusion exclusion = it.next();
          if (!isAnyProfileEnabled(exclusion.getProfiles(), null)) {
@@ -345,7 +345,7 @@ public class Guard extends Validator {
 
          for (final PostCheck check : postChecks)
             if (isAnyProfileEnabled(check.getProfiles(), null) && check.getOld() != null && check.getOld().length() > 0) {
-               final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLanguage());
+               final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLang());
                final Map<String, Object> values = getCollectionFactory().createMap();
                values.put("_this", validatedObject);
                if (hasParameters) {
@@ -835,7 +835,7 @@ public class Guard extends Validator {
       if (guardedObject == null)
          return;
 
-      final LinkedHashSet<ConstraintsViolatedListener> listenersToNotify = new LinkedHashSet<ConstraintsViolatedListener>();
+      final LinkedHashSet<ConstraintsViolatedListener> listenersToNotify = new LinkedHashSet<>();
 
       // get the object listeners
       listenersByObject.addAllTo(guardedObject, listenersToNotify);
@@ -1028,7 +1028,7 @@ public class Guard extends Validator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = getCollectionFactory().createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
 
       try {
          final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -1069,7 +1069,7 @@ public class Guard extends Validator {
          return;
 
       // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
       try {
          super.validateInvariants(guardedObject, violations, profiles);
       } finally {
@@ -1084,7 +1084,7 @@ public class Guard extends Validator {
    protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final List<ConstraintViolation> violations)
       throws ValidationFailedException {
       // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
       try {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Map<Integer, ParameterChecks> parameterChecks = cc.checksForMethodParameters.get(method);
@@ -1147,29 +1147,35 @@ public class Guard extends Validator {
             if (!isAnyProfileEnabled(check.getProfiles(), null)) {
                continue;
             }
+            try {
+               final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLang());
+               final Map<String, Object> values = getCollectionFactory().createMap();
+               values.put("_this", validatedObject);
+               values.put("_returns", returnValue);
+               values.put("_old", oldValues.get(check));
 
-            final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLanguage());
-            final Map<String, Object> values = getCollectionFactory().createMap();
-            values.put("_this", validatedObject);
-            values.put("_returns", returnValue);
-            values.put("_old", oldValues.get(check));
-            if (hasParameters) {
-               values.put("_args", args);
-               for (int i = 0; i < args.length; i++) {
-                  values.put(parameterNames[i], args[i]);
+               if (hasParameters) {
+                  values.put("_args", args);
+                  for (int i = 0; i < args.length; i++) {
+                     values.put(parameterNames[i], args[i]);
+                  }
+               } else {
+                  values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
                }
-            } else {
-               values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
-            }
 
-            if (!eng.evaluateAsBoolean(check.getExpression(), values)) {
-               final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-               messageVariables.put("expression", check.getExpression());
-               final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
+               if (!eng.evaluateAsBoolean(check.getExpr(), values)) {
+                  final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
+                  messageVariables.put("expression", check.getExpr());
+                  final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
-               violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+                  violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+               }
+            } catch (final OValException ex) {
+               throw new ValidationFailedException("Executing " + check + " failed. Method: " + method + " Validated object: " + validatedObject, ex);
             }
          }
+      } catch (final ValidationFailedException ex) {
+         throw ex;
       } catch (final OValException ex) {
          throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: " + validatedObject, ex);
       } finally {
@@ -1208,7 +1214,7 @@ public class Guard extends Validator {
                continue;
             }
 
-            final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLanguage());
+            final ExpressionLanguage eng = expressionLanguageRegistry.getExpressionLanguage(check.getLang());
             final Map<String, Object> values = getCollectionFactory().createMap();
             values.put("_this", validatedObject);
             if (hasParameters) {
@@ -1220,9 +1226,9 @@ public class Guard extends Validator {
                values.put("_args", ArrayUtils.EMPTY_OBJECT_ARRAY);
             }
 
-            if (!eng.evaluateAsBoolean(check.getExpression(), values)) {
+            if (!eng.evaluateAsBoolean(check.getExpr(), values)) {
                final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
-               messageVariables.put("expression", check.getExpression());
+               messageVariables.put("expression", check.getExpr());
                final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
                violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
@@ -1258,7 +1264,7 @@ public class Guard extends Validator {
 
       CURRENTLY_CHECKED_METHOD_RETURN_VALUES.get().add(key);
       // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
       try {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);

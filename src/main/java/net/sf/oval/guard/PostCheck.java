@@ -20,26 +20,26 @@ import net.sf.oval.exception.OValException;
 public class PostCheck extends AbstractCheck {
    private static final long serialVersionUID = 1L;
 
-   private String expression;
-   private String language;
+   private String expr;
+   private String lang;
    private String old;
 
    public void configure(final Post constraintAnnotation) {
       setMessage(constraintAnnotation.message());
       setErrorCode(constraintAnnotation.errorCode());
       setSeverity(constraintAnnotation.severity());
-      setExpression(constraintAnnotation.expr());
-      setLanguage(constraintAnnotation.lang());
+      setExpr(constraintAnnotation.expr());
+      setLang(constraintAnnotation.lang());
       setOld(constraintAnnotation.old());
       setProfiles(constraintAnnotation.profiles());
    }
 
-   public String getExpression() {
-      return expression;
+   public String getExpr() {
+      return expr;
    }
 
-   public String getLanguage() {
-      return language;
+   public String getLang() {
+      return lang;
    }
 
    public String getOld() {
@@ -52,15 +52,20 @@ public class PostCheck extends AbstractCheck {
       throw new UnsupportedOperationException();
    }
 
-   public void setExpression(final String condition) {
-      expression = condition;
+   public void setExpr(final String condition) {
+      expr = condition;
    }
 
-   public void setLanguage(final String language) {
-      this.language = language;
+   public void setLang(final String language) {
+      lang = language;
    }
 
    public void setOld(final String old) {
       this.old = old;
+   }
+
+   @Override
+   public String toString() {
+      return "PostCheck [language=" + lang + ", expression=" + expr + ", old=" + old + "]";
    }
 }
