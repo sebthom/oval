@@ -9,6 +9,10 @@
  *********************************************************************/
 package net.sf.oval.constraint;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Map;
+
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -29,6 +33,15 @@ public class NotEmptyCheck extends AbstractAnnotationCheck<NotEmpty> {
    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
       if (valueToValidate == null)
          return true;
+
+      if (valueToValidate instanceof Collection)
+         return ((Collection<?>) valueToValidate).size() > 0;
+
+      if (valueToValidate instanceof Map)
+         return ((Map<?, ?>) valueToValidate).size() > 0;
+
+      if (valueToValidate.getClass().isArray())
+         return Array.getLength(valueToValidate) > 0;
 
       return valueToValidate.toString().length() > 0;
    }

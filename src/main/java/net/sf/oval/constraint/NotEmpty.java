@@ -21,12 +21,17 @@ import net.sf.oval.configuration.annotation.Constraint;
 import net.sf.oval.configuration.annotation.Constraints;
 
 /**
- * Check if the string representation is not empty ("").
- * 
- * <br>
+ * Check if the annotated element is not empty. Supported types are:
+ * <ul>
+ * <li>Collection - the collection's size is checked
+ * <li>Map - the map's size is checked
+ * <li>Array - the array's length is checked
+ * <li>CharSequence - the length of character sequence is checked
+ * <li>Object - the length of the object's string representation is checked
+ * </ul>
  * <br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
@@ -62,10 +67,10 @@ public @interface NotEmpty {
    /**
     * <p>
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-    * 
+    *
     * <p>
     * <b>Default:</b> ConstraintTarget.VALUES
-    * 
+    *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */
@@ -78,7 +83,7 @@ public @interface NotEmpty {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see ConstraintViolation
     */
    String message() default "net.sf.oval.constraint.NotEmpty.violated";

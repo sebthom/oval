@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * Spring Framework 5.0.9.RELEASE
   * trove4j 3.1.0
   * javax.validation-api 2.0.0.Final
+* @NotEmpty now evaluates Map/Collection/Array based on their size/length properties
+
 
 ### Removed
 * net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener - use net.sf.oval.integration.spring.SpringCheckInitializationListener instead
