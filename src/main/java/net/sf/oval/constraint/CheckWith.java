@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -24,13 +25,14 @@ import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 /**
  * Check the value by a method of the same class that takes the value as argument and returns true if valid
  * and false if invalid.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Constraint(checkWith = CheckWithCheck.class)
+@Repeatable(CheckWith.List.class)
 public @interface CheckWith {
    @Documented
    @Retention(RetentionPolicy.RUNTIME)
@@ -60,10 +62,10 @@ public @interface CheckWith {
    /**
     * <p>
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-    * 
+    *
     * <p>
     * <b>Default:</b> ConstraintTarget.CONTAINER
-    * 
+    *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */
@@ -81,7 +83,7 @@ public @interface CheckWith {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see ConstraintViolation
     */
    String message() default "net.sf.oval.constraint.CheckWith.violated";
@@ -111,7 +113,7 @@ public @interface CheckWith {
     * Check class to use for validation. If this class is an inner class
     * it needs be declared as a <b>static</b> class. Otherwise
     * check instantiation will fail.
-    * 
+    *
     * @see net.sf.oval.constraint.CheckWithCheck.SimpleCheck
     */
    Class<? extends SimpleCheck> value();

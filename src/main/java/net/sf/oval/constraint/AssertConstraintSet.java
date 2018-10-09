@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -21,13 +22,14 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if the value satisfies the all constraints of specified constraint set.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(checkWith = AssertConstraintSetCheck.class)
+@Repeatable(AssertConstraintSet.List.class)
 public @interface AssertConstraintSet {
    @Documented
    @Retention(RetentionPolicy.RUNTIME)
@@ -57,10 +59,10 @@ public @interface AssertConstraintSet {
    /**
     * <p>
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-    * 
+    *
     * <p>
     * <b>Default:</b> ConstraintTarget.CONTAINER
-    * 
+    *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */

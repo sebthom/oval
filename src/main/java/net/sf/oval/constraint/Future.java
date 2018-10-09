@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -22,17 +23,18 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if the date is in the future.
- * 
+ *
  * <br>
  * <br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(checkWith = FutureCheck.class)
+@Repeatable(Future.List.class)
 public @interface Future {
    @Documented
    @Retention(RetentionPolicy.RUNTIME)
@@ -62,10 +64,10 @@ public @interface Future {
    /**
     * <p>
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-    * 
+    *
     * <p>
     * <b>Default:</b> ConstraintTarget.VALUES
-    * 
+    *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */
@@ -78,7 +80,7 @@ public @interface Future {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see ConstraintViolation
     */
    String message() default "net.sf.oval.constraint.Future.violated";

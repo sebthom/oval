@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -22,17 +23,18 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if value equals the value of the referenced field.
- * 
+ *
  * <br>
  * <br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(checkWith = EqualToFieldCheck.class)
+@Repeatable(EqualToField.List.class)
 public @interface EqualToField {
    @Documented
    @Retention(RetentionPolicy.RUNTIME)
@@ -62,10 +64,10 @@ public @interface EqualToField {
    /**
     * <p>
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-    * 
+    *
     * <p>
     * <b>Default:</b> ConstraintTarget.CONTAINER
-    * 
+    *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */
@@ -84,7 +86,7 @@ public @interface EqualToField {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see ConstraintViolation
     */
    String message() default "net.sf.oval.constraint.EqualToField.violated";

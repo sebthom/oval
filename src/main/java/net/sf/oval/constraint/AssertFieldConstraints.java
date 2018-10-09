@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -20,13 +21,14 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if the value satisfies the constraints defined for the specified field.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(checkWith = AssertFieldConstraintsCheck.class)
+@Repeatable(AssertFieldConstraints.List.class)
 public @interface AssertFieldConstraints {
    @Documented
    @Retention(RetentionPolicy.RUNTIME)

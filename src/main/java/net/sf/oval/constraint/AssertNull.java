@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -22,13 +23,14 @@ import net.sf.oval.configuration.annotation.Constraints;
 
 /**
  * Check if null.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(checkWith = AssertNullCheck.class)
+@Repeatable(AssertNull.List.class)
 public @interface AssertNull {
    @Documented
    @Retention(RetentionPolicy.RUNTIME)
@@ -58,10 +60,10 @@ public @interface AssertNull {
    /**
     * <p>
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
-    * 
+    *
     * <p>
     * <b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES
-    * 
+    *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */
@@ -74,7 +76,7 @@ public @interface AssertNull {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see ConstraintViolation
     */
    String message() default "net.sf.oval.constraint.AssertNull.violated";

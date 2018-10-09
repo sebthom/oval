@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 * [github Issue #13](https://github.com/sebthom/oval/issues/13) Support for XInclude in XML config files
-
+* Constraint annotations are now [repeatable annotations](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
 
 ### Changed
 * Raised minimum JRE from Java 5 to **Java 8**

@@ -25,6 +25,7 @@ import net.sf.oval.internal.util.Assert;
  * @author Sebastian Thomschke
  */
 public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
+
    public interface SimpleCheck extends Serializable {
       boolean isSatisfied(Object validatedObject, Object value);
    }
