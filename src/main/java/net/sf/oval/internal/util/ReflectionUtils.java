@@ -456,6 +456,9 @@ public final class ReflectionUtils {
          return true;
       } catch (final ClassNotFoundException ex) {
          return false;
+      } catch (final NoClassDefFoundError ex) {
+         LOG.error("Failed to load class [" + className + "]", ex);
+         return false;
       }
    }
 
