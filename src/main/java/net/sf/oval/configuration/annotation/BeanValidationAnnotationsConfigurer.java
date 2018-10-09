@@ -113,23 +113,23 @@ import net.sf.oval.internal.util.ReflectionUtils;
 public class BeanValidationAnnotationsConfigurer implements Configurer {
 
    private interface ConstraintMapper {
-      Check map(Annotation annotation);
+      Check[] map(Annotation annotation);
    }
 
    private static class JSR303Mapper implements ConstraintMapper {
 
       @Override
-      public Check map(final Annotation annotation) {
+      public Check[] map(final Annotation annotation) {
          if (annotation instanceof NotNull)
-            return new NotNullCheck();
+            return new Check[] {new NotNullCheck()};
          if (annotation instanceof Null)
-            return new AssertNullCheck();
+            return new Check[] {new AssertNullCheck()};
          if (annotation instanceof Valid)
-            return new AssertValidCheck();
+            return new Check[] {new AssertValidCheck()};
          if (annotation instanceof AssertTrue)
-            return new AssertTrueCheck();
+            return new Check[] {new AssertTrueCheck()};
          if (annotation instanceof AssertFalse)
-            return new AssertFalseCheck();
+            return new Check[] {new AssertFalseCheck()};
          if (annotation instanceof DecimalMax) {
             final MaxCheck check = new MaxCheck();
             check.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
@@ -137,7 +137,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             if (getInclusive != null) {
                check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
             }
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof DecimalMin) {
             final MinCheck check = new MinCheck();
@@ -146,22 +146,22 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             if (getInclusive != null) {
                check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
             }
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Max) {
             final MaxCheck check = new MaxCheck();
             check.setMax(((Max) annotation).value());
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Min) {
             final MinCheck check = new MinCheck();
             check.setMin(((Min) annotation).value());
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Future)
-            return new FutureCheck();
+            return new Check[] {new FutureCheck()};
          if (annotation instanceof Past)
-            return new PastCheck();
+            return new Check[] {new PastCheck()};
          if (annotation instanceof Pattern) {
             final MatchPatternCheck check = new MatchPatternCheck();
             int iflag = 0;
@@ -169,19 +169,19 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
                iflag = iflag | flag.getValue();
             }
             check.setPattern(((Pattern) annotation).regexp(), iflag);
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Digits) {
             final DigitsCheck check = new DigitsCheck();
             check.setMaxFraction(((Digits) annotation).fraction());
             check.setMaxInteger(((Digits) annotation).integer());
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Size) {
             final SizeCheck check = new SizeCheck();
             check.setMax(((Size) annotation).max());
             check.setMin(((Size) annotation).min());
-            return check;
+            return new Check[] {check};
          }
          return null;
       }
@@ -190,45 +190,45 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
 
    private static class JSR380Mapper extends JSR303Mapper {
       @Override
-      public Check map(final Annotation annotation) {
-         final Check jsr303check = super.map(annotation);
-         if (jsr303check != null)
-            return jsr303check;
+      public Check[] map(final Annotation annotation) {
+         final Check[] jsr303checks = super.map(annotation);
+         if (jsr303checks != null)
+            return jsr303checks;
 
          if (annotation instanceof FutureOrPresent) {
             final DateRangeCheck check = new DateRangeCheck();
             check.setMin("now");
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Negative) {
             final MaxCheck check = new MaxCheck();
             check.setInclusive(false);
             check.setMax(0);
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof NegativeOrZero) {
             final MaxCheck check = new MaxCheck();
             check.setInclusive(true);
             check.setMax(0);
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof NotBlank)
-            return new NotBlankCheck();
+            return new Check[] {new NotNullCheck(), new NotBlankCheck()};
          if (annotation instanceof NotEmpty)
-            return new NotEmptyCheck();
+            return new Check[] {new NotNullCheck(), new NotEmptyCheck()};
          if (annotation instanceof PastOrPresent) {
             final DateRangeCheck check = new DateRangeCheck();
             check.setMax("now");
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof Positive) {
             final MinCheck check = new MinCheck();
             check.setInclusive(false);
             check.setMin(0);
-            return check;
+            return new Check[] {check};
          }
          if (annotation instanceof PositiveOrZero)
-            return new NotNegativeCheck();
+            return new Check[] {new NotNegativeCheck()};
          return null;
       }
    }
@@ -405,29 +405,31 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
        */
       if (annotationClass.getAnnotation(javax.validation.Constraint.class) != null || annotation instanceof Valid) {
 
-         final Check check = CONSTRAINT_MAPPER.map(annotation);
+         final Check[] mappedChecks = CONSTRAINT_MAPPER.map(annotation);
 
-         if (check != null) {
-            final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
-            if (getMessage != null) {
-               final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
-               if (message != null && !message.startsWith("{javax.validation.constraints.")) {
-                  check.setMessage(message);
-               }
-            }
-
-            final Method getGroups = ReflectionUtils.getMethod(annotationClass, "groups");
-            if (getGroups != null) {
-               final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, annotation);
-               if (groups != null && groups.length > 0) {
-                  final String[] profiles = new String[groups.length];
-                  for (int i = 0, l = groups.length; i < l; i++) {
-                     profiles[i] = groups[i].getName();
+         if (mappedChecks != null) {
+            for (final Check check : mappedChecks) {
+               final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
+               if (getMessage != null) {
+                  final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
+                  if (message != null && !message.startsWith("{javax.validation.constraints.")) {
+                     check.setMessage(message);
                   }
-                  check.setProfiles(profiles);
                }
+
+               final Method getGroups = ReflectionUtils.getMethod(annotationClass, "groups");
+               if (getGroups != null) {
+                  final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, annotation);
+                  if (groups != null && groups.length > 0) {
+                     final String[] profiles = new String[groups.length];
+                     for (int i = 0, l = groups.length; i < l; i++) {
+                        profiles[i] = groups[i].getName();
+                     }
+                     check.setProfiles(profiles);
+                  }
+               }
+               checks.add(check);
             }
-            checks.add(check);
             return;
          }
 

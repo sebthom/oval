@@ -300,7 +300,7 @@ entity.parent = null; // violation - cannot be null
 List<ConstraintViolation> violations = validator.validate(entity);
 ```
 
-### <a name="bean-validation-annotations">/a>Interpreting Bean Validation annotations
+### <a name="bean-validation-annotations"></a>Interpreting Bean Validation annotations
 
 OVal itself is not a JSR303/JSR380 compliant bean validation framework. However it now comes with a configurer
 that can translate the standard Bean Validation constraints (javax.validation.constraints.\*) into equivalent
@@ -319,8 +319,8 @@ interprets the annotations as follows:
     @javax.validation.constraints.Min             => @net.sf.oval.constraint.Min
     @javax.validation.constraints.Negative        => @net.sf.oval.constraint.Max(max=0, inclusive=false)
     @javax.validation.constraints.NegativeOrZero  => @net.sf.oval.constraint.Max(max=0, inclusive=true)
-    @javax.validation.constraints.NotBlank        => @net.sf.oval.constraint.NotBlank
-    @javax.validation.constraints.NotEmpty        => @net.sf.oval.constraint.NotEmpty
+    @javax.validation.constraints.NotBlank        => @net.sf.oval.constraint.NotNull+NotBlank
+    @javax.validation.constraints.NotEmpty        => @net.sf.oval.constraint.NotNull+NotEmpty
     @javax.validation.constraints.NotNull         => @net.sf.oval.constraint.NotNull
     @javax.validation.constraints.Null            => @net.sf.oval.constraint.Null
     @javax.validation.constraints.Past            => @net.sf.oval.constraint.Past
