@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 * [github Issue #13](https://github.com/sebthom/oval/issues/13) Support for XInclude in XML config files
-* Constraint annotations are now [repeatable annotations](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
+* [github Issue #17](https://github.com/sebthom/oval/issues/17) Constraint annotations are now [repeatable annotations](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
 
 ### Changed
 * Raised minimum JRE from Java 5 to **Java 8**
@@ -32,13 +32,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * Spring Framework 5.0.9.RELEASE
   * trove4j 3.1.0
   * javax.validation-api 2.0.0.Final
-* @NotEmpty now evaluates Map/Collection/Array based on their size/length properties
-* renamed PreCheck/PostCheck#getExpression to PreCheck/PostCheck#getExpr
-* renamed PreCheck/PostCheck#getLanguage to PreCheck/PostCheck#getLang
- 
+* [github Issue #22](https://github.com/sebthom/oval/issues/22) `@NotEmpty` now evaluates Map/Collection/Array based on their size/length properties
+* [github Issue #21](https://github.com/sebthom/oval/issues/21)
+  * renamed `PreCheck#getExpression` to `PreCheck#getExpr`
+  * renamed `PostCheck#getExpression` to `PostCheck#getExpr`
+  * renamed `PreCheck#getLanguage` to `PreCheck#getLang`
+  * renamed `PostCheck#getLanguage` to `PostCheck#getLang`
+* [github Issue #16](https://github.com/sebthom/oval/issues/16) changed `CheckWithCheck.SimpleCheck#isSatisfied(Object, Object)` to `CheckWithCheck.SimpleCheck#isSatisfied(Object, Object, OValContext, Validator)`
 
 ### Removed
-* net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener - use net.sf.oval.integration.spring.SpringCheckInitializationListener instead
+* `net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener` - use `net.sf.oval.integration.spring.SpringCheckInitializationListener` instead
 
 ### Fixed
 * warnings declared by ApiUsageAuditor aspect are incomplete
@@ -50,8 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Support for validation of Bean Validation 2.0 built-in constraints
 
 ### Fixed
-* [github Issue #10](https://github.com/sebthom/oval/issues/10) Race Condition in ResourceBundleMessageResolver
-* [github Issue #7](https://github.com/sebthom/oval/issues/7) StackOverflowError when using @Guarded(checkInvariants=true) (thanks to Kai Tait)
+* [github Issue #10](https://github.com/sebthom/oval/issues/10) Race Condition in `ResourceBundleMessageResolver`
+* [github Issue #7](https://github.com/sebthom/oval/issues/7) StackOverflowError when using `@Guarded(checkInvariants=true)` (thanks to Kai Tait)
 
 ### Changed
 * upgraded to Spring 3.2.18.RELEASE, SLF4J 1.7.25
@@ -60,8 +63,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.87] - 2017-03-04
 
 ### Added
-* [github Issue #5](https://github.com/sebthom/oval/issues/5) Support for Java 8 java.time Dates in @Future and @Past (thanks to Pyeroh)
-* [github Issue #3](https://github.com/sebthom/oval/issues/3) Improve performance of ValidateWithMethodCheck (thanks to an-bel)
+* [github Issue #5](https://github.com/sebthom/oval/issues/5) Support for Java 8 java.time Dates in `@Future` and `@Past` (thanks to Pyeroh)
+* [github Issue #3](https://github.com/sebthom/oval/issues/3) Improve performance of `ValidateWithMethodCheck` (thanks to an-bel)
 
 
 ## [1.86] - 2016-10-08
@@ -70,7 +73,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * SpringInjector#initialize(Object)
 
 ### Fixed
-* [sf.net Issue #91](https://sourceforge.net/p/oval/bugs/91/) Race condition when initializing ResourceBundleMessageResolver (thanks to Ville Koskela)
+* [sf.net Issue #91](https://sourceforge.net/p/oval/bugs/91/) Race condition when initializing `ResourceBundleMessageResolver` (thanks to Ville Koskela)
 * Improve support for constraint target selection via JXPath
 
 ### Changed
@@ -81,8 +84,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 * [sf.net Issue #90](https://sourceforge.net/p/oval/bugs/90/) Activation rules are not considered for whole contraints list (thanks to Petras)
-* [sf.net Issue #85](https://sourceforge.net/p/oval/bugs/85/) @Email validation treats + as invalid character (thanks to David van Geest)
-* [sf.net Issue #89](https://sourceforge.net/p/oval/bugs/89/) ConstraintTarget.RECURSIVE to specify the constraints should be applied recursively to nested maps/lists Limiting the nesting level for ConstraintTarget.VALUES (thanks to Petras)
+* [sf.net Issue #85](https://sourceforge.net/p/oval/bugs/85/) `@Email` validation treats + as invalid character (thanks to David van Geest)
+* [sf.net Issue #89](https://sourceforge.net/p/oval/bugs/89/) `ConstraintTarget.RECURSIVE` to specify the constraints should be applied recursively to nested maps/lists Limiting the nesting level for ConstraintTarget.VALUES (thanks to Petras)
 * [sf.net Issue #88](https://sourceforge.net/p/oval/bugs/88/) ResourceBundleMessageResolver fails to find a message in ResourceBundle of more generic Locale (thanks to Petras)
 * concurrency fix in SerializableMethod/SerializableField/SerializableContructor (thanks to Andrew Malota)
 * DigitsCheck's validation message missing from Messages.properties file (thanks to Dirk Buchhorn)

@@ -27,7 +27,7 @@ import net.sf.oval.internal.util.Assert;
 public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
 
    public interface SimpleCheck extends Serializable {
-      boolean isSatisfied(Object validatedObject, Object value);
+      boolean isSatisfied(Object validatedObject, Object value, OValContext context, Validator validator);
    }
 
    public interface SimpleCheckWithMessageVariables extends SimpleCheck {
@@ -75,7 +75,7 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
       if (valueToValidate == null && ignoreIfNull)
          return true;
 
-      return simpleCheck.isSatisfied(validatedObject, valueToValidate);
+      return simpleCheck.isSatisfied(validatedObject, valueToValidate, context, validator);
    }
 
    public void setIgnoreIfNull(final boolean ignoreIfNull) {

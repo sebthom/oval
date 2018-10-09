@@ -17,6 +17,7 @@ import net.sf.oval.Validator;
 import net.sf.oval.constraint.CheckWith;
 import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -27,7 +28,7 @@ public class CheckWithListConstraintTest extends TestCase {
          protected static final long serialVersionUID = 1L;
 
          @Override
-         public boolean isSatisfied(final Object validatedObject, final Object value) {
+         public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context, final Validator validator) {
             final String name = (String) value;
 
             if (name == null)
@@ -49,7 +50,7 @@ public class CheckWithListConstraintTest extends TestCase {
          protected static final long serialVersionUID = 1L;
 
          @Override
-         public boolean isSatisfied(final Object validatedObject, final Object value) {
+         public boolean isSatisfied(final Object validatedObject, final Object value, final OValContext context, final Validator validator) {
             return ((TestEntity2) validatedObject).isValidName((String) value);
          }
       }
