@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 * warnings declared by ApiUsageAuditor aspect are incomplete
+* [github Issue #23](https://github.com/sebthom/oval/issues/23) `ObjectCache` is not thread-safe
 
 
 ## [1.90] - 2017-10-19

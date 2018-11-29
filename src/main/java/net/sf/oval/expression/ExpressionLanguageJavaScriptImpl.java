@@ -30,7 +30,14 @@ public class ExpressionLanguageJavaScriptImpl extends AbstractExpressionLanguage
 
    private final Scriptable parentScope;
 
-   private final ObjectCache<String, Script> scriptCache = new ObjectCache<String, Script>();
+   private final ObjectCache<String, Script> expressionCache = new ObjectCache<String, Script>() {
+      @Override
+      protected Script load(final String expression) {
+         final Context ctx = ContextFactory.getGlobal().enterContext();
+         ctx.setOptimizationLevel(9);
+         return ctx.compileString(expression, "<cmd>", 1, null);
+      }
+   };
 
    public ExpressionLanguageJavaScriptImpl() {
       final Context ctx = ContextFactory.getGlobal().enterContext();
@@ -46,19 +53,14 @@ public class ExpressionLanguageJavaScriptImpl extends AbstractExpressionLanguage
       LOG.debug("Evaluating JavaScript expression: {1}", expression);
       try {
          final Context ctx = ContextFactory.getGlobal().enterContext();
-         Script script = scriptCache.get(expression);
-         if (script == null) {
-            ctx.setOptimizationLevel(9);
-            script = ctx.compileString(expression, "<cmd>", 1, null);
-            scriptCache.put(expression, script);
-         }
          final Scriptable scope = ctx.newObject(parentScope);
          scope.setPrototype(parentScope);
          scope.setParentScope(null);
          for (final Entry<String, ?> entry : values.entrySet()) {
             scope.put(entry.getKey(), scope, Context.javaToJS(entry.getValue(), scope));
          }
-         return script.exec(ctx, scope);
+         final Script expr = expressionCache.get(expression);
+         return expr.exec(ctx, scope);
       } catch (final EvaluatorException ex) {
          throw new ExpressionEvaluationException("Evaluating JavaScript expression failed: " + expression, ex);
       } finally {

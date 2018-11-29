@@ -30,18 +30,19 @@ public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage {
       .strict(true) //
       .create();
 
-   private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<String, JexlExpression>();
+   private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<String, JexlExpression>() {
+      @Override
+      protected JexlExpression load(final String expression) {
+         return JEXL.createExpression(expression);
+      }
+   };
 
    @Override
    @SuppressWarnings("unchecked")
    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
       LOG.debug("Evaluating JEXL expression: {1}", expression);
       try {
-         JexlExpression expr = expressionCache.get(expression);
-         if (expr == null) {
-            expr = JEXL.createExpression(expression);
-            expressionCache.put(expression, expr);
-         }
+         final JexlExpression expr = expressionCache.get(expression);
          return expr.evaluate(new MapContext((Map<String, Object>) values));
       } catch (final Exception ex) {
          throw new ExpressionEvaluationException("Evaluating JEXL expression failed: " + expression, ex);

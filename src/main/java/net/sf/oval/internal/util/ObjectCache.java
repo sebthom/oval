@@ -10,39 +10,22 @@
 package net.sf.oval.internal.util;
 
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Sebastian Thomschke
  */
-public final class ObjectCache<K, V> {
-   private final Map<K, SoftReference<V>> map = new HashMap<K, SoftReference<V>>();
-
-   private final LinkedList<V> objectsLastAccessed = new LinkedList<V>();
-   private final int objectsToKeepCount;
-
-   /**
-    * Creates a new cache keeping all objects.
-    */
-   public ObjectCache() {
-      objectsToKeepCount = -1;
-   }
-
-   /**
-    * @param maxObjectsToKeep the number of cached objects that should stay in memory when GC
-    *           starts removing SoftReferences to free memory
-    */
-   public ObjectCache(final int maxObjectsToKeep) {
-      this.objectsToKeepCount = maxObjectsToKeep;
-   }
+public abstract class ObjectCache<K, V> {
+   private final ConcurrentMap<K, SoftReference<V>> map = new ConcurrentHashMap<K, SoftReference<V>>();
 
    public void compact() {
       for (final Map.Entry<K, SoftReference<V>> entry : map.entrySet()) {
          final SoftReference<V> ref = entry.getValue();
-         if (ref.get() == null)
+         if (ref.get() == null) {
             map.remove(entry.getKey());
+         }
       }
    }
 
@@ -50,26 +33,24 @@ public final class ObjectCache<K, V> {
       return map.containsKey(key);
    }
 
+   protected abstract V load(K key);
+
    public V get(final K key) {
-      final SoftReference<V> softReference = map.get(key);
-      if (softReference != null) {
-         final V value = softReference.get();
-
-         if (value == null)
+      final SoftReference<V> softRef = map.get(key);
+      V result = null;
+      if (softRef != null) {
+         final V value = softRef.get();
+         if (value == null) {
             map.remove(key);
-         else if (objectsToKeepCount > 0 && value != objectsLastAccessed.getFirst()) {
-            objectsLastAccessed.remove(value);
-            objectsLastAccessed.addFirst(value);
-            if (objectsLastAccessed.size() > objectsToKeepCount)
-               objectsLastAccessed.removeLast();
          }
-         return softReference.get();
+         result = softRef.get();
       }
-      return null;
+      if (result == null) {
+         result = load(key);
+         map.remove(key);
+         map.put(key, new SoftReference<V>(result));
+      }
+      return result;
    }
 
-   public void put(final K key, final V value) {
-      map.remove(key);
-      map.put(key, new SoftReference<V>(value));
-   }
 }

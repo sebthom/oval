@@ -17,7 +17,6 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
-import net.sf.oval.internal.util.ObjectCache;
 import net.sf.oval.internal.util.ThreadLocalObjectCache;
 
 /**
@@ -28,18 +27,18 @@ public class ExpressionLanguageGroovyImpl extends AbstractExpressionLanguage {
 
    private static final GroovyShell GROOVY_SHELL = new GroovyShell();
 
-   private final ThreadLocalObjectCache<String, Script> threadScriptCache = new ThreadLocalObjectCache<String, Script>();
+   private final ThreadLocalObjectCache<String, Script> expressionCache = new ThreadLocalObjectCache<String, Script>() {
+      @Override
+      protected Script load(final String expression) {
+         return GROOVY_SHELL.parse(expression);
+      }
+   };
 
    @Override
    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
       LOG.debug("Evaluating Groovy expression: {1}", expression);
       try {
-         final ObjectCache<String, Script> scriptCache = threadScriptCache.get();
-         Script script = scriptCache.get(expression);
-         if (script == null) {
-            script = GROOVY_SHELL.parse(expression);
-            scriptCache.put(expression, script);
-         }
+         final Script script = expressionCache.get().get(expression);
 
          final Binding binding = new Binding();
          for (final Entry<String, ?> entry : values.entrySet()) {

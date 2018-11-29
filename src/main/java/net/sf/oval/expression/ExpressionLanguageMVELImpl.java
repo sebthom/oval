@@ -23,17 +23,19 @@ import net.sf.oval.internal.util.ObjectCache;
 public class ExpressionLanguageMVELImpl extends AbstractExpressionLanguage {
    private static final Log LOG = Log.getLog(ExpressionLanguageMVELImpl.class);
 
-   private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>();
+   private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>() {
+
+      @Override
+      protected Object load(final String expression) {
+         return MVEL.compileExpression(expression);
+      }
+   };
 
    @Override
    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
       LOG.debug("Evaluating MVEL expression: {1}", expression);
       try {
-         Object expr = expressionCache.get(expression);
-         if (expr == null) {
-            expr = MVEL.compileExpression(expression);
-            expressionCache.put(expression, expr);
-         }
+         final Object expr = expressionCache.get(expression);
          return MVEL.executeExpression(expr, values);
       } catch (final Exception ex) {
          throw new ExpressionEvaluationException("Evaluating MVEL expression failed: " + expression, ex);

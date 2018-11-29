@@ -57,7 +57,16 @@ public class ExpressionLanguageScriptEngineImpl extends AbstractExpressionLangua
       this.engine = engine;
       if (engine instanceof Compilable) {
          compilable = (Compilable) engine;
-         compiledCache = new ObjectCache<String, CompiledScript>();
+         compiledCache = new ObjectCache<String, CompiledScript>() {
+            @Override
+            protected CompiledScript load(final String expression) {
+               try {
+                  return compilable.compile(expression);
+               } catch (final ScriptException ex) {
+                  throw new ExpressionEvaluationException("Parsing " + engine.get(ScriptEngine.NAME) + " expression failed: " + expression, ex);
+               }
+            }
+         };
       } else {
          compilable = null;
          compiledCache = null;
@@ -74,16 +83,12 @@ public class ExpressionLanguageScriptEngineImpl extends AbstractExpressionLangua
          }
 
          if (compilable != null) {
-            CompiledScript compiled = compiledCache.get(expression);
-            if (compiled == null) {
-               compiled = compilable.compile(expression);
-               compiledCache.put(expression, compiled);
-            }
+            final CompiledScript compiled = compiledCache.get(expression);
             return compiled.eval(scope);
          }
          return engine.eval(expression, scope);
       } catch (final ScriptException ex) {
-         throw new ExpressionEvaluationException("Evaluating JavaScript expression failed: " + expression, ex);
+         throw new ExpressionEvaluationException("Evaluating " + engine.get(ScriptEngine.NAME) + " expression failed: " + expression, ex);
       }
    }
 }
