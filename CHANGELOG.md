@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * commons-jexl3 3.1
   * Groovy 2.5.2
   * Guice 4.2.2
-  * Javolution 7.0.0
+  * Javolution 6.0.0
   * MVEL 2.4.4
   * OGNL 3.2.10
   * Rhino 1.7.7.2
