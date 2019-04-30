@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2015-2018 by Vegard IT GmbH, Germany, https://vegardit.com
+# Copyright 2015-2019 by Vegard IT GmbH, Germany, https://vegardit.com
 # SPDX-License-Identifier: Apache-2.0
 # 
 # @author Sebastian Thomschke, Vegard IT GmbH
@@ -14,7 +14,7 @@ if [[ -f ./.travis/release-trigger.sh ]]; then
     source ./.travis/release-trigger.sh
 fi
 
-MAVEN_VERSION=3.5.4
+MAVEN_VERSION=3.6.1
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
     echo "Installing Maven version $MAVEN_VERSION..."
     mkdir -p $HOME/.m2/bin/
