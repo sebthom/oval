@@ -1,4 +1,4 @@
-# OVal - the object validation framework for Java 8 or later
+# OVal - the object validation framework for Java
 
 [![Build Status](https://travis-ci.org/sebthom/oval.svg?branch=master)](https://travis-ci.org/sebthom/oval)
 [![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%202.0-blue.svg)](LICENSE.txt)
@@ -7,6 +7,7 @@
 [comment]: # (https://img.shields.io/github/license/sebthom/oval.svg?label=License)
 
 1. [What is it?](#what-is-it)
+1. [Java Compatibility](#compatibility)
 1. [User Guide](#user-guide)
 1. [Articles about OVal](#articles-about-oval)
 1. [Projects using OVal](#projects-using-oval)
@@ -17,13 +18,20 @@
 
 ![logo](src/site/resources/images/oval-banner.png)
 
-OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only JavaBeans). 
-Constraints can be declared with annotations (`@NotNull`, `@MaxLength`), [POJOs](https://en.wikipedia.org/wiki/Plain_old_Java_object) or XML. 
+OVal is a pragmatic and extensible validation framework for any kind of Java objects (not only JavaBeans).
+Constraints can be declared with annotations (`@NotNull`, `@MaxLength`), [POJOs](https://en.wikipedia.org/wiki/Plain_old_Java_object) or XML.
 
 Custom constraints can be expressed as custom Java classes or by using scripting languages such as [JavaScript](https://github.com/mozilla/rhino), [Groovy](http://groovy-lang.org/),
-[BeanShell](http://www.beanshell.org/), [OGNL](https://github.com/jkuhnert/ognl) or [MVEL](https://github.com/mvel/mvel). 
+[BeanShell](http://www.beanshell.org/), [OGNL](https://github.com/jkuhnert/ognl) or [MVEL](https://github.com/mvel/mvel).
 
 Besides field/property validation OVal implements [Programming by Contract](https://en.wikipedia.org/wiki/Design_by_contract) features by utilizing [AspectJ](https://www.eclipse.org/aspectj/doc/next/progguide/starting-aspectj.html) based aspects or via [Spring AOP](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html). This for example allows runtime validation of constructor/method arguments.
+
+
+## <a name="compatibility"></a>Java Compatibility
+
+OVal 1.x requires Java 5 or newer.
+
+OVal 2.x requires Java 8 or newer.
 
 
 ## <a name="user-guide"></a>User Guide
@@ -113,7 +121,7 @@ There exist some articles and blog entries talking about and/or referencing OVal
 - eSciDoc <https://www.escidoc.org/>
 - SaferJava <http://code.google.com/p/saferjava/>
 - JProvocateur <http://www.jprovocateur.org/>
-- NexOpen <https://sourceforge.net/projects/nexopen/> 
+- NexOpen <https://sourceforge.net/projects/nexopen/>
 - gdv.xport <https://github.com/oboehm/gdv.xport>
 - suz-lab-gae <http://code.google.com/p/suz-lab-gae/>
 - Cubby Simple Web Application Framework <http://cubby.seasar.org/20x/cubby-oval/index.html>
