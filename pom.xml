@@ -423,7 +423,7 @@
       <dependency>
          <groupId>ognl</groupId>
          <artifactId>ognl</artifactId>
-         <version>3.2.6</version>
+         <version>3.2.10</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -446,21 +446,21 @@
          <optional>true</optional>
       </dependency>
       <dependency>
-         <groupId>org.javolution</groupId>
-         <artifactId>javolution-core-java</artifactId>
-         <version>6.0.0</version>
+          <groupId>org.javolution</groupId>
+          <artifactId>javolution-core-java</artifactId>
+          <version>7.0.0</version>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>com.google.inject</groupId>
          <artifactId>guice</artifactId>
-         <version>4.2.0</version>
+         <version>4.2.2</version>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-aop</artifactId>
-         <version>5.0.9.RELEASE</version>
+         <version>5.1.6.RELEASE</version>
          <optional>true</optional>
          <exclusions>
             <exclusion>
@@ -472,7 +472,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
-         <version>5.0.9.RELEASE</version>
+         <version>5.1.6.RELEASE</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -496,7 +496,7 @@
       <dependency>
          <groupId>org.mvel</groupId>
          <artifactId>mvel2</artifactId>
-         <version>2.4.2.Final</version>
+         <version>2.4.4.Final</version>
          <optional>true</optional>
       </dependency>
       <dependency>
