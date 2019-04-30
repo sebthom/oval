@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-Copyright 2005-2018 by Sebastian Thomschke and others.
-
-This program and the accompanying materials are made
-available under the terms of the Eclipse Public License 2.0
-which is available at https://www.eclipse.org/legal/epl-2.0/
-
-SPDX-License-Identifier: EPL-2.0
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <!--
+   Copyright 2005-2019 by Sebastian Thomschke and others.
+
+   This program and the accompanying materials are made
+   available under the terms of the Eclipse Public License 2.0
+   which is available at https://www.eclipse.org/legal/epl-2.0/
+
+   SPDX-License-Identifier: EPL-2.0
+   -->
 
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>com.vegardit.maven</groupId>
       <artifactId>vegardit-maven-parent</artifactId>
-      <version>RELEASE</version>
+      <version>2.2.1</version>
    </parent>
 
    <groupId>net.sf.oval</groupId>
@@ -76,7 +77,7 @@ SPDX-License-Identifier: EPL-2.0
       <aspectj.version>1.9.1</aspectj.version>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
-            def setProjectProp = { String name, String value -> 
+            def setProjectProp = { String name, String value ->
                 project.properties[name] = value
                 log.info("Set project property [$name] '${project.properties[name]}'");
             }
@@ -109,7 +110,7 @@ SPDX-License-Identifier: EPL-2.0
 
 
    <distributionManagement>
-      <downloadUrl>http://central.maven.org/maven2/</downloadUrl>
+      <downloadUrl>https://central.maven.org/maven2/</downloadUrl>
       <repository>
          <id>bintray-release-uploads</id>
          <url>https://api.bintray.com/maven/sebthom/maven/oval/;publish=1</url>
@@ -209,8 +210,8 @@ SPDX-License-Identifier: EPL-2.0
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <!-- 
-               Overriding the ecj compile executions defined in the parent project with ajc compiler calls. 
+            <!--
+               Overriding the ecj compile executions defined in the parent project with ajc compiler calls.
                Not using aspectj-maven-plugin or plexus-compiler-aspectj which are not toolchain aware.
             -->
             <executions>
@@ -387,30 +388,6 @@ SPDX-License-Identifier: EPL-2.0
 
    <!-- global dependencies -->
    <dependencies>
-      <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-         <version>1.2.17</version>
-         <optional>true</optional>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.jms</groupId>
-               <artifactId>jms</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.jdmk</groupId>
-               <artifactId>jmxtools</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.jmx</groupId>
-               <artifactId>jmxri</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>javax.mail</groupId>
-               <artifactId>mail</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
       <dependency>
          <groupId>org.aspectj</groupId>
          <artifactId>aspectjrt</artifactId>

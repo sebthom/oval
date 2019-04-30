@@ -42,6 +42,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 * `net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener` - use `net.sf.oval.integration.spring.SpringCheckInitializationListener` instead
+* `net.sf.oval.logging.LoggerFactoryL4JImpl`
+* `net.sf.oval.logging.LoggerL4JImpl`
+
 
 ### Fixed
 * warnings declared by ApiUsageAuditor aspect are incomplete
