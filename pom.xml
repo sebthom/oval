@@ -74,7 +74,7 @@
    <properties>
       <java.version>1.8</java.version>
 
-      <aspectj.version>1.9.1</aspectj.version>
+      <aspectj.version>1.9.3</aspectj.version>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value ->
@@ -446,9 +446,9 @@
          <optional>true</optional>
       </dependency>
       <dependency>
-          <groupId>org.javolution</groupId>
-          <artifactId>javolution-core-java</artifactId>
-          <version>7.0.0</version>
+         <groupId>org.javolution</groupId>
+         <artifactId>javolution-core-java</artifactId>
+         <version>7.0.0</version>
          <optional>true</optional>
       </dependency>
       <dependency>

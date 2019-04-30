@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * Changed to Semantic Versioning
 * Applied new checkstyle/formatting rules
 * Updated tested optional dependencies
-  * AspectJ 1.9.1
+  * AspectJ 1.9.3
   * commons-jexl3 3.1
   * Groovy 2.5.2
   * Guice 4.2.2

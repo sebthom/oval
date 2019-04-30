@@ -10,6 +10,7 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 .apt_generated/
 .settings/
+.checkstyle
 .classpath
 .factorypath
 .project
