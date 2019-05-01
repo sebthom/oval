@@ -35,7 +35,7 @@ public class MaxSizeTest extends AbstractContraintsTest {
       assertTrue(check.isSatisfied(null, new Object[2], null, null));
       assertFalse(check.isSatisfied(null, new Object[3], null, null));
 
-      final List<Object> list = new ArrayList<Object>();
+      final List<Object> list = new ArrayList<>();
       assertTrue(check.isSatisfied(null, list, null, null));
       list.add(1);
       assertTrue(check.isSatisfied(null, list, null, null));
@@ -44,7 +44,7 @@ public class MaxSizeTest extends AbstractContraintsTest {
       list.add(3);
       assertFalse(check.isSatisfied(null, list, null, null));
 
-      final Set<Object> set = new HashSet<Object>();
+      final Set<Object> set = new HashSet<>();
       assertTrue(check.isSatisfied(null, set, null, null));
       set.add(1);
       assertTrue(check.isSatisfied(null, set, null, null));
@@ -53,7 +53,7 @@ public class MaxSizeTest extends AbstractContraintsTest {
       set.add(3);
       assertFalse(check.isSatisfied(null, set, null, null));
 
-      final Map<Object, Object> map = new HashMap<Object, Object>();
+      final Map<Object, Object> map = new HashMap<>();
       assertTrue(check.isSatisfied(null, map, null, null));
       map.put(1, 1);
       assertTrue(check.isSatisfied(null, map, null, null));

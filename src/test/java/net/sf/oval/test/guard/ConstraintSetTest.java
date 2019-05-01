@@ -43,7 +43,7 @@ public class ConstraintSetTest extends TestCase {
 
    public void testConstraintSetValidation() {
       final ConstraintSet constraintSet = new ConstraintSet("zipCode");
-      final List<Check> checks = new ArrayList<Check>();
+      final List<Check> checks = new ArrayList<>();
       constraintSet.setChecks(checks);
 
       final NotNullCheck notNull = new NotNullCheck();

@@ -27,7 +27,7 @@ public final class Log {
    /* cannot use CollectionFactoryHolder.getFactory().createMap(32) here, since
     * the collection factory uses the Log itself which is not yet initialized
     */
-   private static final Map<String, Log> LOG_REGISTRY = new HashMap<String, Log>(32);
+   private static final Map<String, Log> LOG_REGISTRY = new HashMap<>(32);
 
    public static synchronized Log getLog(final Class<?> clazz) throws IllegalArgumentException {
       final String name = clazz.getName();

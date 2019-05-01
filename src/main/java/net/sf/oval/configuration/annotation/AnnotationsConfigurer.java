@@ -56,7 +56,7 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public class AnnotationsConfigurer implements Configurer {
 
-   protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<CheckInitializationListener>(2);
+   protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<>(2);
 
    private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes) {
       final CollectionFactory cf = getCollectionFactory();

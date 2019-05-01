@@ -35,7 +35,7 @@ public class NotBlankCheck extends AbstractAnnotationCheck<NotBlank> {
       final int l = str.length();
       for (int i = 0; i < l; i++) {
          final char ch = str.charAt(i);
-         if (!(Character.isSpaceChar(ch) || Character.isWhitespace(ch)))
+         if (!Character.isSpaceChar(ch) || !Character.isWhitespace(ch))
             return true;
       }
 

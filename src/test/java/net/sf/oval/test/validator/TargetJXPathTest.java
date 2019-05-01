@@ -31,7 +31,7 @@ import net.sf.oval.exception.ValidationFailedException;
 public class TargetJXPathTest extends TestCase {
    public static class Level1 {
       @AssertTrue(target = "jxpath:.[@visible=0]/visible" /* find an item where visible='false' and select the 'visible' property for testing */)
-      protected List<Thing> things = new ArrayList<Thing>();
+      protected List<Thing> things = new ArrayList<>();
 
       @MinSize(target = "jxpath:level3/array", value = 4, message = "LEVEL3_ARRAY_TOO_SMALL")
       @MinLength(target = "jxpath:level3/array", value = 4, appliesTo = ConstraintTarget.VALUES, message = "LEVEL3_ARRAY_ITEM_TOO_SMALL")

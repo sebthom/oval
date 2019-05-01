@@ -150,7 +150,7 @@ public class XMLConfigurationTest extends TestCase {
       /*
        * define a configuration
        */
-      final Set<ConstraintSetConfiguration> constraintSetsConfig = new HashSet<ConstraintSetConfiguration>();
+      final Set<ConstraintSetConfiguration> constraintSetsConfig = new HashSet<>();
       {
          final ConstraintSetConfiguration csf = new ConstraintSetConfiguration();
          constraintSetsConfig.add(csf);
@@ -166,7 +166,7 @@ public class XMLConfigurationTest extends TestCase {
          csf.checks.add(rec);
       }
 
-      final Set<ClassConfiguration> classConfigs = new HashSet<ClassConfiguration>();
+      final Set<ClassConfiguration> classConfigs = new HashSet<>();
       {
          final ClassConfiguration cf = new ClassConfiguration();
          classConfigs.add(cf);

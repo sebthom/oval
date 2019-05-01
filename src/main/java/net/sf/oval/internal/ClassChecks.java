@@ -72,7 +72,7 @@ public final class ClassChecks {
    /**
     * compound constraints / object level invariants
     */
-   public final Set<Check> checksForObject = new LinkedHashSet<Check>(2);
+   public final Set<Check> checksForObject = new LinkedHashSet<>(2);
 
    public final Class<?> clazz;
 
@@ -80,25 +80,25 @@ public final class ClassChecks {
     * all non-static fields that have value constraints.
     * Validator loops over this set during validation.
     */
-   public final Set<Field> constrainedFields = new LinkedHashSet<Field>();
+   public final Set<Field> constrainedFields = new LinkedHashSet<>();
 
    /**
     * all non-static non-void, non-parameterized methods marked as invariant that have return value constraints.
     * Validator loops over this set during validation.
     */
-   public final Set<Method> constrainedMethods = new LinkedHashSet<Method>();
+   public final Set<Method> constrainedMethods = new LinkedHashSet<>();
 
    /**
     * all non-static fields that have value constraints.
     * Validator loops over this set during validation.
     */
-   public final Set<Field> constrainedStaticFields = new LinkedHashSet<Field>();
+   public final Set<Field> constrainedStaticFields = new LinkedHashSet<>();
 
    /**
     * all static non-void, non-parameterized methods marked as invariant that have return value constraints.
     * Validator loops over this set during validation.
     */
-   public final Set<Method> constrainedStaticMethods = new LinkedHashSet<Method>();
+   public final Set<Method> constrainedStaticMethods = new LinkedHashSet<>();
 
    public boolean isCheckInvariants;
 

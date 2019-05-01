@@ -24,8 +24,8 @@ import net.sf.oval.context.OValContext;
  * @author Sebastian Thomschke
  */
 public final class ParameterChecks {
-   public final Set<Check> checks = new LinkedHashSet<Check>(2);
-   public final Set<CheckExclusion> checkExclusions = new LinkedHashSet<CheckExclusion>(2);
+   public final Set<Check> checks = new LinkedHashSet<>(2);
+   public final Set<CheckExclusion> checkExclusions = new LinkedHashSet<>(2);
 
    public final int parameterIndex;
 

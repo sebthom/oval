@@ -15,7 +15,7 @@ import java.util.Locale;
  * @author Sebastian Thomschke
  */
 public class ThreadLocalLocaleProvider implements LocaleProvider {
-   private final ThreadLocal<Locale> locale = new ThreadLocal<Locale>();
+   private final ThreadLocal<Locale> locale = new ThreadLocal<>();
 
    /**
     * Gets the locale of the current thread

@@ -27,13 +27,12 @@ public final class MessageRenderer {
          message = messageKey;
       }
 
-      final MessageValueFormatter formatter = Validator.getMessageValueFormatter();
-
       // if there are no place holders in the message simply return it
       if (message.indexOf('{') == -1)
          return message;
 
       if (messageValues != null && messageValues.size() > 0) {
+         final MessageValueFormatter formatter = Validator.getMessageValueFormatter();
          for (final Entry<String, ?> entry : messageValues.entrySet()) {
             message = StringUtils.replaceAll(message, "{" + entry.getKey() + "}", formatter.format(entry.getValue()));
          }

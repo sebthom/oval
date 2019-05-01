@@ -241,11 +241,11 @@ public class Validator implements IValidator {
    }
 
    private final ConcurrentMap<Class<?>, ClassChecks> checksByClass = collectionFactory.createConcurrentMap();
-   private final Set<Configurer> configurers = new LinkedHashSet<Configurer>(4);
+   private final Set<Configurer> configurers = new LinkedHashSet<>(4);
    private final Map<String, ConstraintSet> constraintSetsById = collectionFactory.createConcurrentMap(4);
 
-   protected final ThreadLocalLinkedList<Set<Object>> currentlyValidatedObjects = new ThreadLocalLinkedList<Set<Object>>();
-   protected final ThreadLocalLinkedList<List<ConstraintViolation>> currentViolations = new ThreadLocalLinkedList<List<ConstraintViolation>>();
+   protected final ThreadLocalLinkedList<Set<Object>> currentlyValidatedObjects = new ThreadLocalLinkedList<>();
+   protected final ThreadLocalLinkedList<List<ConstraintViolation>> currentViolations = new ThreadLocalLinkedList<>();
 
    private ExceptionTranslator exceptionTranslator;
 
@@ -984,8 +984,12 @@ public class Validator implements IValidator {
    //CHECKSTYLE:IGNORE NoFinalize FOR NEXT LINE
    @Override
    protected void finalize() throws Throwable {
-      // to lower the risk of potential memory leaks on hot-reloading/redeployment of validated classes
-      ContextCache.clear();
+      try {
+         // to lower the risk of potential memory leaks on hot-reloading/redeployment of validated classes
+         ContextCache.clear();
+      } finally {
+         super.finalize();
+      }
    }
 
    /**

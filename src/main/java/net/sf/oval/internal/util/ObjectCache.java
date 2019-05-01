@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Sebastian Thomschke
  */
 public abstract class ObjectCache<K, V> {
-   private final ConcurrentMap<K, SoftReference<V>> map = new ConcurrentHashMap<K, SoftReference<V>>();
+   private final ConcurrentMap<K, SoftReference<V>> map = new ConcurrentHashMap<>();
 
    public void compact() {
       for (final Map.Entry<K, SoftReference<V>> entry : map.entrySet()) {

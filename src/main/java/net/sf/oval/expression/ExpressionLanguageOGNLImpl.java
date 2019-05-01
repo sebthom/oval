@@ -39,8 +39,8 @@ public class ExpressionLanguageOGNLImpl extends AbstractExpressionLanguage {
 
       @Override
       public void restore(final Map context, final Object target, final Member member, final String propertyName, final Object oldAccessibleState) {
-         final AccessibleObject accessible = (AccessibleObject) member;
          if (!(Boolean) oldAccessibleState) {
+            final AccessibleObject accessible = (AccessibleObject) member;
             ReflectionUtils.setAccessible(accessible, false);
          }
       }

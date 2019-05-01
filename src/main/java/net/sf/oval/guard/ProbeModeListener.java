@@ -22,7 +22,7 @@ import net.sf.oval.internal.util.MethodInvocationCommand;
  */
 public class ProbeModeListener extends ConstraintsViolatedAdapter {
    private final Object target;
-   private final LinkedList<MethodInvocationCommand> commands = new LinkedList<MethodInvocationCommand>();
+   private final LinkedList<MethodInvocationCommand> commands = new LinkedList<>();
 
    /**
     * Creates a new instance for the given target object.

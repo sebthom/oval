@@ -38,13 +38,13 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
 
       @NotNull(message = "NOT_NULL")
       @Valid
-      public TestEntity ref1;
+      public TestEntity parent;
 
       @Valid
-      public TestEntity ref2;
+      public TestEntity sibling;
 
       @Valid
-      public Collection<TestEntity> refs;
+      public Collection<@NotNull(message = "ELEMENT_NOT_NULL") TestEntity> children;
 
       @NotNull(message = "NOT_NULL")
       public String getDescription() {
@@ -75,7 +75,7 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
       {
          entity.code = "";
          entity.description = "";
-         entity.ref1 = new TestEntity();
+         entity.parent = new TestEntity();
 
          violations = v.validate(entity);
          // ref1 is invalid
@@ -83,26 +83,27 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
       }
 
       {
-         entity.ref1.code = "";
-         entity.ref1.description = "";
-         entity.ref1.ref1 = entity;
+         entity.parent.code = "";
+         entity.parent.description = "";
+         entity.parent.parent = entity;
 
          violations = v.validate(entity);
          assertEquals(0, violations.size());
       }
 
       {
-         entity.ref2 = new TestEntity();
+         entity.sibling = new TestEntity();
 
          violations = v.validate(entity);
-         // ref2 is invalid
+         // sibling is invalid
          assertEquals(1, violations.size());
+         assertEquals(true, violations.get(0).getMessage().contains("sibling"));
       }
 
       {
-         entity.ref2.code = "";
-         entity.ref2.description = "";
-         entity.ref2.ref1 = entity;
+         entity.sibling.code = "";
+         entity.sibling.description = "";
+         entity.sibling.parent = entity;
 
          violations = v.validate(entity);
          assertEquals(0, violations.size());
@@ -119,16 +120,16 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
 
       // Valid test
       {
-         entity.refs = new ArrayList<TestEntity>();
+         entity.children = new ArrayList<TestEntity>();
          final TestEntity d = new TestEntity();
-         entity.refs.add(d);
+         entity.children.add(d);
 
          violations = v.validate(entity);
          assertEquals(1, violations.size());
 
          d.code = "";
          d.description = "";
-         d.ref1 = entity;
+         d.parent = entity;
 
          violations = v.validate(entity);
          assertEquals(0, violations.size());

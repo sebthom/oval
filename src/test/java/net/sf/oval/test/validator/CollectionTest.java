@@ -31,16 +31,16 @@ import net.sf.oval.constraint.NotNull;
 public class CollectionTest extends TestCase {
    public static class Entity {
       @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
-      public final List<List<String>> listWithLists = new ArrayList<List<String>>();
+      public final List<List<String>> listWithLists = new ArrayList<>();
 
       @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
-      public final List<List<String>> listWithLists2 = new ArrayList<List<String>>();
+      public final List<List<String>> listWithLists2 = new ArrayList<>();
 
       @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
-      public final Map<List<String>, List<String>> mapWithLists = new HashMap<List<String>, List<String>>();
+      public final Map<List<String>, List<String>> mapWithLists = new HashMap<>();
 
       @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES}, message = "NOT_NULL")
-      public final Map<List<String>, List<String>> mapWithLists2 = new HashMap<List<String>, List<String>>();
+      public final Map<List<String>, List<String>> mapWithLists2 = new HashMap<>();
 
    }
 
@@ -49,7 +49,7 @@ public class CollectionTest extends TestCase {
       @MaxSize(value = 4, message = "MAX_SIZE")
       @Length(min = 1, max = 7, message = "LENGTH")
       @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
-      public List<String> members = new ArrayList<String>();
+      public List<String> members = new ArrayList<>();
 
       @NotNull(appliesTo = {ConstraintTarget.VALUES}, message = "NOT_NULL2")
       public String[] secondaryMembers;

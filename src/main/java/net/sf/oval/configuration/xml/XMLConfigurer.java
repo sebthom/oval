@@ -177,7 +177,7 @@ public class XMLConfigurer implements Configurer {
          if (reader.hasMoreChildren()) {
             reader.moveDown();
             if ("appliesTo".equals(reader.getNodeName())) {
-               final List<ConstraintTarget> targets = new ArrayList<ConstraintTarget>(2);
+               final List<ConstraintTarget> targets = new ArrayList<>(2);
                while (reader.hasMoreChildren()) {
                   reader.moveDown();
                   if ("constraintTarget".equals(reader.getNodeName())) {
@@ -187,7 +187,7 @@ public class XMLConfigurer implements Configurer {
                }
                assertCheck.setAppliesTo(targets.toArray(new ConstraintTarget[targets.size()]));
             } else if ("profiles".equals(reader.getNodeName())) {
-               final List<String> profiles = new ArrayList<String>(4);
+               final List<String> profiles = new ArrayList<>(4);
                while (reader.hasMoreChildren()) {
                   reader.moveDown();
                   if ("string".equals(reader.getNodeName())) {
@@ -253,7 +253,7 @@ public class XMLConfigurer implements Configurer {
       }
    }
 
-   protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<CheckInitializationListener>(2);
+   protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<>(2);
    private POJOConfigurer pojoConfigurer = new POJOConfigurer();
    private final XStream xStream;
 
