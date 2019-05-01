@@ -1,5 +1,4 @@
-sudo: required
-dist: trusty
+dist: xenial
 
 language: java
   
@@ -9,10 +8,10 @@ os:
 addons:
   apt:
     packages:
-      - openjdk-6-jdk
+      - openjdk-8-jdk-headless
 
 jdk:
-  - oraclejdk8 # used by maven runtime
+  - openjdk8 # used by maven runtime
 
 cache:
   directories:
@@ -22,6 +21,8 @@ before_cache:
   - rm -rf $HOME/.m2/repository/net/sf/oval
 
 install:
+  - which java
+  - echo JAVA_HOME=$JAVA_HOME
   - ls -l /usr/lib/jvm/
 
 before_script:
