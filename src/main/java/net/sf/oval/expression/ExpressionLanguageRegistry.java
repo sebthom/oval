@@ -47,7 +47,7 @@ public class ExpressionLanguageRegistry {
          return registerExpressionLanguage("mvel", new ExpressionLanguageMVELImpl());
 
       // JRuby support
-      else if (("jruby".equals(languageId) || "ruby".equals(languageId)) && ReflectionUtils.isClassPresent("org.jruby.Ruby"))
+      else if (("jruby".equals(languageId) || "ruby".equals(languageId)) && ReflectionUtils.isClassPresent("org.jruby.embed.jsr223.JRubyEngine"))
          return registerExpressionLanguage("jruby", registerExpressionLanguage("ruby", new ExpressionLanguageJRubyImpl()));
 
       // JEXL2 support

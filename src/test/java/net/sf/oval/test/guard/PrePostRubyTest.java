@@ -55,7 +55,7 @@ public class PrePostRubyTest extends TestCase {
       }
 
       @Pre(expr = "!_this.value.nil? && !value2add.nil? && !_args[0].nil?", lang = "ruby", message = "PRE")
-      @Post(expr = "_this.value>_old['value']", old = "{ 'value' => _this.value }", lang = "ruby", message = "POST")
+      @Post(expr = "_this.value>_old[:value]", old = "{value:_this.value}", lang = "ruby", message = "POST")
       public void increase(@Assert(expr = "!_value.nil?", lang = "ruby", message = "ASSERT") final BigDecimal value2add) {
          if (buggyMode) {
             value = value.subtract(value2add);

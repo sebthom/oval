@@ -26,12 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * Groovy 2.5.2
   * Guice 4.2.2
   * Javolution 6.0.0
+  * JRuby 9.2.7.0
   * MVEL 2.4.4
   * OGNL 3.2.10
   * Rhino 1.7.7.2
   * Spring Framework 5.1.6.RELEASE
   * trove4j 3.1.0
-  * javax.validation-api 2.0.0.Final
+  * javax.validation-api 2.0.1.Final
 * [github Issue #22](https://github.com/sebthom/oval/issues/22) `@NotEmpty` now evaluates Map/Collection/Array based on their size/length properties
 * [github Issue #21](https://github.com/sebthom/oval/issues/21)
   * renamed `PreCheck#getExpression` to `PreCheck#getExpr`

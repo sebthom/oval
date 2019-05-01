@@ -56,10 +56,11 @@ public class PrePostGroovyTest extends TestCase {
       @Pre(expr = "_this.value!=null && value2add!=null && _args[0]!=null", lang = "groovy", message = "PRE")
       @Post(expr = "_this.value>_old.value", old = "[value:_this.value]", lang = "groovy", message = "POST")
       public void increase(@Assert(expr = "_value!=null", lang = "groovy", message = "ASSERT") final BigDecimal value2add) {
-         if (buggyMode)
+         if (buggyMode) {
             value = value.subtract(value2add);
-         else
+         } else {
             value = value.add(value2add);
+         }
       }
    }
 

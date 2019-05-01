@@ -9,45 +9,48 @@
  *********************************************************************/
 package net.sf.oval.expression;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jruby.CompatVersion;
-import org.jruby.Ruby;
-import org.jruby.RubyInstanceConfig;
-import org.jruby.javasupport.JavaEmbedUtils;
-import org.jruby.runtime.builtin.IRubyObject;
+import javax.script.Bindings;
+import javax.script.ScriptException;
+
+import org.jruby.embed.jsr223.JRubyEngine;
+import org.jruby.embed.jsr223.JRubyEngineFactory;
 
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
 
 /**
  * @author Sebastian Thomschke
- *
  */
 public class ExpressionLanguageJRubyImpl extends AbstractExpressionLanguage {
    private static final Log LOG = Log.getLog(ExpressionLanguageJRubyImpl.class);
 
+   private final JRubyEngine engine;
+
+   public ExpressionLanguageJRubyImpl() {
+      engine = (JRubyEngine) new JRubyEngineFactory().getScriptEngine();
+   }
+
    @Override
    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
-      LOG.debug("Evaluating JRuby expression: {1}", expression);
+      LOG.debug("Evaluating JavaScript expression: {1}", expression);
       try {
-         final RubyInstanceConfig config = new RubyInstanceConfig();
-         config.setCompatVersion(CompatVersion.RUBY1_9);
-         final Ruby runtime = JavaEmbedUtils.initialize(new ArrayList<String>(), config);
-
+         final Bindings scope = engine.createBindings();
          final StringBuilder localVars = new StringBuilder();
          for (final Entry<String, ?> entry : values.entrySet()) {
-            runtime.getGlobalVariables().set("$" + entry.getKey(), JavaEmbedUtils.javaToRuby(runtime, entry.getValue()));
-            localVars.append(entry.getKey()) //
+
+            // workaround for http://ruby.11.x6.nabble.com/undefined-local-variable-in-ScriptEngine-eval-tp3452553p3452557.html
+            scope.put("$" + entry.getKey(), entry.getValue()); // register as global var
+            localVars.append(entry.getKey()) // // reference as local var
                .append("=$") //
                .append(entry.getKey()) //
                .append("\n");
          }
-         final IRubyObject result = runtime.evalScriptlet(localVars + expression);
-         return JavaEmbedUtils.rubyToJava(runtime, result, Object.class);
-      } catch (final RuntimeException ex) {
+
+         return engine.eval(localVars.toString() + expression, scope);
+      } catch (final ScriptException ex) {
          throw new ExpressionEvaluationException("Evaluating JRuby expression failed: " + expression, ex);
       }
    }
