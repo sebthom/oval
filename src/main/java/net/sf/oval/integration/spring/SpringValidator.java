@@ -29,7 +29,6 @@ public class SpringValidator implements org.springframework.validation.Validator
    private Validator validator;
 
    public SpringValidator() {
-      super();
    }
 
    public SpringValidator(final Validator validator) {

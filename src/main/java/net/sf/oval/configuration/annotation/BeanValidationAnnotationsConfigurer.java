@@ -248,10 +248,6 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       CONSTRAINT_MAPPER = constraintMapper;
    }
 
-   public BeanValidationAnnotationsConfigurer() {
-      super();
-   }
-
    private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes) {
       final CollectionFactory cf = getCollectionFactory();
 

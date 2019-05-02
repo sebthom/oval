@@ -40,10 +40,6 @@ public final class Assert {
          throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
    }
 
-   /**
-    * private constructor
-    */
    private Assert() {
-      super();
    }
 }

@@ -69,8 +69,8 @@ public class DigitsTest extends AbstractContraintsTest {
 
       check.setMaxInteger(13);
       check.setMaxFraction(13);
-      assertTrue(check.isSatisfied(null, 1234567890123L, null, null));
-      assertFalse(check.isSatisfied(null, 12345678901234L, null, null));
+      assertTrue(check.isSatisfied(null, 1_234_567_890_123L, null, null));
+      assertFalse(check.isSatisfied(null, 12_345_678_901_234L, null, null));
       assertTrue(check.isSatisfied(null, "1234567890123", null, null));
       assertFalse(check.isSatisfied(null, "12345678901234", null, null));
       assertTrue(check.isSatisfied(null, new BigDecimal("1234567890123"), null, null));

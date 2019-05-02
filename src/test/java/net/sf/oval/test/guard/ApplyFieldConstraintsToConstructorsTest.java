@@ -40,7 +40,6 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase {
       private String zipCode = "1";
 
       protected Person(final boolean isValid, final String firstName, final String lastName, final String zipCode) {
-         super();
          this.isValid = isValid;
          this.firstName = firstName;
          this.lastName = lastName;
@@ -48,7 +47,6 @@ public class ApplyFieldConstraintsToConstructorsTest extends TestCase {
       }
 
       protected Person(final String theFirstName, final String theLastName, final String theZipCode) {
-         super();
          firstName = theFirstName;
          lastName = theLastName;
          zipCode = theZipCode;

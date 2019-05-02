@@ -56,6 +56,5 @@ public final class MessageRenderer {
    }
 
    private MessageRenderer() {
-      super();
    }
 }

@@ -87,6 +87,5 @@ public final class ContextCache {
    }
 
    private ContextCache() {
-      super();
    }
 }

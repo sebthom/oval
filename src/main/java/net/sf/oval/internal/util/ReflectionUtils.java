@@ -570,6 +570,5 @@ public final class ReflectionUtils {
    }
 
    private ReflectionUtils() {
-      super();
    }
 }

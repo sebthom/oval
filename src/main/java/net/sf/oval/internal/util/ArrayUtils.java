@@ -135,6 +135,5 @@ public final class ArrayUtils {
    }
 
    private ArrayUtils() {
-      super();
    }
 }

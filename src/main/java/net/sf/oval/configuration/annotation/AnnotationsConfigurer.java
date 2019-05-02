@@ -107,7 +107,7 @@ public class AnnotationsConfigurer implements Configurer {
 
          final boolean postValidateThis = ctor.isAnnotationPresent(PostValidateThis.class);
 
-         if (paramCfg.size() > 0 || postValidateThis) {
+         if (postValidateThis || paramCfg.size() > 0) {
             if (classCfg.constructorConfigurations == null) {
                classCfg.constructorConfigurations = cf.createSet(2);
             }
@@ -194,7 +194,7 @@ public class AnnotationsConfigurer implements Configurer {
             classCfg.inspectInterfaces)), method.getParameterTypes());
 
          // check if anything has been configured for this method at all
-         if (paramCfg.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0 || postChecks.size() > 0 || preValidateThis || postValidateThis) {
+         if (preValidateThis || postValidateThis || paramCfg.size() > 0 || returnValueChecks.size() > 0 || preChecks.size() > 0 || postChecks.size() > 0) {
             if (classCfg.methodConfigurations == null) {
                classCfg.methodConfigurations = cf.createSet(2);
             }
@@ -307,7 +307,7 @@ public class AnnotationsConfigurer implements Configurer {
 
          final ConstraintsCheck constraintsCheck = new ConstraintsCheck();
          constraintsCheck.configure(constraintsAnnotation);
-         constraintsCheck.checks = new ArrayList<Check>(constraintAnnotations.length);
+         constraintsCheck.checks = new ArrayList<>(constraintAnnotations.length);
          for (final Object ca : constraintAnnotations) {
             constraintsCheck.checks.add(initializeCheck((Annotation) ca));
          }

@@ -135,7 +135,6 @@ public class Guard extends Validator {
     * Constructs a new guard object and uses a new instance of AnnotationsConfigurer
     */
    public Guard() {
-      super();
    }
 
    public Guard(final Collection<Configurer> configurers) {
@@ -546,7 +545,7 @@ public class Guard extends Validator {
 
          if (isPreConditionsEnabled) {
             // method parameter validation
-            if (violations.size() == 0 && args.length > 0) {
+            if (args.length > 0 && violations.size() == 0) {
                validateMethodParameters(guardedObject, method, args, violations);
             }
 
@@ -706,7 +705,7 @@ public class Guard extends Validator {
 
          if (isPreConditionsEnabled) {
             // method parameter validation
-            if (violations.size() == 0 && args.length > 0) {
+            if (args.length > 0 && violations.size() == 0) {
                validateMethodParameters(guardedObject, method, args, violations);
             }
 

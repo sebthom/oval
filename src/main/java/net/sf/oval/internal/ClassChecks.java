@@ -162,7 +162,7 @@ public final class ClassChecks {
       synchronized (checksForFields) {
          Set<Check> checksOfField = checksForFields.get(field);
          if (checksOfField == null) {
-            checksOfField = new LinkedHashSet<Check>(2);
+            checksOfField = new LinkedHashSet<>(2);
             checksForFields.put(field, checksOfField);
             if (ReflectionUtils.isStatic(field)) {
                constrainedStaticFields.add(field);
@@ -236,7 +236,7 @@ public final class ClassChecks {
       synchronized (checksForMethodsPostExcecution) {
          Set<PostCheck> postChecks = checksForMethodsPostExcecution.get(method);
          if (postChecks == null) {
-            postChecks = new LinkedHashSet<PostCheck>(2);
+            postChecks = new LinkedHashSet<>(2);
             checksForMethodsPostExcecution.put(method, postChecks);
          }
 
@@ -267,7 +267,7 @@ public final class ClassChecks {
       synchronized (checksForMethodsPreExecution) {
          Set<PreCheck> preChecks = checksForMethodsPreExecution.get(method);
          if (preChecks == null) {
-            preChecks = new LinkedHashSet<PreCheck>(2);
+            preChecks = new LinkedHashSet<>(2);
             checksForMethodsPreExecution.put(method, preChecks);
          }
 
@@ -301,13 +301,13 @@ public final class ClassChecks {
 
       final boolean hasParameters = method.getParameterTypes().length > 0;
 
-      if (LOG.isDebug() && hasParameters && !IsGuarded.class.isAssignableFrom(clazz)) {
+      if (hasParameters && LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz)) {
          LOG.warn("Method return value constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
       }
 
       final boolean isInvariant2 = isInvariant == null ? constrainedMethods.contains(method) : isInvariant;
 
-      if (LOG.isDebug() && !isInvariant2 && !IsGuarded.class.isAssignableFrom(clazz)) {
+      if (!isInvariant2 && LOG.isDebug() && !IsGuarded.class.isAssignableFrom(clazz)) {
          LOG.warn("Method return value constraints may not be validated." + GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE);
       }
 
@@ -326,7 +326,7 @@ public final class ClassChecks {
 
          Set<Check> methodChecks = checksForMethodReturnValues.get(method);
          if (methodChecks == null) {
-            methodChecks = new LinkedHashSet<Check>(2);
+            methodChecks = new LinkedHashSet<>(2);
             checksForMethodReturnValues.put(method, methodChecks);
          }
 

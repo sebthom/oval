@@ -26,8 +26,9 @@ public final class StringUtils {
       final StringBuilder out = new StringBuilder();
 
       for (int i = 0, l = values.length; i < l; i++) {
-         if (i > 0)
+         if (i > 0) {
             out.append(delimiter);
+         }
          out.append(values[i]);
       }
       return out.toString();
@@ -50,10 +51,6 @@ public final class StringUtils {
       return out.append(searchIn.substring(searchFrom, searchIn.length())).toString();
    }
 
-   /**
-    * private constructor
-    */
    private StringUtils() {
-      super();
    }
 }

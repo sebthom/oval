@@ -198,6 +198,5 @@ public final class AllTests {
    }
 
    private AllTests() {
-      super();
    }
 }

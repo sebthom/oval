@@ -77,7 +77,6 @@ public class TargetJXPathTest extends TestCase {
       private final boolean visible;
 
       public Thing(final boolean visible) {
-         super();
          this.visible = visible;
       }
 
