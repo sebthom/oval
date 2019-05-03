@@ -12,11 +12,14 @@ package net.sf.oval.configuration.annotation;
 import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedParameterizedType;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.AssertFalse;
@@ -43,6 +46,7 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import net.sf.oval.Check;
+import net.sf.oval.ConstraintTarget;
 import net.sf.oval.collection.CollectionFactory;
 import net.sf.oval.configuration.Configurer;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
@@ -248,7 +252,8 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       CONSTRAINT_MAPPER = constraintMapper;
    }
 
-   private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes) {
+   private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes,
+      final AnnotatedType[] annotatedParameterTypes) {
       final CollectionFactory cf = getCollectionFactory();
 
       final List<ParameterConfiguration> paramCfg = cf.createList(paramAnnotations.length);
@@ -259,8 +264,10 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       for (int i = 0; i < paramAnnotations.length; i++) {
          // loop over all annotations of the current constructor parameter
          for (final Annotation annotation : paramAnnotations[i]) {
-            initializeChecks(annotation, paramChecks);
+            initializeChecks(annotation, ConstraintTarget.CONTAINER, paramChecks);
          }
+
+         initializeGenericTypeChecks(parameterTypes[i], annotatedParameterTypes[i], paramChecks);
 
          final ParameterConfiguration pc = new ParameterConfiguration();
          paramCfg.add(pc);
@@ -277,8 +284,17 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       final CollectionFactory cf = getCollectionFactory();
 
       for (final Constructor<?> ctor : classCfg.type.getDeclaredConstructors()) {
-         final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(), ctor.getParameterTypes());
 
+         /*
+          * determine parameter checks
+          */
+
+         final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(), ctor.getParameterTypes(), ctor
+            .getAnnotatedParameterTypes());
+
+         /*
+          * check if anything has been configured for this constructor at all
+          */
          if (paramCfg.size() > 0) {
             if (classCfg.constructorConfigurations == null) {
                classCfg.constructorConfigurations = cf.createSet(2);
@@ -300,9 +316,14 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       for (final Field field : classCfg.type.getDeclaredFields()) {
          // loop over all annotations of the current field
          for (final Annotation annotation : field.getAnnotations()) {
-            initializeChecks(annotation, checks);
+            initializeChecks(annotation, ConstraintTarget.CONTAINER, checks);
          }
 
+         initializeGenericTypeChecks(field.getType(), field.getAnnotatedType(), checks);
+
+         /*
+          * check if anything has been configured for this field at all
+          */
          if (checks.size() > 0) {
             if (classCfg.fieldConfigurations == null) {
                classCfg.fieldConfigurations = cf.createSet(2);
@@ -326,18 +347,24 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       List<Check> returnValueChecks = cf.createList(2);
 
       for (final Method method : classCfg.type.getDeclaredMethods()) {
-         // loop over all annotations
+
+         /*
+          * determine return value checks
+          */
          for (final Annotation annotation : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
-            initializeChecks(annotation, returnValueChecks);
+            initializeChecks(annotation, ConstraintTarget.CONTAINER, returnValueChecks);
          }
+         initializeGenericTypeChecks(method.getReturnType(), method.getAnnotatedReturnType(), returnValueChecks);
 
          /*
           * determine parameter checks
           */
          final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(
-            classCfg.inspectInterfaces)), method.getParameterTypes());
+            classCfg.inspectInterfaces)), method.getParameterTypes(), method.getAnnotatedParameterTypes());
 
-         // check if anything has been configured for this method at all
+         /*
+          * check if anything has been configured for this method at all
+          */
          if (paramCfg.size() > 0 || returnValueChecks.size() > 0) {
             if (classCfg.methodConfigurations == null) {
                classCfg.methodConfigurations = cf.createSet(2);
@@ -390,7 +417,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       return null;
    }
 
-   protected void initializeChecks(final Annotation annotation, final Collection<Check> checks) {
+   protected void initializeChecks(final Annotation annotation, final ConstraintTarget target, final Collection<Check> checks) {
       assert annotation != null;
       assert checks != null;
 
@@ -405,6 +432,9 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
 
          if (mappedChecks != null) {
             for (final Check check : mappedChecks) {
+               if (target != null && !(annotation instanceof Valid)) {
+                  check.setAppliesTo(target);
+               }
                final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
                if (getMessage != null) {
                   final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
@@ -440,7 +470,37 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          final Annotation[] list = ReflectionUtils.invokeMethod(ReflectionUtils.getMethod(annotationClass, "value"), annotation);
          if (list != null) {
             for (final Annotation anno : list) {
-               initializeChecks(anno, checks);
+               initializeChecks(anno, target, checks);
+            }
+         }
+      }
+   }
+
+   private void initializeGenericTypeChecks(final Class<?> type, final AnnotatedType annotatedType, final List<Check> checks) {
+      if (annotatedType instanceof AnnotatedParameterizedType) {
+         final AnnotatedParameterizedType fieldAPType = (AnnotatedParameterizedType) annotatedType;
+
+         if (Collection.class.isAssignableFrom(type)) {
+            final AnnotatedType genericArgType = fieldAPType.getAnnotatedActualTypeArguments()[0];
+            for (final Annotation annotation : genericArgType.getAnnotations()) {
+               initializeChecks(annotation, ConstraintTarget.VALUES, checks);
+            }
+         } else if (Map.class.isAssignableFrom(type)) {
+
+            // Keys
+            {
+               final AnnotatedType genericArgType = fieldAPType.getAnnotatedActualTypeArguments()[0];
+               for (final Annotation annotation : genericArgType.getAnnotations()) {
+                  initializeChecks(annotation, ConstraintTarget.KEYS, checks);
+               }
+            }
+
+            // Values
+            {
+               final AnnotatedType genericArgType = fieldAPType.getAnnotatedActualTypeArguments()[1];
+               for (final Annotation annotation : genericArgType.getAnnotations()) {
+                  initializeChecks(annotation, ConstraintTarget.VALUES, checks);
+               }
             }
          }
       }
