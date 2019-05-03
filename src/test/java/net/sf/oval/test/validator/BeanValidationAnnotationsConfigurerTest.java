@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -69,12 +72,10 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
          // description is empty
          // ref1 is null
          assertEquals(3, violations.size());
-         assertNull(violations.get(0).getInvalidValue());
-         assertNull(violations.get(1).getInvalidValue());
-         assertNotNull(violations.get(2).getInvalidValue());
-         assertEquals("CODE_NOT_NULL", violations.get(0).getMessage());
-         assertEquals("PARENT_NOT_NULL", violations.get(1).getMessage());
-         assertEquals("DESCRIPTION_NOT_EMPTY", violations.get(2).getMessage());
+
+         final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage(), violations.get(2).getMessage()};
+         Arrays.sort(msgs);
+         assertArrayEquals(new String[] {"CODE_NOT_NULL", "DESCRIPTION_NOT_EMPTY", "PARENT_NOT_NULL"}, msgs);
       }
 
       {
@@ -163,8 +164,9 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
 
          violations = v.validate(entity);
          assertEquals(2, violations.size());
-         assertEquals("KEY_NOT_NULL", violations.get(0).getMessage());
-         assertEquals("VALUE_NOT_NULL", violations.get(1).getMessage());
+         final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage()};
+         Arrays.sort(msgs);
+         assertArrayEquals(new String[] {"KEY_NOT_NULL", "VALUE_NOT_NULL"}, msgs);
 
          entity.props.clear();
       }
