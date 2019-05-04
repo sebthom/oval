@@ -123,68 +123,68 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
    private static class JSR303Mapper implements ConstraintMapper {
 
       @Override
-      public Check[] map(final Annotation annotation) {
-         if (annotation instanceof NotNull)
+      public Check[] map(final Annotation anno) {
+         if (anno instanceof NotNull)
             return new Check[] {new NotNullCheck()};
-         if (annotation instanceof Null)
+         if (anno instanceof Null)
             return new Check[] {new AssertNullCheck()};
-         if (annotation instanceof Valid)
+         if (anno instanceof Valid)
             return new Check[] {new AssertValidCheck()};
-         if (annotation instanceof AssertTrue)
+         if (anno instanceof AssertTrue)
             return new Check[] {new AssertTrueCheck()};
-         if (annotation instanceof AssertFalse)
+         if (anno instanceof AssertFalse)
             return new Check[] {new AssertFalseCheck()};
-         if (annotation instanceof DecimalMax) {
+         if (anno instanceof DecimalMax) {
             final MaxCheck check = new MaxCheck();
-            check.setMax(Double.parseDouble(((DecimalMax) annotation).value()));
-            final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
+            check.setMax(Double.parseDouble(((DecimalMax) anno).value()));
+            final Method getInclusive = ReflectionUtils.getMethod(anno.annotationType(), "inclusive");
             if (getInclusive != null) {
-               check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
+               check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, anno));
             }
             return new Check[] {check};
          }
-         if (annotation instanceof DecimalMin) {
+         if (anno instanceof DecimalMin) {
             final MinCheck check = new MinCheck();
-            check.setMin(Double.parseDouble(((DecimalMin) annotation).value()));
-            final Method getInclusive = ReflectionUtils.getMethod(annotation.annotationType(), "inclusive");
+            check.setMin(Double.parseDouble(((DecimalMin) anno).value()));
+            final Method getInclusive = ReflectionUtils.getMethod(anno.annotationType(), "inclusive");
             if (getInclusive != null) {
-               check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, annotation));
+               check.setInclusive((Boolean) ReflectionUtils.invokeMethod(getInclusive, anno));
             }
             return new Check[] {check};
          }
-         if (annotation instanceof Max) {
+         if (anno instanceof Max) {
             final MaxCheck check = new MaxCheck();
-            check.setMax(((Max) annotation).value());
+            check.setMax(((Max) anno).value());
             return new Check[] {check};
          }
-         if (annotation instanceof Min) {
+         if (anno instanceof Min) {
             final MinCheck check = new MinCheck();
-            check.setMin(((Min) annotation).value());
+            check.setMin(((Min) anno).value());
             return new Check[] {check};
          }
-         if (annotation instanceof Future)
+         if (anno instanceof Future)
             return new Check[] {new FutureCheck()};
-         if (annotation instanceof Past)
+         if (anno instanceof Past)
             return new Check[] {new PastCheck()};
-         if (annotation instanceof Pattern) {
+         if (anno instanceof Pattern) {
             final MatchPatternCheck check = new MatchPatternCheck();
             int iflag = 0;
-            for (final Flag flag : ((Pattern) annotation).flags()) {
+            for (final Flag flag : ((Pattern) anno).flags()) {
                iflag = iflag | flag.getValue();
             }
-            check.setPattern(((Pattern) annotation).regexp(), iflag);
+            check.setPattern(((Pattern) anno).regexp(), iflag);
             return new Check[] {check};
          }
-         if (annotation instanceof Digits) {
+         if (anno instanceof Digits) {
             final DigitsCheck check = new DigitsCheck();
-            check.setMaxFraction(((Digits) annotation).fraction());
-            check.setMaxInteger(((Digits) annotation).integer());
+            check.setMaxFraction(((Digits) anno).fraction());
+            check.setMaxInteger(((Digits) anno).integer());
             return new Check[] {check};
          }
-         if (annotation instanceof Size) {
+         if (anno instanceof Size) {
             final SizeCheck check = new SizeCheck();
-            check.setMax(((Size) annotation).max());
-            check.setMin(((Size) annotation).min());
+            check.setMax(((Size) anno).max());
+            check.setMin(((Size) anno).min());
             return new Check[] {check};
          }
          return null;
@@ -194,44 +194,44 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
 
    private static class JSR380Mapper extends JSR303Mapper {
       @Override
-      public Check[] map(final Annotation annotation) {
-         final Check[] jsr303checks = super.map(annotation);
+      public Check[] map(final Annotation anno) {
+         final Check[] jsr303checks = super.map(anno);
          if (jsr303checks != null)
             return jsr303checks;
 
-         if (annotation instanceof FutureOrPresent) {
+         if (anno instanceof FutureOrPresent) {
             final DateRangeCheck check = new DateRangeCheck();
             check.setMin("now");
             return new Check[] {check};
          }
-         if (annotation instanceof Negative) {
+         if (anno instanceof Negative) {
             final MaxCheck check = new MaxCheck();
             check.setInclusive(false);
             check.setMax(0);
             return new Check[] {check};
          }
-         if (annotation instanceof NegativeOrZero) {
+         if (anno instanceof NegativeOrZero) {
             final MaxCheck check = new MaxCheck();
             check.setInclusive(true);
             check.setMax(0);
             return new Check[] {check};
          }
-         if (annotation instanceof NotBlank)
+         if (anno instanceof NotBlank)
             return new Check[] {new NotNullCheck(), new NotBlankCheck()};
-         if (annotation instanceof NotEmpty)
+         if (anno instanceof NotEmpty)
             return new Check[] {new NotNullCheck(), new NotEmptyCheck()};
-         if (annotation instanceof PastOrPresent) {
+         if (anno instanceof PastOrPresent) {
             final DateRangeCheck check = new DateRangeCheck();
             check.setMax("now");
             return new Check[] {check};
          }
-         if (annotation instanceof Positive) {
+         if (anno instanceof Positive) {
             final MinCheck check = new MinCheck();
             check.setInclusive(false);
             check.setMin(0);
             return new Check[] {check};
          }
-         if (annotation instanceof PositiveOrZero)
+         if (anno instanceof PositiveOrZero)
             return new Check[] {new NotNegativeCheck()};
          return null;
       }
@@ -252,52 +252,52 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       CONSTRAINT_MAPPER = constraintMapper;
    }
 
-   private List<ParameterConfiguration> _createParameterConfiguration(final Annotation[][] paramAnnotations, final Class<?>[] parameterTypes,
-      final AnnotatedType[] annotatedParameterTypes) {
+   private List<ParameterConfiguration> _createParameterConfigs(final Class<?>[] paramTypes, final Annotation[][] paramAnnos,
+      final AnnotatedType[] annotatedParamTypes) {
       final CollectionFactory cf = getCollectionFactory();
 
-      final List<ParameterConfiguration> paramCfg = cf.createList(paramAnnotations.length);
+      final List<ParameterConfiguration> paramCfgs = cf.createList(paramAnnos.length);
 
       List<Check> paramChecks = cf.createList(2);
 
       // loop over all parameters of the current constructor
-      for (int i = 0; i < paramAnnotations.length; i++) {
+      for (int i = 0; i < paramAnnos.length; i++) {
          // loop over all annotations of the current constructor parameter
-         for (final Annotation annotation : paramAnnotations[i]) {
-            initializeChecks(annotation, ConstraintTarget.CONTAINER, paramChecks);
+         for (final Annotation anno : paramAnnos[i]) {
+            initializeChecks(anno, paramChecks, ConstraintTarget.CONTAINER);
          }
 
-         initializeGenericTypeChecks(parameterTypes[i], annotatedParameterTypes[i], paramChecks);
+         initializeGenericTypeChecks(paramTypes[i], annotatedParamTypes[i], paramChecks);
 
-         final ParameterConfiguration pc = new ParameterConfiguration();
-         paramCfg.add(pc);
-         pc.type = parameterTypes[i];
+         final ParameterConfiguration paramCfg = new ParameterConfiguration();
+         paramCfgs.add(paramCfg);
+         paramCfg.type = paramTypes[i];
          if (paramChecks.size() > 0) {
-            pc.checks = paramChecks;
+            paramCfg.checks = paramChecks;
             paramChecks = cf.createList(2); // create a new list for the next parameter having checks
          }
       }
-      return paramCfg;
+      return paramCfgs;
    }
 
-   protected void configureConstructorParameterChecks(final ClassConfiguration classCfg) {
-      final CollectionFactory cf = getCollectionFactory();
-
+   protected void configureCtorParamChecks(final ClassConfiguration classCfg) {
       for (final Constructor<?> ctor : classCfg.type.getDeclaredConstructors()) {
 
          /*
           * determine parameter checks
           */
-
-         final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ctor.getParameterAnnotations(), ctor.getParameterTypes(), ctor
-            .getAnnotatedParameterTypes());
+         final List<ParameterConfiguration> paramCfg = _createParameterConfigs( //
+            ctor.getParameterTypes(), //
+            ctor.getParameterAnnotations(), //
+            ctor.getAnnotatedParameterTypes() //
+         );
 
          /*
           * check if anything has been configured for this constructor at all
           */
          if (paramCfg.size() > 0) {
             if (classCfg.constructorConfigurations == null) {
-               classCfg.constructorConfigurations = cf.createSet(2);
+               classCfg.constructorConfigurations = getCollectionFactory().createSet(2);
             }
 
             final ConstructorConfiguration cc = new ConstructorConfiguration();
@@ -315,8 +315,8 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
 
       for (final Field field : classCfg.type.getDeclaredFields()) {
          // loop over all annotations of the current field
-         for (final Annotation annotation : field.getAnnotations()) {
-            initializeChecks(annotation, ConstraintTarget.CONTAINER, checks);
+         for (final Annotation anno : field.getAnnotations()) {
+            initializeChecks(anno, checks, ConstraintTarget.CONTAINER);
          }
 
          initializeGenericTypeChecks(field.getType(), field.getAnnotatedType(), checks);
@@ -351,16 +351,19 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          /*
           * determine return value checks
           */
-         for (final Annotation annotation : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
-            initializeChecks(annotation, ConstraintTarget.CONTAINER, returnValueChecks);
+         for (final Annotation anno : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
+            initializeChecks(anno, returnValueChecks, ConstraintTarget.CONTAINER);
          }
          initializeGenericTypeChecks(method.getReturnType(), method.getAnnotatedReturnType(), returnValueChecks);
 
          /*
           * determine parameter checks
           */
-         final List<ParameterConfiguration> paramCfg = _createParameterConfiguration(ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(
-            classCfg.inspectInterfaces)), method.getParameterTypes(), method.getAnnotatedParameterTypes());
+         final List<ParameterConfiguration> paramCfg = _createParameterConfigs( //
+            method.getParameterTypes(), //
+            ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces)), //
+            method.getAnnotatedParameterTypes() //
+         );
 
          /*
           * check if anything has been configured for this method at all
@@ -406,7 +409,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       }
 
       configureFieldChecks(classCfg);
-      configureConstructorParameterChecks(classCfg);
+      configureCtorParamChecks(classCfg);
       configureMethodChecks(classCfg);
 
       return classCfg;
@@ -417,35 +420,35 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
       return null;
    }
 
-   protected void initializeChecks(final Annotation annotation, final ConstraintTarget target, final Collection<Check> checks) {
-      assert annotation != null;
+   protected void initializeChecks(final Annotation anno, final Collection<Check> checks, final ConstraintTarget... targetOverrides) {
+      assert anno != null;
       assert checks != null;
 
-      final Class<?> annotationClass = annotation.annotationType();
+      final Class<?> annoClass = anno.annotationType();
 
       /*
        * process bean validation annotations
        */
-      if (annotationClass.getAnnotation(javax.validation.Constraint.class) != null || annotation instanceof Valid) {
+      if (annoClass.getAnnotation(javax.validation.Constraint.class) != null || anno instanceof Valid) {
 
-         final Check[] mappedChecks = CONSTRAINT_MAPPER.map(annotation);
+         final Check[] mappedChecks = CONSTRAINT_MAPPER.map(anno);
 
          if (mappedChecks != null) {
             for (final Check check : mappedChecks) {
-               if (target != null && !(annotation instanceof Valid)) {
-                  check.setAppliesTo(target);
+               if (targetOverrides.length > 0 && !(anno instanceof Valid)) {
+                  check.setAppliesTo(targetOverrides);
                }
-               final Method getMessage = ReflectionUtils.getMethod(annotationClass, "message");
+               final Method getMessage = ReflectionUtils.getMethod(annoClass, "message");
                if (getMessage != null) {
-                  final String message = ReflectionUtils.invokeMethod(getMessage, annotation);
+                  final String message = ReflectionUtils.invokeMethod(getMessage, anno);
                   if (message != null && !message.startsWith("{javax.validation.constraints.")) {
                      check.setMessage(message);
                   }
                }
 
-               final Method getGroups = ReflectionUtils.getMethod(annotationClass, "groups");
+               final Method getGroups = ReflectionUtils.getMethod(annoClass, "groups");
                if (getGroups != null) {
-                  final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, annotation);
+                  final Class<?>[] groups = ReflectionUtils.invokeMethod(getGroups, anno);
                   if (groups != null && groups.length > 0) {
                      final String[] profiles = new String[groups.length];
                      for (int i = 0, l = groups.length; i < l; i++) {
@@ -459,31 +462,31 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             return;
          }
 
-         LOG.warn("Ignoring unsupported bean validation constraint annotation {1}", annotation);
+         LOG.warn("Ignoring unsupported bean validation constraint annotation {1}", anno);
          return;
       }
 
       /*
        * process bean validation List annotations
        */
-      if (annotationClass.getPackage().getName().equals("javax.validation.constraints") && "List".equals(annotationClass.getSimpleName())) {
-         final Annotation[] list = ReflectionUtils.invokeMethod(ReflectionUtils.getMethod(annotationClass, "value"), annotation);
-         if (list != null) {
-            for (final Annotation anno : list) {
-               initializeChecks(anno, target, checks);
+      if (annoClass.getPackage().getName().equals("javax.validation.constraints") && "List".equals(annoClass.getSimpleName())) {
+         final Annotation[] listAnnos = ReflectionUtils.invokeMethod(ReflectionUtils.getMethod(annoClass, "value"), anno);
+         if (listAnnos != null) {
+            for (final Annotation listAnno : listAnnos) {
+               initializeChecks(listAnno, checks, targetOverrides);
             }
          }
       }
    }
 
-   private void initializeGenericTypeChecks(final Class<?> type, final AnnotatedType annotatedType, final List<Check> checks) {
+   protected void initializeGenericTypeChecks(final Class<?> type, final AnnotatedType annotatedType, final List<Check> checks) {
       if (annotatedType instanceof AnnotatedParameterizedType) {
          final AnnotatedParameterizedType fieldAPType = (AnnotatedParameterizedType) annotatedType;
 
          if (Collection.class.isAssignableFrom(type)) {
             final AnnotatedType genericArgType = fieldAPType.getAnnotatedActualTypeArguments()[0];
             for (final Annotation annotation : genericArgType.getAnnotations()) {
-               initializeChecks(annotation, ConstraintTarget.VALUES, checks);
+               initializeChecks(annotation, checks, ConstraintTarget.VALUES);
             }
          } else if (Map.class.isAssignableFrom(type)) {
 
@@ -491,7 +494,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             {
                final AnnotatedType genericArgType = fieldAPType.getAnnotatedActualTypeArguments()[0];
                for (final Annotation annotation : genericArgType.getAnnotations()) {
-                  initializeChecks(annotation, ConstraintTarget.KEYS, checks);
+                  initializeChecks(annotation, checks, ConstraintTarget.KEYS);
                }
             }
 
@@ -499,7 +502,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             {
                final AnnotatedType genericArgType = fieldAPType.getAnnotatedActualTypeArguments()[1];
                for (final Annotation annotation : genericArgType.getAnnotations()) {
-                  initializeChecks(annotation, ConstraintTarget.VALUES, checks);
+                  initializeChecks(annotation, checks, ConstraintTarget.VALUES);
                }
             }
          }

@@ -34,7 +34,7 @@ import net.sf.oval.configuration.annotation.Constraints;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE_USE})
 @Constraint(checkWith = SizeCheck.class)
 @Repeatable(Size.List.class)
 public @interface Size {

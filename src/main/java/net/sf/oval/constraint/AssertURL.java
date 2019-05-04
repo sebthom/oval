@@ -33,7 +33,7 @@ import net.sf.oval.constraint.AssertURLCheck.URIScheme;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE_USE})
 @Constraint(checkWith = AssertURLCheck.class)
 @Repeatable(AssertURL.List.class)
 public @interface AssertURL {

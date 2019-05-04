@@ -32,7 +32,7 @@ import net.sf.oval.configuration.annotation.Constraints;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE_USE})
 @Constraint(checkWith = FutureCheck.class)
 @Repeatable(Future.List.class)
 public @interface Future {

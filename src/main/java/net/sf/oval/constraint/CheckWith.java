@@ -30,7 +30,7 @@ import net.sf.oval.constraint.CheckWithCheck.SimpleCheck;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE, ElementType.TYPE_USE})
 @Constraint(checkWith = CheckWithCheck.class)
 @Repeatable(CheckWith.List.class)
 public @interface CheckWith {

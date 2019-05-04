@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 * [github Issue #13](https://github.com/sebthom/oval/issues/13) Support for XInclude in XML config files
 * [github Issue #17](https://github.com/sebthom/oval/issues/17) Constraint annotations are now [repeatable annotations](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
-* [github Issue #19](https://github.com/sebthom/oval/issues/19) Add support for using BeanValidation annotations as Collection/Map Generic Type Annotation
+* [github Issue #19](https://github.com/sebthom/oval/issues/19) Add support for using constraint annotations as Collection/Map Generic Type Annotation
 
 ### Changed
 * Raised minimum JRE from Java 5 to **Java 8**

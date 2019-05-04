@@ -37,7 +37,7 @@ import net.sf.oval.configuration.annotation.Constraints;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE_USE})
 @Constraint(checkWith = NotEmptyCheck.class)
 @Repeatable(NotEmpty.List.class)
 public @interface NotEmpty {
@@ -76,7 +76,7 @@ public @interface NotEmpty {
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
     */
-   ConstraintTarget[] appliesTo() default ConstraintTarget.VALUES;
+   ConstraintTarget[] appliesTo() default ConstraintTarget.CONTAINER;
 
    /**
     * error code passed to the ConstraintViolation object

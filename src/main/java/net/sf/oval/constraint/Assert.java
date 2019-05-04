@@ -28,7 +28,7 @@ import net.sf.oval.configuration.annotation.Constraints;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE, ElementType.TYPE_USE})
 @Constraint(checkWith = AssertCheck.class)
 @Repeatable(Assert.List.class)
 public @interface Assert {

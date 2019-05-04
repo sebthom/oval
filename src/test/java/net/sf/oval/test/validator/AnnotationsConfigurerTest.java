@@ -18,22 +18,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.configuration.annotation.BeanValidationAnnotationsConfigurer;
+import net.sf.oval.configuration.annotation.AnnotationsConfigurer;
+import net.sf.oval.configuration.annotation.IsInvariant;
+import net.sf.oval.constraint.AssertValid;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.Size;
 
 /**
  * @author Sebastian Thomschke
  */
-public class BeanValidationAnnotationsConfigurerTest extends TestCase {
-   @Entity
+public class AnnotationsConfigurerTest extends TestCase {
+
    protected static class TestEntity {
       private final List<String> description = new ArrayList<>();
 
@@ -42,18 +41,19 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
       public String code;
 
       @NotNull(message = "PARENT_NOT_NULL")
-      @Valid
+      @AssertValid
       public TestEntity parent;
 
-      @Valid
+      @AssertValid
       public TestEntity sibling;
 
-      @Valid
+      @AssertValid
       public Collection<@NotNull(message = "CHILDREN_ELEMENT_NOT_NULL") TestEntity> children = new ArrayList<>();
 
-      @Valid
+      @AssertValid
       public Map<@NotNull(message = "KEY_NOT_NULL") String, @NotNull(message = "VALUE_NOT_NULL") String> props = new HashMap<>();
 
+      @IsInvariant
       @NotEmpty(message = "DESCRIPTION_NOT_EMPTY")
       public List<@NotNull(message = "DESCRIPTION_ELEMENT_NOT_NULL") String> getDescription() {
          return description;
@@ -61,7 +61,7 @@ public class BeanValidationAnnotationsConfigurerTest extends TestCase {
    }
 
    public void testBeanValidationAnnotationsConfigurer() {
-      final Validator v = new Validator(new BeanValidationAnnotationsConfigurer());
+      final Validator v = new Validator(new AnnotationsConfigurer());
       List<ConstraintViolation> violations;
 
       final TestEntity entity = new TestEntity();

@@ -62,8 +62,8 @@ public class CustomAssertValidTest extends TestCase {
    protected static class CustomAnnotationConfigurer extends AnnotationsConfigurer {
       @SuppressWarnings("unchecked")
       @Override
-      protected <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(final ConstraintAnnotation constraintAnnotation)
-         throws ReflectionException {
+      protected <ConstraintAnnotation extends Annotation> AnnotationCheck<ConstraintAnnotation> initializeCheck(final ConstraintAnnotation constraintAnnotation,
+         final ConstraintTarget... targetOverrides) throws ReflectionException {
          if (constraintAnnotation instanceof CustomAssertValid) {
             final CustomAssertValid customAssertValid = (CustomAssertValid) constraintAnnotation;
 
@@ -72,12 +72,16 @@ public class CustomAssertValidTest extends TestCase {
             assertValidCheck.setErrorCode(customAssertValid.errorCode());
             assertValidCheck.setMessage(customAssertValid.message());
             assertValidCheck.setProfiles(customAssertValid.profiles());
-            assertValidCheck.setAppliesTo(customAssertValid.appliesTo());
+            if (targetOverrides.length > 0) {
+               assertValidCheck.setAppliesTo(targetOverrides);
+            } else {
+               assertValidCheck.setAppliesTo(customAssertValid.appliesTo());
+            }
             assertValidCheck.setSeverity(customAssertValid.severity());
             return (AnnotationCheck<ConstraintAnnotation>) assertValidCheck;
          }
 
-         return super.initializeCheck(constraintAnnotation);
+         return super.initializeCheck(constraintAnnotation, targetOverrides);
       }
    }
 
@@ -154,9 +158,9 @@ public class CustomAssertValidTest extends TestCase {
       final Person p = new Person();
       p.firstName = "John";
       p.lastName = "Doe";
-      p.otherAddresses1 = new ArrayList<Address>();
-      p.otherAddresses2 = new HashSet<Address>();
-      p.otherAddresses3 = new HashSet<Address>();
+      p.otherAddresses1 = new ArrayList<>();
+      p.otherAddresses2 = new HashSet<>();
+      p.otherAddresses3 = new HashSet<>();
 
       final Address a = new Address();
       a.street = "The Street";
@@ -183,9 +187,9 @@ public class CustomAssertValidTest extends TestCase {
       // nulled collections and maps are valid
       assertTrue(validator.validate(registry).size() == 0);
 
-      registry.addressesByCityAndStreet = new HashMap<String, Map<String, Address[]>>();
-      registry.addressClusters = new ArrayList<Address[]>();
-      registry.personsByCity = new HashMap<String, List<Person>>();
+      registry.addressesByCityAndStreet = new HashMap<>();
+      registry.addressClusters = new ArrayList<>();
+      registry.personsByCity = new HashMap<>();
 
       // empty collections and maps are valid
       assertEquals(0, validator.validate(registry).size());
