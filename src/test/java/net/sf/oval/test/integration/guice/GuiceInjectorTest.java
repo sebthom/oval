@@ -14,11 +14,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
@@ -65,12 +63,7 @@ public class GuiceInjectorTest extends TestCase {
    }
 
    public void testWithGuiceInjector() {
-      final Injector injector = Guice.createInjector(new Module() {
-         @Override
-         public void configure(final Binder binder) {
-            binder.bind(Integer.class).annotatedWith(Names.named("GUICE_MANAGED_OBJECT")).toInstance(10);
-         }
-      });
+      final Injector injector = Guice.createInjector(binder -> binder.bind(Integer.class).annotatedWith(Names.named("GUICE_MANAGED_OBJECT")).toInstance(10));
 
       final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
       myConfigurer.addCheckInitializationListener(new GuiceCheckInitializationListener(injector));

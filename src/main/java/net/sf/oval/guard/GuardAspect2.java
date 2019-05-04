@@ -79,7 +79,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2 {
    }
 
    @Around("execution((@net.sf.oval.guard.Guarded *).new(..))")
-   public Object allConstructors(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
+   public Object allConstructors(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // CHECKSTYLE:IGNORE IllegalThrow
       final ConstructorSignature signature = (ConstructorSignature) thisJoinPoint.getSignature();
 
       LOG.debug("aroundConstructor() {1}", signature);
@@ -105,7 +105,7 @@ public abstract class GuardAspect2 extends ApiUsageAuditor2 {
 
    @SuppressAjWarnings("adviceDidNotMatch")
    @Around("execution(* (@net.sf.oval.guard.Guarded *).*(..))")
-   public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
+   public Object allMethods(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // CHECKSTYLE:IGNORE IllegalThrow
       final MethodSignature signature = (MethodSignature) thisJoinPoint.getSignature();
 
       LOG.debug("aroundMethod() {1}", signature);

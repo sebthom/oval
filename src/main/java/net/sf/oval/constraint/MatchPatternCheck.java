@@ -86,7 +86,7 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern> {
          } else if (matchAll)
             return false;
       }
-      return matchAll ? true : false;
+      return matchAll;
    }
 
    public void setMatchAll(final boolean matchAll) {

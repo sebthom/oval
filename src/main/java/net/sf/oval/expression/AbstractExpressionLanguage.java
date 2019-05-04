@@ -39,9 +39,9 @@ public abstract class AbstractExpressionLanguage implements ExpressionLanguage {
                return true;
          }
          final String str = seq.toString().toLowerCase();
-         if (str.equals("true"))
+         if ("true".equals(str))
             return true;
-         if (str.equals("false"))
+         if ("false".equals(str))
             return true;
       }
       throw new ExpressionEvaluationException("The script [" + expression + "] must return a boolean value but returned [" + result + "]");

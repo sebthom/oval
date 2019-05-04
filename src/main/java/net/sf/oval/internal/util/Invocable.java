@@ -13,6 +13,7 @@ package net.sf.oval.internal.util;
  * @author Sebastian Thomschke
  *
  */
+@FunctionalInterface
 public interface Invocable {
-   Object invoke() throws Throwable;
+   Object invoke() throws Throwable; // CHECKSTYLE:IGNORE IllegalThrow
 }

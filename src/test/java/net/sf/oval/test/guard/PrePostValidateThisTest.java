@@ -78,7 +78,7 @@ public class PrePostValidateThisTest extends TestCase {
          assertTrue(violations[0].getContext() instanceof FieldContext);
       }
 
-      new TestEntity("as-long-as-I-what-if_limit-is-not-enabled", false);
+      new TestEntity("as-long-as-I-want-if_limit-is-not-enabled", false);
       new TestEntity("OK", true);
       try {
          new TestEntity("too-long-when-limit-is-enabled", true);
@@ -122,7 +122,7 @@ public class PrePostValidateThisTest extends TestCase {
 
       assertNotNull(t.getName());
 
-      t.setNameWithPostValidation("as-long-as-I-what-if_limit-is-not-enabled");
+      t.setNameWithPostValidation("as-long-as-I-want-if_limit-is-not-enabled");
       t.limitLength = true;
       t.setNameWithPostValidation("OK");
       try {

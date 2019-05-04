@@ -521,6 +521,7 @@ public class Guard extends Validator {
     * @return The method return value or null if the guarded object is in probe mode.
     * @throws ConstraintsViolatedException if an constraint violation occurs and the validated object is not in probe mode.
     */
+   // CHECKSTYLE:IGNORE IllegalThrow FOR NEXT LINE
    protected Object guardMethod(Object guardedObject, final Method method, final Object[] args, final Invocable invocable) throws Throwable {
       if (!isActivated)
          return invocable.invoke();
