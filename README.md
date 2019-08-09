@@ -47,6 +47,9 @@ There exist some articles and blog entries talking about and/or referencing OVal
  <https://de.wikipedia.org/wiki/OVal_(Framework)> [\[English
     Translation\]](https://translate.google.com/translate?sl=de&tl=en&u=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FOVal_%28Framework%29)
 
+- An Experimental Evaluation of JavaDesign-by-Contract Extensions (2018) \
+  <http://jultika.oulu.fi/Record/nbnfioulu-201812063243>
+
 - GlueCoders' Spring Boot Guide: Validation of Request Models using OVal (2017) \
   <https://github.com/GlueCoders/springboot-guide-docs/blob/master/requestvalidation-oval.md>
 
