@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/sebthom/oval.svg?branch=master)](https://travis-ci.org/sebthom/oval)
 [![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%202.0-blue.svg)](LICENSE.txt)
+[![Changelog](https://img.shields.io/badge/changelog-blue)](CHANGELOG.md)
 [![Download](https://api.bintray.com/packages/sebthom/maven/oval/images/download.svg)](https://bintray.com/sebthom/maven/oval/_latestVersion)
 
 [comment]: # (https://img.shields.io/github/license/sebthom/oval.svg?label=License)
