@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
-import net.sf.oval.Check;
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
@@ -90,7 +89,7 @@ public class XMLConfigurationTest extends TestCase {
          constraintSetsConfig.add(csf);
 
          csf.id = "user.userid";
-         csf.checks = new ArrayList<Check>();
+         csf.checks = new ArrayList<>();
          final NotNullCheck nnc = new NotNullCheck();
          nnc.setMessage("{context} is null");
          csf.checks.add(nnc);
@@ -109,7 +108,7 @@ public class XMLConfigurationTest extends TestCase {
 
          cf.objectConfiguration = new ObjectConfiguration();
          {
-            cf.objectConfiguration.checks = new ArrayList<Check>();
+            cf.objectConfiguration.checks = new ArrayList<>();
 
             final AssertCheck ac = new AssertCheck();
             ac.setExpr("_this.firstName != _this.lastName");
@@ -118,13 +117,13 @@ public class XMLConfigurationTest extends TestCase {
             cf.objectConfiguration.checks.add(ac);
          }
 
-         cf.fieldConfigurations = new HashSet<FieldConfiguration>();
+         cf.fieldConfigurations = new HashSet<>();
          {
             final FieldConfiguration fc = new FieldConfiguration();
             cf.fieldConfigurations.add(fc);
 
             fc.name = "firstName";
-            fc.checks = new ArrayList<Check>();
+            fc.checks = new ArrayList<>();
             final AssertCheck ac = new AssertCheck();
             ac.setExpr("_value != null && _value.length() <= 3");
             ac.setMessage("{context} cannot be longer than 3 characters");
@@ -136,7 +135,7 @@ public class XMLConfigurationTest extends TestCase {
             cf.fieldConfigurations.add(fc);
 
             fc.name = "lastName";
-            fc.checks = new ArrayList<Check>();
+            fc.checks = new ArrayList<>();
             final LengthCheck lc = new LengthCheck();
             lc.setMessage("{context} is not between {min} and {max} characters long");
             lc.setMin(1);
@@ -150,20 +149,20 @@ public class XMLConfigurationTest extends TestCase {
             cf.fieldConfigurations.add(fc);
 
             fc.name = "userId";
-            fc.checks = new ArrayList<Check>();
+            fc.checks = new ArrayList<>();
             final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
             acsc.setId("user.userid");
             fc.checks.add(acsc);
          }
 
-         cf.methodConfigurations = new HashSet<MethodConfiguration>();
+         cf.methodConfigurations = new HashSet<>();
          {
             final MethodConfiguration mc = new MethodConfiguration();
             cf.methodConfigurations.add(mc);
             mc.name = "getManagerId";
             mc.isInvariant = true;
             mc.returnValueConfiguration = new MethodReturnValueConfiguration();
-            mc.returnValueConfiguration.checks = new ArrayList<Check>();
+            mc.returnValueConfiguration.checks = new ArrayList<>();
             final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
             acsc.setId("user.userid");
             mc.returnValueConfiguration.checks.add(acsc);
