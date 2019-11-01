@@ -111,13 +111,13 @@ if(violations.size()>0) {
 
 ### <a name="declaring-getter-constraints"></a>Declaring constraints for getter methods\' return values
 
-You can specify constraints for the return value of getter methods.  When validating the object the values of all fields 
+You can specify constraints for the return value of getter methods.  When validating the object the values of all fields
 and the return values of the getter methods are checked against the specified constraints.
 
-The methods need to be annotated with `@net.sf.oval.configuration.annotation.IsInvariant`. Return value constraints 
+The methods need to be annotated with `@net.sf.oval.configuration.annotation.IsInvariant`. Return value constraints
 specified for methods missing this annotation are ignored during validation.
 
-**Important:** To retrieve the return value of the getter method OVal invokes the getter during the validation process. 
+**Important:** To retrieve the return value of the getter method OVal invokes the getter during the validation process.
 Therefore you need to ensure that the getter method really is just a getter method and does not change the object state.
 
 ```java
@@ -154,8 +154,8 @@ if(violations.size()>0) {
 
 ### <a name="declaring-conditional-constraints"></a>Declaring conditional constraints using expression languages
 
-When you annotate a field or getter with multiple constraint annotations they are ANDed. If you require other logical 
-constructs you can use a scripting language to express them. To do so annotate the field or getter with the 
+When you annotate a field or getter with multiple constraint annotations they are ANDed. If you require other logical
+constructs you can use a scripting language to express them. To do so annotate the field or getter with the
 `@net.sf.oval.constraint.Assert` annotation as shown in the following example:
 
 ```java
@@ -173,12 +173,12 @@ public class BusinessObject {
 }
 ```
 
-The `expr` parameter holds the script to be evaluated. If the script returns `true` the constraint is satisfied. 
+The `expr` parameter holds the script to be evaluated. If the script returns `true` the constraint is satisfied.
 OVal provides two special variables:
 - `_value` - contains the value to validate (field value or getter return value)
 - `_this` - is a reference to the validated object
 
-The `lang` parameter specifies the scripting language you want to use. In case the required libraries are loaded, 
+The `lang` parameter specifies the scripting language you want to use. In case the required libraries are loaded,
 OVal is aware of these languages:
 - `bsh` or `beanshell` for BeanShell,
 - `groovy` for Groovy,
@@ -192,8 +192,8 @@ Additional scripting languages can be registered via `Validator.addExpressionLan
 
 ### <a name="declaring-activation-rules"></a>Declaring activation rules for constraints
 
-Besides using `@Assert` to declare conditional constraints it is also possible to specify a activation rules for other 
-constraints using the `when` attribute. This way you can for example turn on or off constraints based on a given state 
+Besides using `@Assert` to declare conditional constraints it is also possible to specify a activation rules for other
+constraints using the `when` attribute. This way you can for example turn on or off constraints based on a given state
 of the object. The `when` attribute can hold a formula in one of the supported expression languages, it is prefixed by
 the id of the expression language to be used.
 
@@ -223,8 +223,8 @@ public class BusinessObject {
 }
 ```
 
-If JXPath is on the classpath you can also use the XPath syntax to specify the target value. In the following example the 
-`@NotNull` constraint will be checked for `street` field of the first address object in the `customer.addresses` 
+If JXPath is on the classpath you can also use the XPath syntax to specify the target value. In the following example the
+`@NotNull` constraint will be checked for `street` field of the first address object in the `customer.addresses`
 collection.
 
 ```java
@@ -240,7 +240,7 @@ To target values of maps or collections JXPath must be used, the built-in implem
 
 ### <a name="recursive-validation"></a>Recursive validation
 
-By specifying the special constraint annotation `@AssertValid` you instruct OVal to ensure that all constraints declared 
+By specifying the special constraint annotation `@AssertValid` you instruct OVal to ensure that all constraints declared
 on the referenced object are satisfied too.
 
 ```java
@@ -311,8 +311,8 @@ interprets the annotations as follows:
     @javax.validation.constraints.AssertTrue      => @net.sf.oval.constraint.AssertTrue
     @javax.validation.constraints.DecimalMax      => @net.sf.oval.constraint.Max
     @javax.validation.constraints.DecimalMin      => @net.sf.oval.constraint.Min
-    @javax.validation.constraints.Digits          => @net.sf.oval.constraint.Digits 
-    @javax.validation.constraints.Email           => @net.sf.oval.constraint.Email 
+    @javax.validation.constraints.Digits          => @net.sf.oval.constraint.Digits
+    @javax.validation.constraints.Email           => @net.sf.oval.constraint.Email
     @javax.validation.constraints.Future          => @net.sf.oval.constraint.Future
     @javax.validation.constraints.FutureOrPresent => @net.sf.oval.constraint.Future(min="now")
     @javax.validation.constraints.Max             => @net.sf.oval.constraint.Max
@@ -363,7 +363,7 @@ List<ConstraintViolation> violations = validator.validate(entity);
 
 ## <a name="programming-by-contract"></a>Using OVal for programming by contract
 
-By utilizing AspectJ OVal provides support for several aspects of programming by contract - however it is not a full 
+By utilizing AspectJ OVal provides support for several aspects of programming by contract - however it is not a full
 blown programming by contract implementation..
 
 With OVal you can
@@ -377,14 +377,14 @@ With OVal you can
 The easiest way to getting started is to use the [Eclipse IDE](http://www.eclipse.org/)
 in conjunction with the [AspectJ plug-in](http://www.eclipse.org/ajdt/).
 
-Create a new AspectJ project or add AspectJ support to an existing Java project by 
+Create a new AspectJ project or add AspectJ support to an existing Java project by
 right-clicking the project in the Package Explorer and selecting `Convert To AspectJ Project`
 
 Add the `net.sf.oval_x.x.jar` file to your library path.
 
-Create a new aspect via `File -> New -> Aspect` that extends the abstract aspect 
+Create a new aspect via `File -> New -> Aspect` that extends the abstract aspect
 `net.sf.oval.guard.GuardAspect`. When the new aspect is created the AspectJ builder
-will automatically weave the validation related code into your compiled classes annotated 
+will automatically weave the validation related code into your compiled classes annotated
 with `@net.sf.oval.guard.Guarded`.
 
 Now you can create all your business classes, add the `@net.sf.oval.guard.Guarded` annotation
@@ -502,13 +502,13 @@ public class BusinessObject {
 
 Another convenience option is the `applyFieldConstraintsToConstructors` property of the `Guarded`
 annotation. If set to true, OVal applies the specified field constraints to the corresponding parameters
-of the declared constructors within the same class. In this context, a corresponding parameter is a 
+of the declared constructors within the same class. In this context, a corresponding parameter is a
 constructor parameter with the same name and type as the field.
 
 #### <a name="scripted-preconditions"></a>Using scripted expressions for preconditions
 
 Similar to the above described `@net.sf.constraint.Assert` constraint annotation for fields
-you can annotate a method with `@net.sf.guard.Pre` allowing you to express conditional 
+you can annotate a method with `@net.sf.guard.Pre` allowing you to express conditional
 constraints using a scripting language.
 
 ```java
@@ -524,7 +524,7 @@ public class Transaction {
 }
 ```
 
-The `expr` parameter holds the script to be evaluated. If the script returns `true` the 
+The `expr` parameter holds the script to be evaluated. If the script returns `true` the
 constraint is satisfied. OVal provides special variables for use within the expression:
 - `_args[]` - array holding the method arguments
 - `_this` - is a reference to the current object
@@ -554,15 +554,15 @@ MyAspect.aspectOf().getGuard().setPreConditionsEnabled(false);
 
 #### Declaring method return value constraints
 
-By adding constraint annotations to a non-void method you can specify constraints for 
-the method\'s return value. When the method is invoked and the return value does not 
+By adding constraint annotations to a non-void method you can specify constraints for
+the method\'s return value. When the method is invoked and the return value does not
 satisfy all constraints a `ConstraintsViolatedException` is thrown.
 
-**Note:** Despite the thrown exception the method code still has been executed, you 
+**Note:** Despite the thrown exception the method code still has been executed, you
 have to rollback the changes performed by this method manually.
 
-If a non-void, non-parameterized method is also annotated with `@IsInvariant` it\'s 
-constraints will also be checked when calling the `Validator.validate(Object)` method 
+If a non-void, non-parameterized method is also annotated with `@IsInvariant` it\'s
+constraints will also be checked when calling the `Validator.validate(Object)` method
 on an object of this type.
 
 ```java
@@ -606,7 +606,7 @@ List<ConstraintViolation> violations = validator.validate(bo);
 
 #### <a name="scripted-postconditions"></a>Using scripted expressions for postconditions
 
-For declaring scripted postconditions you can use the `@net.sf.guard.Post` annotation which works 
+For declaring scripted postconditions you can use the `@net.sf.guard.Post` annotation which works
 similar to `@net.sf.guard.Pre` for preconditions.
 
 ```java
@@ -622,7 +622,7 @@ public class Transaction {
 }
 ```
 
-The `expr` parameter holds the script to be evaluated. If the script returns `true` the constraint 
+The `expr` parameter holds the script to be evaluated. If the script returns `true` the constraint
 is satisfied. OVal provides special variables for use within the expression:
 - `_args[]` - array holding the method arguments
 - `_this` - is a reference to the current object
@@ -641,11 +641,11 @@ In case the required libraries are loaded, OVal is aware of these languages:
 - `ruby` or `jruby` for Ruby (via JRuby)
 
 The `old` parameter is optionally, it can hold another expression that is evaluated before the method
-is executed. The result is made available in the post constraint expression as a special variable 
-called `_old`. The old expression can also return an array or a map allowing you to store multiple 
-values. This way you can \"remember\" the old state of multiple properties of an object. 
-An expression like `old = "[amount:_this.amount, date:_this.date]"` in Groovy returns a map with 
-the keys `amount` and `date` holding the values of the object\'s properties `amount` and `date`. 
+is executed. The result is made available in the post constraint expression as a special variable
+called `_old`. The old expression can also return an array or a map allowing you to store multiple
+values. This way you can \"remember\" the old state of multiple properties of an object.
+An expression like `old = "[amount:_this.amount, date:_this.date]"` in Groovy returns a map with
+the keys `amount` and `date` holding the values of the object\'s properties `amount` and `date`.
 These values then can be used in the constraint expression like this:
 ```java
 expression = "_this.amount>_old.amount && _this.date>_old.date"
@@ -653,7 +653,7 @@ expression = "_this.amount>_old.amount && _this.date>_old.date"
 
 #### <a name="disabling-postconditions"></a>Disabling postcondition checks
 
-You can globally disable or enable the checking of postconditions via the 
+You can globally disable or enable the checking of postconditions via the
 `Guard.setPostConditionsEnabled(boolean)` method.
 
 Example usage:
@@ -668,7 +668,7 @@ MyAspect.aspectOf().getGuard().setPostConditionsEnabled(false);
 
 By default OVal checks class invariants before and after calls to any non-private method of guarded
 classes and after constructor execution. If required you can globally disable the automatic checking of
-invariants via the `Guard.setInvariantsEnabled(boolean)` method or for all objects of a specific class 
+invariants via the `Guard.setInvariantsEnabled(boolean)` method or for all objects of a specific class
 using the `Guard.setInvariantsEnabled(Class<?>, boolean)` method.
 
 Example usage:
@@ -711,8 +711,8 @@ bo.save();
 
 #### <a name="object-validation-after-constructor-execution"></a>Enforcing object validation after constructor execution
 
-If you disabled the automatic check of class invariants you can still enable the checking of the invariants 
-after an object has been instantiated by annotating the constructors of the corresponding class with 
+If you disabled the automatic check of class invariants you can still enable the checking of the invariants
+after an object has been instantiated by annotating the constructors of the corresponding class with
 `@net.sf.oval.guard.PostValidateThis`.
 
 In case of constraint violations the constructor will throw a `ConstraintsViolatedException` which
@@ -746,12 +746,12 @@ BusinessObject bo = new  BusinessObject();
 
 #### <a name="object-validation-after-method-execution"></a>Enforcing object validation after method execution
 
-If you disabled the automatic check of class invariants you can still enable the checking of the 
+If you disabled the automatic check of class invariants you can still enable the checking of the
 invariants after a method has been executed by annotating the method with `@net.sf.oval.guard.PostValidateThis`.
 
 In case of constraint violations the method will throw an ConstraintsViolatedException.
 
-**Note:** Despite the thrown exception the method code still has been executed, you have to manually 
+**Note:** Despite the thrown exception the method code still has been executed, you have to manually
 rollback the changes performed by this method.
 
 ```
@@ -782,7 +782,7 @@ bo.appendToName("123456"); // throws a ConstraintsViolatedException because fiel
 OVal provides a so called probe mode in which you can execute all methods of an object and the guard will only
 check the preconditions (e.g. parameter constraints) and not execute the method.
 
-This is especially useful if you want to test input values received from the end user in the UI layer against 
+This is especially useful if you want to test input values received from the end user in the UI layer against
 the setter methods of a business object. You can simply pass the values to the corresponding setters and
 have any detected violations collect by a `ConstraintsViolatedListener`.
 Afterwards you can report all violations back to the UI layer and have them displayed to the end user.
@@ -865,15 +865,15 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
 
 ### <a name="converting-exceptions"></a>Converting ConstraintsViolatedExceptions
 
-When calling methods on guarded objects these methods will throw `ConstraintsViolatedException`s 
-in case any pre- or postconditions are violated. Their might be good reasons why you may want to have 
+When calling methods on guarded objects these methods will throw `ConstraintsViolatedException`s
+in case any pre- or postconditions are violated. Their might be good reasons why you may want to have
 other exceptions thrown instead of OVal\'s proprietary exceptions, e.g. JRE standard exceptions such
 as `IllegalArgumentException` or `IllegalStateException`.
 
 OVal\'s Guard class allows you to register an exception translator. The exception translator defines
 a `translateException()` method that is executed for all occurring exceptions during runtime validation.
-This allows you to translate any `OValException` thrown during validation into another 
-`RuntimeException` which will be thrown instead. As an example have a look at the 
+This allows you to translate any `OValException` thrown during validation into another
+`RuntimeException` which will be thrown instead. As an example have a look at the
 `net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl` class how an implementation could look like.
 
 Example usage:
@@ -962,7 +962,7 @@ Localization of the constraint violation message can be achieved as follows:
    - `{context}` = the validation context (e.g. a field, a method return value or a constructor/method parameter
    - `{invalidValue}` = the value that has been checked
 
-   If required, you can introduce additional variables - e.g. which reflect additional configuration properties of your 
+   If required, you can introduce additional variables - e.g. which reflect additional configuration properties of your
    constraint such as {max}, {min}, {size} - by overriding the `createMessageVariables` method of your custom check class:
 
    ```java
@@ -978,9 +978,9 @@ Localization of the constraint violation message can be achieved as follows:
    The message variables can then be used in the corresponding message strings.
 
    For performance reasons the `createMessageVariables` method is only executed once and the returned map is cached by OVal
-   for this constraint check instance. If you change one of the variables you need to invalidate the cache and require 
+   for this constraint check instance. If you change one of the variables you need to invalidate the cache and require
    rebuilding of the variables map by calling `requireMessageVariablesRecreation`.
-   For the built-in constraints `requireMessageVariablesRecreation` is invoked in each setter on the constraint check 
+   For the built-in constraints `requireMessageVariablesRecreation` is invoked in each setter on the constraint check
    implementations, e.g.:
 
    ```java
@@ -996,9 +996,9 @@ Localization of the constraint violation message can be achieved as follows:
    ResourceBundleMessageResolver resolver = (ResourceBundleMessageResolver) Validator.getMessageResolver();
    resolver.addMessageBundle(ResourceBundle.getBundle("mypackage/CustomMessages"));
    ```
-   
+
    If you would like to store your message strings other than in message bundles (e.g. in a database):
-   Either implement the `MessageResolver` interface or extend the `ResourceBundleMessageResolver` and 
+   Either implement the `MessageResolver` interface or extend the `ResourceBundleMessageResolver` and
    then configure OVal using the static `Validator.setMessageResolver(...)` method to use an instance
    of your custom message resolver instead.
 
@@ -1006,7 +1006,7 @@ Localization of the constraint violation message can be achieved as follows:
 ## <a name="complex-class-specific-constraints"></a>Expressing complex class specific constraints
 
 If you have to express a rather complex constraint that is used only within one class you might not want to implement
-it as a custom constraint. You have the following two alternatives expressing such class specific constraints in a 
+it as a custom constraint. You have the following two alternatives expressing such class specific constraints in a
 convenient way.
 
 ### <a name="using-validate_with_method"></a>Using `@ValidateWithMethod`
@@ -1103,7 +1103,7 @@ Here is an example XML configuration:
 <oval
   xmlns="http://oval.sf.net/oval-configuration"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://oval.sf.net/oval-configuration http://oval.sourceforge.net/oval-configuration.xsd"
+  xsi:schemaLocation="http://oval.sf.net/oval-configuration https://raw.githubusercontent.com/sebthom/oval/master/src/main/resources/net/sf/oval/configuration/xml/oval-configuration.xsd"
 >
   <!-- define a constraint set -->
   <constraintSet id="user.userid">
@@ -1164,8 +1164,8 @@ Here is an example XML configuration:
 
 ### <a name="constraint-profiles"><a>Constraint profiles
 
-You may come across the requirement to turn on or off the checking of certain constraints across your 
-domain model, e.g. based on some global configuration settings of the application. 
+You may come across the requirement to turn on or off the checking of certain constraints across your
+domain model, e.g. based on some global configuration settings of the application.
 OVal helps you to implement this by introducing constraint profiles. For each declared constraint
 you can specify an infinite number of profiles this constraint belongs to.
 During runtime you then can enable or disable all constraints associated with a given profile by using
@@ -1195,7 +1195,7 @@ Person p = new Person();
 v.validate(p);
 ```
 
-In this case only the null value `zipCode` property will result in a `ConstraintViolation`. 
+In this case only the null value `zipCode` property will result in a `ConstraintViolation`.
 The `@NotNull` constraints of `firstName` and `lastName` are ignored since they are associated with
 `profile1` and `profile1` has been disabled.
 
@@ -1203,8 +1203,8 @@ The `@NotNull` constraints of `firstName` and `lastName` are ignored since they 
 ### <a name="collection-factory"></a>Collection factory
 
 OVal instantiates all internally used collections indirectly via a `CollectionFactory`. OVal comes with three
-different implementations of the collection factory (Javolution Collections, GNU Trove Collections, and 
-JDK Collections). If the Javolution or GNU Trove collection classes are detected in the classpath, OVal 
+different implementations of the collection factory (Javolution Collections, GNU Trove Collections, and
+JDK Collections). If the Javolution or GNU Trove collection classes are detected in the classpath, OVal
 automatically uses the respective CollectionFactory otherwise the collection factory for standard JDK collections is used.
 
 The Collection Factory to be used by OVal can be configured via the static `Validator.setCollectionFactory(factory)` method.
@@ -1215,7 +1215,7 @@ You can implement the `net.sf.oval.collection.CollectionFactory` interface to su
 
 If you want to express constraints in a scripting language not supported by OVal out of the box, you need to implement the
 `net.sf.oval.expression.ExpressionLanguage` interface for the desired language and register your implementation with
-OVal using the `Validator.addExpressionLanguage(languageId, expressionLanguage)` method. 
+OVal using the `Validator.addExpressionLanguage(languageId, expressionLanguage)` method.
 Then you can use the specified languageId with expression language aware constraint annotations such as `@Assert`, `@Pre`,
 or `@Post` and start expressing constraints in the new expression language.
 
@@ -1223,7 +1223,7 @@ or `@Post` and start expressing constraints in the new expression language.
 
 #### <a name="spring-validation"></a>Spring Validation
 
-The class `net.sf.oval.integration.spring.SpringValidator` provides an implementation of Spring\'s 
+The class `net.sf.oval.integration.spring.SpringValidator` provides an implementation of Spring\'s
 `org.springframework.validation.Validator` interface and thus can be used for [Spring Validation](https://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/validation.html).
 
 #### <a name="spring-aop"></a>Guarding Spring managed beans using Spring AOP
