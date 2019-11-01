@@ -416,8 +416,9 @@ SPDX-License-Identifier: EPL-2.0
       <complexContent>
          <extension base="tns:Constraint">
             <sequence>
-               <element name="expr" type="string" />
+               <element name="expr" type="string" minOccurs="0" />
             </sequence>
+            <attribute name="expr" type="string" use="optional" />
             <attribute name="lang" use="required" type="tns:ScriptingLanguage" />
          </extension>
       </complexContent>

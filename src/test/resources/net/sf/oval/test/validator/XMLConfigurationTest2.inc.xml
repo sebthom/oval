@@ -9,9 +9,7 @@ http://oval.sf.net/oval-configuration
    <class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false" applyFieldConstraintsToSetters="true">
 
       <object>
-         <assert lang="groovy" message="firstName and lastName must not be the same">
-            <expr>_this.firstName != _this.lastName</expr>
-         </assert>
+         <assert lang="groovy" message="firstName and lastName must not be the same" expr="_this.firstName != _this.lastName" />
       </object>
 
       <field name="firstName">

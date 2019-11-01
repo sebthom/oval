@@ -21,13 +21,13 @@
          <length min="0" max="5" message="{context} is not between {min} and {max} characters long" />
       </field>
 
-       <!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
+      <!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
       <field name="userId" overwrite="true">
          <!-- use the checks defined for the constraint set "user.userid" -->
          <assertConstraintSet id="user.userid" />
       </field>
 
-       <!-- define constructor parameter checks -->
+      <!-- define constructor parameter checks -->
       <constructor>
          <!-- parameter 1 -->
          <parameter type="java.lang.String">

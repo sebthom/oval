@@ -168,37 +168,48 @@ public class XMLConfigurer implements Configurer {
          if (reader.getAttribute("severity") != null) {
             assertCheck.setSeverity(Integer.parseInt(reader.getAttribute("severity")));
          }
+         if (reader.getAttribute("expr") != null) {
+            assertCheck.setExpr(reader.getAttribute("expr"));
+         }
          assertCheck.setTarget(reader.getAttribute("target"));
          assertCheck.setWhen(reader.getAttribute("when"));
 
-         reader.moveDown();
-         assertCheck.setExpr(reader.getValue());
-         reader.moveUp();
-         if (reader.hasMoreChildren()) {
+         while (reader.hasMoreChildren()) {
             reader.moveDown();
-            if ("appliesTo".equals(reader.getNodeName())) {
-               final List<ConstraintTarget> targets = new ArrayList<>(2);
-               while (reader.hasMoreChildren()) {
-                  reader.moveDown();
-                  if ("constraintTarget".equals(reader.getNodeName())) {
-                     targets.add(ConstraintTarget.valueOf(reader.getValue()));
+            switch (reader.getNodeName()) {
+               case "appliesTo":
+                  final List<ConstraintTarget> targets = new ArrayList<>(2);
+                  while (reader.hasMoreChildren()) {
+                     reader.moveDown();
+                     switch (reader.getNodeName()) {
+                        case "constraintTarget":
+                           targets.add(ConstraintTarget.valueOf(reader.getValue()));
+                           break;
+                     }
+                     reader.moveUp();
                   }
-                  reader.moveUp();
-               }
-               assertCheck.setAppliesTo(targets.toArray(new ConstraintTarget[targets.size()]));
-            } else if ("profiles".equals(reader.getNodeName())) {
-               final List<String> profiles = new ArrayList<>(4);
-               while (reader.hasMoreChildren()) {
-                  reader.moveDown();
-                  if ("string".equals(reader.getNodeName())) {
-                     profiles.add(reader.getValue());
+                  assertCheck.setAppliesTo(targets.toArray(new ConstraintTarget[targets.size()]));
+                  break;
+               case "expr":
+                  assertCheck.setExpr(reader.getValue());
+                  break;
+               case "profiles":
+                  final List<String> profiles = new ArrayList<>(4);
+                  while (reader.hasMoreChildren()) {
+                     reader.moveDown();
+                     switch (reader.getNodeName()) {
+                        case "string":
+                           profiles.add(reader.getValue());
+                           break;
+                     }
+                     reader.moveUp();
                   }
-                  reader.moveUp();
-               }
-               assertCheck.setProfiles(profiles.toArray(new String[profiles.size()]));
+                  assertCheck.setProfiles(profiles.toArray(new String[profiles.size()]));
+                  break;
             }
             reader.moveUp();
          }
+
          for (final CheckInitializationListener listener : listeners) {
             listener.onCheckInitialized(assertCheck);
          }

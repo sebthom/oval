@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+* [github Issue #34](https://github.com/sebthom/oval/issues/34) XML configuration: allow expression be declared as attribute on <assert> XML tag
+
 ### Fixed
- * [github Issue #33](https://github.com/sebthom/oval/issues/33) XML de-/serialization not working with XStream 1.4.4 or higher
+* [github Issue #33](https://github.com/sebthom/oval/issues/33) XML de-/serialization not working with XStream 1.4.4 or higher
 
 ### Changed
 * requires xStream 1.4.10 or higher for XML config
