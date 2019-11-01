@@ -1274,7 +1274,7 @@ public class Validator implements IValidator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = collectionFactory.createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
 
       try {
          validateInvariants(validatedObject, violations, (String[]) null);
@@ -1294,7 +1294,7 @@ public class Validator implements IValidator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = collectionFactory.createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
 
       try {
          validateInvariants(validatedObject, violations, profiles);
@@ -1315,7 +1315,7 @@ public class Validator implements IValidator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = collectionFactory.createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<Object>(4));
+      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
 
       try {
          final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());
