@@ -184,7 +184,7 @@ SPDX-License-Identifier: EPL-2.0
       </annotation>
       <complexContent>
          <extension base="tns:ConfigurationElementWithConstraints">
-            <attribute name="id" use="required" type="ID" />
+            <attribute name="id" use="required" type="string" />
          </extension>
       </complexContent>
    </complexType>
@@ -467,8 +467,8 @@ SPDX-License-Identifier: EPL-2.0
                   </complexType>
                </element>
             </choice>
-            <attribute name="id" type="IDREF" use="required" />
-                <!-- TODO -->
+            <attribute name="id" type="string" use="required" />
+            <!-- TODO -->
             <attribute name="source" type="string" use="optional" />
          </extension>
       </complexContent>
