@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+ * [github Issue #33](https://github.com/sebthom/oval/issues/33) XML de-/serialization not working with XStream 1.4.4 or higher
+
+### Changed
+* requires xStream 1.4.10 or higher for XML config
 * Updated tested optional dependencies
   * AspectJ 1.9.4
   * JRuby 9.2.9.0
@@ -15,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * Rhino 1.7.11
   * Spring Framework 5.2.0.RELEASE
   * slf4j 1.7.29
+  * xStream 1.4.11.1
 
 
 ## [2.0.0] - 2019-04-05

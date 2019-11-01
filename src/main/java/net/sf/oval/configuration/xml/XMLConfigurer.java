@@ -113,7 +113,7 @@ public class XMLConfigurer implements Configurer {
     * <code>&lt;assert&gt;&lt;expr&gt;...&lt;/expr&gt;&lt;/assert&gt;</code> instead of <code>&lt;assert expr="..."&gt;</code>
     * This allows users to write complex, multi-line expressions.
     */
-   protected final class AssertCheckConverter implements Converter {
+   protected class AssertCheckConverter implements Converter {
 
       @Override
       public boolean canConvert(final Class clazz) {
@@ -160,7 +160,7 @@ public class XMLConfigurer implements Configurer {
       }
 
       @Override
-      public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
+      public AssertCheck unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
          final AssertCheck assertCheck = new AssertCheck();
          assertCheck.setLang(reader.getAttribute("lang"));
          assertCheck.setMessage(reader.getAttribute("message"));
@@ -206,7 +206,7 @@ public class XMLConfigurer implements Configurer {
       }
    }
 
-   private static final class ListConverter extends CollectionConverter {
+   protected static class ListConverter extends CollectionConverter {
       protected ListConverter(final Mapper mapper) {
          super(mapper);
       }
@@ -217,10 +217,34 @@ public class XMLConfigurer implements Configurer {
       }
    }
 
+   protected static class PatternConverter implements Converter {
+
+      @Override
+      public boolean canConvert(final Class type) {
+         return type == Pattern.class;
+      }
+
+      @Override
+      public void marshal(final Object value, final HierarchicalStreamWriter writer, final MarshallingContext context) {
+         final Pattern pattern = (Pattern) value;
+         writer.addAttribute("pattern", pattern.pattern());
+         writer.addAttribute("flags", Integer.toString(pattern.flags()));
+      }
+
+      @Override
+      public Pattern unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
+         final String pattern = reader.getAttribute("pattern");
+         final String flags = reader.getAttribute("flags");
+         if (flags == null || flags.trim().length() == 0)
+            return Pattern.compile(pattern);
+         return Pattern.compile(pattern, Integer.parseInt(flags));
+      }
+   }
+
    /**
     * This reflection provider applies default values declared on constraint annotations to the corresponding check class
     */
-   protected static final class XStreamReflectionProvider extends Sun14ReflectionProvider {
+   private static final class XStreamReflectionProvider extends Sun14ReflectionProvider {
       @SuppressWarnings("unchecked")
       @Override
       public Object newInstance(final Class type) {
@@ -295,6 +319,9 @@ public class XMLConfigurer implements Configurer {
    }
 
    private void configureXStream() {
+      XStream.setupDefaultSecurity(xStream);
+      xStream.allowTypesByWildcard(new String[] {"net.sf.oval.**"});
+
       xStream.registerConverter(new ReflectionConverter(xStream.getMapper(), xStream.getReflectionProvider()) {
          @Override
          public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
@@ -309,6 +336,7 @@ public class XMLConfigurer implements Configurer {
       }, XStream.PRIORITY_VERY_LOW);
       xStream.registerConverter(new ListConverter(xStream.getMapper()));
       xStream.registerConverter(new AssertCheckConverter());
+      xStream.registerConverter(new PatternConverter());
 
       xStream.omitField(AbstractCheck.class, "messageVariablesUpToDate");
 
