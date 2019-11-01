@@ -5,8 +5,8 @@ http://oval.sf.net/oval-configuration
 ../../../../../../../main/resources/net/sf/oval/configuration/xml/oval-configuration.xsd
 ">
 
-   <xi:include href="./XMLConfigurationTest1.inc.xml" xpointer="element(/1/1)"/>
+   <xi:include href="./XMLConfigurationTest1.inc.xml" xpointer="element(/1/1)" />
 
-   <xi:include href="./XMLConfigurationTest2.inc.xml" xpointer="element(/1/1)"/>
+   <xi:include href="./XMLConfigurationTest2.inc.xml" xpointer="element(/1/1)" />
 
 </oval>

@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <oval xmlns="http://oval.sf.net/oval-configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
+   xsi:schemaLocation="
 http://oval.sf.net/oval-configuration
 ../../../../../../../main/resources/net/sf/oval/configuration/xml/oval-configuration.xsd">
 
-    <!-- define checks for the net.sf.oval.test.validator.XMLConfigurationTest$User class -->
-    <!-- overwrite=false means already defined checks for this class will not be removed -->
-    <class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false" applyFieldConstraintsToSetters="true">
+   <!-- define checks for the net.sf.oval.test.validator.XMLConfigurationTest$User class -->
+   <!-- overwrite=false means already defined checks for this class will not be removed -->
+   <class type="net.sf.oval.test.validator.XMLConfigurationTest$User" overwrite="false" applyFieldConstraintsToSetters="true">
 
-        <object>
-            <assert lang="groovy" message="firstName and lastName must not be the same">
-                <expr>_this.firstName != _this.lastName</expr>
-            </assert>
-        </object>
+      <object>
+         <assert lang="groovy" message="firstName and lastName must not be the same">
+            <expr>_this.firstName != _this.lastName</expr>
+         </assert>
+      </object>
 
-        <field name="firstName">
-            <assert lang="groovy" message="{context} cannot be longer than 3 characters">
-                <expr><![CDATA[_value != null && _value.length() <= 3]]></expr>
-            </assert>
-        </field>
+      <field name="firstName">
+         <assert lang="groovy" message="{context} cannot be longer than 3 characters">
+            <expr><![CDATA[_value != null && _value.length() <= 3]]></expr>
+         </assert>
+      </field>
 
-        <field name="lastName">
-            <length min="1" max="5" message="{context} is not between {min} and {max} characters long" />
-        </field>
+      <field name="lastName">
+         <length min="1" max="5" message="{context} is not between {min} and {max} characters long" />
+      </field>
 
-        <!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
-        <field name="userId" overwrite="true">
+      <!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
+      <field name="userId" overwrite="true">
             <!-- use the checks defined for the constraint set "user.userid" -->
-            <assertConstraintSet id="user.userid" />
-        </field>
+         <assertConstraintSet id="user.userid" />
+      </field>
 
-        <!-- define a getter return value check -->
-        <method name="getManagerId" isInvariant="true">
-            <!-- returnValue - use the checks defined for the constraint set "user.userid" -->
-            <returnValue>
-                <assertConstraintSet id="user.userid" />
-            </returnValue>
-        </method>
-    </class>
+      <!-- define a getter return value check -->
+      <method name="getManagerId" isInvariant="true">
+         <!-- returnValue - use the checks defined for the constraint set "user.userid" -->
+         <returnValue>
+            <assertConstraintSet id="user.userid" />
+         </returnValue>
+      </method>
+   </class>
 </oval>

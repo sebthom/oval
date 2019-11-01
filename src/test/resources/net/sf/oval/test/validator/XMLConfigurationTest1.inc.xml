@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <oval xmlns="http://oval.sf.net/oval-configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
+   xsi:schemaLocation="
 http://oval.sf.net/oval-configuration
 ../../../../../../../main/resources/net/sf/oval/configuration/xml/oval-configuration.xsd
 ">
 
-    <!-- define a constraint set -->
-    <constraintSet id="user.userid">
-        <notNull message="{context} is null" />
-        <matchPattern message="{context} does not match the pattern {pattern}" matchAll="true">
-            <pattern pattern="^[a-z0-9]{8}$" flags="0" />
-        </matchPattern>
-    </constraintSet>
+   <!-- define a constraint set -->
+   <constraintSet id="user.userid">
+      <notNull message="{context} is null" />
+      <matchPattern message="{context} does not match the pattern {pattern}" matchAll="true">
+         <pattern pattern="^[a-z0-9]{8}$" flags="0" />
+      </matchPattern>
+   </constraintSet>
 </oval>
