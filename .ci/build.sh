@@ -9,12 +9,12 @@
 set -e # abort script at first error
 set -o pipefail # causes a pipeline to return the exit status of the last command in the pipe that returned a non-zero return value
 
-if [[ -f ./.travis/release-trigger.sh ]]; then
-    echo "Sourcing [./.travis/release-trigger.sh]..."
-    source ./.travis/release-trigger.sh
+if [[ -f .ci/release-trigger.sh ]]; then
+    echo "Sourcing [.ci/release-trigger.sh]..."
+    source .ci/release-trigger.sh
 fi
 
-MAVEN_VERSION=3.6.1
+MAVEN_VERSION=3.6.2
 MAVEN_HELP_PLUGIN_VERSION=3.2.0
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
     echo "Installing Maven version $MAVEN_VERSION..."
@@ -27,7 +27,7 @@ export PATH=$M2_HOME/bin:$PATH
 
 # https://stackoverflow.com/questions/3545292/how-to-get-maven-project-version-to-the-bash-command-line
 echo "Determining current Maven project version..."
-projectVersion="$(mvn -s .travis/maven_settings.xml org.apache.maven.plugins:maven-help-plugin:$MAVEN_HELP_PLUGIN_VERSION:evaluate -Dexpression=project.version -q -DforceStdout)"
+projectVersion="$(mvn -s .ci/maven_settings.xml org.apache.maven.plugins:maven-help-plugin:$MAVEN_HELP_PLUGIN_VERSION:evaluate -Dexpression=project.version -q -DforceStdout)"
 echo "  -> Current Version: $projectVersion"
 
 MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1" # https://zeroturnaround.com/rebellabs/your-maven-build-is-slow-speed-it-up/
@@ -49,14 +49,15 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} ]]; then
     echo "  ->               Is Dry-Run: ${DRY_RUN}"
 
     # workaround for "No toolchain found with specification [version:1.8, vendor:default]" during release builds
-    cp -f .travis/maven_settings.xml $HOME/.m2/settings.xml
-    cp -f .travis/maven_toolchains.xml $HOME/.m2/toolchains.xml
+    cp -f .ci/maven_settings.xml $HOME/.m2/settings.xml
+    cp -f .ci/maven_toolchains.xml $HOME/.m2/toolchains.xml
 
     # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release
     git checkout ${TRAVIS_BRANCH}
 
     mvn -e -U --batch-mode --show-version \
-        -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
+        -s .ci/maven_settings.xml -t .ci/maven_toolchains.xml \
+        -DskipTests=${SKIP_TESTS} -DskipITs=${SKIP_TESTS} \
         -DdryRun=${DRY_RUN} -Dresume=false "-Darguments=-DskipTests=${SKIP_TESTS} -DskipITs=${SKIP_TESTS}" -DreleaseVersion=${POM_RELEASE_VERSION} -DdevelopmentVersion=${nextDevelopmentVersion} \
         help:active-profiles clean release:clean release:prepare release:perform \
         | grep -v -e "\[INFO\]  .* \[0.0[0-9][0-9]s\]" # the grep command suppresses all lines from maven-buildtime-extension that report plugins with execution time <=99ms
@@ -70,7 +71,7 @@ else
         mavenGoal="verify"
     fi
     mvn -e -U --batch-mode --show-version \
-        -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
+        -s .ci/maven_settings.xml -t .ci/maven_toolchains.xml \
         help:active-profiles clean $mavenGoal \
         | grep -v -e "\[INFO\]  .* \[0.0[0-9][0-9]s\]" # the grep command suppresses all lines from maven-buildtime-extension that report plugins with execution time <=99ms
 fi
