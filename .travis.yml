@@ -1,4 +1,4 @@
-dist: xenial
+dist: xenial # bionic doesn't have JDK 8
 
 language: java
   
