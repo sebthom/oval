@@ -214,10 +214,11 @@
                      <executable>java</executable>
                      <classpathScope>compile</classpathScope>
                      <arguments>
-                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
-                        <argument>-jar</argument>
+                        <argument>-cp</argument>
                         <argument>${custom.ajcJarPath}</argument>
+                        <argument>org.aspectj.tools.ajbrowser.Main</argument>
 
+                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <!-- ajc compatible ecj options -->
                         <argument>-bootclasspath</argument>
                         <argument>${custom.compileBootClasspath}</argument>
@@ -243,6 +244,7 @@
                         <argument>-showWeaveInfo</argument>
                         <argument>-sourceroots</argument>
                         <argument>${project.build.sourceDirectory}</argument>
+
                      </arguments>
                   </configuration>
                </execution>
@@ -257,10 +259,11 @@
                      <executable>java</executable>
                      <classpathScope>compile</classpathScope>
                      <arguments>
-                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
-                        <argument>-jar</argument>
+                        <argument>-cp</argument>
                         <argument>${custom.ajcJarPath}</argument>
+                        <argument>org.aspectj.tools.ajbrowser.Main</argument>
 
+                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <!-- ajc compatible ecj options -->
                         <arguemt>-bootclasspath</arguemt>
                         <argument>${custom.testCompileBootClasspath}</argument>
