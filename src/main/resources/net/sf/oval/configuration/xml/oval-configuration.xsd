@@ -734,7 +734,13 @@ SPDX-License-Identifier: EPL-2.0
                   </complexType>
                </element>
             </sequence>
-            <attribute name="matchAll" type="boolean" use="required" />
+            <attribute name="matchAll" type="boolean" use="required">
+               <annotation>
+                  <documentation>
+                     Specifies if all of the declared patterns must match or if one is sufficient.
+                  </documentation>
+               </annotation>
+            </attribute>
          </extension>
       </complexContent>
    </complexType>
