@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [2.0.1] - 2019-11-01
+
 ### Added
 * [github Issue #34](https://github.com/sebthom/oval/issues/34) XML configuration: allow expression be declared as attribute on <assert> XML tag
 
