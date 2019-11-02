@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -108,12 +109,13 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * @author Sebastian Thomschke
  */
 public class XMLConfigurer implements Configurer {
+
    /**
     * The converter is needed to allow the rendering of Assert's expr attribute value as an XML node value and not an XML attribute
     * <code>&lt;assert&gt;&lt;expr&gt;...&lt;/expr&gt;&lt;/assert&gt;</code> instead of <code>&lt;assert expr="..."&gt;</code>
     * This allows users to write complex, multi-line expressions.
     */
-   protected class AssertCheckConverter implements Converter {
+   protected static class AssertCheckConverter implements Converter {
 
       @Override
       public boolean canConvert(final Class clazz) {
@@ -210,9 +212,7 @@ public class XMLConfigurer implements Configurer {
             reader.moveUp();
          }
 
-         for (final CheckInitializationListener listener : listeners) {
-            listener.onCheckInitialized(assertCheck);
-         }
+         onCheckInitialized(assertCheck);
          return assertCheck;
       }
    }
@@ -288,48 +288,10 @@ public class XMLConfigurer implements Configurer {
       }
    }
 
-   protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<>(2);
-   private POJOConfigurer pojoConfigurer = new POJOConfigurer();
-   private final XStream xStream;
+   private static final ThreadLocal<Collection<CheckInitializationListener>> CURRENT_LISTENERS = new ThreadLocal<>();
 
-   /**
-    * creates an XMLConfigurer instance backed by a new XStream instance
-    * using the com.thoughtworks.xstream.io.xml.StaxDriver for XML parsing
-    * if the StAX API is available
-    *
-    * @see com.thoughtworks.xstream.io.xml.StaxDriver
-    */
-   public XMLConfigurer() {
-      xStream = new XStream(new XStreamReflectionProvider(), new XIncludeAwareDOMDriver());
-      configureXStream();
-   }
-
-   public XMLConfigurer(final File xmlConfigFile) {
-      this();
-      fromXML(xmlConfigFile);
-   }
-
-   public XMLConfigurer(final InputStream xmlConfigStream) {
-      this();
-      fromXML(xmlConfigStream);
-   }
-
-   public XMLConfigurer(final Reader xmlConfigReader) {
-      this();
-      fromXML(xmlConfigReader);
-   }
-
-   public XMLConfigurer(final String xmlConfigAsString) {
-      this();
-      fromXML(xmlConfigAsString);
-   }
-
-   public boolean addCheckInitializationListener(final CheckInitializationListener listener) {
-      Assert.argumentNotNull("listener", listener);
-      return listeners.add(listener);
-   }
-
-   private void configureXStream() {
+   public static XStream createXStream() {
+      final XStream xStream = new XStream(new XStreamReflectionProvider(), new XIncludeAwareDOMDriver());
       XStream.setupDefaultSecurity(xStream);
       xStream.allowTypesByWildcard(new String[] {"net.sf.oval.**"});
 
@@ -338,9 +300,7 @@ public class XMLConfigurer implements Configurer {
          public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final Object instance = super.unmarshal(reader, context);
             if (instance instanceof Check) {
-               for (final CheckInitializationListener listener : listeners) {
-                  listener.onCheckInitialized((Check) instance);
-               }
+               onCheckInitialized((Check) instance);
             }
             return instance;
          }
@@ -489,22 +449,116 @@ public class XMLConfigurer implements Configurer {
             }
          }
       }
+      return xStream;
+   }
+
+   protected static void onCheckInitialized(final Check check) {
+      final Collection<CheckInitializationListener> listeners = CURRENT_LISTENERS.get();
+      if (listeners != null) {
+         for (final CheckInitializationListener listener : listeners) {
+            listener.onCheckInitialized(check);
+         }
+      }
+   }
+
+   protected final Set<CheckInitializationListener> listeners = new LinkedHashSet<>(2);
+   private POJOConfigurer pojoConfigurer = new POJOConfigurer();
+   private final XStream xStream;
+
+   /**
+    * creates an XMLConfigurer instance backed by a new XStream instance
+    * using the com.thoughtworks.xstream.io.xml.StaxDriver for XML parsing
+    * if the StAX API is available
+    *
+    * @see com.thoughtworks.xstream.io.xml.StaxDriver
+    */
+   public XMLConfigurer() {
+      xStream = createXStream();
+   }
+
+   public XMLConfigurer(final File xmlConfigFile) {
+      this();
+      fromXML(xmlConfigFile);
+   }
+
+   public XMLConfigurer(final InputStream xmlConfigStream) {
+      this();
+      fromXML(xmlConfigStream);
+   }
+
+   public XMLConfigurer(final Reader xmlConfigReader) {
+      this();
+      fromXML(xmlConfigReader);
+   }
+
+   public XMLConfigurer(final String xmlConfigAsString) {
+      this();
+      fromXML(xmlConfigAsString);
+   }
+
+   public XMLConfigurer(final XStream xStream) {
+      this.xStream = xStream == null ? createXStream() : xStream;
+   }
+
+   public XMLConfigurer(final XStream xStream, final File xmlConfigFile) {
+      this(xStream);
+      fromXML(xmlConfigFile);
+   }
+
+   public XMLConfigurer(final XStream xStream, final InputStream xmlConfigStream) {
+      this(xStream);
+      fromXML(xmlConfigStream);
+   }
+
+   public XMLConfigurer(final XStream xStream, final Reader xmlConfigReader) {
+      this(xStream);
+      fromXML(xmlConfigReader);
+   }
+
+   public XMLConfigurer(final XStream xStream, final String xmlConfigAsString) {
+      this(xStream);
+      fromXML(xmlConfigAsString);
+   }
+
+   public boolean addCheckInitializationListener(final CheckInitializationListener listener) {
+      Assert.argumentNotNull("listener", listener);
+      return listeners.add(listener);
    }
 
    public void fromXML(final File input) {
-      pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      CURRENT_LISTENERS.set(listeners);
+      try {
+         pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      } finally {
+         CURRENT_LISTENERS.set(null);
+      }
    }
 
    public void fromXML(final InputStream input) {
-      pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      CURRENT_LISTENERS.set(listeners);
+      try {
+         pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      } finally {
+         CURRENT_LISTENERS.set(null);
+      }
    }
 
    public void fromXML(final Reader input) {
-      pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      CURRENT_LISTENERS.set(listeners);
+      try {
+         pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      } finally {
+         CURRENT_LISTENERS.set(null);
+      }
    }
 
    public void fromXML(final String input) {
-      pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      CURRENT_LISTENERS.set(listeners);
+      try {
+         pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
+      } finally {
+         CURRENT_LISTENERS.set(null);
+      }
    }
 
    @Override

@@ -71,6 +71,14 @@ public class XMLConfigurationTest extends TestCase {
       validateUser(new Validator(x1, x2));
    }
 
+   public void testMultipleXMLFilesWithSameXStreamInstance() {
+      final XMLConfigurer x1 = new XMLConfigurer();
+      x1.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest1.inc.xml"));
+      final XMLConfigurer x2 = new XMLConfigurer(x1.getXStream());
+      x2.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest2.inc.xml"));
+      validateUser(new Validator(x1, x2));
+   }
+
    public void testMultipleXMLFilesWithXIncluded() {
       final XMLConfigurer x1 = new XMLConfigurer();
       x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest.xml"));

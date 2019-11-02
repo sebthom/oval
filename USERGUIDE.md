@@ -1257,25 +1257,25 @@ This configuration requires CGLIB to be on the classpath.
 
 To have Spring beans injected automatically into Check classes you need to:
 
-- annotated the required fields in your Check implementation class with `@Autowired`
-- add an instance of `net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener` to the configurer
-  ```java
-  AnnotationConfigurer myConfigurer = new AnnotationConfigurer();
-  myConfigurer.addCheckInitializationListener(BeanInjectingCheckInitializationListener.INSTANCE);
-  Validator myValidator = new Validator(myConfigurer);
-  ```
-- enable annotation-based configuration in your Spring application context configuration:
-  ```xml
-  <beans>
+1. annotate the required fields in your check implementation class with `@Autowired`
+1. add an instance of `net.sf.oval.integration.spring.BeanInjectingCheckInitializationListener` to the configurer
+   ```java
+   AnnotationConfigurer myConfigurer = new AnnotationConfigurer();
+   myConfigurer.addCheckInitializationListener(BeanInjectingCheckInitializationListener.INSTANCE);
+   Validator myValidator = new Validator(myConfigurer);
+   ```
+1. enable annotation-based configuration in your Spring application context configuration:
+   ```xml
+   <beans>
       <context:annotation-config />
-  </beans>
-  ```
-- setup an SpringInjector bean in your Spring application context configuration:
-  ```xml
-  <beans>
+   </beans>
+   ```
+1. setup an SpringInjector bean in your Spring application context configuration:
+   ```xml
+   <beans>
       <bean class="net.sf.oval.integration.spring.SpringInjector" />
-  </beans>
-  ```
+   </beans>
+   ```
 
 #### <a name="configuring-oval-with-spring"></a>Configuring OVal validator instances with Spring
 
