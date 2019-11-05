@@ -22,8 +22,8 @@
 1. [Expressing complex class specific constraints](#complex-class-specific-constraints)
    1. [Using `@ValidateWithMethod`](#using-validate_with_method)
    1. [Using `@CheckWith`](#using-check_with)
-1. [XML based configuration](#xml-configuration)
-1. [Additional configuration and customization options](#additional-configuration)
+1. [XML based configuration](#xml-config)
+1. [Additional configuration and customization options](#additional-config)
    1. [Constraint profiles](#constraint-profiles)
    1. [Collection factory](#collection-factory)
    1. [Adding additional expression languages](#additiona-expression-languages)
@@ -287,7 +287,7 @@ public class MyEntity {
 Example usage:
 
 ```java
-// configure OVal to interprete OVal constraint annotations as well as EJB3 JPA annotations
+// configure OVal to interpret OVal constraint annotations as well as EJB3 JPA annotations
 Validator validator = new Validator(new AnnotationsConfigurer(), new JPAAnnotationsConfigurer());
 
 MyEntity entity = new MyEntity();
@@ -347,7 +347,7 @@ public class MyEntity {
 
 Example usage:
 ```java
-// configure OVal to interprete OVal constraint annotations as well as built-in Bean Validation annotations
+// configure OVal to interpret OVal constraint annotations as well as built-in Bean Validation annotations
 Validator validator = new Validator(new AnnotationsConfigurer(), new BeanValidationAnnotationsConfigurer());
 
 MyEntity entity = new MyEntity();
@@ -870,7 +870,7 @@ in case any pre- or postconditions are violated. Their might be good reasons why
 other exceptions thrown instead of OVal\'s proprietary exceptions, e.g. JRE standard exceptions such
 as `IllegalArgumentException` or `IllegalStateException`.
 
-OVal\'s Guard class allows you to register an exception translator. The exception translator defines
+OVal's Guard class allows you to register an exception translator. The exception translator defines
 a `translateException()` method that is executed for all occurring exceptions during runtime validation.
 This allows you to translate any `OValException` thrown during validation into another
 `RuntimeException` which will be thrown instead. As an example have a look at the
@@ -1083,17 +1083,16 @@ private static class DayEntity {
 
 ## <a name="xml-config"></a>XML based configuration
 
-By default the constraints configuration is done by adding annotations representing the constraints
-to the respective locations in the source code. Alternatively constraints can also be declared via XML
-- either for a complete configuration or to overwrite the annotations based constraint configurations
-for specific classes, fields, etc.
+By default the constraints configuration is done by adding annotations representing the constraints to the respective
+locations in the source code. Alternatively constraints can also be declared via XML - either for a complete configuration
+or to overwrite the annotations based constraint configurations for specific classes, fields, etc.
 
-You can used the `net.sf.oval.configuration.xml.XMLConfigurer` for loading constraint definitions
-from an XML file:
+You can used the [net.sf.oval.configuration.xml.XMLConfigurer](https://github.com/sebthom/oval/blob/master/src/main/java/net/sf/oval/configuration/xml/XMLConfigurer.java)
+for loading constraint definitions from an XML file:
 
 ```java
 XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml"));
-Guard guard = new Guard(xmlConfigurer);
+Validator validator = new Validator(xmlConfigurer);
 ```
 
 Here is an example XML configuration:
@@ -1127,18 +1126,18 @@ Here is an example XML configuration:
 
     <!-- overwrite=true means previously defined checks for this field will be overwritten by the checks defined here -->
     <field name="managerId" overwrite="true">
-      <!-- use the checks defined for the constaint set "user.userid" -->
+      <!-- use the checks defined for the constraint set "user.userid" -->
       <assertConstraint id="user.userid" />
     </field>
 
     <field name="userId" overwrite="true">
-      <!-- use the checks defined for the constaint set "user.userid" -->
+      <!-- use the checks defined for the constraint set "user.userid" -->
       <assertConstraintSet id="user.userid" />
     </field>
 
     <!-- define constructor parameter checks -->
     <constructor>
-      <!-- parameter1 -->
+      <!-- parameter 1 -->
       <parameter type="java.lang.String">
         <notNull />
       </parameter>
@@ -1159,8 +1158,33 @@ Here is an example XML configuration:
 </oval>
 ```
 
+### Loading custom checks
 
-## <a name="additional-configuration"></a>Additional configuration and customization options
+To load XML files with custom checks, the packages containing the checks must be registered to the XStream instance of the respective
+XMLConfigurer for security reasons:
+
+ ```java
+XMLConfigurer xmlConfigurer = new XMLConfigurer(new File("oval-config.xml"));
+xmlConfigurer.getXStream().allowTypesByWildcard(new String[] {"com.acme.mychecks.**"});
+Validator validator = new Validator(xmlConfigurer);
+```
+
+### Loading multiple XML files
+
+When loading multiple XML files the XStream instance used for deserializing the configuration can be shared by multiple XMLConfigurers
+to improve memory usage and configuration load time.
+
+```java
+XStream xStream = XMLConfigurer.createXStream();
+xStream.allowTypesByWildcard(new String[] {"com.acme.mychecks.**"});
+XMLConfigurer xmlCfg1 = new XMLConfigurer(xStream, new File("oval-config1.xml"));
+XMLConfigurer xmlCfg2 = new XMLConfigurer(xStream, new File("oval-config2.xml"));
+XMLConfigurer xmlCfg3 = new XMLConfigurer(xStream, new File("oval-config3.xml"));
+Validator validator = new Validator(xmlCfg1, xmlCfg2, xmlCfg3);
+```
+
+
+## <a name="additional-config"></a>Additional configuration and customization options
 
 ### <a name="constraint-profiles"><a>Constraint profiles
 
