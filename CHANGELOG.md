@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.0] - 2019-11-05
+
 ### Added
 * [github Issue #34](https://github.com/sebthom/oval/issues/35) XStream instances can be shared between XMLConfigurers
+* Updated tested optional dependencies
+  * Spring Framework 5.2.1.RELEASE
 
 
 ## [2.0.1] - 2019-11-01
