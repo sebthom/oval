@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [2.1.1] - 2019-11-20
+
 ### Fixed
 * [github Issue #36](https://github.com/sebthom/oval/issues/36) Profiles inside annotation list are ignored
 
