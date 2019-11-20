@@ -752,7 +752,7 @@ public class Validator implements IValidator {
 
    protected void checkConstraint(final List<ConstraintViolation> violations, final Check check, Object validatedObject, Object valueToValidate,
       OValContext context, final String[] profiles, final boolean isContainerValue) throws OValException {
-      if (!isAnyProfileEnabled(check.getProfiles(), profiles))
+      if (!(check instanceof ConstraintsCheck) && !isAnyProfileEnabled(check.getProfiles(), profiles))
          return;
 
       if (!check.isActive(validatedObject, valueToValidate, this))
