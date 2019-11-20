@@ -67,7 +67,7 @@ public class ConstraintListWithWhenConditionTest extends TestCase {
 
       assertTrue(validator.validate(entity).isEmpty());
 
-      entity.map = new HashMap<String, String>();
+      entity.map = new HashMap<>();
       assertTrue(validator.validate(entity).isEmpty());
 
       entity.map.put("foo", null);
@@ -90,7 +90,7 @@ public class ConstraintListWithWhenConditionTest extends TestCase {
 
       assertTrue(validator.validate(entity).isEmpty());
 
-      entity.map = new HashMap<String, String>();
+      entity.map = new HashMap<>();
       assertTrue(validator.validate(entity).isEmpty());
 
       entity.map.put("foo", null);
@@ -113,7 +113,7 @@ public class ConstraintListWithWhenConditionTest extends TestCase {
 
       assertTrue(validator.validate(entity).isEmpty());
 
-      entity.map = new HashMap<String, String>();
+      entity.map = new HashMap<>();
       assertTrue(validator.validate(entity).isEmpty());
 
       entity.map.put("foo", null);
@@ -136,7 +136,7 @@ public class ConstraintListWithWhenConditionTest extends TestCase {
 
       assertEquals(1, validator.validate(entity).size());
 
-      entity.map = new HashMap<String, String>();
+      entity.map = new HashMap<>();
       assertTrue(validator.validate(entity).isEmpty());
 
       entity.map.put("foo", null);
