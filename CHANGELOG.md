@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.2] - 2019-12-04
+
 ### Fixed
 * [github Issue #37](https://github.com/sebthom/oval/issues/37) AssertURLCheck doesn't validate URL scheme properly
 * Updated tested optional dependencies
