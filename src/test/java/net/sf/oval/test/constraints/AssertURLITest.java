@@ -43,6 +43,7 @@ public class AssertURLITest extends AbstractContraintsTest {
       assertFalse(check.isSatisfied(this, "https", null, validator));
       assertFalse(check.isSatisfied(this, "ftp", null, validator));
       assertTrue(check.isSatisfied(this, "http://www.google.com", null, validator));
+      assertFalse(check.isSatisfied(this, "httpa://www.google.com", null, validator));
       assertTrue(check.isSatisfied(this, "https://www.google.com", null, validator));
       assertTrue(check.isSatisfied(this, "httPs://www.google.com", null, validator));
       assertTrue(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/README.mirrors.txt", null, validator));

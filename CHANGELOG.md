@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+* [github Issue #37](https://github.com/sebthom/oval/issues/37) AssertURLCheck doesn't validate URL scheme properly
+* Updated tested optional dependencies
+  * AspectJ 1.9.5
+
 
 ## [2.1.1] - 2019-11-20
 

@@ -16,14 +16,13 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
+import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.Log;
-import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Sebastian Thomschke
@@ -31,10 +30,9 @@ import net.sf.oval.internal.util.ArrayUtils;
  */
 public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
    /**
-    * http://en.wikipedia.org/wiki/URI_scheme
+    * https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#scheme
     *
     * @author Sebastian Thomschke
-    *
     */
    public enum URIScheme {
       FTP("ftp"),
@@ -47,9 +45,6 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
          this.scheme = scheme;
       }
 
-      /**
-       * @return the scheme
-       */
       public String getScheme() {
          return scheme;
       }
@@ -94,7 +89,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
    /**
     * Specifies the allowed URL schemes.
     */
-   private final List<URIScheme> permittedURISchemes = getCollectionFactory().createList(2);
+   private final Map<String, URIScheme> permittedURISchemes = getCollectionFactory().createMap();
 
    @Override
    public void configure(final AssertURL constraintAnnotation) {
@@ -114,7 +109,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
     * @return the permittedURISchemes
     */
    public URIScheme[] getPermittedURISchemes() {
-      return permittedURISchemes.size() == 0 ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes.size()]);
+      return permittedURISchemes.size() == 0 ? null : permittedURISchemes.values().toArray(new URIScheme[permittedURISchemes.size()]);
    }
 
    /**
@@ -146,7 +141,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
          }
 
          // Check whether the URI scheme is supported
-         if (!isURISchemeValid(scheme.toLowerCase(Validator.getLocaleProvider().getLocale())))
+         if (!permittedURISchemes.containsKey(scheme.toLowerCase()))
             return false;
 
          // If the connect flag is true then attempt to connect to the URL
@@ -158,13 +153,6 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
       }
 
       return true;
-   }
-
-   private boolean isURISchemeValid(final String url) {
-      for (final URIScheme scheme : permittedURISchemes)
-         if (url.startsWith(scheme.getScheme()))
-            return true;
-      return false;
    }
 
    /**
@@ -183,6 +171,10 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
     */
    public void setPermittedURISchemes(final URIScheme[] permittedURISchemes) {
       this.permittedURISchemes.clear();
-      ArrayUtils.addAll(this.permittedURISchemes, permittedURISchemes);
+      if (permittedURISchemes != null) {
+         for (final URIScheme scheme : permittedURISchemes) {
+            this.permittedURISchemes.put(scheme.scheme.toLowerCase(), scheme);
+         }
+      }
    }
 }
