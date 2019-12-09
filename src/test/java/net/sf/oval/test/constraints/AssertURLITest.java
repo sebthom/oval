@@ -11,6 +11,7 @@ package net.sf.oval.test.constraints;
 
 import net.sf.oval.constraint.AssertURLCheck;
 import net.sf.oval.constraint.AssertURLCheck.URIScheme;
+import net.sf.oval.internal.util.ArrayUtils;
 
 /**
  * @author Makkari - initial implementation
@@ -28,9 +29,8 @@ public class AssertURLITest extends AbstractContraintsTest {
       final URIScheme[] actualPermittedSchemes = check.getPermittedURISchemes();
       assertNotNull(actualPermittedSchemes);
       assertEquals(PERMITTED_SCHEMES.length, actualPermittedSchemes.length);
-      for (int n = 0; n < PERMITTED_SCHEMES.length; n++) {
-         assertEquals(PERMITTED_SCHEMES[n], actualPermittedSchemes[n]);
-         assertEquals(PERMITTED_SCHEMES[n].toString(), actualPermittedSchemes[n].getScheme());
+      for (final URIScheme element : PERMITTED_SCHEMES) {
+         ArrayUtils.containsEqual(actualPermittedSchemes, element);
       }
 
       assertFalse(check.isConnect());
