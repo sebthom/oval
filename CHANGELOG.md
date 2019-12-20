@@ -8,10 +8,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+* Updated tested optional dependencies
+  * MVEL 2.4.5.Final
+  * slf4j 1.7.30
+  * Spring Framework 5.2.2.RELEASE
+
+
 ## [2.1.2] - 2019-12-04
 
 ### Fixed
 * [github Issue #37](https://github.com/sebthom/oval/issues/37) AssertURLCheck doesn't validate URL scheme properly
+
+### Changed
 * Updated tested optional dependencies
   * AspectJ 1.9.5
 
@@ -26,6 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 * [github Issue #34](https://github.com/sebthom/oval/issues/35) XStream instances can be shared between XMLConfigurers
+
+### Changed
 * Updated tested optional dependencies
   * Spring Framework 5.2.1.RELEASE
 
