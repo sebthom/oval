@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 * Updated tested optional dependencies
   * MVEL 2.4.5.Final
+  * OGNL 3.2.12
   * slf4j 1.7.30
   * Spring Framework 5.2.2.RELEASE
 
