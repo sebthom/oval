@@ -76,6 +76,9 @@
 
       <aspectj.version>1.9.5</aspectj.version>
 
+      <!-- TODO until https://github.com/checkstyle/checkstyle/issues/7460 is solved -->
+      <checkstyle.violation.ignore>LineLength</checkstyle.violation.ignore>
+
       <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value ->
                 project.properties[name] = value
