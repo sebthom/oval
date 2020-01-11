@@ -31,8 +31,9 @@ public class EmailCheck extends AbstractAnnotationCheck<Email> {
    private static final String MIME_ENCODED = "\\=\\?" + ASCII_WITH_QUESTION_MARK_AND_EQUALS + "\\?\\=";
    private static final String NAME = "(" + ASCII_WITHOUT_COMMA + "|" + ASCII_WITH_COMMA + "|" + MIME_ENCODED + ")";
 
-   // CHECKSTYLE:IGNORE LineLength FOR NEXT LINE
-   private static final String EMAIL_BASE_PATTERN = "['_A-Za-z0-9-&+]+(\\.['_A-Za-z0-9-&+]+)*[.]{0,1}@([A-Za-z0-9-])+(\\.[A-Za-z0-9-]+)*((\\.[A-Za-z0-9]{2,})|(\\.[A-Za-z0-9]{2,}\\.[A-Za-z0-9]{2,}))";
+   private static final String EMAIL_BASE_PATTERN = "['_A-Za-z0-9-&+]+(\\.['_A-Za-z0-9-&+]+)*[.]{0,1}" //
+      + "@" //
+      + "([A-Za-z0-9-])+(\\.[A-Za-z0-9-]+)*((\\.[A-Za-z0-9]{2,})|(\\.[A-Za-z0-9]{2,}\\.[A-Za-z0-9]{2,}))";
 
    private static final Pattern EMAIL_PATTERN = Pattern.compile("^" + EMAIL_BASE_PATTERN + "$");
 
