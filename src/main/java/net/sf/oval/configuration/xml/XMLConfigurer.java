@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
-import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
+import com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
@@ -255,7 +255,7 @@ public class XMLConfigurer implements Configurer {
    /**
     * This reflection provider applies default values declared on constraint annotations to the corresponding check class
     */
-   private static final class XStreamReflectionProvider extends Sun14ReflectionProvider {
+   private static final class XStreamReflectionProvider extends SunUnsafeReflectionProvider {
       @SuppressWarnings("unchecked")
       @Override
       public Object newInstance(final Class type) {
