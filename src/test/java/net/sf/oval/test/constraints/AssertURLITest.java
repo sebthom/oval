@@ -63,6 +63,6 @@ public class AssertURLITest extends AbstractContraintsTest {
          assertTrue(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/README.mirrors.txt", null, validator));
       }
 
-      check.setPermittedURISchemes(null);
+      check.setPermittedURISchemes((URIScheme[]) null);
    }
 }

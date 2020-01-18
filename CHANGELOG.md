@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [2.1.3] - 2019-01-18
+
+### Fixed
+* [github Issue #42](https://github.com/sebthom/oval/issues/42) AssertURL configuration via XML is broken
+
 ### Changed
 * Updated tested optional dependencies
   * MVEL 2.4.5.Final

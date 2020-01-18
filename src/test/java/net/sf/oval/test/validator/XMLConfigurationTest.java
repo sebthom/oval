@@ -55,6 +55,8 @@ public class XMLConfigurationTest extends TestCase {
 
       protected String lastName;
 
+      protected String homepage;
+
       /**
        * @return the managerId
        */

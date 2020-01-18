@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Map;
+import java.util.List;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
@@ -89,7 +89,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
    /**
     * Specifies the allowed URL schemes.
     */
-   private final Map<String, URIScheme> permittedURISchemes = getCollectionFactory().createMap();
+   private final List<URIScheme> permittedURISchemes = getCollectionFactory().createList();
 
    @Override
    public void configure(final AssertURL constraintAnnotation) {
@@ -109,7 +109,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
     * @return the permittedURISchemes
     */
    public URIScheme[] getPermittedURISchemes() {
-      return permittedURISchemes.size() == 0 ? null : permittedURISchemes.values().toArray(new URIScheme[permittedURISchemes.size()]);
+      return permittedURISchemes.size() == 0 ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes.size()]);
    }
 
    /**
@@ -141,18 +141,21 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
          }
 
          // Check whether the URI scheme is supported
-         if (!permittedURISchemes.containsKey(scheme.toLowerCase()))
-            return false;
+         for (final URIScheme permittedURIScheme : permittedURISchemes) {
+            if (permittedURIScheme.scheme.equalsIgnoreCase(scheme)) {
+               // If the connect flag is true then attempt to connect to the URL
+               if (connect)
+                  return canConnect(uriString);
+               return true;
+            }
+         }
 
-         // If the connect flag is true then attempt to connect to the URL
-         if (connect)
-            return canConnect(uriString);
+         return false;
+
       } catch (final java.net.URISyntaxException ex) {
          LOG.debug("URI scheme or scheme-specific-part not specified", ex);
          return false;
       }
-
-      return true;
    }
 
    /**
@@ -169,11 +172,20 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
     *
     * @param permittedURISchemes the permittedURISchemes to set
     */
-   public void setPermittedURISchemes(final URIScheme[] permittedURISchemes) {
+   public void setPermittedURISchemes(final URIScheme... permittedURISchemes) {
       this.permittedURISchemes.clear();
       if (permittedURISchemes != null) {
          for (final URIScheme scheme : permittedURISchemes) {
-            this.permittedURISchemes.put(scheme.scheme.toLowerCase(), scheme);
+            this.permittedURISchemes.add(scheme);
+         }
+      }
+   }
+
+   public void setPermittedURISchemes(final List<URIScheme> permittedURISchemes) {
+      this.permittedURISchemes.clear();
+      if (permittedURISchemes != null) {
+         for (final URIScheme scheme : permittedURISchemes) {
+            this.permittedURISchemes.add(scheme);
          }
       }
    }

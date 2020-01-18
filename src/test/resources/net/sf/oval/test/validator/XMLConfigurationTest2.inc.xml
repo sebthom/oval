@@ -28,6 +28,12 @@ http://oval.sf.net/oval-configuration
          <assertConstraintSet id="user.userid" />
       </field>
 
+      <field name="homepage" overwrite="true">
+         <assertURL connect="false">
+         <permittedURIScheme>http</permittedURIScheme>
+         </assertURL>
+      </field>
+
       <!-- define a getter return value check -->
       <method name="getManagerId" isInvariant="true">
          <!-- returnValue - use the checks defined for the constraint set "user.userid" -->
