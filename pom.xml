@@ -452,7 +452,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-aop</artifactId>
-         <version>5.2.2.RELEASE</version>
+         <version>5.2.3.RELEASE</version>
          <optional>true</optional>
          <exclusions>
             <exclusion>
@@ -464,7 +464,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
-         <version>5.2.2.RELEASE</version>
+         <version>5.2.3.RELEASE</version>
          <optional>true</optional>
       </dependency>
       <dependency>
