@@ -414,7 +414,7 @@
       <dependency>
          <groupId>ognl</groupId>
          <artifactId>ognl</artifactId>
-         <version>3.2.12</version>
+         <version>3.2.13</version>
          <optional>true</optional>
       </dependency>
       <dependency>
