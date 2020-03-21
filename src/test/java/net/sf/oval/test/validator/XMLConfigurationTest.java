@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.thoughtworks.xstream.io.StreamException;
+
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
@@ -203,6 +205,16 @@ public class XMLConfigurationTest extends TestCase {
       // System.out.println(xmlConfig);
       x.fromXML(xmlConfig);
       validateUser(new Validator(x));
+   }
+
+   public void testVulnerability_RecursiveInclude() {
+      final XMLConfigurer x1 = new XMLConfigurer();
+      try {
+         x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_Vulnerability_RecursiveInclude.xml"));
+         fail();
+      } catch (final StreamException ex) {
+         assertTrue(ex.getCause().getMessage().contains("Recursive include detected"));
+      }
    }
 
    public void validateUser(final Validator validator) {

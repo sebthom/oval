@@ -55,7 +55,7 @@ public class XIncludeAwareDOMDriver extends AbstractDriver {
          docBuilderFactory.setCoalescing(true);
          docBuilderFactory.setIgnoringComments(false);
          docBuilderFactory.setNamespaceAware(true);
-         docBuilderFactory.setXIncludeAware(true); // docBuilderFactory.setFeature("http://apache.org/xml/features/xinclude", true);
+         docBuilderFactory.setXIncludeAware(true); // same as docBuilderFactory.setFeature("http://apache.org/xml/features/xinclude", true);
          docBuilderFactory.setFeature("http://apache.org/xml/features/xinclude/fixup-base-uris", false);
 
          final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
