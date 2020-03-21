@@ -31,6 +31,7 @@ public class MaxCheck extends AbstractAnnotationCheck<Max> {
    public void configure(final Max constraintAnnotation) {
       super.configure(constraintAnnotation);
       setMax(constraintAnnotation.value());
+      setInclusive(constraintAnnotation.inclusive());
    }
 
    @Override

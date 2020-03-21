@@ -31,6 +31,7 @@ public class MinCheck extends AbstractAnnotationCheck<Min> {
    public void configure(final Min constraintAnnotation) {
       super.configure(constraintAnnotation);
       setMin(constraintAnnotation.value());
+      setInclusive(constraintAnnotation.inclusive());
    }
 
    @Override
