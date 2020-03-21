@@ -12,7 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 * Updated tested optional dependencies
+  * Groovy 2.5.9
+  * JRuby 9.2.10.0
+  * MVEL 2.4.7.Final
+  * OGNL 3.2.13
   * Rhino 1.7.12
+  * Spring Framework 5.2.4.RELEASE
 
 
 ## [2.1.3] - 2019-01-18
