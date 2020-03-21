@@ -299,7 +299,7 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
             <executions>
                <execution>
                   <id>add-license-file-to-jar</id>
@@ -414,13 +414,13 @@
       <dependency>
          <groupId>ognl</groupId>
          <artifactId>ognl</artifactId>
-         <version>3.2.13</version>
+         <version>3.2.14</version>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>org.jruby</groupId>
          <artifactId>jruby</artifactId>
-         <version>9.2.10.0</version>
+         <version>9.2.11.0</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -444,7 +444,7 @@
       <dependency>
          <groupId>com.google.inject</groupId>
          <artifactId>guice</artifactId>
-         <version>4.2.2</version>
+         <version>4.2.3</version>
          <optional>true</optional>
       </dependency>
       <dependency>
