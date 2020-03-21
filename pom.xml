@@ -450,7 +450,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-aop</artifactId>
-         <version>5.2.3.RELEASE</version>
+         <version>5.2.4.RELEASE</version>
          <optional>true</optional>
          <exclusions>
             <exclusion>
