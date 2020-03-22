@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 * [github Issue #52](https://github.com/sebthom/oval/issues/42) @Min/@Max inclusive parameter is ignored
+* Prevent potential XXE attacks
 
 ### Changed
 

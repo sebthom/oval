@@ -85,7 +85,7 @@ public class XMLConfigurationTest extends TestCase {
 
    public void testMultipleXMLFilesWithXIncluded() {
       final XMLConfigurer x1 = new XMLConfigurer();
-      x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest.xml"));
+      x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_XInclude.xml"));
       validateUser(new Validator(x1));
    }
 
@@ -205,6 +205,29 @@ public class XMLConfigurationTest extends TestCase {
       // System.out.println(xmlConfig);
       x.fromXML(xmlConfig);
       validateUser(new Validator(x));
+   }
+
+   public void testVulnerability_ExternalEntityReferences() {
+      final XMLConfigurer x1 = new XMLConfigurer();
+      try {
+         x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_Vulnerability_ExternalEntityReferences.xml"));
+         fail();
+      } catch (final StreamException ex) {
+         final String msg = ex.getCause().getMessage();
+         assertTrue(msg.contains("External Entity: Failed to read external document 'XMLConfigurationTest1.inc.xml', "
+            + "because 'file' access is not allowed due to restriction set by the accessExternalDTD property.") || //
+            msg.contains("DOCTYPE is disallowed when the feature \"http://apache.org/xml/features/disallow-doctype-decl\" set to true."));
+      }
+   }
+
+   public void testVulnerability_NonXmlFile() {
+      final XMLConfigurer x1 = new XMLConfigurer();
+      try {
+         x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_Vulnerability_NonXmlFile.xml"));
+         fail();
+      } catch (final StreamException ex) {
+         assertTrue(ex.getCause().getMessage().contains("Referencing entity [file:///C:/Windows/System32/drivers/etc/hosts] is not allowed"));
+      }
    }
 
    public void testVulnerability_RecursiveInclude() {

@@ -17,12 +17,14 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.thoughtworks.xstream.io.AbstractDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -53,12 +55,34 @@ public class XIncludeAwareDOMDriver extends AbstractDriver {
       try {
          final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
          docBuilderFactory.setCoalescing(true);
+         docBuilderFactory.setExpandEntityReferences(true);
          docBuilderFactory.setIgnoringComments(false);
          docBuilderFactory.setNamespaceAware(true);
          docBuilderFactory.setXIncludeAware(true); // same as docBuilderFactory.setFeature("http://apache.org/xml/features/xinclude", true);
+         // http://xerces.apache.org/xerces2-j/features.html#xinclude.fixup-base-uris
          docBuilderFactory.setFeature("http://apache.org/xml/features/xinclude/fixup-base-uris", false);
+         docBuilderFactory.setValidating(false); // no schema validation (is done by XStream)
+         docBuilderFactory.setSchema(null);
+
+         /*
+          * XXE protection
+          */
+         docBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+         // http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
+         docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+         // http://xerces.apache.org/xerces2-j/features.html#external-general-entities
+         docBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+         // http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities
+         docBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
          final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+         docBuilder.setEntityResolver((schemaId, schemaLocation) -> {
+            final String path = schemaLocation.toLowerCase().replace('\\', '/');
+            if (!path.endsWith(".xml") || path.startsWith("file:///c:/windows/") || path.startsWith("file://etc/"))
+               throw new SAXException("Referencing entity [" + schemaLocation + "] is not allowed!");
+            return null;
+         });
+
          final Document doc = docBuilder.parse(source);
          return new DomReader(doc, NAME_CODER);
       } catch (final FactoryConfigurationError ex) {
