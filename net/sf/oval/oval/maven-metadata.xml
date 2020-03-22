@@ -4,8 +4,8 @@
   <artifactId>oval</artifactId>
   <versioning>
     <versions>
-      <version>2.1.4-SNAPSHOT</version>
+      <version>2.1.5-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20200322020017</lastUpdated>
+    <lastUpdated>20200322020800</lastUpdated>
   </versioning>
 </metadata>
