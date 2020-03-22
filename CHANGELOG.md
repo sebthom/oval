@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+## [2.1.4] - 2020-03-22
+
 ### Fixed
 * [github Issue #52](https://github.com/sebthom/oval/issues/42) @Min/@Max inclusive parameter is ignored
 * Prevent potential XXE attacks
 
 ### Changed
-
 * Updated tested optional dependencies
   * Groovy 2.5.9
   * Guice 4.2.3
