@@ -26,25 +26,30 @@ import net.sf.oval.exception.ValidationFailedException;
  * @author Sebastian Thomschke
  */
 public class TargetDefaultTest extends TestCase {
-   public static class Level1 {
+
+   static class Level1 {
       @MinSize(value = 4, target = "level3.array", message = "LEVEL3_ARRAY_TOO_SMALL")
       @MinLength(value = 4, appliesTo = ConstraintTarget.VALUES, target = "level3.array", message = "LEVEL3_ARRAY_ITEM_TOO_SMALL")
       @NotNull(target = "level3.name", message = "LEVEL3_NAME_IS_NULL")
-      protected Level2 level2a;
+      Level2 level2a;
 
       // illegal path, results in an InvalidConfigurationException
       @NotNull(target = "level3.foobar")
-      protected Level2 level2b;
+      Level2 level2b;
    }
 
-   public static class Level2 {
-      protected Level3 level3;
+   static class Level2 {
+
+      @NotNull(target = "list")
+      Level3 level3;
    }
 
-   public static class Level3 {
-      protected String name;
+   static class Level3 {
+      String name;
 
-      protected String[] array;
+      String[] array;
+
+      List<List<String>> list;
    }
 
    public void testTarget() {

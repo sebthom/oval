@@ -803,28 +803,28 @@ public class Validator implements IValidator {
 
       if (isContainer && valueToValidate != null) {
          if (isCollection) {
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets,
-               ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
+               && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
                for (final Object item : (Collection<?>) valueToValidate) {
                   checkConstraint(violations, check, validatedObject, item, context, profiles, true);
                }
             }
          } else if (isMap) {
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS) && (!isContainerValue || ArrayUtils.containsSame(targets,
-               ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS) //
+               && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
                for (final Object item : ((Map<?, ?>) valueToValidate).keySet()) {
                   checkConstraint(violations, check, validatedObject, item, context, profiles, true);
                }
             }
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets,
-               ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
+               && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
                for (final Object item : ((Map<?, ?>) valueToValidate).values()) {
                   checkConstraint(violations, check, validatedObject, item, context, profiles, true);
                }
             }
          } else { // array
-            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) && (!isContainerValue || ArrayUtils.containsSame(targets,
-               ConstraintTarget.RECURSIVE))) {
+            if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
+               && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
                for (final Object item : ArrayUtils.asList(valueToValidate)) {
                   checkConstraint(violations, check, validatedObject, item, context, profiles, true);
                }
@@ -845,7 +845,6 @@ public class Validator implements IValidator {
          throw new UndefinedConstraintSetException(check.getId());
 
       final Collection<Check> referencedChecks = cs.getChecks();
-
       if (referencedChecks != null && referencedChecks.size() > 0) {
          for (final Check referencedCheck : referencedChecks) {
             checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
@@ -924,7 +923,6 @@ public class Validator implements IValidator {
 
       if (additionalViolations.size() != 0) {
          final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check.getMessageVariables());
-
          violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context, additionalViolations));
       }
    }
