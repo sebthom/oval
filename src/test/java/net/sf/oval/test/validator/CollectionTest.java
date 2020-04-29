@@ -22,6 +22,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MaxSize;
+import net.sf.oval.constraint.Min;
 import net.sf.oval.constraint.MinSize;
 import net.sf.oval.constraint.NotNull;
 
@@ -29,44 +30,57 @@ import net.sf.oval.constraint.NotNull;
  * @author Sebastian Thomschke
  */
 public class CollectionTest extends TestCase {
-   public static class Entity {
-      @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
-      public final List<List<String>> listWithLists = new ArrayList<>();
 
-      @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
-      public final List<List<String>> listWithLists2 = new ArrayList<>();
-
-      @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
-      public final Map<List<String>, List<String>> mapWithLists = new HashMap<>();
-
-      @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.KEYS, ConstraintTarget.VALUES}, message = "NOT_NULL")
-      public final Map<List<String>, List<String>> mapWithLists2 = new HashMap<>();
-
-   }
-
-   public static class Group {
+   static class Group {
       @MinSize(value = 1, message = "MIN_SIZE")
       @MaxSize(value = 4, message = "MAX_SIZE")
       @Length(min = 1, max = 7, message = "LENGTH")
       @NotNull(appliesTo = {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES}, message = "NOT_NULL")
-      public List<String> members = new ArrayList<>();
+      List<String> members = new ArrayList<>();
 
       @NotNull(appliesTo = {ConstraintTarget.VALUES}, message = "NOT_NULL2")
-      public String[] secondaryMembers;
+      String[] secondaryMembers;
    }
 
+   static class ListWithListNonRecursiveCheck {
+      @NotNull(appliesTo = {ConstraintTarget.VALUES}, message = "NOT_NULL")
+      final List<List<String>> list = new ArrayList<>();
+   }
+
+   static class ListWithListRecursiveCheck {
+      @NotNull(appliesTo = {ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
+      final List<List<String>> list = new ArrayList<>();
+   }
+
+   static class ListWithListRecursiveCheckV2 {
+      final List<List<@Min(value = 0, message = "MIN") Integer>> list = new ArrayList<>();
+   }
+
+   static class MapWithListNonRecursiveCheck {
+      @NotNull(appliesTo = {ConstraintTarget.KEYS, ConstraintTarget.VALUES}, message = "NOT_NULL")
+      final Map<List<String>, List<String>> map = new HashMap<>();
+   }
+
+   static class MapWithListRecursiveCheck {
+      @NotNull(appliesTo = {ConstraintTarget.KEYS, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE}, message = "NOT_NULL")
+      final Map<List<String>, List<String>> map = new HashMap<>();
+   }
+
+   static final List<String> EMPTY_LIST = Collections.emptyList();
+   static final List<String> LIST_WITH_NULL_VALUE = Collections.unmodifiableList(Arrays.asList(new String[] {null}));
+   static final Validator VALIDATOR = new Validator();
+
    public void testListAndArray() {
-      final Validator validator = new Validator();
       final Group group = new Group();
 
       // test min size
-      List<ConstraintViolation> violations = validator.validate(group);
+      List<ConstraintViolation> violations = VALIDATOR.validate(group);
       assertEquals(1, violations.size());
       assertEquals("MIN_SIZE", violations.get(0).getMessage());
 
       // test valid
       group.members.add("member1");
-      violations = validator.validate(group);
+      violations = VALIDATOR.validate(group);
       assertEquals(0, violations.size());
 
       // test max size
@@ -74,141 +88,142 @@ public class CollectionTest extends TestCase {
       group.members.add("member3");
       group.members.add("member4");
       group.members.add("member5");
-      violations = validator.validate(group);
+      violations = VALIDATOR.validate(group);
       assertEquals(1, violations.size());
       assertEquals("MAX_SIZE", violations.get(0).getMessage());
 
       // test attribute not null
       group.members = null;
-      violations = validator.validate(group);
+      violations = VALIDATOR.validate(group);
       assertEquals(1, violations.size());
       assertEquals("NOT_NULL", violations.get(0).getMessage());
 
       // test elements not null
-      group.members = new ArrayList<String>();
+      group.members = new ArrayList<>();
       group.members.add(null);
-      violations = validator.validate(group);
+      violations = VALIDATOR.validate(group);
       assertEquals(1, violations.size());
       assertEquals("NOT_NULL", violations.get(0).getMessage());
 
       // test elements length
-      group.members = new ArrayList<String>();
+      group.members = new ArrayList<>();
       group.members.add("");
       group.members.add("123456789");
-      violations = validator.validate(group);
+      violations = VALIDATOR.validate(group);
       assertEquals(2, violations.size());
       assertEquals("LENGTH", violations.get(0).getMessage());
       assertEquals("LENGTH", violations.get(1).getMessage());
 
       // test string array elements not null
-      group.members = new ArrayList<String>();
+      group.members = new ArrayList<>();
       group.members.add("1234");
       group.secondaryMembers = new String[] {"foo", null, "bar"};
-      violations = validator.validate(group);
+      violations = VALIDATOR.validate(group);
       assertEquals(1, violations.size());
       assertEquals("NOT_NULL2", violations.get(0).getMessage());
    }
 
-   public void testListWithLists() {
-      final Validator validator = new Validator();
+   public void testListWithListNonRecursiveCheck() {
+      final ListWithListNonRecursiveCheck entity = new ListWithListNonRecursiveCheck();
 
-      final Entity e = new Entity();
+      entity.list.add(null);
+      assertEquals(1, VALIDATOR.validate(entity).size());
 
-      /*
-       * with ConstraintTarget.RECURSIVE
-       */
-      e.listWithLists.add(null);
-      assertEquals(1, validator.validate(e).size());
-      e.listWithLists.clear();
-
-      e.listWithLists.add(new ArrayList<String>());
-      assertEquals(0, validator.validate(e).size());
-      e.listWithLists.get(0).add(null);
-      assertEquals(1, validator.validate(e).size());
-      e.listWithLists.clear();
-
-      /*
-       * without ConstraintTarget.RECURSIVE
-       */
-      e.listWithLists2.add(null);
-      assertEquals(1, validator.validate(e).size());
-
-      e.listWithLists2.clear();
-      e.listWithLists2.add(new ArrayList<String>());
-      assertEquals(0, validator.validate(e).size());
-      e.listWithLists2.get(0).add(null);
-      assertEquals(0, validator.validate(e).size());
+      entity.list.clear();
+      entity.list.add(new ArrayList<String>());
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.list.get(0).add(null);
+      assertEquals(0, VALIDATOR.validate(entity).size());
    }
 
-   public void testMapWithLists() {
-      final Validator validator = new Validator();
+   public void testListWithListRecursiveCheck() {
+      final ListWithListRecursiveCheck entity = new ListWithListRecursiveCheck();
 
-      final Entity e = new Entity();
+      entity.list.add(null);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.list.clear();
 
-      final List<String> emptyList = Collections.emptyList();
-      final List<String> listWithNull = Arrays.asList(new String[] {null});
-
-      /*
-       * with ConstraintTarget.RECURSIVE
-       */
-      e.mapWithLists.put(null, null);
-      assertEquals(2, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      e.mapWithLists.put(emptyList, null);
-      assertEquals(1, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      e.mapWithLists.put(null, emptyList);
-      assertEquals(1, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      e.mapWithLists.put(emptyList, emptyList);
-      assertEquals(0, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      e.mapWithLists.put(listWithNull, listWithNull);
-      assertEquals(2, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      e.mapWithLists.put(emptyList, listWithNull);
-      assertEquals(1, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      e.mapWithLists.put(listWithNull, emptyList);
-      assertEquals(1, validator.validate(e).size());
-      e.mapWithLists.clear();
-
-      /*
-       * without ConstraintTarget.RECURSIVE
-       */
-      e.mapWithLists2.put(null, null);
-      assertEquals(2, validator.validate(e).size());
-      e.mapWithLists2.clear();
-
-      e.mapWithLists2.put(emptyList, null);
-      assertEquals(1, validator.validate(e).size());
-      e.mapWithLists2.clear();
-
-      e.mapWithLists2.put(null, emptyList);
-      assertEquals(1, validator.validate(e).size());
-      e.mapWithLists2.clear();
-
-      e.mapWithLists2.put(emptyList, emptyList);
-      assertEquals(0, validator.validate(e).size());
-      e.mapWithLists2.clear();
-
-      e.mapWithLists2.put(listWithNull, listWithNull);
-      assertEquals(0, validator.validate(e).size());
-      e.mapWithLists2.clear();
-
-      e.mapWithLists2.put(emptyList, listWithNull);
-      assertEquals(0, validator.validate(e).size());
-      e.mapWithLists2.clear();
-
-      e.mapWithLists2.put(listWithNull, emptyList);
-      assertEquals(0, validator.validate(e).size());
-      e.mapWithLists2.clear();
+      entity.list.add(new ArrayList<String>());
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.list.get(0).add(null);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.list.clear();
    }
 
+   /*
+    * TODO, see AnnotationsConfigurer#initializeGenericTypeChecks()
+    */
+   public void ignore_testListWithListRecursiveCheckV2() {
+      final ListWithListRecursiveCheckV2 entity = new ListWithListRecursiveCheckV2();
+
+      entity.list.add(new ArrayList<Integer>());
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.list.get(0).add(-1);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.list.clear();
+   }
+
+   public void testMapWithListNonRecursiveCheck() {
+      final MapWithListNonRecursiveCheck entity = new MapWithListNonRecursiveCheck();
+
+      entity.map.put(null, null);
+      assertEquals(2, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(EMPTY_LIST, null);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(null, EMPTY_LIST);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(EMPTY_LIST, EMPTY_LIST);
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(LIST_WITH_NULL_VALUE, LIST_WITH_NULL_VALUE);
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(EMPTY_LIST, LIST_WITH_NULL_VALUE);
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(LIST_WITH_NULL_VALUE, EMPTY_LIST);
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+   }
+
+   public void testMapWithListRecursiveCheck() {
+      final MapWithListRecursiveCheck entity = new MapWithListRecursiveCheck();
+
+      entity.map.put(null, null);
+      assertEquals(2, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(EMPTY_LIST, null);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(null, EMPTY_LIST);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(EMPTY_LIST, EMPTY_LIST);
+      assertEquals(0, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(LIST_WITH_NULL_VALUE, LIST_WITH_NULL_VALUE);
+      assertEquals(2, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(EMPTY_LIST, LIST_WITH_NULL_VALUE);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+
+      entity.map.put(LIST_WITH_NULL_VALUE, EMPTY_LIST);
+      assertEquals(1, VALIDATOR.validate(entity).size());
+      entity.map.clear();
+   }
 }

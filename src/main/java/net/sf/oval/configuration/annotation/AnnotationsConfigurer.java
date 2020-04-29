@@ -144,7 +144,9 @@ public class AnnotationsConfigurer implements Configurer {
       List<Check> checks = cf.createList(2);
 
       for (final Field field : classCfg.type.getDeclaredFields()) {
-         // loop over all annotations of the current field
+         /*
+          * loop over all annotations of the current field
+          */
          for (final Annotation anno : field.getAnnotations()) {
             // check if the current annotation is a constraint annotation
             if (anno.annotationType().isAnnotationPresent(Constraint.class)) {
@@ -385,6 +387,13 @@ public class AnnotationsConfigurer implements Configurer {
                   initializeChecks(anno, checks, ConstraintTarget.VALUES);
                }
             }
+
+            /* TODO handle annotations and deeper levels, e.g. List<List<@NotNull String>>
+            if (genericArgType instanceof AnnotatedParameterizedType) {
+               initializeGenericTypeChecks(type, (AnnotatedParameterizedType) genericArgType, checks);
+            }
+            */
+
          } else if (Map.class.isAssignableFrom(type)) {
 
             // Keys
