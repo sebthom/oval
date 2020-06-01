@@ -471,7 +471,7 @@
       <dependency>
          <groupId>org.codehaus.groovy</groupId>
          <artifactId>groovy-jsr223</artifactId>
-         <version>2.5.9</version>
+         <version>3.0.4</version>
          <optional>true</optional>
       </dependency>
       <dependency>
