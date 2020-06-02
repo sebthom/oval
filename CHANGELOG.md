@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+### Changed
+* Updated tested optional dependencies
+  * JRuby 9.2.11.1
+  * MVEL 2.4.8.Final
+  * Spring Framework 5.2.6.RELEASE
+
+
 ## [2.1.4] - 2020-03-22
 
 ### Fixed

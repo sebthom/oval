@@ -30,9 +30,46 @@ Besides field/property validation OVal implements [Programming by Contract](http
 
 ## <a name="compatibility"></a>Java Compatibility
 
-OVal 1.x requires Java 5 or newer.
+OVal 1.x requires Java 5 or newer
 
-OVal 2.x requires Java 8 or newer.
+OVal 2.x requires Java 8 or newer
+
+## <a name="binaries"></a>Binaries
+
+Binaries are available via the [Bintray JCenter](https://bintray.com/bintray/jcenter) Maven repository.
+
+You need to add this repository to your Maven `settings.xml`:
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <profiles>
+    <profile>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <name>bintray</name>
+          <url>https://jcenter.bintray.com</url>
+          <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>bintray</activeProfile>
+  </activeProfiles>
+</settings>
+```
+
+Then you can add OVal as a dependency to your `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>net.sf.oval</groupId>
+  <artifactId>oval</artifactId>
+  <version>[VERSION_GOES_HERE]</version>
+</dependency>
+```
 
 
 ## <a name="user-guide"></a>User Guide
