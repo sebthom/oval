@@ -9,11 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+## [2.1.5] - 2020-06-10
+
+### Fixed
+* [github Issue #63](https://github.com/sebthom/oval/issues/63) `<assertValid/>` in XML config is not recursive by default, whereas `@AssertValid` annotation is
+* Added missing `<constraintTarget>RECURSIVE</constraintTarget>` to XML Schema
+
 ### Changed
 * Updated tested optional dependencies
   * JRuby 9.2.11.1
   * MVEL 2.4.8.Final
-  * Spring Framework 5.2.6.RELEASE
+  * Spring Framework 5.2.7.RELEASE
+  * xStream 1.4.12
 
 
 ## [2.1.4] - 2020-03-22

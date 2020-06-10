@@ -22,7 +22,7 @@ public class AssertValidCheck extends AbstractAnnotationCheck<AssertValid> {
 
    @Override
    protected ConstraintTarget[] getAppliesToDefault() {
-      return new ConstraintTarget[] {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES};
+      return new ConstraintTarget[] {ConstraintTarget.CONTAINER, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE};
    }
 
    /**

@@ -140,6 +140,12 @@ SPDX-License-Identifier: EPL-2.0
                                        <documentation>apply the constraint to the keys of a map</documentation>
                                     </annotation>
                                  </enumeration>
+                                 <enumeration value="RECURSIVE">
+                                    <annotation>
+                                       <documentation> recursively apply the constraint to items of keys and values in case they are lists or arrays themselves
+                                       </documentation>
+                                    </annotation>
+                                 </enumeration>
                                  <enumeration value="VALUES">
                                     <annotation>
                                        <documentation>apply the constraint to the values of a the map / the items of the collection / the elements of the array
@@ -454,10 +460,15 @@ SPDX-License-Identifier: EPL-2.0
                                        <documentation>apply the constraint to the keys of a map</documentation>
                                     </annotation>
                                  </enumeration>
+                                 <enumeration value="RECURSIVE">
+                                    <annotation>
+                                       <documentation> recursively apply the constraint to items of keys and values in case they are lists or arrays themselves
+                                       </documentation>
+                                    </annotation>
+                                 </enumeration>
                                  <enumeration value="VALUES">
                                     <annotation>
-                                       <documentation>apply the constraint to the values of a the map / the items of the collection / the elements
-                                          of the array
+                                       <documentation>apply the constraint to the values of a the map / the items of the collection / the elements of the array
                                        </documentation>
                                     </annotation>
                                  </enumeration>

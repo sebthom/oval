@@ -62,7 +62,7 @@ public @interface AssertValid {
     * In case the constraint is declared for an array, collection or map this controls how the constraint is applied to it and it's child objects.
     *
     * <p>
-    * <b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES
+    * <b>Default:</b> ConstraintTarget.CONTAINER, ConstraintTarget.VALUES, ConstraintTarget.RECURSIVE
     *
     * <p>
     * <b>Note:</b> This setting is ignored for object types other than array, map and collection.
