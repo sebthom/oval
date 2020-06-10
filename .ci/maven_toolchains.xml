@@ -4,11 +4,11 @@
    <toolchain>
       <type>jdk</type>
       <provides>
-         <version>1.8</version>
+         <version>${env.JAVA_VERSION}</version>
          <vendor>default</vendor>
       </provides>
       <configuration>
-         <jdkHome>/usr/lib/jvm/java-8-openjdk-amd64</jdkHome>
+         <jdkHome>${env.JAVA_HOME}</jdkHome>
       </configuration>
    </toolchain>
 </toolchains>
