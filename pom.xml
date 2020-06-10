@@ -398,7 +398,7 @@
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
          <artifactId>xstream</artifactId>
-         <version>1.4.11.1</version>
+         <version>1.4.12</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -447,7 +447,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-aop</artifactId>
-         <version>5.2.6.RELEASE</version>
+         <version>5.2.7.RELEASE</version>
          <optional>true</optional>
          <exclusions>
             <exclusion>
@@ -459,7 +459,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
-         <version>5.2.6.RELEASE</version>
+         <version>5.2.7.RELEASE</version>
          <optional>true</optional>
       </dependency>
       <dependency>
