@@ -12,6 +12,8 @@ package net.sf.oval.test.validator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -67,20 +69,26 @@ public class XMLConfigurationTest extends TestCase {
       }
    }
 
-   public void testMultipleXMLFiles() {
-      final XMLConfigurer x1 = new XMLConfigurer();
-      x1.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest1.inc.xml"));
-      final XMLConfigurer x2 = new XMLConfigurer();
-      x2.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest2.inc.xml"));
-      validateUser(new Validator(x1, x2));
+   public void testMultipleXMLFiles() throws IOException {
+      try (InputStream is1 = XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest1.inc.xml");
+           InputStream is2 = XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest2.inc.xml")) {
+         final XMLConfigurer x1 = new XMLConfigurer();
+         x1.fromXML(is1);
+         final XMLConfigurer x2 = new XMLConfigurer();
+         x2.fromXML(is2);
+         validateUser(new Validator(x1, x2));
+      }
    }
 
-   public void testMultipleXMLFilesWithSameXStreamInstance() {
-      final XMLConfigurer x1 = new XMLConfigurer();
-      x1.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest1.inc.xml"));
-      final XMLConfigurer x2 = new XMLConfigurer(x1.getXStream());
-      x2.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest2.inc.xml"));
-      validateUser(new Validator(x1, x2));
+   public void testMultipleXMLFilesWithSameXStreamInstance() throws IOException {
+      try (InputStream is1 = XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest1.inc.xml");
+           InputStream is2 = XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest2.inc.xml")) {
+         final XMLConfigurer x1 = new XMLConfigurer();
+         x1.fromXML(is1);
+         final XMLConfigurer x2 = new XMLConfigurer(x1.getXStream());
+         x2.fromXML(is2);
+         validateUser(new Validator(x1, x2));
+      }
    }
 
    public void testMultipleXMLFilesWithXIncluded() {
