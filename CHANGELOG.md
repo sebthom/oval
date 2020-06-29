@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.6] - 2020-06-29
+
+### Fixed
+* [github Issue #65](https://github.com/sebthom/oval/issues/65) ValidateWithMethod not working when specified via XML
+
 
 ## [2.1.5] - 2020-06-10
 

@@ -42,6 +42,7 @@ import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.MatchPatternCheck;
 import net.sf.oval.constraint.NotNullCheck;
+import net.sf.oval.constraint.ValidateWithMethodCheck;
 
 /**
  * @author Sebastian Thomschke
@@ -66,6 +67,12 @@ public class XMLConfigurationTest extends TestCase {
        */
       public String getManagerId() {
          return managerId;
+      }
+
+      protected boolean validateMinLength(final String value) {
+         if (value == null)
+            return true;
+         return value.length() > 2;
       }
    }
 
@@ -149,6 +156,11 @@ public class XMLConfigurationTest extends TestCase {
             ac.setMessage("{context} cannot be longer than 3 characters");
             ac.setLang("groovy");
             fc.checks.add(ac);
+            final ValidateWithMethodCheck vwm = new ValidateWithMethodCheck();
+            vwm.setMethodName("validateMinLength");
+            vwm.setParameterType(String.class);
+            vwm.setMessage("{context} must be longer than 2 characters");
+            fc.checks.add(vwm);
          }
          {
             final FieldConfiguration fc = new FieldConfiguration();
@@ -210,7 +222,7 @@ public class XMLConfigurationTest extends TestCase {
        * test XML de/serialization
        */
       final String xmlConfig = x.toXML();
-      // System.out.println(xmlConfig);
+      //System.out.println(xmlConfig);
       x.fromXML(xmlConfig);
       validateUser(new Validator(x));
    }
@@ -264,6 +276,11 @@ public class XMLConfigurationTest extends TestCase {
       assertEquals(User.class.getName() + ".firstName cannot be longer than 3 characters", violations.get(0).getMessage());
 
       usr.firstName = "";
+      violations = validator.validate(usr);
+      assertEquals(1, violations.size());
+      assertEquals(User.class.getName() + ".firstName must be longer than 2 characters", violations.get(0).getMessage());
+
+      usr.firstName = "123";
 
       /*
        * check constraints for lastName
