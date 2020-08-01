@@ -72,7 +72,7 @@
    <properties>
       <java.version>8</java.version>
 
-      <aspectj.version>1.9.5</aspectj.version>
+      <aspectj.version>1.9.6</aspectj.version>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value ->
