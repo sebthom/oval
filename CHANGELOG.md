@@ -11,11 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 * Updated tested optional dependencies
   * AspectJ 1.9.6
+  * Groovy 3.0.6
   * MVEL 2.4.10.Final
   * JRuby 9.2.13.0
   * OGNL 3.2.15
   * Rhino 1.7.13
-  * Spring Framework 5.2.9.RELEASE
+  * Spring Framework 5.3.0
   * xStream 1.4.13
 
 
