@@ -218,7 +218,7 @@
 
                         <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <!-- ajc compatible ecj options -->
-                        <argument>-bootclasspath</argument>
+                        <argument>${custom.compileBootClasspathOption}</argument>
                         <argument>${custom.compileBootClasspath}</argument>
                         <argument>-encoding</argument>
                         <argument>${project.build.sourceEncoding}</argument>
@@ -263,7 +263,7 @@
 
                         <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <!-- ajc compatible ecj options -->
-                        <arguemt>-bootclasspath</arguemt>
+                        <argument>${custom.testCompileBootClasspathOption}</argument>
                         <argument>${custom.testCompileBootClasspath}</argument>
                         <argument>-encoding</argument>
                         <argument>${project.build.sourceEncoding}</argument>
@@ -507,12 +507,6 @@
          <groupId>javax.validation</groupId>
          <artifactId>validation-api</artifactId>
          <version>2.0.1.Final</version>
-         <optional>true</optional>
-      </dependency>
-      <dependency>
-         <groupId>com.sun.phobos</groupId>
-         <artifactId>jsr223-api</artifactId>
-         <version>1.0</version>
          <optional>true</optional>
       </dependency>
 
