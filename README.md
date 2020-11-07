@@ -1,11 +1,9 @@
 # OVal - the object validation framework for Java
 
-[![Build Status](https://travis-ci.com/sebthom/oval.svg?branch=master)](https://travis-ci.com/sebthom/oval)
-[![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%202.0-blue.svg)](LICENSE.txt)
+[![Build Status](https://img.shields.io/github/workflow/status/sebthom/oval/Maven%20Publish)](https://github.com/sebthom/oval/actions?query=workflow%3A%22Maven+Publish%22)
+[![License](https://img.shields.io/github/license/sebthom/oval.svg?color=blue)](LICENSE.txt)
 [![Changelog](https://img.shields.io/badge/changelog-blue)](CHANGELOG.md)
-[![Download](https://api.bintray.com/packages/sebthom/maven/oval/images/download.svg)](https://bintray.com/sebthom/maven/oval/_latestVersion)
-
-[comment]: # (https://img.shields.io/github/license/sebthom/oval.svg?label=License)
+[![Bintray](https://img.shields.io/bintray/v/sebthom/maven/oval?label=jcenter.bintray)](https://bintray.com/sebthom/maven/oval/_latestVersion)
 
 1. [What is it?](#what-is-it)
 1. [Java Compatibility](#compatibility)

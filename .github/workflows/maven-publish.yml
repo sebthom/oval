@@ -1,0 +1,79 @@
+name: Maven Publish
+
+on:
+  push:
+    paths-ignore:
+    - '**/*.md'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      matrix:
+        include:
+        - java: 8
+          may_create_release: true
+          experimental: false
+        - java: 11
+          may_create_release: false
+          experimental: true
+    steps:
+    - name: Git Checkout
+      uses: actions/checkout@v2 #https://github.com/actions/checkout
+
+    - name: Set up JDK ${{ matrix.java }}
+      uses: actions/setup-java@v1 #https://github.com/actions/setup-java
+      with:
+        java-version: ${{ matrix.java }}
+
+    # reusing CDS archives of the same JVM randomly fails in GitHub Actions with
+    # "An error has occurred while processing the shared archive file. shared class paths mismatch"
+    #- name: Calculate Java version checksum
+    #  id: java-version-checksum
+    #  run: |
+    #    echo "::set-output name=md5sum::$(java -version 2>&1 | md5sum | cut -f1 -d" ")"
+    #- name: Cache Java CDS archive
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: |
+    #      ~/.xshare/${{ steps.java-version-checksum.outputs.md5sum }}
+    #    key: ${{ runner.os }}-xshare-${{ steps.java-version-checksum.outputs.md5sum }}
+
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-mvnrepo-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-mvnrepo-
+
+    - name: Cache Maven binary
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/bin
+        key: ${{ runner.os }}-mvnbin-${{ hashFiles('.ci/build.sh') }}
+ 
+    - name: Build with Maven
+      env:
+        DEPLOY_SNAPSHOTS_TO_GITHUB_BRANCH: true
+        GITHUB_USER: ${{ github.actor }}
+        BINTRAY_USER: sebthom
+        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+        JAVA_VERSION: ${{ matrix.java }}
+        MAY_CREATE_RELEASE: ${{ matrix.may_create_release }}
+      run: |
+        if [ "${{github.ref}}" = "refs/heads/master" ]; then
+          export GITHUB_API_KEY="${{ secrets.GH_API_TOKEN }}"
+        else
+          export GITHUB_API_KEY="${{ github.token }}" # ${{ github.token }} only has read access
+        fi
+        # https://github.community/t/github-actions-bot-email-address/17204
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        bash .ci/build.sh
+
+    - name: Cleanup Maven repo cache
+      run: rm -rfv ~/.m2/repository/net/sf/oval

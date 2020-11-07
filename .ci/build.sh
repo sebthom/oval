@@ -32,8 +32,7 @@ fi
 echo "  -> GIT Branch: $GIT_BRANCH"; echo
 
 
-MAVEN_VERSION=3.6.3 # http://maven.apache.org/download.cgi
-MAVEN_HELP_PLUGIN_VERSION=3.2.0 # https://search.maven.org/artifact/org.apache.maven.plugins/maven-help-plugin
+MAVEN_VERSION=3.6.3 # https://maven.apache.org/download.cgi
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
    echo
    echo "###################################################"
@@ -51,8 +50,10 @@ echo
 echo "###################################################"
 echo "# Configuring JDK Class Data Sharing...           #"
 echo "###################################################"
+java_version=$(java -version 2>&1)
+echo "$java_version"
 # https://docs.oracle.com/javase/8/docs/technotes/guides/vm/class-data-sharing.html
-jdk_version_checksum=$(java -version 2>&1 | md5sum | cut -f1 -d" ")
+jdk_version_checksum=$(echo "$java_version" | md5sum | cut -f1 -d" ")
 if [[ ! -f $HOME/.xshare/$jdk_version_checksum ]]; then
    echo "  -> Generating shared class data archive..."
    mkdir -p $HOME/.xshare
@@ -80,12 +81,13 @@ echo "###################################################"
 echo "# Determining current Maven project version...    #"
 echo "###################################################"
 # https://stackoverflow.com/questions/3545292/how-to-get-maven-project-version-to-the-bash-command-line
-projectVersion="$(mvn -s .ci/maven_settings.xml org.apache.maven.plugins:maven-help-plugin:$MAVEN_HELP_PLUGIN_VERSION:evaluate -Dexpression=project.version -q -DforceStdout)"
+projectVersion="$(mvn -s .ci/maven_settings.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
 echo "  -> Current Version: $projectVersion"
 
 
 MAVEN_CLI_OPTS="-e -U --batch-mode --show-version --no-transfer-progress -s .ci/maven_settings.xml -t .ci/maven_toolchains.xml"
 
+# change <properties><java.version>XYZ</java.version></properties> value
 sed -i -E "s/(<java.version>).*(<\/java.version>)/\1${JAVA_VERSION}\2/" pom.xml
 
 #
@@ -108,8 +110,10 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} && ${MAY_CREATE_RELE
    cp -f .ci/maven_settings.xml $HOME/.m2/settings.xml
    cp -f .ci/maven_toolchains.xml $HOME/.m2/toolchains.xml
 
-   # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release on Travis
-   git checkout ${GIT_BRANCH}
+   if [[ "$TRAVIS" == "true" ]]; then
+      # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release on Travis CI
+      git checkout ${GIT_BRANCH}
+   fi
 
    mvn $MAVEN_CLI_OPTS \
       -DskipTests=${SKIP_TESTS} \
