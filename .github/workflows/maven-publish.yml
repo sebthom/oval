@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     strategy:
+      fail-fast: false
       matrix:
         include:
         - java: 8
@@ -45,6 +46,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.m2/repository
+              !~/.m2/repository/net/sf/oval
         key: ${{ runner.os }}-mvnrepo-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-mvnrepo-
@@ -74,6 +76,3 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         bash .ci/build.sh
-
-    - name: Cleanup Maven repo cache
-      run: rm -rfv ~/.m2/repository/net/sf/oval
