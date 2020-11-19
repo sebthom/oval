@@ -72,14 +72,14 @@ public class ConstraintViolation implements Serializable {
       this.validatedObject = validatedObject;
       this.invalidValue = invalidValue;
       this.context = context;
-      this.causes = causes == null || causes.size() == 0 ? null : causes.toArray(new ConstraintViolation[causes.size()]);
+      this.causes = causes == null || causes.isEmpty() ? null : causes.toArray(new ConstraintViolation[causes.size()]);
    }
 
    /**
     * @return the causes or null of no causes exists
     */
    public ConstraintViolation[] getCauses() {
-      return causes == null ? null : (ConstraintViolation[]) causes.clone();
+      return causes == null ? null : causes.clone();
    }
 
    /**

@@ -25,10 +25,10 @@ import net.sf.oval.Validator;
  */
 public class ConcurrentMultiValueMap<K, V> {
 
-   private static final Set<?> EMPTY_SET = Collections.unmodifiableSet(new HashSet<Object>());
+   private static final Set<?> EMPTY_SET = Collections.unmodifiableSet(new HashSet<>());
 
    public static <K, V> ConcurrentMultiValueMap<K, V> create() {
-      return new ConcurrentMultiValueMap<K, V>();
+      return new ConcurrentMultiValueMap<>();
    }
 
    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
@@ -39,7 +39,7 @@ public class ConcurrentMultiValueMap<K, V> {
       try {
          Set<V> set = map.get(key);
          if (set == null) {
-            set = new LinkedHashSet<V>();
+            set = new LinkedHashSet<>();
             map.put(key, set);
          }
          return set.add(value);
@@ -88,7 +88,7 @@ public class ConcurrentMultiValueMap<K, V> {
          final Set<V> set = map.get(key);
          if (set == null)
             return (Set<V>) EMPTY_SET;
-         return new LinkedHashSet<V>(set);
+         return new LinkedHashSet<>(set);
       } finally {
          rwLock.readLock().unlock();
       }

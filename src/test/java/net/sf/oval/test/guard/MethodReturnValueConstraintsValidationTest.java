@@ -47,8 +47,8 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase {
          t.getName();
          fail();
       } catch (final ConstraintsViolatedException e) {
-         assertTrue(e.getConstraintViolations().length == 1);
-         assertTrue(e.getConstraintViolations()[0].getMessage().equals("NOT_NULL"));
+         assertEquals(1, e.getConstraintViolations().length);
+         assertEquals("NOT_NULL", e.getConstraintViolations()[0].getMessage());
       }
 
       t.name = "testtest";
@@ -57,8 +57,8 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase {
          t.getName();
          fail();
       } catch (final ConstraintsViolatedException e) {
-         assertTrue(e.getConstraintViolations().length == 1);
-         assertTrue(e.getConstraintViolations()[0].getMessage().equals("LENGTH"));
+         assertEquals(1, e.getConstraintViolations().length);
+         assertEquals("LENGTH", e.getConstraintViolations()[0].getMessage());
       }
    }
 }

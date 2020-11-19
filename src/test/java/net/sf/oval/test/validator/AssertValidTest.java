@@ -95,8 +95,9 @@ public class AssertValidTest extends TestCase {
       assertEquals(a, violations.get(0).getInvalidValue());
       assertEquals(3, violations.get(0).getCauses().length);
       for (final ConstraintViolation cv : violations.get(0).getCauses())
-         if ("NOT_NULL_STREET".equals(cv.getMessage()))
+         if ("NOT_NULL_STREET".equals(cv.getMessage())) {
             assertEquals("street", ((FieldContext) cv.getContext()).getField().getName());
+         }
       a.street = "The Street";
       a.city = "The City";
       a.zipCode = "12345";
@@ -109,9 +110,9 @@ public class AssertValidTest extends TestCase {
       final Person p = new Person();
       p.firstName = "John";
       p.lastName = "Doe";
-      p.otherAddresses1 = new ArrayList<Address>();
-      p.otherAddresses2 = new HashSet<Address>();
-      p.otherAddresses3 = new HashSet<Address>();
+      p.otherAddresses1 = new ArrayList<>();
+      p.otherAddresses2 = new HashSet<>();
+      p.otherAddresses3 = new HashSet<>();
 
       final Address a = new Address();
       a.street = "The Street";
@@ -136,11 +137,11 @@ public class AssertValidTest extends TestCase {
       final Registry registry = new Registry();
 
       // nulled collections and maps are valid
-      assertTrue(validator.validate(registry).size() == 0);
+      assertEquals(0, validator.validate(registry).size());
 
-      registry.addressesByCityAndStreet = new HashMap<String, Map<String, Address[]>>();
-      registry.addressClusters = new ArrayList<Address[]>();
-      registry.personsByCity = new HashMap<String, List<Person>>();
+      registry.addressesByCityAndStreet = new HashMap<>();
+      registry.addressClusters = new ArrayList<>();
+      registry.personsByCity = new HashMap<>();
 
       // empty collections and maps are valid
       assertEquals(0, validator.validate(registry).size());

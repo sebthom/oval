@@ -48,7 +48,7 @@ public abstract class ObjectCache<K, V> {
       if (result == null) {
          result = load(key);
          map.remove(key);
-         map.put(key, new SoftReference<V>(result));
+         map.put(key, new SoftReference<>(result));
       }
       return result;
    }

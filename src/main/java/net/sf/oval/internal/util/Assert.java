@@ -21,7 +21,7 @@ public final class Assert {
       return ex;
    }
 
-   public static <T> void argumentNotEmpty(final String name, final String value) throws IllegalArgumentException {
+   public static void argumentNotEmpty(final String name, final String value) throws IllegalArgumentException {
       if (value == null)
          throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
       if (value.length() == 0)

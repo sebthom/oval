@@ -42,14 +42,14 @@ public final class ParameterChecks {
    }
 
    public boolean hasChecks() {
-      return checks.size() > 0;
+      return !checks.isEmpty();
    }
 
    public boolean hasExclusions() {
-      return checkExclusions.size() > 0;
+      return !checkExclusions.isEmpty();
    }
 
    public boolean isEmpty() {
-      return checks.size() == 0 && checkExclusions.size() == 0;
+      return checks.isEmpty() && checkExclusions.isEmpty();
    }
 }

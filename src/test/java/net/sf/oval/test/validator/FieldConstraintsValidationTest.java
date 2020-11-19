@@ -45,26 +45,26 @@ public class FieldConstraintsValidationTest extends TestCase {
       // test @NotNull
       final Person p = new Person();
       List<ConstraintViolation> violations = validator.validate(p);
-      assertTrue(violations.size() == 3);
+      assertEquals(violations.size(), 3);
 
       // test @Length(max=)
       p.firstName = "Mike";
       p.lastName = "Mahoney";
       p.zipCode = "1234567";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("LENGTH"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "LENGTH");
 
       // test @NotEmpty
       p.zipCode = "";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("NOT_EMPTY"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "NOT_EMPTY");
 
       // test @RegEx
       p.zipCode = "dffd34";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("MATCH_PATTERN"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "MATCH_PATTERN");
    }
 }

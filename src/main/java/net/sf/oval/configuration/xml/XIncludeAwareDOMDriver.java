@@ -20,7 +20,6 @@ import java.net.URL;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -85,8 +84,6 @@ public class XIncludeAwareDOMDriver extends AbstractDriver {
 
          final Document doc = docBuilder.parse(source);
          return new DomReader(doc, NAME_CODER);
-      } catch (final FactoryConfigurationError ex) {
-         throw new StreamException(ex);
       } catch (final Exception ex) {
          throw new StreamException(ex);
       }

@@ -49,7 +49,7 @@ public class InheritanceTest extends TestCase {
       final AbstractEntity e = new EntityImpl();
 
       final List<ConstraintViolation> violations = validator.validate(e);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "NOT_NULL");
    }
 }

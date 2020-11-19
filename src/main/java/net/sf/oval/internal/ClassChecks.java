@@ -728,7 +728,7 @@ public final class ClassChecks {
             checksOfField.remove(check);
          }
 
-         if (checksOfField.size() == 0) {
+         if (checksOfField.isEmpty()) {
             checksForFields.remove(field);
             constrainedFields.remove(field);
             constrainedStaticFields.remove(field);
@@ -797,7 +797,7 @@ public final class ClassChecks {
             checksforMethod.remove(check);
          }
 
-         if (checksforMethod.size() == 0) {
+         if (checksforMethod.isEmpty()) {
             checksForMethodsPostExcecution.remove(method);
          }
       }
@@ -814,7 +814,7 @@ public final class ClassChecks {
             checksforMethod.remove(check);
          }
 
-         if (checksforMethod.size() == 0) {
+         if (checksforMethod.isEmpty()) {
             checksForMethodsPreExecution.remove(method);
          }
       }
@@ -831,7 +831,7 @@ public final class ClassChecks {
             checksOfMethod.remove(check);
          }
 
-         if (checksOfMethod.size() == 0) {
+         if (checksOfMethod.isEmpty()) {
             checksForMethodReturnValues.remove(method);
             constrainedMethods.remove(method);
             constrainedStaticMethods.remove(method);

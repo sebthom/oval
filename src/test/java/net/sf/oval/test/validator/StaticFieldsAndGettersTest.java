@@ -60,13 +60,13 @@ public class StaticFieldsAndGettersTest extends TestCase {
       // test that only non static fields are validated
       final TestEntity t = new TestEntity();
       List<ConstraintViolation> violations = validator.validate(t);
-      assertTrue(violations.size() == 2);
+      assertEquals(2, violations.size());
 
       t.nonstaticA = "";
       t.nonstaticB = "";
 
       violations = validator.validate(t);
-      assertTrue(violations.size() == 0);
+      assertEquals(0, violations.size());
    }
 
    public void testStaticValidation() {
@@ -77,12 +77,12 @@ public class StaticFieldsAndGettersTest extends TestCase {
 
       // test that only static fields are validated
       List<ConstraintViolation> violations = validator.validate(TestEntity.class);
-      assertTrue(violations.size() == 2);
+      assertEquals(2, violations.size());
 
       TestEntity.staticA = "";
       TestEntity.staticB = "";
 
       violations = validator.validate(TestEntity.class);
-      assertTrue(violations.size() == 0);
+      assertEquals(0, violations.size());
    }
 }

@@ -45,7 +45,7 @@ public class AddingChecksTest extends TestCase {
       final Validator validator = new Validator();
 
       final TestEntity entity = new TestEntity(null);
-      assertTrue(validator.validate(entity).size() == 0);
+      assertEquals(validator.validate(entity).size(), 0);
 
       final Field field = TestEntity.class.getDeclaredField("name");
       final NotNullCheck notNullCheck = new NotNullCheck();
@@ -54,8 +54,8 @@ public class AddingChecksTest extends TestCase {
       validator.addChecks(field, notNullCheck);
 
       final List<ConstraintViolation> violations = validator.validate(entity);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+      assertEquals(1, violations.size());
+      assertEquals("NOT_NULL", violations.get(0).getMessage());
    }
 
    /**

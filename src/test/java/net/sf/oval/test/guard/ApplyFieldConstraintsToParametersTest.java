@@ -135,52 +135,52 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase {
       p.setFirstName("Mike");
       p.setLastName("Mahoney");
       p.setZipCode("1234567");
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("LENGTH"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("LENGTH", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       // test @NotEmpty
       p.setZipCode("");
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_EMPTY"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("NOT_EMPTY", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       // test @RegEx
       p.setZipCode("dffd34");
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("REG_EX", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       // test @AssertTrue
       p.setValid(false);
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("ASSERT_TRUE"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("ASSERT_TRUE", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       // test @FieldConstraint("fieldname")
       p.setDummyFirstName(null);
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("NOT_NULL", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       // test dynamic introduction of FieldConstraintsCheck
       {
          p.setZipCode2("dffd34");
-         assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+         assertEquals(0, va.getConstraintsViolatedExceptions().size());
       }
       {
          final Method setter = p.getClass().getMethod("setZipCode2", new Class<?>[] {String.class});
          final AssertFieldConstraintsCheck check = new AssertFieldConstraintsCheck();
          guard.addChecks(setter, 0, check);
          p.setZipCode2("dffd34");
-         assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-         assertTrue(va.getConstraintViolations().size() == 1);
-         assertTrue(va.getConstraintViolations().get(0).getMessage().equals("REG_EX"));
+         assertEquals(1, va.getConstraintsViolatedExceptions().size());
+         assertEquals(1, va.getConstraintViolations().size());
+         assertEquals("REG_EX", va.getConstraintViolations().get(0).getMessage());
          va.clear();
          guard.removeChecks(setter, 0, check);
       }
@@ -190,17 +190,17 @@ public class ApplyFieldConstraintsToParametersTest extends TestCase {
          check.setFieldName("firstName");
          guard.addChecks(setter, 0, check);
          p.setZipCode2("dffd34");
-         assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+         assertEquals(0, va.getConstraintsViolatedExceptions().size());
          p.setZipCode2(null);
-         assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-         assertTrue(va.getConstraintViolations().size() == 1);
-         assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+         assertEquals(1, va.getConstraintsViolatedExceptions().size());
+         assertEquals(1, va.getConstraintViolations().size());
+         assertEquals("NOT_NULL", va.getConstraintViolations().get(0).getMessage());
          va.clear();
          guard.removeChecks(setter, 0, check);
       }
       {
          p.setZipCode2("dffd34");
-         assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+         assertEquals(0, va.getConstraintsViolatedExceptions().size());
       }
    }
 }

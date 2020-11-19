@@ -185,7 +185,7 @@ public class CustomAssertValidTest extends TestCase {
       final Registry registry = new Registry();
 
       // nulled collections and maps are valid
-      assertTrue(validator.validate(registry).size() == 0);
+      assertEquals(0, validator.validate(registry).size());
 
       registry.addressesByCityAndStreet = new HashMap<>();
       registry.addressClusters = new ArrayList<>();

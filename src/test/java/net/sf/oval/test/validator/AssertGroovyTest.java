@@ -42,32 +42,32 @@ public class AssertGroovyTest extends TestCase {
       // test not null
       final Person p = new Person();
       List<ConstraintViolation> violations = validator.validate(p);
-      assertTrue(violations.size() == 4);
+      assertEquals(violations.size(), 4);
 
       // test max length
       p.firstName = "Mike";
       p.lastName = "Mahoney";
       p.zipCode = "1234567";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getErrorCode().equals("C3"));
+      assertEquals(1, violations.size());
+      assertEquals("C3", violations.get(0).getErrorCode());
 
       // test not empty
       p.zipCode = "";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getErrorCode().equals("C3"));
+      assertEquals(1, violations.size());
+      assertEquals("C3", violations.get(0).getErrorCode());
 
       // test ok
       p.zipCode = "wqeew";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 0);
+      assertEquals(violations.size(), 0);
 
       // test object-level constraint
       p.firstName = "12345";
       p.lastName = "1234";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getErrorCode().equals("C0"));
+      assertEquals(1, violations.size());
+      assertEquals("C0", violations.get(0).getErrorCode());
    }
 }

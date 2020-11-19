@@ -38,32 +38,32 @@ public class AssertOGNLTest extends TestCase {
       // test not null
       final Person p = new Person();
       List<ConstraintViolation> violations = validator.validate(p);
-      assertTrue(violations.size() == 4);
+      assertEquals(violations.size(), 4);
 
       // test max length
       p.firstName = "Mike";
       p.lastName = "Mahoney";
       p.zipCode = "1234567";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("C3"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "C3");
 
       // test not empty
       p.zipCode = "";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("C3"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "C3");
 
       // test ok
       p.zipCode = "wqeew";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 0);
+      assertEquals(violations.size(), 0);
 
       // test object-level constraint
       p.firstName = "12345";
       p.lastName = "1234";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getMessage().equals("C0"));
+      assertEquals(violations.size(), 1);
+      assertEquals(violations.get(0).getMessage(), "C0");
    }
 }

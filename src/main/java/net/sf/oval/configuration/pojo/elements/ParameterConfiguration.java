@@ -36,10 +36,10 @@ public class ParameterConfiguration extends ConfigurationElement {
    public List<CheckExclusion> checkExclusions;
 
    public boolean hasCheckExclusions() {
-      return checkExclusions != null && checkExclusions.size() > 0;
+      return checkExclusions != null && !checkExclusions.isEmpty();
    }
 
    public boolean hasChecks() {
-      return checks != null && checks.size() > 0;
+      return checks != null && !checks.isEmpty();
    }
 }

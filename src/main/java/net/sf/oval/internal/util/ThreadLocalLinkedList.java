@@ -18,6 +18,6 @@ public final class ThreadLocalLinkedList<T> extends ThreadLocal<LinkedList<T>> {
 
    @Override
    public LinkedList<T> initialValue() {
-      return new LinkedList<T>();
+      return new LinkedList<>();
    }
 }

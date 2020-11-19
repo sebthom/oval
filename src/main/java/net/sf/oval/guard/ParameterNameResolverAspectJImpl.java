@@ -72,10 +72,8 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver {
          try {
             determineParamterNames(constructor.getDeclaringClass());
             parameterNames = parameterNamesCache.get(constructor);
-         } catch (final IllegalArgumentException e) {
-            throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
-         } catch (final IllegalAccessException e) {
-            throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, e);
+         } catch (final IllegalArgumentException | IllegalAccessException ex) {
+            throw new ReflectionException("Cannot detemine parameter names for constructor " + constructor, ex);
          }
       }
 
@@ -100,10 +98,8 @@ public class ParameterNameResolverAspectJImpl implements ParameterNameResolver {
          try {
             determineParamterNames(method.getDeclaringClass());
             parameterNames = parameterNamesCache.get(method);
-         } catch (final IllegalArgumentException e) {
-            throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
-         } catch (final IllegalAccessException e) {
-            throw new ReflectionException("Cannot detemine parameter names for method " + method, e);
+         } catch (final IllegalArgumentException | IllegalAccessException ex) {
+            throw new ReflectionException("Cannot detemine parameter names for method " + method, ex);
          }
       }
 

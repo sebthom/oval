@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -309,9 +310,7 @@ public final class ReflectionUtils {
                      cummulatedParamAnnos = new HashSet<>();
                      methodParameterAnnotations[i] = cummulatedParamAnnos;
                   }
-                  for (final Annotation anno : paramAnnos) {
-                     cummulatedParamAnnos.add(anno);
-                  }
+                  Collections.addAll(cummulatedParamAnnos, paramAnnos);
                }
             }
          } catch (final NoSuchMethodException ex) {
@@ -556,13 +555,7 @@ public final class ReflectionUtils {
       if (setter != null) {
          try {
             setter.invoke(target, propertyValue);
-         } catch (final IllegalArgumentException ex) {
-            LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-            return false;
-         } catch (final IllegalAccessException ex) {
-            LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-            return false;
-         } catch (final InvocationTargetException ex) {
+         } catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
             LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
             return false;
          }

@@ -37,25 +37,25 @@ public class AssertBeanShellTest extends TestCase {
       // test not null
       final Person p = new Person();
       List<ConstraintViolation> violations = validator.validate(p);
-      assertTrue(violations.size() == 3);
+      assertEquals(violations.size(), 3);
 
       // test max length
       p.firstName = "Mike";
       p.lastName = "Mahoney";
       p.zipCode = "1234567";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getErrorCode().equals("C3"));
+      assertEquals(1, violations.size());
+      assertEquals("C3", violations.get(0).getErrorCode(), "C3");
 
       // test not empty
       p.zipCode = "";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
-      assertTrue(violations.get(0).getErrorCode().equals("C3"));
+      assertEquals(1, violations.size());
+      assertEquals("C3", violations.get(0).getErrorCode());
 
       // test ok
       p.zipCode = "wqeew";
       violations = validator.validate(p);
-      assertTrue(violations.size() == 0);
+      assertEquals(0, violations.size());
    }
 }

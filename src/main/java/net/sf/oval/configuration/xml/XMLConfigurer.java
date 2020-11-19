@@ -183,10 +183,8 @@ public class XMLConfigurer implements Configurer {
                   final List<ConstraintTarget> targets = new ArrayList<>(2);
                   while (reader.hasMoreChildren()) {
                      reader.moveDown();
-                     switch (reader.getNodeName()) {
-                        case "constraintTarget":
-                           targets.add(ConstraintTarget.valueOf(reader.getValue()));
-                           break;
+                     if ("constraintTarget".equals(reader.getNodeName())) {
+                        targets.add(ConstraintTarget.valueOf(reader.getValue()));
                      }
                      reader.moveUp();
                   }
@@ -199,10 +197,8 @@ public class XMLConfigurer implements Configurer {
                   final List<String> profiles = new ArrayList<>(4);
                   while (reader.hasMoreChildren()) {
                      reader.moveDown();
-                     switch (reader.getNodeName()) {
-                        case "string":
-                           profiles.add(reader.getValue());
-                           break;
+                     if ("string".equals(reader.getNodeName())) {
+                        profiles.add(reader.getValue());
                      }
                      reader.moveUp();
                   }
@@ -531,7 +527,7 @@ public class XMLConfigurer implements Configurer {
       try {
          pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
       } finally {
-         CURRENT_LISTENERS.set(null);
+         CURRENT_LISTENERS.remove();
       }
    }
 
@@ -540,7 +536,7 @@ public class XMLConfigurer implements Configurer {
       try {
          pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
       } finally {
-         CURRENT_LISTENERS.set(null);
+         CURRENT_LISTENERS.remove();
       }
    }
 
@@ -549,7 +545,7 @@ public class XMLConfigurer implements Configurer {
       try {
          pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
       } finally {
-         CURRENT_LISTENERS.set(null);
+         CURRENT_LISTENERS.remove();
       }
    }
 
@@ -558,7 +554,7 @@ public class XMLConfigurer implements Configurer {
       try {
          pojoConfigurer = (POJOConfigurer) xStream.fromXML(input);
       } finally {
-         CURRENT_LISTENERS.set(null);
+         CURRENT_LISTENERS.remove();
       }
    }
 

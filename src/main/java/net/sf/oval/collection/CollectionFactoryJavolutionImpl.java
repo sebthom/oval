@@ -25,41 +25,41 @@ public class CollectionFactoryJavolutionImpl implements CollectionFactory {
 
    @Override
    public <KeyType, ValueType> ConcurrentMap<KeyType, ValueType> createConcurrentMap() {
-      return new FastMap<KeyType, ValueType>();
+      return new FastMap<>();
    }
 
    @Override
    public <KeyType, ValueType> ConcurrentMap<KeyType, ValueType> createConcurrentMap(final int initialCapacity) {
-      return new FastMap<KeyType, ValueType>();
+      return new FastMap<>();
    }
 
    @Override
    public <ItemType> List<ItemType> createList() {
-      return new FastTable<ItemType>();
+      return new FastTable<>();
    }
 
    @Override
    public <ItemType> List<ItemType> createList(final int initialCapacity) {
-      return new FastTable<ItemType>();
+      return new FastTable<>();
    }
 
    @Override
    public <KeyType, ValueType> Map<KeyType, ValueType> createMap() {
-      return new FastMap<KeyType, ValueType>();
+      return new FastMap<>();
    }
 
    @Override
    public <KeyType, ValueType> Map<KeyType, ValueType> createMap(final int initialCapacity) {
-      return new FastMap<KeyType, ValueType>();
+      return new FastMap<>();
    }
 
    @Override
    public <ItemType> Set<ItemType> createSet() {
-      return new FastSet<ItemType>();
+      return new FastSet<>();
    }
 
    @Override
    public <ItemType> Set<ItemType> createSet(final int initialCapacity) {
-      return new FastSet<ItemType>();
+      return new FastSet<>();
    }
 }

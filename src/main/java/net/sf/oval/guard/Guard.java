@@ -153,7 +153,7 @@ public class Guard extends Validator {
             it.remove();
          }
       }
-      return activeExclusions.size() == 0 ? null : activeExclusions;
+      return activeExclusions.isEmpty() ? null : activeExclusions;
    }
 
    private void _validateParameterChecks(final ParameterChecks checks, final Object validatedObject, final Object valueToValidate, final OValContext context,
@@ -171,7 +171,6 @@ public class Guard extends Validator {
                   this)) {
                   // skip if this check should be excluded
                   skip = true;
-                  continue;
                }
          }
          if (!skip) {
@@ -474,7 +473,7 @@ public class Guard extends Validator {
             currentViolations.get().removeLast();
          }
 
-         if (violations.size() > 0) {
+         if (!violations.isEmpty()) {
             final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
             if (isListenersFeatureUsed) {
                notifyListeners(guardedObject, violationException);
@@ -546,12 +545,12 @@ public class Guard extends Validator {
 
          if (isPreConditionsEnabled) {
             // method parameter validation
-            if (args.length > 0 && violations.size() == 0) {
+            if (args.length > 0 && violations.isEmpty()) {
                validateMethodParameters(guardedObject, method, args, violations);
             }
 
             // @Pre validation
-            if (violations.size() == 0) {
+            if (violations.isEmpty()) {
                validateMethodPre(guardedObject, method, args, violations);
             }
          }
@@ -566,7 +565,7 @@ public class Guard extends Validator {
          pml.onMethodCall(method, args);
       }
 
-      if (violations.size() > 0) {
+      if (!violations.isEmpty()) {
          final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
          if (isListenersFeatureUsed) {
             notifyListeners(guardedObject, violationException);
@@ -600,12 +599,12 @@ public class Guard extends Validator {
          if (isPostConditionsEnabled) {
 
             // method return value
-            if (violations.size() == 0) {
+            if (violations.isEmpty()) {
                validateMethodReturnValue(guardedObject, method, returnValue, violations);
             }
 
             // @Post
-            if (violations.size() == 0) {
+            if (violations.isEmpty()) {
                validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
             }
          }
@@ -615,7 +614,7 @@ public class Guard extends Validator {
          currentViolations.get().removeLast();
       }
 
-      if (violations.size() > 0) {
+      if (!violations.isEmpty()) {
          final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
          if (isListenersFeatureUsed) {
             notifyListeners(guardedObject, violationException);
@@ -649,12 +648,12 @@ public class Guard extends Validator {
          if (isPostConditionsEnabled) {
 
             // method return value
-            if (preResult.violations.size() == 0) {
+            if (preResult.violations.isEmpty()) {
                validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue, preResult.violations);
             }
 
             // @Post
-            if (preResult.violations.size() == 0) {
+            if (preResult.violations.isEmpty()) {
                validateMethodPost(preResult.guardedObject, preResult.method, preResult.args, returnValue, preResult.postCheckOldValues, preResult.violations);
             }
          }
@@ -662,7 +661,7 @@ public class Guard extends Validator {
          throw translateException(ex);
       }
 
-      if (preResult.violations.size() > 0) {
+      if (!preResult.violations.isEmpty()) {
          final ConstraintsViolatedException violationException = new ConstraintsViolatedException(preResult.violations);
          if (isListenersFeatureUsed) {
             notifyListeners(preResult.guardedObject, violationException);
@@ -706,12 +705,12 @@ public class Guard extends Validator {
 
          if (isPreConditionsEnabled) {
             // method parameter validation
-            if (args.length > 0 && violations.size() == 0) {
+            if (args.length > 0 && violations.isEmpty()) {
                validateMethodParameters(guardedObject, method, args, violations);
             }
 
             // @Pre validation
-            if (violations.size() == 0) {
+            if (violations.isEmpty()) {
                validateMethodPre(guardedObject, method, args, violations);
             }
          }
@@ -726,7 +725,7 @@ public class Guard extends Validator {
          pml.onMethodCall(method, args);
       }
 
-      if (violations.size() > 0) {
+      if (!violations.isEmpty()) {
          final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
          if (isListenersFeatureUsed) {
             notifyListeners(guardedObject, violationException);
@@ -1050,7 +1049,7 @@ public class Guard extends Validator {
                _validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
             }
          }
-         return violations.size() == 0 ? null : violations;
+         return violations.isEmpty() ? null : violations;
       } catch (final OValException ex) {
          throw new ValidationFailedException("Validation of constructor parameters failed. Constructor: " + constructor + " Validated object: "
             + validatedObject.getClass().getName() + "@" + Integer.toHexString(validatedObject.hashCode()), ex);
@@ -1064,7 +1063,7 @@ public class Guard extends Validator {
    @Override
    protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations, final String[] profiles)
       throws IllegalArgumentException, ValidationFailedException {
-      if (currentlyValidatedObjects.get().size() > 0 && currentlyValidatedObjects.get().getLast().contains(guardedObject))
+      if (!currentlyValidatedObjects.get().isEmpty() && currentlyValidatedObjects.get().getLast().contains(guardedObject))
          // to prevent StackOverflowError
          return;
 
@@ -1101,7 +1100,7 @@ public class Guard extends Validator {
             for (int i = 0; i < args.length; i++) {
                final ParameterChecks checks = parameterChecks.get(i);
 
-               if (checks != null && checks.checks.size() > 0) {
+               if (checks != null && !checks.checks.isEmpty()) {
                   final Object valueToValidate = args[i];
                   final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
 
@@ -1269,7 +1268,7 @@ public class Guard extends Validator {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
 
-         if (returnValueChecks == null || returnValueChecks.size() == 0)
+         if (returnValueChecks == null || returnValueChecks.isEmpty())
             return;
 
          final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);

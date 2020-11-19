@@ -18,6 +18,6 @@ public final class ThreadLocalWeakHashMap<K, V> extends ThreadLocal<WeakHashMap<
 
    @Override
    public WeakHashMap<K, V> initialValue() {
-      return new WeakHashMap<K, V>();
+      return new WeakHashMap<>();
    }
 }

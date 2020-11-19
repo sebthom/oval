@@ -137,7 +137,7 @@ public class JPAAnnotationsConfigurer implements Configurer {
             addAssertValidCheckIfRequired(annotation, checks, field);
          }
 
-         if (checks.size() > 0) {
+         if (!checks.isEmpty()) {
             if (config.fieldConfigurations == null) {
                config.fieldConfigurations = cf.createSet(8);
             }
@@ -179,7 +179,7 @@ public class JPAAnnotationsConfigurer implements Configurer {
          }
 
          // check if anything has been configured for this method at all
-         if (checks.size() > 0) {
+         if (!checks.isEmpty()) {
             if (config.methodConfigurations == null) {
                config.methodConfigurations = cf.createSet(2);
             }

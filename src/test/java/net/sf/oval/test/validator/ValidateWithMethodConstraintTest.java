@@ -45,18 +45,18 @@ public class ValidateWithMethodConstraintTest extends TestCase {
       List<ConstraintViolation> violations;
 
       violations = validator.validate(t);
-      assertTrue(violations.size() == 1);
+      assertEquals(1, violations.size());
 
       t.name = "";
       violations = validator.validate(t);
-      assertTrue(violations.size() == 1);
+      assertEquals(1, violations.size());
 
       t.name = "12345";
       violations = validator.validate(t);
-      assertTrue(violations.size() == 1);
+      assertEquals(1, violations.size());
 
       t.name = "1234";
       violations = validator.validate(t);
-      assertTrue(violations.size() == 0);
+      assertEquals(0, violations.size());
    }
 }

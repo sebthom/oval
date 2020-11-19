@@ -334,7 +334,7 @@ public class Validator implements IValidator {
                   cc.clearFieldChecks(field);
                }
 
-               if (fieldCfg.checks != null && fieldCfg.checks.size() > 0) {
+               if (fieldCfg.checks != null && !fieldCfg.checks.isEmpty()) {
                   cc.addFieldChecks(field, fieldCfg.checks);
                }
             }
@@ -414,7 +414,7 @@ public class Validator implements IValidator {
                 * ******************************/
                final Method method;
 
-               if (methodCfg.parameterConfigurations == null || methodCfg.parameterConfigurations.size() == 0) {
+               if (methodCfg.parameterConfigurations == null || methodCfg.parameterConfigurations.isEmpty()) {
                   method = classCfg.type.getDeclaredMethod(methodCfg.name);
                } else {
                   final Class<?>[] paramTypes = new Class[methodCfg.parameterConfigurations.size()];
@@ -447,7 +447,7 @@ public class Validator implements IValidator {
                /* ******************************
                 * configure parameter constraints
                 * ******************************/
-               if (methodCfg.parameterConfigurations != null && methodCfg.parameterConfigurations.size() > 0) {
+               if (methodCfg.parameterConfigurations != null && !methodCfg.parameterConfigurations.isEmpty()) {
                   for (int i = 0, l = methodCfg.parameterConfigurations.size(); i < l; i++) {
                      final ParameterConfiguration paramCfg = methodCfg.parameterConfigurations.get(i);
 
@@ -477,7 +477,7 @@ public class Validator implements IValidator {
                      cc.clearMethodReturnValueChecks(method);
                   }
 
-                  if (methodCfg.returnValueConfiguration.checks != null && methodCfg.returnValueConfiguration.checks.size() > 0) {
+                  if (methodCfg.returnValueConfiguration.checks != null && !methodCfg.returnValueConfiguration.checks.isEmpty()) {
                      cc.addMethodReturnValueChecks(method, methodCfg.isInvariant, methodCfg.returnValueConfiguration.checks);
                   }
                }
@@ -494,7 +494,7 @@ public class Validator implements IValidator {
                      cc.clearMethodPreChecks(method);
                   }
 
-                  if (methodCfg.preExecutionConfiguration.checks != null && methodCfg.preExecutionConfiguration.checks.size() > 0) {
+                  if (methodCfg.preExecutionConfiguration.checks != null && !methodCfg.preExecutionConfiguration.checks.isEmpty()) {
                      cc.addMethodPreChecks(method, methodCfg.preExecutionConfiguration.checks);
                   }
                }
@@ -511,7 +511,7 @@ public class Validator implements IValidator {
                      cc.clearMethodPostChecks(method);
                   }
 
-                  if (methodCfg.postExecutionConfiguration.checks != null && methodCfg.postExecutionConfiguration.checks.size() > 0) {
+                  if (methodCfg.postExecutionConfiguration.checks != null && !methodCfg.postExecutionConfiguration.checks.isEmpty()) {
                      cc.addMethodPostChecks(method, methodCfg.postExecutionConfiguration.checks);
                   }
                }
@@ -589,7 +589,7 @@ public class Validator implements IValidator {
          for (final Field field : cc.constrainedFields) {
             final Collection<Check> checks = cc.checksForFields.get(field);
 
-            if (checks != null && checks.size() > 0) {
+            if (checks != null && !checks.isEmpty()) {
                final FieldContext ctx = ContextCache.getFieldContext(field);
                final Object valueToValidate = resolveValue(ctx, validatedObject);
 
@@ -603,7 +603,7 @@ public class Validator implements IValidator {
          for (final Method getter : cc.constrainedMethods) {
             final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
 
-            if (checks != null && checks.size() > 0) {
+            if (checks != null && !checks.isEmpty()) {
                final MethodReturnValueContext ctx = ContextCache.getMethodReturnValueContext(getter);
                final Object valueToValidate = resolveValue(ctx, validatedObject);
 
@@ -614,7 +614,7 @@ public class Validator implements IValidator {
          }
 
          // validate object constraints
-         if (cc.checksForObject.size() > 0) {
+         if (!cc.checksForObject.isEmpty()) {
             final OValContext ctx = ContextCache.getClassContext(clazz);
             for (final Check check : cc.checksForObject) {
                checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles, false);
@@ -643,7 +643,7 @@ public class Validator implements IValidator {
       for (final Field field : cc.constrainedStaticFields) {
          final Collection<Check> checks = cc.checksForFields.get(field);
 
-         if (checks != null && checks.size() > 0) {
+         if (checks != null && !checks.isEmpty()) {
             final FieldContext ctx = ContextCache.getFieldContext(field);
             final Object valueToValidate = resolveValue(ctx, null);
 
@@ -657,7 +657,7 @@ public class Validator implements IValidator {
       for (final Method getter : cc.constrainedStaticMethods) {
          final Collection<Check> checks = cc.checksForMethodReturnValues.get(getter);
 
-         if (checks != null && checks.size() > 0) {
+         if (checks != null && !checks.isEmpty()) {
             final MethodReturnValueContext ctx = ContextCache.getMethodReturnValueContext(getter);
             final Object valueToValidate = resolveValue(ctx, null);
 
@@ -736,8 +736,7 @@ public class Validator implements IValidator {
    @Override
    public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException {
       final List<ConstraintViolation> violations = validate(validatedObject);
-
-      if (violations.size() > 0)
+      if (!violations.isEmpty())
          throw translateException(new ConstraintsViolatedException(violations));
    }
 
@@ -745,8 +744,7 @@ public class Validator implements IValidator {
    public void assertValidFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
       throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException {
       final List<ConstraintViolation> violations = validateFieldValue(validatedObject, validatedField, fieldValueToValidate);
-
-      if (violations.size() > 0)
+      if (!violations.isEmpty())
          throw translateException(new ConstraintsViolatedException(violations));
    }
 
@@ -845,7 +843,7 @@ public class Validator implements IValidator {
          throw new UndefinedConstraintSetException(check.getId());
 
       final Collection<Check> referencedChecks = cs.getChecks();
-      if (referencedChecks != null && referencedChecks.size() > 0) {
+      if (referencedChecks != null && !referencedChecks.isEmpty()) {
          for (final Check referencedCheck : referencedChecks) {
             checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
          }
@@ -902,7 +900,7 @@ public class Validator implements IValidator {
 
       final ClassChecks cc = getClassChecks(field.getDeclaringClass());
       final Collection<Check> referencedChecks = cc.checksForFields.get(field);
-      if (referencedChecks != null && referencedChecks.size() > 0) {
+      if (referencedChecks != null && !referencedChecks.isEmpty()) {
          for (final Check referencedCheck : referencedChecks) {
             checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
          }
@@ -921,7 +919,7 @@ public class Validator implements IValidator {
       final List<ConstraintViolation> additionalViolations = collectionFactory.createList();
       validateInvariants(valueToValidate, additionalViolations, profiles);
 
-      if (additionalViolations.size() != 0) {
+      if (!additionalViolations.isEmpty()) {
          final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check.getMessageVariables());
          violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context, additionalViolations));
       }
@@ -1233,7 +1231,7 @@ public class Validator implements IValidator {
     */
    public void reportConstraintViolation(final ConstraintViolation constraintViolation) {
       Assert.argumentNotNull("constraintViolation", constraintViolation);
-      if (currentViolations.get().size() == 0)
+      if (currentViolations.get().isEmpty())
          throw new IllegalStateException("No active validation cycle found for the current thread.");
       currentViolations.get().getLast().add(constraintViolation);
    }
@@ -1319,7 +1317,7 @@ public class Validator implements IValidator {
          final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());
          final Collection<Check> checks = cc.checksForFields.get(validatedField);
 
-         if (checks == null || checks.size() == 0)
+         if (checks == null || checks.isEmpty())
             return violations;
 
          final FieldContext context = ContextCache.getFieldContext(validatedField);

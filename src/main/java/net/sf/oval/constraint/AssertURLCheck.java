@@ -109,7 +109,7 @@ public class AssertURLCheck extends AbstractAnnotationCheck<AssertURL> {
     * @return the permittedURISchemes
     */
    public URIScheme[] getPermittedURISchemes() {
-      return permittedURISchemes.size() == 0 ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes.size()]);
+      return permittedURISchemes.isEmpty() ? null : permittedURISchemes.toArray(new URIScheme[permittedURISchemes.size()]);
    }
 
    /**

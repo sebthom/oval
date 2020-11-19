@@ -49,8 +49,8 @@ public class StaticMethodsTest extends TestCase {
          TestEntity.doSomethingPost();
          fail();
       } catch (final ConstraintsViolatedException ex) {
-         assertTrue(ex.getConstraintViolations().length == 1);
-         assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
+         assertEquals(1, ex.getConstraintViolations().length);
+         assertEquals("NULL", ex.getConstraintViolations()[0].getMessage());
       }
 
       TestEntity.value = "";
@@ -67,8 +67,8 @@ public class StaticMethodsTest extends TestCase {
          TestEntity.doSomethingPre();
          fail();
       } catch (final ConstraintsViolatedException ex) {
-         assertTrue(ex.getConstraintViolations().length == 1);
-         assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
+         assertEquals(1, ex.getConstraintViolations().length);
+         assertEquals("NULL", ex.getConstraintViolations()[0].getMessage());
       }
 
       TestEntity.value = "";
@@ -83,8 +83,8 @@ public class StaticMethodsTest extends TestCase {
          TestEntity.setValue(null);
          fail();
       } catch (final ConstraintsViolatedException ex) {
-         assertTrue(ex.getConstraintViolations().length == 1);
-         assertTrue(ex.getConstraintViolations()[0].getMessage().equals("NULL"));
+         assertEquals(1, ex.getConstraintViolations().length);
+         assertEquals("NULL", ex.getConstraintViolations()[0].getMessage());
       }
    }
 }

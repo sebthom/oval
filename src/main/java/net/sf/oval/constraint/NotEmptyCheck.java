@@ -35,10 +35,10 @@ public class NotEmptyCheck extends AbstractAnnotationCheck<NotEmpty> {
          return true;
 
       if (valueToValidate instanceof Collection)
-         return ((Collection<?>) valueToValidate).size() > 0;
+         return !((Collection<?>) valueToValidate).isEmpty();
 
       if (valueToValidate instanceof Map)
-         return ((Map<?, ?>) valueToValidate).size() > 0;
+         return !((Map<?, ?>) valueToValidate).isEmpty();
 
       if (valueToValidate.getClass().isArray())
          return Array.getLength(valueToValidate) > 0;

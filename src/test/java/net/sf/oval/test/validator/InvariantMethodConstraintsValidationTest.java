@@ -160,13 +160,13 @@ public class InvariantMethodConstraintsValidationTest extends TestCase {
          final TestEntity t = new TestEntity();
 
          List<ConstraintViolation> violations = validator.validate(t);
-         assertTrue(violations.size() == 1);
-         assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+         assertEquals(violations.size(), 1);
+         assertEquals(violations.get(0).getMessage(), "NOT_NULL");
 
          t.name = "wqerwqer";
          violations = validator.validate(t);
-         assertTrue(violations.size() == 1);
-         assertTrue(violations.get(0).getMessage().equals("LENGTH"));
+         assertEquals(violations.size(), 1);
+         assertEquals(violations.get(0).getMessage(), "LENGTH");
       }
    }
 }

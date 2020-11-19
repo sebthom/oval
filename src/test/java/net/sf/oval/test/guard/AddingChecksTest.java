@@ -103,9 +103,9 @@ public class AddingChecksTest extends TestCase {
             fail();
          } catch (final ConstraintsViolatedException e) {
             final ConstraintViolation[] violations = e.getConstraintViolations();
-            assertTrue(violations.length == 1);
+            assertEquals(violations.length, 1);
             assertTrue(violations[0].getContext() instanceof MethodParameterContext);
-            assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+            assertEquals(violations[0].getMessage(), "NOT_NULL");
          }
 
          // removing the constraint
@@ -149,9 +149,9 @@ public class AddingChecksTest extends TestCase {
          fail();
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertTrue(violations.length == 1);
+         assertEquals(violations.length, 1);
          assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
-         assertTrue(violations[0].getMessage().equals("NOT_NULL"));
+         assertEquals(violations[0].getMessage(), "NOT_NULL");
       }
 
       // removing the constraint
@@ -177,7 +177,7 @@ public class AddingChecksTest extends TestCase {
       // testing without constraint
       {
          final List<ConstraintViolation> violations = guard.validate(entity);
-         assertTrue(violations.size() == 0);
+         assertEquals(violations.size(), 0);
       }
 
       // adding a constraint
@@ -185,8 +185,8 @@ public class AddingChecksTest extends TestCase {
          guard.addChecks(field, notNullCheck);
 
          final List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getGuard().validate(entity);
-         assertTrue(violations.size() == 1);
-         assertTrue(violations.get(0).getMessage().equals("NOT_NULL"));
+         assertEquals(violations.size(), 1);
+         assertEquals(violations.get(0).getMessage(), "NOT_NULL");
       }
 
       // removing the constraint
@@ -194,7 +194,7 @@ public class AddingChecksTest extends TestCase {
          guard.removeChecks(field, notNullCheck);
 
          final List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getGuard().validate(entity);
-         assertTrue(violations.size() == 0);
+         assertEquals(violations.size(), 0);
       }
    }
 }

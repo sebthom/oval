@@ -272,7 +272,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          final ParameterConfiguration paramCfg = new ParameterConfiguration();
          paramCfgs.add(paramCfg);
          paramCfg.type = paramTypes[i];
-         if (paramChecks.size() > 0) {
+         if (!paramChecks.isEmpty()) {
             paramCfg.checks = paramChecks;
             paramChecks = cf.createList(2); // create a new list for the next parameter having checks
          }
@@ -295,7 +295,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          /*
           * check if anything has been configured for this constructor at all
           */
-         if (paramCfg.size() > 0) {
+         if (!paramCfg.isEmpty()) {
             if (classCfg.constructorConfigurations == null) {
                classCfg.constructorConfigurations = getCollectionFactory().createSet(2);
             }
@@ -324,7 +324,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          /*
           * check if anything has been configured for this field at all
           */
-         if (checks.size() > 0) {
+         if (!checks.isEmpty()) {
             if (classCfg.fieldConfigurations == null) {
                classCfg.fieldConfigurations = cf.createSet(2);
             }
@@ -368,7 +368,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          /*
           * check if anything has been configured for this method at all
           */
-         if (paramCfg.size() > 0 || returnValueChecks.size() > 0) {
+         if (!paramCfg.isEmpty() || !returnValueChecks.isEmpty()) {
             if (classCfg.methodConfigurations == null) {
                classCfg.methodConfigurations = cf.createSet(2);
             }
@@ -377,7 +377,7 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             mc.name = method.getName();
             mc.parameterConfigurations = paramCfg;
             mc.isInvariant = ReflectionUtils.isGetter(method);
-            if (returnValueChecks.size() > 0) {
+            if (!returnValueChecks.isEmpty()) {
                mc.returnValueConfiguration = new MethodReturnValueConfiguration();
                mc.returnValueConfiguration.checks = returnValueChecks;
                returnValueChecks = cf.createList(2); // create a new list for the next method having return value checks

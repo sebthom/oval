@@ -147,30 +147,30 @@ public class PrePostValidateThisTest extends TestCase {
 
       // test non-getter precondition failed
       t.getName();
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("NOT_NULL", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       t.setName(null);
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 1);
-      assertTrue(va.getConstraintViolations().size() == 1);
-      assertTrue(va.getConstraintViolations().get(0).getMessage().equals("NOT_NULL"));
+      assertEquals(1, va.getConstraintsViolatedExceptions().size());
+      assertEquals(1, va.getConstraintViolations().size());
+      assertEquals("NOT_NULL", va.getConstraintViolations().get(0).getMessage());
       va.clear();
 
       // test post-condition ignored even if pre-conditions satisfied
       t.setNameWithPostValidation(null);
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
+      assertEquals(0, va.getConstraintsViolatedExceptions().size());
 
       // test setter
       t.setName("the name");
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
-      assertTrue(va.getConstraintViolations().size() == 0);
+      assertEquals(0, va.getConstraintsViolatedExceptions().size());
+      assertEquals(0, va.getConstraintViolations().size());
 
       // test getter returns null because we are in probe mode
       t.name = "the name";
       assertNull(t.getName());
-      assertTrue(va.getConstraintsViolatedExceptions().size() == 0);
-      assertTrue(va.getConstraintViolations().size() == 0);
+      assertEquals(0, va.getConstraintsViolatedExceptions().size());
+      assertEquals(0, va.getConstraintViolations().size());
    }
 }

@@ -181,6 +181,5 @@ public class AnnotationsConfigurerTest extends TestCase {
          assertEquals(1, violations.size());
          assertEquals("DESCRIPTION_ELEMENT_NOT_NULL", violations.get(0).getMessage());
       }
-
    }
 }

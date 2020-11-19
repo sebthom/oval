@@ -39,7 +39,7 @@ public class SerializationTest extends TestCase {
       final Person p = new Person();
       p.firstName = "123456";
       final List<ConstraintViolation> violations = validator.validate(p);
-      assertTrue(violations.size() == 1);
+      assertEquals(1, violations.size());
 
       // serialize the violations
       final ByteArrayOutputStream bos = new ByteArrayOutputStream();
