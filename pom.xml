@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2005-2020 by Sebastian Thomschke and others.
@@ -25,8 +27,8 @@
 
 
    <name>OVal</name>
-   <url>https://oval.sf.net</url>
    <description>OVal is a pragmatic and extensible validation framework for Java objects.</description>
+   <url>https://oval.sf.net</url>
    <inceptionYear>2005</inceptionYear>
 
 
@@ -72,7 +74,7 @@
    <properties>
       <java.version>8</java.version>
       <aspectj.version>1.9.6</aspectj.version>
-      <spring.version>5.3.0</spring.version>
+      <spring.version>5.3.1</spring.version>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value ->
@@ -98,7 +100,6 @@
 
 
    <scm>
-      <!-- http://maven.apache.org/scm/subversion.html -->
       <!-- http://maven.apache.org/scm/git.html -->
       <url>https://github.com/sebthom/oval</url>
       <connection>scm:git:https://github.com/sebthom/oval.git</connection>
@@ -108,7 +109,7 @@
 
 
    <distributionManagement>
-      <downloadUrl>https://central.maven.org/maven2/</downloadUrl>
+      <downloadUrl>https://jcenter.bintray.com/</downloadUrl>
       <repository>
          <id>bintray-release-uploads</id>
          <url>https://api.bintray.com/maven/sebthom/maven/oval/;publish=1</url>
@@ -117,14 +118,14 @@
 
 
    <ciManagement>
-      <system>travis-ci.org</system>
-      <url>https://travis-ci.org/sebthom/oval</url>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/oval/actions</url>
    </ciManagement>
 
 
    <issueManagement>
       <system>github.com</system>
-      <url>https://github.com/sebthom/oval/issues/</url>
+      <url>https://github.com/sebthom/oval/issues</url>
    </issueManagement>
 
 
@@ -296,7 +297,6 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.2.0</version>
             <executions>
                <execution>
                   <id>add-license-file-to-jar</id>
@@ -363,7 +363,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore/>
+                              <ignore />
                            </action>
                         </pluginExecution>
                      </pluginExecutions>
@@ -375,7 +375,6 @@
    </build>
 
 
-   <!-- global dependencies -->
    <dependencies>
       <dependency>
          <groupId>org.aspectj</groupId>
@@ -411,7 +410,7 @@
       <dependency>
          <groupId>ognl</groupId>
          <artifactId>ognl</artifactId>
-         <version>3.2.15</version>
+         <version>3.2.16</version>
          <optional>true</optional>
       </dependency>
       <dependency>
