@@ -397,7 +397,7 @@
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
          <artifactId>xstream</artifactId>
-         <version>1.4.14</version>
+         <version>1.4.14-jdk7</version>
          <optional>true</optional>
       </dependency>
       <dependency>
