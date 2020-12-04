@@ -1,3 +1,13 @@
+# Eclipse
+.apt_generated/
+.settings/
+.checkstyle
+.classpath
+.factorypath
+.project
+bin/
+
+# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -8,10 +18,33 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
-.apt_generated/
-.settings/
-.checkstyle
-.classpath
-.factorypath
-.project
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+/target
 **/.*.md.html
+
+# IntelliJ
+.idea
+*.iml
+*.ipr
+*.iws
+
+# NetBeans
+nb-configuration.xml
+
+# Visual Studio Code
+.vscode
+
+# OSX
+.DS_Store
+
+# Vim
+*.swo
+*.swp
+
+# patch
+*.orig
+*.rej
