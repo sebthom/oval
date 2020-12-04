@@ -69,6 +69,10 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
       return ignoreIfNull;
    }
 
+   private Method getValidationMethod(final Class<?> clazz) {
+      return ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
+   }
+
    @Override
    public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
       throws ReflectionException {
@@ -76,18 +80,11 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
          return true;
 
       final Class<?> clazz = validatedObject.getClass();
-      Method method = validationMethodsByClass.get(clazz);
-      if (method == null) {
-         method = ReflectionUtils.getMethodRecursive(clazz, methodName, parameterType);
-         validationMethodsByClass.put(clazz, method);
-      }
-
+      final Method method = validationMethodsByClass.computeIfAbsent(clazz, this::getValidationMethod);
       if (method == null)
          throw new InvalidConfigurationException("Method " + clazz.getName() + "." + methodName + "(" + parameterType + ") not found. Is [" + parameterType
             + "] the correct value for [@ValidateWithMethod.parameterType]?");
-      // explicit cast to workaround:
-      // "type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds boolean,java.lang.Object"
-      return (Boolean) ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
+      return ReflectionUtils.invokeMethod(method, validatedObject, valueToValidate);
    }
 
    public void setIgnoreIfNull(final boolean ignoreIfNull) {
