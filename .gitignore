@@ -1,11 +1,15 @@
+# Local work folder that is not checked in
+_LOCAL/
+
 # Eclipse
 .apt_generated/
-.settings/
 .checkstyle
 .classpath
 .factorypath
 .project
+.settings/
 bin/
+**/.*.md.html
 
 # Maven
 target/
@@ -17,14 +21,8 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
-
-# Temp files
-*.tmp
-*.bak
-*.swp
-/target
-**/.*.md.html
 
 # IntelliJ
 .idea
