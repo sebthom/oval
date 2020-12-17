@@ -74,7 +74,7 @@
    <properties>
       <java.version>8</java.version>
       <aspectj.version>1.9.6</aspectj.version>
-      <spring.version>5.3.1</spring.version>
+      <spring.version>5.3.2</spring.version>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value ->
@@ -397,7 +397,7 @@
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
          <artifactId>xstream</artifactId>
-         <version>1.4.14</version>
+         <version>1.4.15</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -410,13 +410,13 @@
       <dependency>
          <groupId>ognl</groupId>
          <artifactId>ognl</artifactId>
-         <version>3.2.16</version>
+         <version>3.2.17</version>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>org.jruby</groupId>
          <artifactId>jruby</artifactId>
-         <version>9.2.13.0</version>
+         <version>9.2.14.0</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -481,7 +481,7 @@
       <dependency>
          <groupId>org.mvel</groupId>
          <artifactId>mvel2</artifactId>
-         <version>2.4.10.Final</version>
+         <version>2.4.11.Final</version>
          <optional>true</optional>
       </dependency>
       <dependency>
