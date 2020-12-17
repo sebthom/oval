@@ -16,19 +16,32 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that the return value of the given method (usually a getter method)
- * should be checked whenever the object is validated.<br>
- *
- * <b>Important 1:</b> This is only supported for non-void, non-parameterized methods.<br>
- * <b>Important 2:</b> To retrieve the return value of the method OVal has to invoke
- * the method during validation. Therefore you need to ensure that calling the method
- * does not change the object state.<br>
+ * Annotation to apply class-level validation configurations.
  *
  * @author Sebastian Thomschke
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface IsInvariant {
-   //
+@Target({ElementType.TYPE})
+public @interface Validatable {
+
+   /**
+    * Declares if annotations applied to interfaces are validated.
+    */
+   boolean inspectInterfaces() default true;
+
+   /**
+    * List of interfaces that shall not be inspected.
+    *
+    * Only applicable if {@link #inspectInterfaces()} is set to <code>true</code>.
+    */
+   Class<?>[] excludedInterfaces() default {};
+
+   /**
+    * If specified only these interfaces are inspected otherwise all implemented interfaces.
+    *
+    * Only applicable if {@link #inspectInterfaces()} is set to <code>true</code>.
+    */
+   Class<?>[] includedInterfaces() default {};
+
 }

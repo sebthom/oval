@@ -42,7 +42,7 @@ import net.sf.oval.internal.ParameterChecks;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.ConcurrentMultiValueMap;
-import net.sf.oval.internal.util.IdentitySet;
+import net.sf.oval.internal.util.IdentityHashSet;
 import net.sf.oval.internal.util.Invocable;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.ThreadLocalList;
@@ -121,7 +121,7 @@ public class Guard extends Validator {
     */
    private boolean isProbeModeFeatureUsed = false;
 
-   private final Set<ConstraintsViolatedListener> listeners = new IdentitySet<>(4);
+   private final Set<ConstraintsViolatedListener> listeners = new IdentityHashSet<>(4);
    private final ConcurrentMultiValueMap<Class<?>, ConstraintsViolatedListener> listenersByClass = ConcurrentMultiValueMap.create();
    private final ConcurrentMultiValueMap<Object, ConstraintsViolatedListener> listenersByObject = ConcurrentMultiValueMap.create();
 
@@ -1027,7 +1027,7 @@ public class Guard extends Validator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = getCollectionFactory().createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
 
       try {
          final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -1068,7 +1068,7 @@ public class Guard extends Validator {
          return;
 
       // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
       try {
          super.validateInvariants(guardedObject, violations, profiles);
       } finally {
@@ -1083,7 +1083,7 @@ public class Guard extends Validator {
    protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final List<ConstraintViolation> violations)
       throws ValidationFailedException {
       // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
       try {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Map<Integer, ParameterChecks> parameterChecks = cc.checksForMethodParameters.get(method);
@@ -1263,7 +1263,7 @@ public class Guard extends Validator {
 
       CURRENTLY_CHECKED_METHOD_RETURN_VALUES.get().add(key);
       // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
       try {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);

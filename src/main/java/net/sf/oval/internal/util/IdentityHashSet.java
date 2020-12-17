@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * @author Sebastian Thomschke
  */
-public final class IdentitySet<E> implements Set<E>, Serializable {
+public final class IdentityHashSet<E> implements Set<E>, Serializable {
    private static final long serialVersionUID = 1L;
 
    private transient Map<Integer, E> map;
@@ -31,7 +31,7 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
     * Constructs a new, empty <tt>IdentitySet</tt>; the backing <tt>Map</tt> instance has
     * default initial capacity (16) and load factor (0.75).
     */
-   public IdentitySet() {
+   public IdentityHashSet() {
       map = getCollectionFactory().createMap();
    }
 
@@ -39,7 +39,7 @@ public final class IdentitySet<E> implements Set<E>, Serializable {
     * Constructs a new, empty <tt>IdentitySet</tt>; the backing <tt>Map</tt> instance has
     * the given initial capacity and the default load factor (0.75).
     */
-   public IdentitySet(final int initialCapacity) {
+   public IdentityHashSet(final int initialCapacity) {
       map = getCollectionFactory().createMap(initialCapacity);
    }
 

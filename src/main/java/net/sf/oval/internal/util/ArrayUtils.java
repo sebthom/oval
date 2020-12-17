@@ -12,7 +12,9 @@ package net.sf.oval.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sebastian Thomschke
@@ -113,6 +115,12 @@ public final class ArrayUtils {
 
    public static <T> List<T> asList(final T[] array) {
       final List<T> result = new ArrayList<>(array.length);
+      Collections.addAll(result, array);
+      return result;
+   }
+
+   public static <T> Set<T> asSet(final T[] array) {
+      final Set<T> result = new HashSet<>(array.length);
       Collections.addAll(result, array);
       return result;
    }

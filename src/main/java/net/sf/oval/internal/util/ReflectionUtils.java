@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -58,12 +59,13 @@ public final class ReflectionUtils {
     * @param inspectInterfaces whether to also return annotations declared on interface declaration
     * @return all annotations present on this class.
     */
-   public static Annotation[] getAnnotations(final Class<?> clazz, final boolean inspectInterfaces) {
+   public static Annotation[] getAnnotations(final Class<?> clazz, final boolean inspectInterfaces, final Set<Class<?>> includedInterfaces,
+      final Set<Class<?>> excludedInterfaces) {
       if (!inspectInterfaces)
          return clazz.getAnnotations();
 
       final List<Annotation> annotations = ArrayUtils.asList(clazz.getAnnotations());
-      for (final Class<?> next : ReflectionUtils.getInterfacesRecursive(clazz)) {
+      for (final Class<?> next : ReflectionUtils.getInterfacesRecursive(clazz, includedInterfaces, excludedInterfaces)) {
          final Annotation[] declaredAnnotations = next.getDeclaredAnnotations();
          annotations.addAll(ArrayUtils.asList(declaredAnnotations));
       }
@@ -77,7 +79,8 @@ public final class ReflectionUtils {
     * @param inspectInterfaces whether to also return annotations declared on interface method declaration
     * @return all annotations present on this method.
     */
-   public static Annotation[] getAnnotations(final Method method, final boolean inspectInterfaces) {
+   public static Annotation[] getAnnotations(final Method method, final boolean inspectInterfaces, final Set<Class<?>> includedInterfaces,
+      final Set<Class<?>> excludedInterfaces) {
       if (!inspectInterfaces || !isPublic(method))
          return method.getAnnotations();
 
@@ -85,7 +88,7 @@ public final class ReflectionUtils {
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
       final List<Annotation> annotations = ArrayUtils.asList(method.getAnnotations());
-      for (final Class<?> nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass())) {
+      for (final Class<?> nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass(), includedInterfaces, excludedInterfaces)) {
          try {
             ArrayUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
          } catch (final NoSuchMethodException ex) {
@@ -208,46 +211,34 @@ public final class ReflectionUtils {
       return getGetterRecursive(superclazz, propertyName);
    }
 
-   public static List<Method> getInterfaceMethods(final Method method) {
-      // static methods cannot be overridden
-      if (isStatic(method))
-         return null;
-
-      final Class<?>[] interfaces = method.getDeclaringClass().getInterfaces();
-      if (interfaces.length == 0)
-         return null;
-
-      final String methodName = method.getName();
-      final Class<?>[] parameterTypes = method.getParameterTypes();
-
-      final List<Method> methods = getCollectionFactory().createList(interfaces.length);
-      for (final Class<?> iface : interfaces) {
-         final Method m = getMethod(iface, methodName, parameterTypes);
-         if (m != null) {
-            methods.add(m);
-         }
-      }
-      return methods;
-   }
-
    /**
     * @param clazz the class to inspect
     * @return a set with all implemented interfaces
     */
-   public static Set<Class<?>> getInterfacesRecursive(final Class<?> clazz) {
+   private static Set<Class<?>> getInterfacesRecursive(final Class<?> clazz, final Set<Class<?>> includedInterfaces, final Set<Class<?>> excludedInterfaces) {
       final Set<Class<?>> interfaces = getCollectionFactory().createSet(2);
-      return getInterfacesRecursive(clazz, interfaces);
+      return getInterfacesRecursive(clazz, interfaces, //
+         includedInterfaces == null ? Collections.emptySet() : includedInterfaces, //
+         excludedInterfaces == null ? Collections.emptySet() : excludedInterfaces //
+      );
    }
 
-   private static Set<Class<?>> getInterfacesRecursive(Class<?> clazz, final Set<Class<?>> interfaces) {
+   private static Set<Class<?>> getInterfacesRecursive(Class<?> clazz, final Set<Class<?>> result, final Set<Class<?>> includedInterfaces,
+      final Set<Class<?>> excludedInterfaces) {
       while (clazz != null) {
          for (final Class<?> next : clazz.getInterfaces()) {
-            interfaces.add(next);
-            getInterfacesRecursive(next, interfaces);
+            if (!includedInterfaces.isEmpty() && !includedInterfaces.contains(next)) {
+               continue;
+            }
+            if (excludedInterfaces.contains(next)) {
+               continue;
+            }
+            result.add(next);
+            getInterfacesRecursive(next, result, includedInterfaces, excludedInterfaces);
          }
          clazz = clazz.getSuperclass();
       }
-      return interfaces;
+      return result;
    }
 
    /**
@@ -286,7 +277,8 @@ public final class ReflectionUtils {
     *         of the method represented by this method.
     */
    @SuppressWarnings("unchecked")
-   public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces) {
+   public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces, final Set<Class<?>> includedInterfaces,
+      final Set<Class<?>> excludedInterfaces) {
       if (!inspectInterfaces || !isPublic(method))
          return method.getParameterAnnotations();
 
@@ -297,7 +289,7 @@ public final class ReflectionUtils {
       final HashSet<Annotation>[] methodParameterAnnotations = new HashSet[methodParameterTypesCount];
 
       final Class<?> clazz = method.getDeclaringClass();
-      final Set<Class<?>> classes = ReflectionUtils.getInterfacesRecursive(clazz);
+      final Set<Class<?>> classes = ReflectionUtils.getInterfacesRecursive(clazz, includedInterfaces, excludedInterfaces);
       classes.add(clazz);
       for (final Class<?> nextClass : classes) {
          try {
@@ -327,7 +319,7 @@ public final class ReflectionUtils {
       return result;
    }
 
-   public static Method getSetter(final Class<?> clazz, final String propertyName) {
+   private static Method getSetter(final Class<?> clazz, final String propertyName) {
       final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(getLocaleProvider().getLocale()) + propertyName.substring(1);
 
       final Method[] declaredMethods = clazz.getDeclaredMethods();
@@ -338,7 +330,7 @@ public final class ReflectionUtils {
       return null;
    }
 
-   public static Method getSetterRecursive(final Class<?> clazz, final String propertyName) {
+   private static Method getSetterRecursive(final Class<?> clazz, final String propertyName) {
       final Method m = getSetter(clazz, propertyName);
       if (m != null)
          return m;
@@ -348,26 +340,6 @@ public final class ReflectionUtils {
          return null;
 
       return getSetterRecursive(superclazz, propertyName);
-   }
-
-   public static Method getSuperMethod(final Method method) {
-      // static methods cannot be overridden
-      if (isStatic(method))
-         return null;
-
-      final String methodName = method.getName();
-      final Class<?>[] parameterTypes = method.getParameterTypes();
-
-      Class<?> currentClass = method.getDeclaringClass();
-
-      while (currentClass != null && currentClass != Object.class) {
-         currentClass = currentClass.getSuperclass();
-
-         final Method m = getMethod(currentClass, methodName, parameterTypes);
-         if (m != null && !isPrivate(m))
-            return m;
-      }
-      return null;
    }
 
    public static String guessFieldName(final Method getter) {
@@ -390,14 +362,6 @@ public final class ReflectionUtils {
       }
 
       return fieldName;
-   }
-
-   public static boolean hasField(final Class<?> clazz, final String fieldName) {
-      return getField(clazz, fieldName) != null;
-   }
-
-   public static boolean hasMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
-      return getMethod(clazz, methodName, parameterTypes) != null;
    }
 
    /**
@@ -429,7 +393,8 @@ public final class ReflectionUtils {
     * @param inspectInterfaces whether to also check annotations declared on interface method declaration
     * @return true if an annotation for the specified annotation type is present on this method, else false
     */
-   public static boolean isAnnotationPresent(final Method method, final Class<? extends Annotation> annotationClass, final boolean inspectInterfaces) {
+   public static boolean isAnnotationPresent(final Method method, final Class<? extends Annotation> annotationClass, final boolean inspectInterfaces,
+      final Set<Class<?>> includedInterfaces, final Set<Class<?>> excludedInterfaces) {
       if (method.isAnnotationPresent(annotationClass))
          return true;
 
@@ -439,7 +404,7 @@ public final class ReflectionUtils {
       final String methodName = method.getName();
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
-      for (final Class<?> next : getInterfacesRecursive(method.getDeclaringClass())) {
+      for (final Class<?> next : getInterfacesRecursive(method.getDeclaringClass(), includedInterfaces, excludedInterfaces)) {
          try {
             if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass))
                return true;
@@ -462,10 +427,6 @@ public final class ReflectionUtils {
       }
    }
 
-   public static boolean isFinal(final Member member) {
-      return (member.getModifiers() & Modifier.FINAL) != 0;
-   }
-
    /**
     * determines if a method is a JavaBean style getter method
     */
@@ -473,43 +434,22 @@ public final class ReflectionUtils {
       return method.getParameterTypes().length == 0 && (method.getName().startsWith("is") || method.getName().startsWith("get"));
    }
 
-   // public Constructor getDeclaredConstructorOfNonStaticInnerClass(Class)
-   public static boolean isNonStaticInnerClass(final Class<?> clazz) {
-      return clazz.getName().indexOf('$') > -1 && (clazz.getModifiers() & Modifier.STATIC) == 0;
-   }
-
-   public static boolean isPackage(final Member member) {
-      return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;
-   }
-
    public static boolean isPrivate(final Member member) {
       return (member.getModifiers() & Modifier.PRIVATE) != 0;
-   }
-
-   public static boolean isPrivateAccessAllowed() {
-      final SecurityManager manager = System.getSecurityManager();
-      if (manager != null) {
-         try {
-            manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
-         } catch (final SecurityException ex) {
-            return false;
-         }
-      }
-      return true;
    }
 
    public static boolean isProtected(final Member member) {
       return (member.getModifiers() & Modifier.PROTECTED) != 0;
    }
 
-   public static boolean isPublic(final Member member) {
+   private static boolean isPublic(final Member member) {
       return (member.getModifiers() & Modifier.PUBLIC) != 0;
    }
 
    /**
     * determines if a method is a JavaBean style setter method
     */
-   public static boolean isSetter(final Method method) {
+   private static boolean isSetter(final Method method) {
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
       // check if method has exactly one parameter
@@ -530,10 +470,6 @@ public final class ReflectionUtils {
       return (member.getModifiers() & Modifier.STATIC) != 0;
    }
 
-   public static boolean isTransient(final Member member) {
-      return (member.getModifiers() & Modifier.TRANSIENT) != 0;
-   }
-
    /**
     * determines if a method is a void method
     */
@@ -545,16 +481,18 @@ public final class ReflectionUtils {
       if (obj.isAccessible() == accessible)
          return;
 
-      AccessController.doPrivileged(new SetAccessibleAction(obj, accessible));
+      AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+         obj.setAccessible(accessible);
+         return null;
+      });
    }
 
    public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue) {
-      assert target != null;
-      assert propertyName != null;
       final Method setter = getSetterRecursive(target.getClass(), propertyName);
       if (setter != null) {
          try {
             setter.invoke(target, propertyValue);
+            return true;
          } catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
             LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
             return false;

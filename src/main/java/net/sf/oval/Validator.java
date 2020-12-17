@@ -66,7 +66,7 @@ import net.sf.oval.internal.Log;
 import net.sf.oval.internal.MessageRenderer;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
-import net.sf.oval.internal.util.IdentitySet;
+import net.sf.oval.internal.util.IdentityHashSet;
 import net.sf.oval.internal.util.ReflectionUtils;
 import net.sf.oval.internal.util.StringUtils;
 import net.sf.oval.internal.util.ThreadLocalLinkedList;
@@ -1270,7 +1270,7 @@ public class Validator implements IValidator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = collectionFactory.createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
 
       try {
          validateInvariants(validatedObject, violations, (String[]) null);
@@ -1290,7 +1290,7 @@ public class Validator implements IValidator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = collectionFactory.createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
 
       try {
          validateInvariants(validatedObject, violations, profiles);
@@ -1311,7 +1311,7 @@ public class Validator implements IValidator {
       // create required objects for this validation cycle
       final List<ConstraintViolation> violations = collectionFactory.createList();
       currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentitySet<>(4));
+      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
 
       try {
          final ClassChecks cc = getClassChecks(validatedField.getDeclaringClass());

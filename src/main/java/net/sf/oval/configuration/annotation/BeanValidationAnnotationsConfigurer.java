@@ -74,6 +74,7 @@ import net.sf.oval.constraint.PastCheck;
 import net.sf.oval.constraint.SizeCheck;
 import net.sf.oval.guard.Guarded;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
@@ -351,9 +352,14 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
          /*
           * determine return value checks
           */
-         for (final Annotation anno : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
+         for (final Annotation anno : ReflectionUtils.getAnnotations(method, //
+            Boolean.TRUE.equals(classCfg.inspectInterfaces), //
+            classCfg.includedInterfaces, //
+            classCfg.excludedInterfaces //
+         )) {
             initializeChecks(anno, returnValueChecks, ConstraintTarget.CONTAINER);
          }
+
          initializeGenericTypeChecks(method.getReturnType(), method.getAnnotatedReturnType(), returnValueChecks);
 
          /*
@@ -361,7 +367,11 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
           */
          final List<ParameterConfiguration> paramCfg = _createParameterConfigs( //
             method.getParameterTypes(), //
-            ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces)), //
+            ReflectionUtils.getParameterAnnotations(method, //
+               Boolean.TRUE.equals(classCfg.inspectInterfaces), //
+               classCfg.includedInterfaces, //
+               classCfg.excludedInterfaces //
+            ), //
             method.getAnnotatedParameterTypes() //
          );
 
@@ -385,27 +395,34 @@ public class BeanValidationAnnotationsConfigurer implements Configurer {
             classCfg.methodConfigurations.add(mc);
          }
       }
+
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public ClassConfiguration getClassConfiguration(final Class<?> clazz) {
       final ClassConfiguration classCfg = new ClassConfiguration();
       classCfg.type = clazz;
 
       final Guarded guarded = clazz.getAnnotation(Guarded.class);
+      final Validatable validatable = clazz.getAnnotation(Validatable.class);
 
       if (guarded == null) {
          classCfg.applyFieldConstraintsToConstructors = false;
          classCfg.applyFieldConstraintsToSetters = false;
          classCfg.assertParametersNotNull = false;
          classCfg.checkInvariants = false;
-         classCfg.inspectInterfaces = false;
+         classCfg.inspectInterfaces = validatable == null || validatable.inspectInterfaces();
       } else {
          classCfg.applyFieldConstraintsToConstructors = guarded.applyFieldConstraintsToConstructors();
          classCfg.applyFieldConstraintsToSetters = guarded.applyFieldConstraintsToSetters();
          classCfg.assertParametersNotNull = guarded.assertParametersNotNull();
          classCfg.checkInvariants = guarded.checkInvariants();
-         classCfg.inspectInterfaces = guarded.inspectInterfaces();
+         classCfg.inspectInterfaces = validatable == null ? guarded.inspectInterfaces() : validatable.inspectInterfaces();
+      }
+      if (validatable != null) {
+         classCfg.excludedInterfaces = ArrayUtils.asSet(validatable.excludedInterfaces());
+         classCfg.includedInterfaces = ArrayUtils.asSet(validatable.includedInterfaces());
       }
 
       configureFieldChecks(classCfg);

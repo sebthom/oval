@@ -50,6 +50,7 @@ import net.sf.oval.guard.PostValidateThis;
 import net.sf.oval.guard.Pre;
 import net.sf.oval.guard.PreCheck;
 import net.sf.oval.guard.PreValidateThis;
+import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.ReflectionUtils;
 
@@ -193,7 +194,11 @@ public class AnnotationsConfigurer implements Configurer {
          boolean postValidateThis = false;
 
          // loop over all annotations
-         for (final Annotation anno : ReflectionUtils.getAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces))) {
+         for (final Annotation anno : ReflectionUtils.getAnnotations(method, //
+            Boolean.TRUE.equals(classCfg.inspectInterfaces), //
+            classCfg.includedInterfaces, //
+            classCfg.excludedInterfaces //
+         )) {
             if (anno instanceof Pre) {
                final PreCheck pc = new PreCheck();
                pc.configure((Pre) anno);
@@ -220,7 +225,11 @@ public class AnnotationsConfigurer implements Configurer {
           */
          final List<ParameterConfiguration> paramCfg = _createParameterConfigs( //
             method.getParameterTypes(), //
-            ReflectionUtils.getParameterAnnotations(method, Boolean.TRUE.equals(classCfg.inspectInterfaces)), //
+            ReflectionUtils.getParameterAnnotations(method, //
+               Boolean.TRUE.equals(classCfg.inspectInterfaces), //
+               classCfg.includedInterfaces, //
+               classCfg.excludedInterfaces //
+            ), //
             method.getAnnotatedParameterTypes() //
          );
 
@@ -235,7 +244,11 @@ public class AnnotationsConfigurer implements Configurer {
             final MethodConfiguration mc = new MethodConfiguration();
             mc.name = method.getName();
             mc.parameterConfigurations = paramCfg;
-            mc.isInvariant = ReflectionUtils.isAnnotationPresent(method, IsInvariant.class, Boolean.TRUE.equals(classCfg.inspectInterfaces));
+            mc.isInvariant = ReflectionUtils.isAnnotationPresent(method, IsInvariant.class, //
+               Boolean.TRUE.equals(classCfg.inspectInterfaces), //
+               classCfg.includedInterfaces, //
+               classCfg.excludedInterfaces //
+            );
             mc.preCheckInvariants = preValidateThis;
             mc.postCheckInvariants = postValidateThis;
             if (!returnValueChecks.isEmpty()) {
@@ -261,7 +274,11 @@ public class AnnotationsConfigurer implements Configurer {
    protected void configureObjectLevelChecks(final ClassConfiguration classCfg) {
       final List<Check> checks = getCollectionFactory().createList(2);
 
-      for (final Annotation anno : ReflectionUtils.getAnnotations(classCfg.type, Boolean.TRUE.equals(classCfg.inspectInterfaces)))
+      for (final Annotation anno : ReflectionUtils.getAnnotations(classCfg.type, //
+         Boolean.TRUE.equals(classCfg.inspectInterfaces), //
+         classCfg.includedInterfaces, //
+         classCfg.excludedInterfaces //
+      ))
          // check if the current annotation is a constraint annotation
          if (anno.annotationType().isAnnotationPresent(Constraint.class)) {
             checks.add(initializeCheck(anno));
@@ -276,24 +293,30 @@ public class AnnotationsConfigurer implements Configurer {
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public ClassConfiguration getClassConfiguration(final Class<?> clazz) {
       final ClassConfiguration classCfg = new ClassConfiguration();
       classCfg.type = clazz;
 
       final Guarded guarded = clazz.getAnnotation(Guarded.class);
+      final Validatable validatable = clazz.getAnnotation(Validatable.class);
 
       if (guarded == null) {
          classCfg.applyFieldConstraintsToConstructors = false;
          classCfg.applyFieldConstraintsToSetters = false;
          classCfg.assertParametersNotNull = false;
          classCfg.checkInvariants = false;
-         classCfg.inspectInterfaces = false;
+         classCfg.inspectInterfaces = validatable == null || validatable.inspectInterfaces();
       } else {
          classCfg.applyFieldConstraintsToConstructors = guarded.applyFieldConstraintsToConstructors();
          classCfg.applyFieldConstraintsToSetters = guarded.applyFieldConstraintsToSetters();
          classCfg.assertParametersNotNull = guarded.assertParametersNotNull();
          classCfg.checkInvariants = guarded.checkInvariants();
-         classCfg.inspectInterfaces = guarded.inspectInterfaces();
+         classCfg.inspectInterfaces = validatable == null ? guarded.inspectInterfaces() : validatable.inspectInterfaces();
+      }
+      if (validatable != null) {
+         classCfg.excludedInterfaces = ArrayUtils.asSet(validatable.excludedInterfaces());
+         classCfg.includedInterfaces = ArrayUtils.asSet(validatable.includedInterfaces());
       }
 
       configureObjectLevelChecks(classCfg);

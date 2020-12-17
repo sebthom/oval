@@ -48,7 +48,7 @@ public class ExpressionLanguageOGNLImpl extends AbstractExpressionLanguage {
       @Override
       public Boolean setup(final Map context, final Object target, final Member member, final String propertyName) {
          final AccessibleObject accessible = (AccessibleObject) member;
-         final Boolean oldAccessibleState = accessible.isAccessible();
+         final boolean oldAccessibleState = accessible.isAccessible();
 
          if (!oldAccessibleState) {
             ReflectionUtils.setAccessible(accessible, true);

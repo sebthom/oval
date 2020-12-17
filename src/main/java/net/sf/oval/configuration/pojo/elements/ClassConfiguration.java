@@ -11,6 +11,8 @@ package net.sf.oval.configuration.pojo.elements;
 
 import java.util.Set;
 
+import net.sf.oval.guard.Guard;
+
 /**
  * @author Sebastian Thomschke
  * @author Chris Pheby - added {@link #inspectInterfaces}
@@ -66,7 +68,7 @@ public class ClassConfiguration extends ConfigurationElement {
 
    /**
     * Specifies if invariants are checked prior and after calls to
-    * non-private methods and constructors.
+    * non-private methods and constructors by {@link Guard}.
     */
    public Boolean checkInvariants;
 
@@ -75,4 +77,14 @@ public class ClassConfiguration extends ConfigurationElement {
     * supporting a documentation function
     */
    public Boolean inspectInterfaces;
+
+   /**
+    * List of interfaces that shall not be inspected.
+    */
+   public Set<Class<?>> excludedInterfaces;
+
+   /**
+    * If specified only these interfaces are inspected otherwise all implemented interfaces.
+    */
+   public Set<Class<?>> includedInterfaces;
 }

@@ -15,6 +15,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.sf.oval.configuration.annotation.Validatable;
+
 /**
  * This annotation needs to be applied to classes where
  * OVal's programming by contract features shall be used.<br>
@@ -30,17 +32,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Guarded {
    /**
-    * Automatically apply field constraints to the corresponding parameters of
-    * constructors declared within the same class.
+    * Automatically apply field constraints to the corresponding parameters of constructors declared within the same class.
     * A corresponding parameter is a parameter with the same name and type as the field.
     */
    boolean applyFieldConstraintsToConstructors() default false;
 
    /**
-    * Automatically apply field constraints to the single parameter of the corresponding
-    * setter methods declared within the same class.
-    * A corresponding setter method is a method following the JavaBean convention and
-    * its parameter has as the same type as the field.
+    * Automatically apply field constraints to the single parameter of the corresponding setter methods declared within the same class.
+    * A corresponding setter method is a method following the JavaBean convention and its parameter has as the same type as the field.
     */
    boolean applyFieldConstraintsToSetters() default false;
 
@@ -51,14 +50,15 @@ public @interface Guarded {
    boolean assertParametersNotNull() default false;
 
    /**
-    * Declares if invariants are automatically checked after constructor execution and
-    * prior and after calls to non-private methods.
+    * Declares if invariants are automatically checked after constructor execution and prior and after calls to non-private methods.
     */
    boolean checkInvariants() default true;
 
    /**
-    * Declares if annotations can be applied to interfaces that this class implements - supporting a documentation
-    * function
+    * Declares if annotations can be applied to interfaces that this class implements - supporting a documentation function.
+    *
+    * @deprecated use {@link Validatable#inspectInterfaces()}.
     */
-   boolean inspectInterfaces() default false;
+   @Deprecated
+   boolean inspectInterfaces() default true;
 }

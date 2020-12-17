@@ -14,42 +14,50 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
+import net.sf.oval.configuration.annotation.IsInvariant;
+import net.sf.oval.configuration.annotation.Validatable;
 import net.sf.oval.constraint.NotNull;
 
 /**
  * @author Sebastian Thomschke
  */
-public class InheritanceTest extends TestCase {
-   public abstract static class AbstractEntity {
+public class InterfaceInheritanceTest extends TestCase {
+
+   public interface EntityA {
+
+      @IsInvariant
       @NotNull(message = "NOT_NULL")
+      String getName();
+   }
+
+   public interface EntityB {
+
+      @IsInvariant
+      @NotNull(message = "NOT_EMPTY")
+      String getName();
+   }
+
+   @Validatable(excludedInterfaces = EntityB.class)
+   public static class DefaultEntity implements EntityA, EntityB {
+
       private String name;
 
       /**
        * @return the name
        */
+      @Override
       public String getName() {
          return name;
       }
-
-      /**
-       * @param name the name to set
-       */
-      public void setName(final String name) {
-         this.name = name;
-      }
-   }
-
-   public static class EntityImpl extends AbstractEntity {
-      // do nothing
    }
 
    public void testInheritance() {
       final Validator validator = new Validator();
 
-      final AbstractEntity e = new EntityImpl();
+      final DefaultEntity e = new DefaultEntity();
 
       final List<ConstraintViolation> violations = validator.validate(e);
-      assertEquals(violations.size(), 1);
+      assertEquals(1, violations.size());
       assertEquals(violations.get(0).getMessage(), "NOT_NULL");
    }
 }

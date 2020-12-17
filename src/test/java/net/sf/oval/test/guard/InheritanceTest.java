@@ -54,7 +54,7 @@ public class InheritanceTest extends TestCase {
       }
    }
 
-   @Guarded
+   @Guarded(inspectInterfaces = false)
    public static class EntityWithInterfaceButUnapplied implements EntityInterface {
       protected String name = "";
 
