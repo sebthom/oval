@@ -78,7 +78,8 @@ public class ConstraintViolation implements Serializable {
       this.causes = causes == null || causes.isEmpty() ? null : causes.toArray(new ConstraintViolation[causes.size()]);
    }
 
-   public ConstraintViolation(Check check, String errorMessage, Object validatedObject, Object valueToValidate, Object valueToValidateIndex, OValContext context) {
+   public ConstraintViolation(final Check check, final String errorMessage, final Object validatedObject, final Object valueToValidate,
+                              final Object valueToValidateIndex, final OValContext context) {
       this(check, errorMessage, validatedObject, valueToValidate, valueToValidateIndex, context, null);
    }
 

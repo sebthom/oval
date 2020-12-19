@@ -174,7 +174,7 @@ public class Guard extends Validator {
                }
          }
          if (!skip) {
-            checkConstraint(violations, check, validatedObject, valueToValidate, null, context, null, false);
+            checkConstraint(violations, check, validatedObject, valueToValidate, context, null, null);
          }
       }
    }
@@ -1274,7 +1274,7 @@ public class Guard extends Validator {
          final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
          for (final Check check : returnValueChecks) {
-            checkConstraint(violations, check, validatedObject, returnValue, null, context, null, false);
+            checkConstraint(violations, check, validatedObject, returnValue, context, null, null);
          }
       } catch (final OValException ex) {
          throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: " + validatedObject, ex);
