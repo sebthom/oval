@@ -174,7 +174,7 @@ public class Guard extends Validator {
                }
          }
          if (!skip) {
-            checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
+            checkConstraint(violations, check, validatedObject, valueToValidate, context, null);
          }
       }
    }
@@ -1167,7 +1167,7 @@ public class Guard extends Validator {
                   messageVariables.put("expression", check.getExpr());
                   final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
-                  violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+                  violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, null, context));
                }
             } catch (final OValException ex) {
                throw new ValidationFailedException("Executing " + check + " failed. Method: " + method + " Validated object: " + validatedObject, ex);
@@ -1230,7 +1230,7 @@ public class Guard extends Validator {
                messageVariables.put("expression", check.getExpr());
                final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
-               violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+               violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, null, context));
             }
          }
       } catch (final OValException ex) {
@@ -1274,7 +1274,7 @@ public class Guard extends Validator {
          final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
          for (final Check check : returnValueChecks) {
-            checkConstraint(violations, check, validatedObject, returnValue, context, null, false);
+            checkConstraint(violations, check, validatedObject, returnValue, context, null);
          }
       } catch (final OValException ex) {
          throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: " + validatedObject, ex);

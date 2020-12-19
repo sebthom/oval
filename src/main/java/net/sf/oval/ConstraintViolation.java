@@ -34,6 +34,7 @@ public class ConstraintViolation implements Serializable {
    private final OValContext context;
    private final String errorCode;
    private transient Object invalidValue;
+   private final Object invalidValueIndex;
    private final String message;
    private final String messageTemplate;
    private final Map<String, ? extends Serializable> messageVariables;
@@ -41,12 +42,13 @@ public class ConstraintViolation implements Serializable {
    private final int severity;
    private transient Object validatedObject;
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context) {
-      this(check, message, validatedObject, invalidValue, context, (ConstraintViolation[]) null);
+   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue,
+                              final Object invalidValueIndex, final OValContext context) {
+      this(check, message, validatedObject, invalidValueIndex, invalidValue, context, (ConstraintViolation[]) null);
    }
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context,
-      final ConstraintViolation... causes) {
+   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue,
+                              final Object invalidValueIndex, final OValContext context, final ConstraintViolation... causes) {
       checkName = check.getClass().getName();
       checkDeclaringContext = check.getContext();
       errorCode = check.getErrorCode();
@@ -55,13 +57,14 @@ public class ConstraintViolation implements Serializable {
       messageVariables = check.getMessageVariables();
       severity = check.getSeverity();
       this.validatedObject = validatedObject;
+      this.invalidValueIndex = invalidValueIndex;
       this.invalidValue = invalidValue;
       this.context = context;
       this.causes = causes != null && causes.length == 0 ? null : causes;
    }
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context,
-      final List<ConstraintViolation> causes) {
+   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue,
+                              final Object invalidValueIndex, final OValContext context, final List<ConstraintViolation> causes) {
       checkName = check.getClass().getName();
       checkDeclaringContext = check.getContext();
       errorCode = check.getErrorCode();
@@ -70,6 +73,7 @@ public class ConstraintViolation implements Serializable {
       messageVariables = check.getMessageVariables();
       severity = check.getSeverity();
       this.validatedObject = validatedObject;
+      this.invalidValueIndex = invalidValueIndex;
       this.invalidValue = invalidValue;
       this.context = context;
       this.causes = causes == null || causes.isEmpty() ? null : causes.toArray(new ConstraintViolation[causes.size()]);
@@ -126,6 +130,13 @@ public class ConstraintViolation implements Serializable {
     */
    public Object getInvalidValue() {
       return invalidValue;
+   }
+
+   /**
+    * @return the index of the invalid value if it's in a collection.
+    */
+   public Object getInvalidValueIndex() {
+      return invalidValueIndex;
    }
 
    /**
