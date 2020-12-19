@@ -29,13 +29,13 @@ public class CustomConstraintViolationsTest extends TestCase {
       public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
          final Entity entity = (Entity) validatedObject;
          if (entity.message == null) {
-            validator.reportConstraintViolation(new ConstraintViolation(this, "message cannot be null", validatedObject, null, new FieldContext(Entity.class,
-               "message")));
+            validator.reportConstraintViolation(new ConstraintViolation(this, "message cannot be null", validatedObject, null, null,
+                    new FieldContext(Entity.class, "message")));
          }
 
          if (entity.name == null) {
-            validator.reportConstraintViolation(new ConstraintViolation(this, "name cannot be null", validatedObject, null, new FieldContext(Entity.class,
-               "name")));
+            validator.reportConstraintViolation(new ConstraintViolation(this, "name cannot be null", validatedObject, null, null,
+                    new FieldContext(Entity.class, "name")));
          }
 
          return true;

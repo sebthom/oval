@@ -525,12 +525,12 @@ public class Validator implements IValidator {
    }
 
    private void _checkConstraint(final List<ConstraintViolation> violations, final Check check, final Object validatedObject, final Object valueToValidate,
-      final OValContext context, final String[] profiles) {
+                                 final Object valueToValidateIndex, final OValContext context, final String[] profiles) {
       /*
        * special handling of the AssertValid constraint
        */
       if (check instanceof AssertValidCheck) {
-         checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject, valueToValidate, context, profiles);
+         checkConstraintAssertValid(violations, (AssertValidCheck) check, validatedObject, valueToValidate, valueToValidateIndex, context, profiles);
          return;
       }
 
@@ -539,7 +539,7 @@ public class Validator implements IValidator {
        */
       if (check instanceof ConstraintsCheck) {
          for (final Check innerCheck : ((ConstraintsCheck) check).checks) {
-            checkConstraint(violations, innerCheck, validatedObject, valueToValidate, context, profiles, false);
+            checkConstraint(violations, innerCheck, validatedObject, valueToValidate, valueToValidateIndex, context, profiles, false);
          }
          return;
       }
@@ -565,7 +565,7 @@ public class Validator implements IValidator {
        */
       if (!check.isSatisfied(validatedObject, valueToValidate, context, this)) {
          final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check.getMessageVariables());
-         violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context));
+         violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, valueToValidateIndex, context));
       }
    }
 
@@ -594,7 +594,7 @@ public class Validator implements IValidator {
                final Object valueToValidate = resolveValue(ctx, validatedObject);
 
                for (final Check check : checks) {
-                  checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false);
+                  checkConstraint(violations, check, validatedObject, valueToValidate, null, ctx, profiles, false);
                }
             }
          }
@@ -608,7 +608,7 @@ public class Validator implements IValidator {
                final Object valueToValidate = resolveValue(ctx, validatedObject);
 
                for (final Check check : checks) {
-                  checkConstraint(violations, check, validatedObject, valueToValidate, ctx, profiles, false);
+                  checkConstraint(violations, check, validatedObject, valueToValidate, null, ctx, profiles, false);
                }
             }
          }
@@ -617,7 +617,7 @@ public class Validator implements IValidator {
          if (!cc.checksForObject.isEmpty()) {
             final OValContext ctx = ContextCache.getClassContext(clazz);
             for (final Check check : cc.checksForObject) {
-               checkConstraint(violations, check, validatedObject, validatedObject, ctx, profiles, false);
+               checkConstraint(violations, check, validatedObject, validatedObject, null, ctx, profiles, false);
             }
          }
 
@@ -648,7 +648,7 @@ public class Validator implements IValidator {
             final Object valueToValidate = resolveValue(ctx, null);
 
             for (final Check check : checks) {
-               checkConstraint(violations, check, validatedClass, valueToValidate, ctx, profiles, false);
+               checkConstraint(violations, check, validatedClass, valueToValidate, null, ctx, profiles, false);
             }
          }
       }
@@ -662,7 +662,7 @@ public class Validator implements IValidator {
             final Object valueToValidate = resolveValue(ctx, null);
 
             for (final Check check : checks) {
-               checkConstraint(violations, check, validatedClass, valueToValidate, ctx, profiles, false);
+               checkConstraint(violations, check, validatedClass, valueToValidate, null, ctx, profiles, false);
             }
          }
       }
@@ -749,7 +749,8 @@ public class Validator implements IValidator {
    }
 
    protected void checkConstraint(final List<ConstraintViolation> violations, final Check check, Object validatedObject, Object valueToValidate,
-      OValContext context, final String[] profiles, final boolean isContainerValue) throws OValException {
+                                  final Object valueToValidateIndex, OValContext context, final String[] profiles,
+                                  final boolean isContainerValue) throws OValException {
       if (!(check instanceof ConstraintsCheck) && !isAnyProfileEnabled(check.getProfiles(), profiles))
          return;
 
@@ -803,35 +804,37 @@ public class Validator implements IValidator {
          if (isCollection) {
             if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
                && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
+               int index = 0;
                for (final Object item : (Collection<?>) valueToValidate) {
-                  checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+                  checkConstraint(violations, check, validatedObject, item, index++, context, profiles, true);
                }
             }
          } else if (isMap) {
             if (ArrayUtils.containsSame(targets, ConstraintTarget.KEYS) //
                && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
                for (final Object item : ((Map<?, ?>) valueToValidate).keySet()) {
-                  checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+                  checkConstraint(violations, check, validatedObject, item, item, context, profiles, true);
                }
             }
             if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
                && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
-               for (final Object item : ((Map<?, ?>) valueToValidate).values()) {
-                  checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+               for (final Map.Entry<?, ?> entry : ((Map<?, ?>) valueToValidate).entrySet()) {
+                  checkConstraint(violations, check, validatedObject, entry.getValue(), entry.getKey(), context, profiles, true);
                }
             }
          } else { // array
             if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
                && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
+               int index = 0;
                for (final Object item : ArrayUtils.asList(valueToValidate)) {
-                  checkConstraint(violations, check, validatedObject, item, context, profiles, true);
+                  checkConstraint(violations, check, validatedObject, item, index++, context, profiles, true);
                }
             }
          }
       }
 
       if (isContainerValue || !isContainer || isContainer && ArrayUtils.containsSame(targets, ConstraintTarget.CONTAINER)) {
-         _checkConstraint(violations, check, validatedObject, valueToValidate, context, profiles);
+         _checkConstraint(violations, check, validatedObject, valueToValidate, valueToValidateIndex, context, profiles);
       }
    }
 
@@ -845,7 +848,7 @@ public class Validator implements IValidator {
       final Collection<Check> referencedChecks = cs.getChecks();
       if (referencedChecks != null && !referencedChecks.isEmpty()) {
          for (final Check referencedCheck : referencedChecks) {
-            checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
+            checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, null, context, profiles, false);
          }
       }
    }
@@ -902,13 +905,14 @@ public class Validator implements IValidator {
       final Collection<Check> referencedChecks = cc.checksForFields.get(field);
       if (referencedChecks != null && !referencedChecks.isEmpty()) {
          for (final Check referencedCheck : referencedChecks) {
-            checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, context, profiles, false);
+            checkConstraint(violations, referencedCheck, validatedObject, valueToValidate, null, context, profiles, false);
          }
       }
    }
 
    protected void checkConstraintAssertValid(final List<ConstraintViolation> violations, final AssertValidCheck check, final Object validatedObject,
-      final Object valueToValidate, final OValContext context, final String[] profiles) throws OValException {
+                                             final Object valueToValidate, final Object valueToValidateIndex, final OValContext context,
+                                             final String[] profiles) throws OValException {
       if (valueToValidate == null)
          return;
 
@@ -921,7 +925,7 @@ public class Validator implements IValidator {
 
       if (!additionalViolations.isEmpty()) {
          final String errorMessage = renderMessage(context, valueToValidate, check.getMessage(), check.getMessageVariables());
-         violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, context, additionalViolations));
+         violations.add(new ConstraintViolation(check, errorMessage, validatedObject, valueToValidate, valueToValidateIndex, context, additionalViolations));
       }
    }
 
@@ -1323,7 +1327,7 @@ public class Validator implements IValidator {
          final FieldContext context = ContextCache.getFieldContext(validatedField);
 
          for (final Check check : checks) {
-            checkConstraint(violations, check, validatedObject, fieldValueToValidate, context, null, false);
+            checkConstraint(violations, check, validatedObject, fieldValueToValidate, null, context, null, false);
          }
          return violations;
       } catch (final OValException ex) {
