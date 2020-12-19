@@ -9,70 +9,72 @@ import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.NotBlank;
-import net.sf.oval.constraint.NotNull;
 
+/**
+ * @author Gary Madden
+ */
 public class InvalidValueIndexTest extends TestCase {
-    static class C {
-        @NotBlank(message = "BLANK_A")
-        public String a;
+   static class C {
+      @NotBlank(message = "BLANK_A")
+      public String a;
 
-        public Map<@NotBlank(message = "BLANK_K") String, @NotBlank(message = "BLANK_V") String> map;
+      public Map<@NotBlank(message = "BLANK_K") String, @NotBlank(message = "BLANK_V") String> map;
 
-        public List<@NotBlank(message = "BLANK_L") String> list;
-    }
+      public List<@NotBlank(message = "BLANK_L") String> list;
+   }
 
-    public void testInnvalidValueIndex() {
-        final Validator validator = new Validator();
+   public void testInnvalidValueIndex() {
+      final Validator validator = new Validator();
 
-        final C c = new C();
+      final C c = new C();
 
-        {
-            c.a = "";
+      {
+         c.a = "";
 
-            List<ConstraintViolation> violations = validator.validate(c);
-            assertEquals(1, violations.size());
-            assertEquals("BLANK_A", violations.get(0).getMessage());
-            assertNull(violations.get(0).getInvalidValueIndex());
+         final List<ConstraintViolation> violations = validator.validate(c);
+         assertEquals(1, violations.size());
+         assertEquals("BLANK_A", violations.get(0).getMessage());
+         assertNull(violations.get(0).getInvalidValueIndex());
 
-            c.a = null;
-        }
+         c.a = null;
+      }
 
-        {
-            c.map = new HashMap<>();
-            c.map.put("", "v");
+      {
+         c.map = new HashMap<>();
+         c.map.put("", "v");
 
-            List<ConstraintViolation> violations = validator.validate(c);
-            assertEquals(1, violations.size());
-            assertEquals("BLANK_K", violations.get(0).getMessage());
-            assertEquals("", violations.get(0).getInvalidValueIndex());
+         final List<ConstraintViolation> violations = validator.validate(c);
+         assertEquals(1, violations.size());
+         assertEquals("BLANK_K", violations.get(0).getMessage());
+         assertEquals("", violations.get(0).getInvalidValueIndex());
 
-            c.map = null;
-        }
+         c.map = null;
+      }
 
-        {
-            c.map = new HashMap<>();
-            c.map.put("k", "");
+      {
+         c.map = new HashMap<>();
+         c.map.put("k", "");
 
-            List<ConstraintViolation> violations = validator.validate(c);
-            assertEquals(1, violations.size());
-            assertEquals("BLANK_V", violations.get(0).getMessage());
-            assertEquals("k", violations.get(0).getInvalidValueIndex());
+         final List<ConstraintViolation> violations = validator.validate(c);
+         assertEquals(1, violations.size());
+         assertEquals("BLANK_V", violations.get(0).getMessage());
+         assertEquals("k", violations.get(0).getInvalidValueIndex());
 
-            c.map = null;
-        }
+         c.map = null;
+      }
 
-        {
-            c.list = new ArrayList<>();
-            c.list.add("a");
-            c.list.add("");
-            c.list.add("c");
+      {
+         c.list = new ArrayList<>();
+         c.list.add("a");
+         c.list.add("");
+         c.list.add("c");
 
-            List<ConstraintViolation> violations = validator.validate(c);
-            assertEquals(1, violations.size());
-            assertEquals("BLANK_L", violations.get(0).getMessage());
-            assertEquals(1, violations.get(0).getInvalidValueIndex());
+         final List<ConstraintViolation> violations = validator.validate(c);
+         assertEquals(1, violations.size());
+         assertEquals("BLANK_L", violations.get(0).getMessage());
+         assertEquals(1, violations.get(0).getInvalidValueIndex());
 
-            c.list = null;
-        }
-    }
+         c.list = null;
+      }
+   }
 }
