@@ -8,19 +8,19 @@ import java.util.Map;
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraint.NotBlank;
+import net.sf.oval.constraint.Size;
 
 /**
  * @author Gary Madden
  */
 public class InvalidValueIndexTest extends TestCase {
    static class C {
-      @NotBlank(message = "BLANK_A")
+      @Size(message = "A", min = 2)
       public String a;
 
-      public Map<@NotBlank(message = "BLANK_K") String, @NotBlank(message = "BLANK_V") String> map;
+      public Map<@Size(message = "B", min = 2) String, @Size(message = "C", min = 2) String> map;
 
-      public List<@NotBlank(message = "BLANK_L") String> list;
+      public List<@Size(message = "D", min = 2) String> list;
    }
 
    public void testInnvalidValueIndex() {
@@ -29,49 +29,49 @@ public class InvalidValueIndexTest extends TestCase {
       final C c = new C();
 
       {
-         c.a = "";
+         c.a = "a";
 
          final List<ConstraintViolation> violations = validator.validate(c);
          assertEquals(1, violations.size());
-         assertEquals("BLANK_A", violations.get(0).getMessage());
+         assertEquals("A", violations.get(0).getMessage());
          assertNull(violations.get(0).getInvalidValueIndex());
 
-         c.a = null;
+         c.a = "aa";
       }
 
       {
          c.map = new HashMap<>();
-         c.map.put("", "v");
+         c.map.put("k", "vv");
 
          final List<ConstraintViolation> violations = validator.validate(c);
          assertEquals(1, violations.size());
-         assertEquals("BLANK_K", violations.get(0).getMessage());
-         assertEquals("", violations.get(0).getInvalidValueIndex());
-
-         c.map = null;
-      }
-
-      {
-         c.map = new HashMap<>();
-         c.map.put("k", "");
-
-         final List<ConstraintViolation> violations = validator.validate(c);
-         assertEquals(1, violations.size());
-         assertEquals("BLANK_V", violations.get(0).getMessage());
+         assertEquals("B", violations.get(0).getMessage());
          assertEquals("k", violations.get(0).getInvalidValueIndex());
 
          c.map = null;
       }
 
       {
-         c.list = new ArrayList<>();
-         c.list.add("a");
-         c.list.add("");
-         c.list.add("c");
+         c.map = new HashMap<>();
+         c.map.put("kk", "");
 
          final List<ConstraintViolation> violations = validator.validate(c);
          assertEquals(1, violations.size());
-         assertEquals("BLANK_L", violations.get(0).getMessage());
+         assertEquals("C", violations.get(0).getMessage());
+         assertEquals("kk", violations.get(0).getInvalidValueIndex());
+
+         c.map = null;
+      }
+
+      {
+         c.list = new ArrayList<>();
+         c.list.add("aa");
+         c.list.add("b");
+         c.list.add("cc");
+
+         final List<ConstraintViolation> violations = validator.validate(c);
+         assertEquals(1, violations.size());
+         assertEquals("D", violations.get(0).getMessage());
          assertEquals(1, violations.get(0).getInvalidValueIndex());
 
          c.list = null;
