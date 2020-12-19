@@ -42,12 +42,11 @@ public class ConstraintViolation implements Serializable {
    private final int severity;
    private transient Object validatedObject;
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue,
-                              final Object invalidValueIndex, final OValContext context) {
-      this(check, message, validatedObject, invalidValue, invalidValueIndex, context, (ConstraintViolation[]) null);
+   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context) {
+      this(check, message, validatedObject, invalidValue, context, (ConstraintViolation[]) null);
    }
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final Object invalidValueIndex,
+   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue,
                               final OValContext context, final ConstraintViolation... causes) {
       checkName = check.getClass().getName();
       checkDeclaringContext = check.getContext();
@@ -57,10 +56,30 @@ public class ConstraintViolation implements Serializable {
       messageVariables = check.getMessageVariables();
       severity = check.getSeverity();
       this.validatedObject = validatedObject;
+      this.invalidValueIndex = null;
       this.invalidValue = invalidValue;
-      this.invalidValueIndex = invalidValueIndex;
       this.context = context;
       this.causes = causes != null && causes.length == 0 ? null : causes;
+   }
+
+   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue,
+                              final OValContext context, final List<ConstraintViolation> causes) {
+      checkName = check.getClass().getName();
+      checkDeclaringContext = check.getContext();
+      errorCode = check.getErrorCode();
+      this.message = message;
+      messageTemplate = check.getMessage();
+      messageVariables = check.getMessageVariables();
+      severity = check.getSeverity();
+      this.validatedObject = validatedObject;
+      this.invalidValueIndex = null;
+      this.invalidValue = invalidValue;
+      this.context = context;
+      this.causes = causes == null || causes.isEmpty() ? null : causes.toArray(new ConstraintViolation[causes.size()]);
+   }
+
+   public ConstraintViolation(Check check, String errorMessage, Object validatedObject, Object valueToValidate, Object valueToValidateIndex, OValContext context) {
+      this(check, errorMessage, validatedObject, valueToValidate, valueToValidateIndex, context, null);
    }
 
    public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final Object invalidValueIndex,
