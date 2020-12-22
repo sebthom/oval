@@ -21,6 +21,9 @@ public abstract class OValContext implements Serializable {
 
    protected Class<?> compileTimeType;
 
+   /**
+    * May return null if not applicable.
+    */
    public Class<?> getCompileTimeType() {
       return compileTimeType;
    }
