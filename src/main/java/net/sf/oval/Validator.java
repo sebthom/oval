@@ -1043,21 +1043,16 @@ public class Validator implements IValidator {
    protected ClassChecks getClassChecks(final Class<?> clazz) throws IllegalArgumentException, InvalidConfigurationException, ReflectionException {
       Assert.argumentNotNull("clazz", clazz);
 
-      ClassChecks cc = checksByClass.get(clazz);
-
-      if (cc == null) {
-         cc = new ClassChecks(clazz, parameterNameResolver);
-
+      return checksByClass.computeIfAbsent(clazz, k -> {
+         final ClassChecks newCC = new ClassChecks(k, parameterNameResolver);
          for (final Configurer configurer : configurers) {
-            final ClassConfiguration classConfig = configurer.getClassConfiguration(clazz);
+            final ClassConfiguration classConfig = configurer.getClassConfiguration(k);
             if (classConfig != null) {
-               _addChecks(cc, classConfig);
+               _addChecks(newCC, classConfig);
             }
          }
-         checksByClass.put(clazz, cc);
-      }
-
-      return cc;
+         return newCC;
+      });
    }
 
    /**
