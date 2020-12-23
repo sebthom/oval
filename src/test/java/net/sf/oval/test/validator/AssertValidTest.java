@@ -153,14 +153,14 @@ public class AssertValidTest extends TestCase {
       registry.personsByCity.put("city1", new ArrayList<Person>());
       assertEquals(0, validator.validate(registry).size());
 
-      registry.personsByCity.put("city1", Arrays.asList(new Person[] {invalidPerson1}));
+      registry.personsByCity.put("city1", Arrays.asList(invalidPerson1));
       assertEquals(1, validator.validate(registry).size());
 
-      registry.personsByCity.put("city2", Arrays.asList(new Person[] {invalidPerson2}));
+      registry.personsByCity.put("city2", Arrays.asList(invalidPerson2));
       assertEquals(2, validator.validate(registry).size());
 
       registry.personsByCity.clear();
-      registry.personsByCity.put("city1", Arrays.asList(new Person[] {invalidPerson1, invalidPerson1, invalidPerson2, invalidPerson2}));
+      registry.personsByCity.put("city1", Arrays.asList(invalidPerson1, invalidPerson1, invalidPerson2, invalidPerson2));
       // still only two since invalidPerson1 and invalidPerson2 have already been validated
       assertEquals(2, validator.validate(registry).size());
 

@@ -124,7 +124,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
 
       // OneToMany test
       {
-         entity.refs = new ArrayList<TestEntity>();
+         entity.refs = new ArrayList<>();
          final TestEntity d = new TestEntity();
          entity.refs.add(d);
 

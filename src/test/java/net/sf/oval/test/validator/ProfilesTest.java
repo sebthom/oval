@@ -157,9 +157,9 @@ public class ProfilesTest extends TestCase {
          final Person p = new Person();
          final List<ConstraintViolation> violations = validator.validate(p);
          assertEquals(2, violations.size());
-         if ("NOTNULL".equals(violations.get(0).getMessage()))
+         if ("NOTNULL".equals(violations.get(0).getMessage())) {
             assertEquals("NOTNULL3", violations.get(1).getMessage());
-         else {
+         } else {
             assertEquals("NOTNULL3", violations.get(0).getMessage());
             assertEquals("NOTNULL", violations.get(1).getMessage());
          }

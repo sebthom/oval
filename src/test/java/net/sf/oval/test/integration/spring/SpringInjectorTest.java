@@ -72,8 +72,7 @@ public class SpringInjectorTest extends TestCase {
    }
 
    public void testWithSpringInjector() {
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringInjectorTest.xml", SpringInjectorTest.class);
-      try {
+      try (ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringInjectorTest.xml", SpringInjectorTest.class)) {
          final AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
          myConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
          final Validator v = new Validator(myConfigurer);
@@ -82,8 +81,6 @@ public class SpringInjectorTest extends TestCase {
          assertEquals(1, v.validate(e).size());
          e.field = "whatever";
          assertEquals(0, v.validate(e).size());
-      } finally {
-         ctx.close();
       }
    }
 }

@@ -50,9 +50,7 @@ public class SpringAOPAllianceTest extends TestCase {
    }
 
    public void testCGLibProxying() {
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestCGLIBProxy.xml", SpringAOPAllianceTest.class);
-
-      try {
+      try (ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestCGLIBProxy.xml", SpringAOPAllianceTest.class)) {
          {
             final TestServiceWithoutInterface testServiceWithoutInterface = (TestServiceWithoutInterface) ctx.getBean("testServiceWithoutInterface");
 
@@ -88,15 +86,11 @@ public class SpringAOPAllianceTest extends TestCase {
                assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
             }
          }
-      } finally {
-         ctx.close();
       }
    }
 
    public void testJDKProxying() {
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestJDKProxy.xml", SpringAOPAllianceTest.class);
-
-      try {
+      try (ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringAOPAllianceTestJDKProxy.xml", SpringAOPAllianceTest.class)) {
          final TestServiceInterface testServiceWithInterface = ctx.getBean("testServiceWithInterface", TestServiceInterface.class);
 
          try {
@@ -112,8 +106,6 @@ public class SpringAOPAllianceTest extends TestCase {
          } catch (final ConstraintsViolatedException ex) {
             assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
          }
-      } finally {
-         ctx.close();
       }
    }
 }

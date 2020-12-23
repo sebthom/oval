@@ -103,32 +103,6 @@ import net.sf.oval.ogn.ObjectGraphNavigatorRegistry;
  */
 public class Validator implements IValidator {
 
-   protected static final class ValidationCycle {
-      public String[] profiles;
-      public IdentityHashSet<Object> validatedObjects = new IdentityHashSet<>(4);
-      public List<ConstraintViolation> violations = Collections.emptyList();
-
-      public ValidationCycle(final String[] profiles) {
-         this.profiles = profiles;
-      }
-
-      public void addViolation(final ConstraintViolation violation) {
-         if (violations.isEmpty()) {
-            violations = collectionFactory.createList();
-         }
-         violations.add(violation);
-      }
-
-      public void addViolations(final List<ConstraintViolation> violations) {
-         if (violations.isEmpty())
-            return;
-         if (this.violations.isEmpty()) {
-            this.violations = collectionFactory.createList();
-         }
-         this.violations.addAll(violations);
-      }
-   }
-
    protected static final class DelegatingParameterNameResolver implements ParameterNameResolver {
       private ParameterNameResolver delegate;
 
@@ -155,31 +129,53 @@ public class Validator implements IValidator {
       }
    }
 
+   protected static final class ValidationCycle {
+      public String[] profiles;
+      public IdentityHashSet<Object> validatedObjects = new IdentityHashSet<>(4);
+      public List<ConstraintViolation> violations = Collections.emptyList();
+
+      public ValidationCycle(final String[] profiles) {
+         this.profiles = profiles;
+      }
+
+      public void addViolation(final ConstraintViolation violation) {
+         if (violations.isEmpty()) {
+            violations = collectionFactory.createList();
+         }
+         violations.add(violation);
+      }
+
+      public void addViolations(final List<ConstraintViolation> violations) {
+         if (violations.isEmpty())
+            return;
+         if (this.violations.isEmpty()) {
+            this.violations = collectionFactory.createList();
+         }
+         this.violations.addAll(violations);
+      }
+   }
+
    private static final Log LOG = Log.getLog(Validator.class);
 
    private static CollectionFactory collectionFactory = _createDefaultCollectionFactory();
-
    private static OValContextRenderer contextRenderer = ToStringValidationContextRenderer.INSTANCE;
-
-   private static MessageResolver messageResolver;
-
-   private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
-
    private static LocaleProvider localeProvider = new ThreadLocalLocaleProvider();
+   private static MessageResolver messageResolver;
+   private static MessageValueFormatter messageValueFormatter = ToStringMessageValueFormatter.INSTANCE;
 
    private static CollectionFactory _createDefaultCollectionFactory() {
       // if Javolution collection classes are found use them by default
-      if (ReflectionUtils.isClassPresent("javolution.util.FastMap") && ReflectionUtils.isClassPresent("javolution.util.FastSet") && ReflectionUtils
-         .isClassPresent("javolution.util.FastTable")) {
+      if (ReflectionUtils.isClassPresent("javolution.util.FastMap") && //
+         ReflectionUtils.isClassPresent("javolution.util.FastSet") && //
+         ReflectionUtils.isClassPresent("javolution.util.FastTable")) {
          LOG.info("javolution.util collection classes are available.");
-
          return new CollectionFactoryJavolutionImpl();
       }
 
       // else if Trove collection classes are found use them by default
-      if (ReflectionUtils.isClassPresent("gnu.trove.map.hash.THashMap") && ReflectionUtils.isClassPresent("gnu.trove.set.hash.THashSet")) {
+      if (ReflectionUtils.isClassPresent("gnu.trove.map.hash.THashMap") && //
+         ReflectionUtils.isClassPresent("gnu.trove.set.hash.THashSet")) {
          LOG.info("gnu.trove collection classes are available.");
-
          return new CollectionFactoryTroveImpl();
       }
 
@@ -222,17 +218,13 @@ public class Validator implements IValidator {
    }
 
    /**
-    *
-    * @param factory the new collection factory to be used by all validator instances
+    * @param factory the new collection factory to be used by all Validator instances
     */
    public static void setCollectionFactory(final CollectionFactory factory) throws IllegalArgumentException {
       Assert.argumentNotNull("factory", factory);
       Validator.collectionFactory = factory;
    }
 
-   /**
-    * @param contextRenderer the contextRenderer to set
-    */
    public static void setContextRenderer(final OValContextRenderer contextRenderer) {
       Assert.argumentNotNull("contextRenderer", contextRenderer);
       Validator.contextRenderer = contextRenderer;
@@ -243,16 +235,12 @@ public class Validator implements IValidator {
       Validator.localeProvider = localeProvider;
    }
 
-   /**
-    * @param loggerFactory the loggerFactory to set
-    */
    public static void setLoggerFactory(final LoggerFactory loggerFactory) {
       Assert.argumentNotNull("loggerFactory", loggerFactory);
       Log.setLoggerFactory(loggerFactory);
    }
 
    /**
-    * @param messageResolver the messageResolver to set
     * @throws IllegalArgumentException if <code>messageResolver == null</code>
     */
    public static void setMessageResolver(final MessageResolver messageResolver) throws IllegalArgumentException {
@@ -260,9 +248,6 @@ public class Validator implements IValidator {
       Validator.messageResolver = messageResolver;
    }
 
-   /**
-    * @param formatter the messageValueFormatter to set
-    */
    public static void setMessageValueFormatter(final MessageValueFormatter formatter) {
       Assert.argumentNotNull("formatter", formatter);
       Validator.messageValueFormatter = formatter;
@@ -752,7 +737,7 @@ public class Validator implements IValidator {
    }
 
    @Override
-   public void assertValid(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException {
+   public void assertValid(final Object validatedObject) throws ValidationFailedException, ConstraintsViolatedException {
       final List<ConstraintViolation> violations = validate(validatedObject);
       if (!violations.isEmpty())
          throw translateException(new ConstraintsViolatedException(violations));
@@ -760,7 +745,7 @@ public class Validator implements IValidator {
 
    @Override
    public void assertValidFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
-      throws IllegalArgumentException, ValidationFailedException, ConstraintsViolatedException {
+      throws ValidationFailedException, ConstraintsViolatedException {
       final List<ConstraintViolation> violations = validateFieldValue(validatedObject, validatedField, fieldValueToValidate);
       if (!violations.isEmpty())
          throw translateException(new ConstraintsViolatedException(violations));
@@ -1024,7 +1009,6 @@ public class Validator implements IValidator {
       Assert.argumentNotNull("clazz", clazz);
 
       final ClassChecks cc = getClassChecks(clazz);
-
       final Set<Check> checks = cc.checksForObject;
       return checks == null ? null : checks.toArray(new Check[checks.size()]);
    }
@@ -1039,7 +1023,6 @@ public class Validator implements IValidator {
       Assert.argumentNotNull("field", field);
 
       final ClassChecks cc = getClassChecks(field.getDeclaringClass());
-
       final Set<Check> checks = cc.checksForFields.get(field);
       return checks == null ? null : checks.toArray(new Check[checks.size()]);
    }
@@ -1054,7 +1037,6 @@ public class Validator implements IValidator {
       Assert.argumentNotNull("method", method);
 
       final ClassChecks cc = getClassChecks(method.getDeclaringClass());
-
       final Set<Check> checks = cc.checksForMethodReturnValues.get(method);
       return checks == null ? null : checks.toArray(new Check[checks.size()]);
    }
@@ -1152,6 +1134,7 @@ public class Validator implements IValidator {
     */
    protected boolean isCurrentlyValidated(final Object object) {
       Assert.argumentNotNull("object", object);
+
       final LinkedList<ValidationCycle> cycles = currentValidationCycles.get();
       return !cycles.isEmpty() && cycles.getLast().validatedObjects.contains(object);
    }
@@ -1163,6 +1146,7 @@ public class Validator implements IValidator {
     */
    public boolean isProfileEnabled(final String profileId) {
       Assert.argumentNotNull("profileId", profileId);
+
       if (isProfilesFeatureUsed) {
          if (isAllProfilesEnabledByDefault)
             return !disabledProfiles.contains(profileId);
@@ -1178,7 +1162,6 @@ public class Validator implements IValidator {
     */
    public void reconfigureChecks() {
       checksByClass.clear();
-
       constraintSetsById.clear();
    }
 
@@ -1250,9 +1233,11 @@ public class Validator implements IValidator {
     * This method is intended to be executed by check implementations only.
     *
     * @param constraintViolation the constraint violation
+    * @throws IllegalStateException if no validation is currently in progress by the current thread
     */
-   public void reportConstraintViolation(final ConstraintViolation constraintViolation) {
+   public void reportConstraintViolation(final ConstraintViolation constraintViolation) throws IllegalStateException {
       Assert.argumentNotNull("constraintViolation", constraintViolation);
+
       if (currentValidationCycles.get().isEmpty())
          throw new IllegalStateException("No active validation cycle found for the current thread.");
       currentValidationCycles.get().getLast().addViolation(constraintViolation);
@@ -1286,7 +1271,7 @@ public class Validator implements IValidator {
    }
 
    @Override
-   public List<ConstraintViolation> validate(final Object validatedObject) throws IllegalArgumentException, ValidationFailedException {
+   public List<ConstraintViolation> validate(final Object validatedObject) throws ValidationFailedException {
       Assert.argumentNotNull("validatedObject", validatedObject);
 
       final ValidationCycle cycle = new ValidationCycle(null);
@@ -1300,8 +1285,7 @@ public class Validator implements IValidator {
    }
 
    @Override
-   public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws IllegalArgumentException,
-      ValidationFailedException {
+   public List<ConstraintViolation> validate(final Object validatedObject, final String... profiles) throws ValidationFailedException {
       Assert.argumentNotNull("validatedObject", validatedObject);
 
       final ValidationCycle cycle = new ValidationCycle(profiles);
@@ -1316,7 +1300,7 @@ public class Validator implements IValidator {
 
    @Override
    public List<ConstraintViolation> validateFieldValue(final Object validatedObject, final Field validatedField, final Object fieldValueToValidate)
-      throws IllegalArgumentException, ValidationFailedException {
+      throws ValidationFailedException {
       Assert.argumentNotNull("validatedObject", validatedObject);
       Assert.argumentNotNull("validatedField", validatedField);
 

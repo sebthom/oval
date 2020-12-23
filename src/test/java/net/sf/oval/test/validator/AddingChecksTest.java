@@ -66,7 +66,7 @@ public class AddingChecksTest extends TestCase {
       final Validator validator = new Validator();
 
       try {
-         final Method setter = TestEntity.class.getDeclaredMethod("setName", new Class<?>[] {String.class});
+         final Method setter = TestEntity.class.getDeclaredMethod("setName", String.class);
 
          validator.addChecks(setter, new NotNullCheck());
          fail();
