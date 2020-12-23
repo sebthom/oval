@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Groovy 3.0.6
   * MVEL 2.4.11.Final
   * JRuby 9.2.14.0
-  * OGNL 3.2.17
+  * OGNL 3.2.18
   * Rhino 1.7.13
   * Spring Framework 5.3.2
   * xStream 1.4.15
