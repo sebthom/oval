@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import net.sf.oval.Check;
 import net.sf.oval.CheckExclusion;
@@ -45,8 +46,6 @@ import net.sf.oval.internal.util.ConcurrentMultiValueMap;
 import net.sf.oval.internal.util.IdentityHashSet;
 import net.sf.oval.internal.util.Invocable;
 import net.sf.oval.internal.util.ReflectionUtils;
-import net.sf.oval.internal.util.ThreadLocalList;
-import net.sf.oval.internal.util.ThreadLocalWeakHashMap;
 
 /**
  * Extended version of the validator to realize programming by contract.
@@ -62,7 +61,7 @@ public class Guard extends Validator {
       protected final Method method;
       protected final Object[] args;
       protected final ClassChecks cc;
-      protected final List<ConstraintViolation> violations;
+      protected final ValidationCycle cycle;
       protected final Map<PostCheck, Object> postCheckOldValues;
       protected final Object guardedObject;
 
@@ -73,7 +72,7 @@ public class Guard extends Validator {
          final ClassChecks cc, //
          final boolean checkInvariants, //
          final Map<PostCheck, Object> postCheckOldValues, //
-         final List<ConstraintViolation> violations //
+         final ValidationCycle cycle //
       ) {
          this.guardedObject = guardedObject;
          this.method = method;
@@ -81,7 +80,7 @@ public class Guard extends Validator {
          this.cc = cc;
          this.checkInvariants = checkInvariants;
          this.postCheckOldValues = postCheckOldValues;
-         this.violations = violations;
+         this.cycle = cycle;
       }
    }
 
@@ -95,17 +94,17 @@ public class Guard extends Validator {
    /**
     * string based on validated object hashcode + method hashcode for currently validated method return values
     */
-   private static final ThreadLocalList<String> CURRENTLY_CHECKED_METHOD_RETURN_VALUES = new ThreadLocalList<>();
+   private static final ThreadLocal<List<String>> CURRENTLY_CHECKED_METHOD_RETURN_VALUES = ThreadLocal.withInitial(() -> getCollectionFactory().createList());
 
    /**
     * string based on validated object hashcode + method hashcode for currently validated method pre-conditions
     */
-   private static final ThreadLocalList<String> CURRENTLY_CHECKED_PRE_CONDITIONS = new ThreadLocalList<>();
+   private static final ThreadLocal<List<String>> CURRENTLY_CHECKED_PRE_CONDITIONS = ThreadLocal.withInitial(() -> getCollectionFactory().createList());
 
    /**
     * string based on validated object hashcode + method hashcode for currently validated method post-conditions
     */
-   private static final ThreadLocalList<String> CURRENTLY_CHECKED_POST_CONDITIONS = new ThreadLocalList<>();
+   private static final ThreadLocal<List<String>> CURRENTLY_CHECKED_POST_CONDITIONS = ThreadLocal.withInitial(() -> getCollectionFactory().createList());
 
    private boolean isActivated = true;
    private boolean isInvariantsEnabled = true;
@@ -129,7 +128,7 @@ public class Guard extends Validator {
     * Objects for OVal suppresses occurring ConstraintViolationExceptions for pre-condition violations on setter methods
     * for the current thread.
     */
-   private final ThreadLocalWeakHashMap<Object, ProbeModeListener> objectsInProbeMode = new ThreadLocalWeakHashMap<>();
+   private final ThreadLocal<WeakHashMap<Object, ProbeModeListener>> objectsInProbeMode = ThreadLocal.withInitial(WeakHashMap::new);
 
    /**
     * Constructs a new guard object and uses a new instance of AnnotationsConfigurer
@@ -157,7 +156,7 @@ public class Guard extends Validator {
    }
 
    private void _validateParameterChecks(final ParameterChecks checks, final Object validatedObject, final Object valueToValidate, final OValContext context,
-      final List<ConstraintViolation> violations) {
+      final ValidationCycle cycle) {
       // determine the active exclusions based on the active profiles
       final List<CheckExclusion> activeExclusions = checks.hasExclusions() ? _getActiveExclusions(checks.checkExclusions) : null;
 
@@ -174,7 +173,7 @@ public class Guard extends Validator {
                }
          }
          if (!skip) {
-            checkConstraint(violations, check, validatedObject, valueToValidate, context, null, false);
+            checkConstraint(check, validatedObject, valueToValidate, context, cycle, false);
          }
       }
    }
@@ -463,18 +462,18 @@ public class Guard extends Validator {
 
       // check invariants
       if (isInvariantsEnabled && cc.isCheckInvariants || cc.methodsWithCheckInvariantsPost.contains(ctor)) {
-         final List<ConstraintViolation> violations = getCollectionFactory().createList();
-         currentViolations.get().add(violations);
+         final ValidationCycle cycle = new ValidationCycle(null);
+         currentValidationCycles.get().add(cycle);
          try {
-            validateInvariants(guardedObject, violations, null);
+            validateInvariants(guardedObject, cycle);
          } catch (final ValidationFailedException ex) {
             throw translateException(ex);
          } finally {
-            currentViolations.get().removeLast();
+            currentValidationCycles.get().removeLast();
          }
 
-         if (!violations.isEmpty()) {
-            final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+         if (!cycle.violations.isEmpty()) {
+            final ConstraintsViolatedException violationException = new ConstraintsViolatedException(cycle.violations);
             if (isListenersFeatureUsed) {
                notifyListeners(guardedObject, violationException);
             }
@@ -534,30 +533,30 @@ public class Guard extends Validator {
          guardedObject = method.getDeclaringClass();
       }
 
-      final List<ConstraintViolation> violations = getCollectionFactory().createList();
-      currentViolations.get().add(violations);
+      final ValidationCycle cycle = new ValidationCycle(null);
+      currentValidationCycles.get().add(cycle);
 
       try {
          // check invariants
          if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method)) {
-            validateInvariants(guardedObject, violations, null);
+            validateInvariants(guardedObject, cycle);
          }
 
          if (isPreConditionsEnabled) {
             // method parameter validation
-            if (args.length > 0 && violations.isEmpty()) {
-               validateMethodParameters(guardedObject, method, args, violations);
+            if (args.length > 0 && cycle.violations.isEmpty()) {
+               validateMethodParameters(guardedObject, method, args, cycle);
             }
 
             // @Pre validation
-            if (violations.isEmpty()) {
-               validateMethodPre(guardedObject, method, args, violations);
+            if (cycle.violations.isEmpty()) {
+               validateMethodPre(guardedObject, method, args, cycle);
             }
          }
       } catch (final ValidationFailedException ex) {
          throw translateException(ex);
       } finally {
-         currentViolations.get().removeLast();
+         currentValidationCycles.get().removeLast();
       }
 
       final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
@@ -565,8 +564,8 @@ public class Guard extends Validator {
          pml.onMethodCall(method, args);
       }
 
-      if (!violations.isEmpty()) {
-         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+      if (!cycle.violations.isEmpty()) {
+         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(cycle.violations);
          if (isListenersFeatureUsed) {
             notifyListeners(guardedObject, violationException);
          }
@@ -588,34 +587,33 @@ public class Guard extends Validator {
 
       final Object returnValue = invocable.invoke();
 
-      currentViolations.get().add(violations);
-
+      currentValidationCycles.get().add(cycle);
       try {
          // check invariants if executed method is not private
          if (checkInvariants || cc.methodsWithCheckInvariantsPost.contains(method)) {
-            validateInvariants(guardedObject, violations, null);
+            validateInvariants(guardedObject, cycle);
          }
 
          if (isPostConditionsEnabled) {
 
             // method return value
-            if (violations.isEmpty()) {
-               validateMethodReturnValue(guardedObject, method, returnValue, violations);
+            if (cycle.violations.isEmpty()) {
+               validateMethodReturnValue(guardedObject, method, returnValue, cycle);
             }
 
             // @Post
-            if (violations.isEmpty()) {
-               validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, violations);
+            if (cycle.violations.isEmpty()) {
+               validateMethodPost(guardedObject, method, args, returnValue, postCheckOldValues, cycle);
             }
          }
       } catch (final ValidationFailedException ex) {
          throw translateException(ex);
       } finally {
-         currentViolations.get().removeLast();
+         currentValidationCycles.get().removeLast();
       }
 
-      if (!violations.isEmpty()) {
-         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+      if (!cycle.violations.isEmpty()) {
+         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(cycle.violations);
          if (isListenersFeatureUsed) {
             notifyListeners(guardedObject, violationException);
          }
@@ -639,30 +637,33 @@ public class Guard extends Validator {
       if (!isActivated)
          return;
 
+      currentValidationCycles.get().add(preResult.cycle);
       try {
          // check invariants if executed method is not private
          if (preResult.checkInvariants || preResult.cc.methodsWithCheckInvariantsPost.contains(preResult.method)) {
-            validateInvariants(preResult.guardedObject, preResult.violations, null);
+            validateInvariants(preResult.guardedObject, preResult.cycle);
          }
 
          if (isPostConditionsEnabled) {
 
             // method return value
-            if (preResult.violations.isEmpty()) {
-               validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue, preResult.violations);
+            if (preResult.cycle.violations.isEmpty()) {
+               validateMethodReturnValue(preResult.guardedObject, preResult.method, returnValue, preResult.cycle);
             }
 
             // @Post
-            if (preResult.violations.isEmpty()) {
-               validateMethodPost(preResult.guardedObject, preResult.method, preResult.args, returnValue, preResult.postCheckOldValues, preResult.violations);
+            if (preResult.cycle.violations.isEmpty()) {
+               validateMethodPost(preResult.guardedObject, preResult.method, preResult.args, returnValue, preResult.postCheckOldValues, preResult.cycle);
             }
          }
       } catch (final ValidationFailedException ex) {
          throw translateException(ex);
+      } finally {
+         currentValidationCycles.get().removeLast();
       }
 
-      if (!preResult.violations.isEmpty()) {
-         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(preResult.violations);
+      if (!preResult.cycle.violations.isEmpty()) {
+         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(preResult.cycle.violations);
          if (isListenersFeatureUsed) {
             notifyListeners(preResult.guardedObject, violationException);
          }
@@ -694,30 +695,29 @@ public class Guard extends Validator {
          guardedObject = method.getDeclaringClass();
       }
 
-      final List<ConstraintViolation> violations = getCollectionFactory().createList();
-      currentViolations.get().add(violations);
-
+      final ValidationCycle cycle = new ValidationCycle(null);
+      currentValidationCycles.get().add(cycle);
       try {
          // check invariants
          if (checkInvariants || cc.methodsWithCheckInvariantsPre.contains(method)) {
-            validateInvariants(guardedObject, violations, null);
+            validateInvariants(guardedObject, cycle);
          }
 
          if (isPreConditionsEnabled) {
             // method parameter validation
-            if (args.length > 0 && violations.isEmpty()) {
-               validateMethodParameters(guardedObject, method, args, violations);
+            if (args.length > 0 && cycle.violations.isEmpty()) {
+               validateMethodParameters(guardedObject, method, args, cycle);
             }
 
             // @Pre validation
-            if (violations.isEmpty()) {
-               validateMethodPre(guardedObject, method, args, violations);
+            if (cycle.violations.isEmpty()) {
+               validateMethodPre(guardedObject, method, args, cycle);
             }
          }
       } catch (final ValidationFailedException ex) {
          throw translateException(ex);
       } finally {
-         currentViolations.get().removeLast();
+         currentValidationCycles.get().removeLast();
       }
 
       final ProbeModeListener pml = isProbeModeFeatureUsed ? objectsInProbeMode.get().get(guardedObject) : null;
@@ -725,8 +725,8 @@ public class Guard extends Validator {
          pml.onMethodCall(method, args);
       }
 
-      if (!violations.isEmpty()) {
-         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(violations);
+      if (!cycle.violations.isEmpty()) {
+         final ConstraintsViolatedException violationException = new ConstraintsViolatedException(cycle.violations);
          if (isListenersFeatureUsed) {
             notifyListeners(guardedObject, violationException);
          }
@@ -746,7 +746,7 @@ public class Guard extends Validator {
 
       final Map<PostCheck, Object> postCheckOldValues = calculateMethodPostOldValues(guardedObject, method, args);
 
-      return new GuardMethodPreResult(guardedObject, method, args, cc, checkInvariants, postCheckOldValues, violations);
+      return new GuardMethodPreResult(guardedObject, method, args, cc, checkInvariants, postCheckOldValues, cycle);
    }
 
    /**
@@ -1024,11 +1024,9 @@ public class Guard extends Validator {
     */
    protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject, final Constructor<?> constructor,
       final Object[] argsToValidate) throws ValidationFailedException {
-      // create required objects for this validation cycle
-      final List<ConstraintViolation> violations = getCollectionFactory().createList();
-      currentViolations.get().add(violations);
-      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
 
+      final ValidationCycle cycle = new ValidationCycle(null);
+      currentValidationCycles.get().add(cycle);
       try {
          final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
          final Map<Integer, ParameterChecks> parameterChecks = cc.checksForConstructorParameters.get(constructor);
@@ -1046,44 +1044,43 @@ public class Guard extends Validator {
                final Object valueToValidate = argsToValidate[i];
                final ConstructorParameterContext context = new ConstructorParameterContext(constructor, i, parameterNames[i]);
 
-               _validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
+               _validateParameterChecks(checks, validatedObject, valueToValidate, context, cycle);
             }
          }
-         return violations.isEmpty() ? null : violations;
+         return cycle.violations.isEmpty() ? null : cycle.violations;
       } catch (final OValException ex) {
          throw new ValidationFailedException("Validation of constructor parameters failed. Constructor: " + constructor + " Validated object: "
             + validatedObject.getClass().getName() + "@" + Integer.toHexString(validatedObject.hashCode()), ex);
       } finally {
-         // remove the validation cycle related objects
-         currentViolations.get().removeLast();
-         currentlyValidatedObjects.get().removeLast();
+         currentValidationCycles.get().removeLast();
       }
    }
 
    @Override
-   protected void validateInvariants(final Object guardedObject, final List<ConstraintViolation> violations, final String[] profiles)
-      throws IllegalArgumentException, ValidationFailedException {
-      if (!currentlyValidatedObjects.get().isEmpty() && currentlyValidatedObjects.get().getLast().contains(guardedObject))
+   protected void validateInvariants(final Object guardedObject, final ValidationCycle cycle) throws IllegalArgumentException, ValidationFailedException {
+
+      final List<ValidationCycle> validationCycles = currentValidationCycles.get();
+      if (validationCycles.size() > 1 && validationCycles.get(validationCycles.size() - 2).validatedObjects.contains(guardedObject))
          // to prevent StackOverflowError
          return;
 
-      // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
+      final IdentityHashSet<Object> validatedObjects = cycle.validatedObjects;
+      cycle.validatedObjects = new IdentityHashSet<>(4);
       try {
-         super.validateInvariants(guardedObject, violations, profiles);
+         super.validateInvariants(guardedObject, cycle);
       } finally {
-         // remove the set
-         currentlyValidatedObjects.get().removeLast();
+         cycle.validatedObjects = validatedObjects;
       }
    }
 
    /**
     * Validates the pre conditions for a method call.
     */
-   protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final List<ConstraintViolation> violations)
+   protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final ValidationCycle cycle)
       throws ValidationFailedException {
-      // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
+
+      final IdentityHashSet<Object> validatedObjects = cycle.validatedObjects;
+      cycle.validatedObjects = new IdentityHashSet<>(4);
       try {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Map<Integer, ParameterChecks> parameterChecks = cc.checksForMethodParameters.get(method);
@@ -1104,15 +1101,14 @@ public class Guard extends Validator {
                   final Object valueToValidate = args[i];
                   final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
 
-                  _validateParameterChecks(checks, validatedObject, valueToValidate, context, violations);
+                  _validateParameterChecks(checks, validatedObject, valueToValidate, context, cycle);
                }
             }
          }
       } catch (final OValException ex) {
          throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method + " Validated object: " + validatedObject, ex);
       } finally {
-         // remove the set
-         currentlyValidatedObjects.get().removeLast();
+         cycle.validatedObjects = validatedObjects;
       }
    }
 
@@ -1120,7 +1116,7 @@ public class Guard extends Validator {
     * Validates the post conditions for a method call.
     */
    protected void validateMethodPost(final Object validatedObject, final Method method, final Object[] args, final Object returnValue,
-      final Map<PostCheck, Object> oldValues, final List<ConstraintViolation> violations) throws ValidationFailedException {
+      final Map<PostCheck, Object> oldValues, final ValidationCycle cycle) throws ValidationFailedException {
       final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
       /*
@@ -1167,7 +1163,7 @@ public class Guard extends Validator {
                   messageVariables.put("expression", check.getExpr());
                   final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
 
-                  violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+                  cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
                }
             } catch (final OValException ex) {
                throw new ValidationFailedException("Executing " + check + " failed. Method: " + method + " Validated object: " + validatedObject, ex);
@@ -1185,7 +1181,7 @@ public class Guard extends Validator {
    /**
     * Validates the @Pre conditions for a method call.
     */
-   protected void validateMethodPre(final Object validatedObject, final Method method, final Object[] args, final List<ConstraintViolation> violations)
+   protected void validateMethodPre(final Object validatedObject, final Method method, final Object[] args, final ValidationCycle cycle)
       throws ValidationFailedException {
       final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
@@ -1229,8 +1225,7 @@ public class Guard extends Validator {
                final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
                messageVariables.put("expression", check.getExpr());
                final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
-
-               violations.add(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+               cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
             }
          }
       } catch (final OValException ex) {
@@ -1243,8 +1238,8 @@ public class Guard extends Validator {
    /**
     * Validates the return value checks for a method call.
     */
-   protected void validateMethodReturnValue(final Object validatedObject, final Method method, final Object returnValue,
-      final List<ConstraintViolation> violations) throws ValidationFailedException {
+   protected void validateMethodReturnValue(final Object validatedObject, final Method method, final Object returnValue, final ValidationCycle cycle)
+      throws ValidationFailedException {
       final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
       /*
@@ -1262,8 +1257,9 @@ public class Guard extends Validator {
          return;
 
       CURRENTLY_CHECKED_METHOD_RETURN_VALUES.get().add(key);
-      // create a new set for this validation cycle
-      currentlyValidatedObjects.get().add(new IdentityHashSet<>(4));
+
+      final IdentityHashSet<Object> validatedObjects = cycle.validatedObjects;
+      cycle.validatedObjects = new IdentityHashSet<>(4);
       try {
          final ClassChecks cc = getClassChecks(method.getDeclaringClass());
          final Collection<Check> returnValueChecks = cc.checksForMethodReturnValues.get(method);
@@ -1274,15 +1270,13 @@ public class Guard extends Validator {
          final MethodReturnValueContext context = ContextCache.getMethodReturnValueContext(method);
 
          for (final Check check : returnValueChecks) {
-            checkConstraint(violations, check, validatedObject, returnValue, context, null, false);
+            checkConstraint(check, validatedObject, returnValue, context, cycle, false);
          }
       } catch (final OValException ex) {
          throw new ValidationFailedException("Method post conditions validation failed. Method: " + method + " Validated object: " + validatedObject, ex);
       } finally {
+         cycle.validatedObjects = validatedObjects;
          CURRENTLY_CHECKED_METHOD_RETURN_VALUES.get().remove(key);
-
-         // remove the set
-         currentlyValidatedObjects.get().removeLast();
       }
    }
 }
