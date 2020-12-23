@@ -30,12 +30,7 @@ public class ExpressionLanguageJEXLImpl extends AbstractExpressionLanguage {
       .strict(true) //
       .create();
 
-   private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<String, JexlExpression>() {
-      @Override
-      protected JexlExpression load(final String expression) {
-         return JEXL.createExpression(expression);
-      }
-   };
+   private final ObjectCache<String, JexlExpression> expressionCache = new ObjectCache<>(JEXL::createExpression);
 
    @Override
    @SuppressWarnings("unchecked")

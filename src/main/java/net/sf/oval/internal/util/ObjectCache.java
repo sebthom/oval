@@ -13,12 +13,20 @@ import java.lang.ref.SoftReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 /**
  * @author Sebastian Thomschke
  */
-public abstract class ObjectCache<K, V> {
+public final class ObjectCache<K, V> {
    private final ConcurrentMap<K, SoftReference<V>> map = new ConcurrentHashMap<>();
+
+   private final Function<K, V> loader;
+
+   public ObjectCache(final Function<K, V> loader) {
+      Assert.argumentNotNull("loader", loader);
+      this.loader = loader;
+   }
 
    public void compact() {
       for (final Map.Entry<K, SoftReference<V>> entry : map.entrySet()) {
@@ -33,8 +41,6 @@ public abstract class ObjectCache<K, V> {
       return map.containsKey(key);
    }
 
-   protected abstract V load(K key);
-
    public V get(final K key) {
       final SoftReference<V> softRef = map.get(key);
       V result = null;
@@ -46,11 +52,10 @@ public abstract class ObjectCache<K, V> {
          result = softRef.get();
       }
       if (result == null) {
-         result = load(key);
+         result = loader.apply(key);
          map.remove(key);
          map.put(key, new SoftReference<>(result));
       }
       return result;
    }
-
 }

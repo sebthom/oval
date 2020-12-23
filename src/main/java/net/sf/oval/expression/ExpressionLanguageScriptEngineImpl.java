@@ -57,16 +57,13 @@ public class ExpressionLanguageScriptEngineImpl extends AbstractExpressionLangua
       this.engine = engine;
       if (engine instanceof Compilable) {
          compilable = (Compilable) engine;
-         compiledCache = new ObjectCache<String, CompiledScript>() {
-            @Override
-            protected CompiledScript load(final String expression) {
-               try {
-                  return compilable.compile(expression);
-               } catch (final ScriptException ex) {
-                  throw new ExpressionEvaluationException("Parsing " + engine.get(ScriptEngine.NAME) + " expression failed: " + expression, ex);
-               }
+         compiledCache = new ObjectCache<>(expression -> {
+            try {
+               return compilable.compile(expression);
+            } catch (final ScriptException ex) {
+               throw new ExpressionEvaluationException("Parsing " + engine.get(ScriptEngine.NAME) + " expression failed: " + expression, ex);
             }
-         };
+         });
       } else {
          compilable = null;
          compiledCache = null;

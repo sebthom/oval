@@ -17,7 +17,7 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.internal.Log;
-import net.sf.oval.internal.util.ThreadLocalObjectCache;
+import net.sf.oval.internal.util.ObjectCache;
 
 /**
  * @author Sebastian Thomschke
@@ -27,12 +27,7 @@ public class ExpressionLanguageGroovyImpl extends AbstractExpressionLanguage {
 
    private static final GroovyShell GROOVY_SHELL = new GroovyShell();
 
-   private final ThreadLocalObjectCache<String, Script> expressionCache = new ThreadLocalObjectCache<String, Script>() {
-      @Override
-      protected Script load(final String expression) {
-         return GROOVY_SHELL.parse(expression);
-      }
-   };
+   private final ThreadLocal<ObjectCache<String, Script>> expressionCache = ThreadLocal.withInitial(() -> new ObjectCache<>(GROOVY_SHELL::parse));
 
    @Override
    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {

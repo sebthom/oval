@@ -30,14 +30,11 @@ public class ExpressionLanguageJavaScriptImpl extends AbstractExpressionLanguage
 
    private final Scriptable parentScope;
 
-   private final ObjectCache<String, Script> expressionCache = new ObjectCache<String, Script>() {
-      @Override
-      protected Script load(final String expression) {
-         final Context ctx = ContextFactory.getGlobal().enterContext();
-         ctx.setOptimizationLevel(9);
-         return ctx.compileString(expression, "<cmd>", 1, null);
-      }
-   };
+   private final ObjectCache<String, Script> expressionCache = new ObjectCache<>(expression -> {
+      final Context ctx = ContextFactory.getGlobal().enterContext();
+      ctx.setOptimizationLevel(9);
+      return ctx.compileString(expression, "<cmd>", 1, null);
+   });
 
    public ExpressionLanguageJavaScriptImpl() {
       final Context ctx = ContextFactory.getGlobal().enterContext();

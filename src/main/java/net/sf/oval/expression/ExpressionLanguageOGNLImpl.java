@@ -57,17 +57,13 @@ public class ExpressionLanguageOGNLImpl extends AbstractExpressionLanguage {
       }
    };
 
-   private final ObjectCache<String, Object> expressionCache = new ObjectCache<String, Object>() {
-
-      @Override
-      protected Object load(final String expression) {
-         try {
-            return Ognl.parseExpression(expression);
-         } catch (final OgnlException ex) {
-            throw new ExpressionEvaluationException("Parsing MVEL expression failed: " + expression, ex);
-         }
+   private final ObjectCache<String, Object> expressionCache = new ObjectCache<>(expression -> {
+      try {
+         return Ognl.parseExpression(expression);
+      } catch (final OgnlException ex) {
+         throw new ExpressionEvaluationException("Parsing MVEL expression failed: " + expression, ex);
       }
-   };
+   });
 
    @Override
    public Object evaluate(final String expression, final Map<String, ?> values) throws ExpressionEvaluationException {
