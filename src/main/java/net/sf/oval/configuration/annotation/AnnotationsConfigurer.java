@@ -220,6 +220,12 @@ public class AnnotationsConfigurer implements Configurer {
 
          initializeGenericTypeChecks(method.getReturnType(), method.getAnnotatedReturnType(), returnValueChecks);
 
+         if (Boolean.TRUE.equals(classCfg.inspectInterfaces)) {
+            for (final Method interfaceMethod : ReflectionUtils.getInterfaceMethods(method, classCfg.includedInterfaces, classCfg.excludedInterfaces)) {
+               initializeGenericTypeChecks(interfaceMethod.getReturnType(), interfaceMethod.getAnnotatedReturnType(), returnValueChecks);
+            }
+         }
+
          /*
           * determine parameter checks
           */

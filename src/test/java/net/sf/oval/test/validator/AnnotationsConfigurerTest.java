@@ -9,14 +9,16 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import net.sf.oval.ConstraintViolation;
@@ -32,8 +34,16 @@ import net.sf.oval.constraint.Size;
  * @author Sebastian Thomschke
  */
 public class AnnotationsConfigurerTest extends TestCase {
+   protected interface TestEntityInterface {
+      @IsInvariant
+      @NotNull(message = "VALUE_NOT_NULL")
+      String getValue();
 
-   protected static class TestEntity {
+      @IsInvariant
+      Set<@NotNull(message = "ALL_VALUES_NOT_NULL") String> getAllValues();
+   }
+
+   protected static class TestEntity implements TestEntityInterface {
       private final List<String> description = new ArrayList<>();
 
       @NotNull(message = "CODE_NOT_NULL")
@@ -53,10 +63,24 @@ public class AnnotationsConfigurerTest extends TestCase {
       @AssertValid
       public Map<@NotNull(message = "KEY_NOT_NULL") String, @NotNull(message = "VALUE_NOT_NULL") String> props = new HashMap<>();
 
+      public String value;
+
+      public final Set<String> allValues = new HashSet<>();
+
       @IsInvariant
       @NotEmpty(message = "DESCRIPTION_NOT_EMPTY")
       public List<@NotNull(message = "DESCRIPTION_ELEMENT_NOT_NULL") String> getDescription() {
          return description;
+      }
+
+      @Override
+      public String getValue() {
+         return value;
+      }
+
+      @Override
+      public Set<String> getAllValues() {
+         return allValues;
       }
    }
 
@@ -71,17 +95,19 @@ public class AnnotationsConfigurerTest extends TestCase {
          // code is null
          // description is empty
          // parent is null
-         assertEquals(3, violations.size());
+         // value not null
+         assertEquals(4, violations.size());
 
-         final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage(), violations.get(2).getMessage()};
+         final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage(), violations.get(2).getMessage(), violations.get(3).getMessage()};
          Arrays.sort(msgs);
-         assertArrayEquals(new String[] {"CODE_NOT_NULL", "DESCRIPTION_NOT_EMPTY", "PARENT_NOT_NULL"}, msgs);
+         assertArrayEquals(new String[] {"CODE_NOT_NULL", "DESCRIPTION_NOT_EMPTY", "PARENT_NOT_NULL", "VALUE_NOT_NULL"}, msgs);
       }
 
       {
          entity.code = "";
          entity.description.add("");
          entity.parent = new TestEntity();
+         entity.value = "";
 
          violations = v.validate(entity);
          // parent is invalid
@@ -92,6 +118,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.parent.code = "";
          entity.parent.description.add("");
          entity.parent.parent = entity;
+         entity.parent.value = "";
 
          violations = v.validate(entity);
          assertEquals(0, violations.size());
@@ -99,6 +126,7 @@ public class AnnotationsConfigurerTest extends TestCase {
 
       {
          entity.sibling = new TestEntity();
+         entity.sibling.value = "";
 
          violations = v.validate(entity);
          // sibling is invalid
@@ -137,6 +165,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          d.code = "";
          d.description.add("");
          d.parent = entity;
+         d.value = "";
 
          violations = v.validate(entity);
          assertEquals(0, violations.size());
@@ -180,6 +209,31 @@ public class AnnotationsConfigurerTest extends TestCase {
          violations = v.validate(entity);
          assertEquals(1, violations.size());
          assertEquals("DESCRIPTION_ELEMENT_NOT_NULL", violations.get(0).getMessage());
+
+         entity.description.clear();
+         entity.description.add("");
+      }
+
+      // No null in method return value defined by interface
+      {
+         entity.value = null;
+
+         violations = v.validate(entity);
+         assertEquals(1, violations.size());
+         assertEquals("VALUE_NOT_NULL", violations.get(0).getMessage());
+
+         entity.value = "";
+      }
+
+      // No null in method return value collection defined by interface
+      {
+         entity.allValues.add(null);
+
+         violations = v.validate(entity);
+         assertEquals(1, violations.size());
+         assertEquals("ALL_VALUES_NOT_NULL", violations.get(0).getMessage());
+
+         entity.allValues.clear();
       }
    }
 }

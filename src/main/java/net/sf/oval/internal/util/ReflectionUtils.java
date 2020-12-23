@@ -9,7 +9,8 @@
  *********************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.*;
+import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.getLocaleProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -209,6 +210,31 @@ public final class ReflectionUtils {
          return null;
 
       return getGetterRecursive(superclazz, propertyName);
+   }
+
+   public static List<Method> getInterfaceMethods(final Method method, final Set<Class<?>> includedInterfaces, final Set<Class<?>> excludedInterfaces) {
+      // static methods cannot be overridden
+      if (isStatic(method)) {
+         return Collections.emptyList();
+      }
+
+      final Set<Class<?>> interfaces = getInterfacesRecursive(method.getDeclaringClass(), includedInterfaces, excludedInterfaces);
+      if (interfaces.isEmpty()) {
+         return Collections.emptyList();
+      }
+
+      final String methodName = method.getName();
+      final Class<?>[] parameterTypes = method.getParameterTypes();
+
+      final List<Method> methods = getCollectionFactory().createList(interfaces.size());
+      for (final Class<?> iface : interfaces) {
+         final Method m = getMethod(iface, methodName, parameterTypes);
+         if (m != null) {
+            methods.add(m);
+         }
+      }
+
+      return methods;
    }
 
    /**
