@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+* potential memory leak in internal object cache
+
 ### Added
 * `net.sf.oval.configuration.annotation.Validatable` annotation
 

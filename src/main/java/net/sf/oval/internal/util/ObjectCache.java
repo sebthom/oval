@@ -9,8 +9,9 @@
  *********************************************************************/
 package net.sf.oval.internal.util;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -19,7 +20,18 @@ import java.util.function.Function;
  * @author Sebastian Thomschke
  */
 public final class ObjectCache<K, V> {
-   private final ConcurrentMap<K, SoftReference<V>> map = new ConcurrentHashMap<>();
+
+   private static final class SoftRef<K, V> extends SoftReference<V> {
+      final K key;
+
+      SoftRef(final K key, final V value, final ReferenceQueue<? super V> q) {
+         super(value, q);
+         this.key = key;
+      }
+   }
+
+   private final ConcurrentMap<K, SoftRef<K, V>> map = new ConcurrentHashMap<>();
+   private final ReferenceQueue<V> garbageCollectedValues = new ReferenceQueue<>();
 
    private final Function<K, V> loader;
 
@@ -28,12 +40,10 @@ public final class ObjectCache<K, V> {
       this.loader = loader;
    }
 
-   public void compact() {
-      for (final Map.Entry<K, SoftReference<V>> entry : map.entrySet()) {
-         final SoftReference<V> ref = entry.getValue();
-         if (ref.get() == null) {
-            map.remove(entry.getKey());
-         }
+   @SuppressWarnings("unchecked")
+   private void compact() {
+      for (Reference<?> ref; (ref = garbageCollectedValues.poll()) != null;) { // CHECKSTYLE:IGNORE .*
+         map.remove(((SoftRef<K, V>) ref).key, ref);
       }
    }
 
@@ -42,7 +52,9 @@ public final class ObjectCache<K, V> {
    }
 
    public V get(final K key) {
-      final SoftReference<V> softRef = map.get(key);
+      compact();
+
+      final SoftRef<K, V> softRef = map.get(key);
       V result = null;
       if (softRef != null) {
          final V value = softRef.get();
@@ -54,7 +66,7 @@ public final class ObjectCache<K, V> {
       if (result == null) {
          result = loader.apply(key);
          map.remove(key);
-         map.put(key, new SoftReference<>(result));
+         map.put(key, new SoftRef<>(key, result, garbageCollectedValues));
       }
       return result;
    }
