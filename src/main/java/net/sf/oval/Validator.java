@@ -772,14 +772,14 @@ public class Validator implements IValidator {
             if (target.length() > 0) {
                if (valueToValidate == null)
                   return;
-               final String[] chunks = target.split(":", 2);
+               final List<String> chunks = StringUtils.split(target, ':', 2);
                final String ognId, path;
-               if (chunks.length == 1) {
+               if (chunks.size() == 1) {
                   ognId = "";
-                  path = chunks[0];
+                  path = chunks.get(0);
                } else {
-                  ognId = chunks[0];
-                  path = chunks[1];
+                  ognId = chunks.get(0);
+                  path = chunks.get(1);
                }
                final ObjectGraphNavigationResult result = ognRegistry.getObjectGraphNavigator(ognId) //
                   .navigateTo(valueToValidate, path);

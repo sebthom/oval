@@ -16,14 +16,15 @@ import java.lang.reflect.Method;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.internal.util.Assert;
 import net.sf.oval.internal.util.ReflectionUtils;
+import net.sf.oval.internal.util.StringUtils;
 
 /**
  * Default object graph navigator implementation.
- * 
+ *
  * Object path separator is a colon (.), e.g. owner.address.street
- * 
+ *
  * The implementation currently is limited to address fields and properties. Separate items of arrays, maps or keys cannot be addressed.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
@@ -35,7 +36,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
       Object parent = null;
       Object target = root;
       AccessibleObject targetAccessor = null;
-      for (final String chunk : path.split("\\.")) {
+      for (final String chunk : StringUtils.split(path, '.', -1)) {
          parent = target;
          if (parent == null)
             return null;

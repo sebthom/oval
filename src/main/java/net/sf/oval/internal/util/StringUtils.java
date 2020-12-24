@@ -10,11 +10,15 @@
 package net.sf.oval.internal.util;
 
 import java.util.Collection;
+import java.util.List;
+
+import net.sf.oval.Validator;
 
 /**
  * @author Sebastian Thomschke
  */
 public final class StringUtils {
+
    public static String implode(final Collection<?> values, final String delimiter) {
       return implode(values.toArray(), delimiter);
    }
@@ -49,6 +53,21 @@ public final class StringUtils {
       }
 
       return out.append(searchIn.substring(searchFrom, searchIn.length())).toString();
+   }
+
+   public static List<String> split(final String str, final char separator, final int maxParts) {
+      final List<String> result = Validator.getCollectionFactory().createList();
+      int startAt = 0;
+      while (true) {
+         final int foundAt = str.indexOf(separator, startAt);
+         if (foundAt == -1 || result.size() == maxParts - 1) {
+            result.add(str.substring(startAt, str.length()));
+            break;
+         }
+         result.add(str.substring(startAt, foundAt));
+         startAt = foundAt + 1;
+      }
+      return result;
    }
 
    private StringUtils() {

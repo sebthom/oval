@@ -13,10 +13,12 @@ import static net.sf.oval.Validator.*;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.oval.context.OValContext;
 import net.sf.oval.expression.ExpressionLanguage;
+import net.sf.oval.internal.util.StringUtils;
 
 /**
  * Partial implementation of check classes.
@@ -210,12 +212,12 @@ public abstract class AbstractCheck implements Check {
             whenFormula = null;
             whenLang = null;
          } else {
-            final String[] parts = when.split(":", 2);
-            if (parts.length == 0)
+            final List<String> parts = StringUtils.split(when, ':', 2);
+            if (parts.size() < 2)
                throw new IllegalArgumentException("[when] is missing the scripting language declaration");
             this.when = when;
-            whenLang = parts[0];
-            whenFormula = parts[1];
+            whenLang = parts.get(0);
+            whenFormula = parts.get(1);
          }
       }
    }
