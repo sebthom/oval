@@ -42,7 +42,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf> {
    protected Map<String, String> createMessageVariables() {
       final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
       messageVariables.put("ignoreCase", Boolean.toString(ignoreCase));
-      messageVariables.put("members", StringUtils.join(members, ","));
+      messageVariables.put("members", StringUtils.join(members, ','));
       return messageVariables;
    }
 

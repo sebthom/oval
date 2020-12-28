@@ -42,7 +42,7 @@ public class InstanceOfAnyCheck extends AbstractAnnotationCheck<InstanceOfAny> {
          for (int i = 0, l = classNames.length; i < l; i++) {
             classNames[i] = types[i].getName();
          }
-         messageVariables.put("types", StringUtils.join(classNames, ","));
+         messageVariables.put("types", StringUtils.join(classNames, ','));
       }
       return messageVariables;
    }

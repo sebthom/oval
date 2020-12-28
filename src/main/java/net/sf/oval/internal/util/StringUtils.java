@@ -19,11 +19,11 @@ import net.sf.oval.Validator;
  */
 public final class StringUtils {
 
-   public static String join(final Collection<?> values, final CharSequence delimiter) {
+   public static String join(final Collection<?> values, final char delimiter) {
       if (values == null || values.isEmpty())
          return "";
 
-      final StringBuilder out = new StringBuilder();
+      final StringBuilder out = new StringBuilder(3 * values.size());
       boolean isFirst = true;
       for (final Object value : values) {
          if (isFirst) {
@@ -36,11 +36,11 @@ public final class StringUtils {
       return out.toString();
    }
 
-   public static String join(final Object[] values, final CharSequence delimiter) {
+   public static String join(final Object[] values, final char delimiter) {
       if (values == null || values.length == 0)
          return "";
 
-      final StringBuilder out = new StringBuilder();
+      final StringBuilder out = new StringBuilder(3 * values.length);
       for (int i = 0, l = values.length; i < l; i++) {
          if (i > 0) {
             out.append(delimiter);

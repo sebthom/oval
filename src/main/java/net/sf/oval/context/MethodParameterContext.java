@@ -46,7 +46,7 @@ public class MethodParameterContext extends OValContext {
 
    @Override
    public String toString() {
-      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ",") + ") " //
+      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ',') + ") " //
          + Validator.getMessageResolver().getMessage("net.sf.oval.context.MethodParameterContext.parameter") + " " //
          + parameterIndex //
          + (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName + ")");

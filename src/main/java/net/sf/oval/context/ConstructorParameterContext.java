@@ -46,7 +46,7 @@ public class ConstructorParameterContext extends OValContext {
 
    @Override
    public String toString() {
-      return constructor.getDeclaringClass().getName() + "(" + StringUtils.join(constructor.getParameterTypes(), ",") + ") " //
+      return constructor.getDeclaringClass().getName() + "(" + StringUtils.join(constructor.getParameterTypes(), ',') + ") " //
          + Validator.getMessageResolver().getMessage("net.sf.oval.context.ConstructorParameterContext.parameter") + " " //
          + parameterIndex //
          + (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName + ")");
