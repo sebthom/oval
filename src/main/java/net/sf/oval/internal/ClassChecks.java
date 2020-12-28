@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,6 @@ import net.sf.oval.guard.IsGuarded;
 import net.sf.oval.guard.ParameterNameResolver;
 import net.sf.oval.guard.PostCheck;
 import net.sf.oval.guard.PreCheck;
-import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
@@ -127,7 +127,7 @@ public final class ClassChecks {
          final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
          checksOfConstructorParameter.checkExclusions.addAll(exclusionsColl);
       } else {
-         ArrayUtils.addAll(checksOfConstructorParameter.checkExclusions, (CheckExclusion[]) exclusions);
+         Collections.addAll(checksOfConstructorParameter.checkExclusions, (CheckExclusion[]) exclusions);
       }
    }
 
@@ -198,7 +198,7 @@ public final class ClassChecks {
          final Collection<CheckExclusion> exclusionsColl = (Collection<CheckExclusion>) exclusions;
          checksOfMethodParameter.checkExclusions.addAll(exclusionsColl);
       } else {
-         ArrayUtils.addAll(checksOfMethodParameter.checkExclusions, (CheckExclusion[]) exclusions);
+         Collections.addAll(checksOfMethodParameter.checkExclusions, (CheckExclusion[]) exclusions);
       }
    }
 

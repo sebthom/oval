@@ -9,8 +9,7 @@
  *********************************************************************/
 package net.sf.oval.internal.util;
 
-import static net.sf.oval.Validator.getCollectionFactory;
-import static net.sf.oval.Validator.getLocaleProvider;
+import static net.sf.oval.Validator.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -68,7 +67,7 @@ public final class ReflectionUtils {
       final List<Annotation> annotations = ArrayUtils.asList(clazz.getAnnotations());
       for (final Class<?> next : ReflectionUtils.getInterfacesRecursive(clazz, includedInterfaces, excludedInterfaces)) {
          final Annotation[] declaredAnnotations = next.getDeclaredAnnotations();
-         annotations.addAll(ArrayUtils.asList(declaredAnnotations));
+         Collections.addAll(annotations, declaredAnnotations);
       }
       return annotations.toArray(new Annotation[annotations.size()]);
    }
@@ -91,7 +90,7 @@ public final class ReflectionUtils {
       final List<Annotation> annotations = ArrayUtils.asList(method.getAnnotations());
       for (final Class<?> nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass(), includedInterfaces, excludedInterfaces)) {
          try {
-            ArrayUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
+            Collections.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
          } catch (final NoSuchMethodException ex) {
             // ignore
          }
@@ -214,14 +213,12 @@ public final class ReflectionUtils {
 
    public static List<Method> getInterfaceMethods(final Method method, final Set<Class<?>> includedInterfaces, final Set<Class<?>> excludedInterfaces) {
       // static methods cannot be overridden
-      if (isStatic(method)) {
+      if (isStatic(method))
          return Collections.emptyList();
-      }
 
       final Set<Class<?>> interfaces = getInterfacesRecursive(method.getDeclaringClass(), includedInterfaces, excludedInterfaces);
-      if (interfaces.isEmpty()) {
+      if (interfaces.isEmpty())
          return Collections.emptyList();
-      }
 
       final String methodName = method.getName();
       final Class<?>[] parameterTypes = method.getParameterTypes();

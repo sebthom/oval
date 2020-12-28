@@ -11,6 +11,7 @@ package net.sf.oval.constraint;
 
 import static net.sf.oval.Validator.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
-import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.StringUtils;
 
 /**
@@ -96,7 +96,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf> {
 
    public void setMembers(final String... members) {
       this.members = getCollectionFactory().createList();
-      ArrayUtils.addAll(this.members, members);
+      Collections.addAll(this.members, members);
       membersLowerCase = null;
       requireMessageVariablesRecreation();
    }
