@@ -10,7 +10,6 @@
 package net.sf.oval.exception;
 
 /**
- * 
  * @author Sebastian Thomschke
  */
 public class ValidationFailedException extends OValException {

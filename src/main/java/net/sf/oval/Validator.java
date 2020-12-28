@@ -84,15 +84,11 @@ import net.sf.oval.ogn.ObjectGraphNavigationResult;
 import net.sf.oval.ogn.ObjectGraphNavigatorRegistry;
 
 /**
- * <p>
  * Instances of this class can validate objects based on declared constraints.
  * Constraints can either be declared using OVal's constraint annotations, XML configuration
- * files or EJB3 JPA annotations.
- * </p>
- *
- * <p>
+ * files or EJB3 JPA annotations.<br/>
+ * <br/>
  * This class is thread-safe.
- * </p>
  *
  * @author Sebastian Thomschke
  *
@@ -627,7 +623,7 @@ public class Validator implements IValidator {
             }
          }
 
-         // if the super class is annotated to be validatable also validate it against the object
+         // validate checks applied to the super class (if any)
          _validateObjectInvariants(validatedObject, clazz.getSuperclass(), cycle);
       } catch (final OValException ex) {
          throw new ValidationFailedException("Object validation failed. Class: " + clazz + " Validated object: " + validatedObject, ex);
@@ -636,7 +632,8 @@ public class Validator implements IValidator {
 
    /**
     * Validates the static field and static getter constrains of the given class.
-    * Constraints specified for super classes are not taken in account.
+    *
+    * Constraints specified for super classes are not validated.
     */
    private void _validateStaticInvariants(final Class<?> validatedClass, final ValidationCycle cycle) throws ValidationFailedException {
 
@@ -762,8 +759,6 @@ public class Validator implements IValidator {
       if (!check.isActive(validatedObject, valueToValidate, this))
          return;
 
-      final ConstraintTarget[] targets = check.getAppliesTo();
-
       // only process the target expression if we are not already on a value inside the container object (collection, array, map)
       if (!isContainerValue) {
          String target = check.getTarget();
@@ -781,17 +776,16 @@ public class Validator implements IValidator {
                   ognId = chunks.get(0);
                   path = chunks.get(1);
                }
-               final ObjectGraphNavigationResult result = ognRegistry.getObjectGraphNavigator(ognId) //
+               final ObjectGraphNavigationResult ognResult = ognRegistry.getObjectGraphNavigator(ognId) //
                   .navigateTo(valueToValidate, path);
-               if (result == null)
+               if (ognResult == null)
                   return;
-               validatedObject = result.targetParent;
-               valueToValidate = result.target;
-               if (result.targetAccessor instanceof Field) {
-                  context = ContextCache.getFieldContext((Field) result.targetAccessor);
-               } else {
-                  context = ContextCache.getMethodReturnValueContext((Method) result.targetAccessor);
-               }
+
+               validatedObject = ognResult.targetParent;
+               valueToValidate = ognResult.target;
+               context = ognResult.targetAccessor instanceof Field //
+                  ? ContextCache.getFieldContext((Field) ognResult.targetAccessor) //
+                  : ContextCache.getMethodReturnValueContext((Method) ognResult.targetAccessor);
             }
          }
       }
@@ -804,6 +798,8 @@ public class Validator implements IValidator {
       final boolean isArray = !isCollection && !isMap && //
          (valueToValidate != null ? valueToValidate.getClass().isArray() : compileTimeType.isArray());
       final boolean isContainer = isCollection || isMap || isArray;
+
+      final ConstraintTarget[] targets = check.getAppliesTo();
 
       if (isContainer && valueToValidate != null) {
          if (isCollection) {
@@ -1327,8 +1323,9 @@ public class Validator implements IValidator {
    }
 
    /**
-    * validates the field and getter constrains of the given object.
-    * if the given object is a class the static fields and getters are validated.
+    * Validates the field and getter constrains of the given object.
+    *
+    * If the given object is a class the static fields and getters are validated.
     */
    protected void validateInvariants(final Object validatedObject, final ValidationCycle cycle) throws ValidationFailedException {
       currentValidationCycles.get().getLast().validatedObjects.add(validatedObject);
