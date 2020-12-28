@@ -32,6 +32,6 @@ public class MethodExitContext extends OValContext {
 
    @Override
    public String toString() {
-      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.implode(method.getParameterTypes(), ",") + ")";
+      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ",") + ")";
    }
 }

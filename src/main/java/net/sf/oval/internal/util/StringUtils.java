@@ -19,16 +19,28 @@ import net.sf.oval.Validator;
  */
 public final class StringUtils {
 
-   public static String implode(final Collection<?> values, final String delimiter) {
-      return implode(values.toArray(), delimiter);
-   }
-
-   public static String implode(final Object[] values, final String delimiter) {
-      if (values == null)
+   public static String join(final Collection<?> values, final CharSequence delimiter) {
+      if (values == null || values.isEmpty())
          return "";
 
       final StringBuilder out = new StringBuilder();
+      boolean isFirst = true;
+      for (final Object value : values) {
+         if (isFirst) {
+            isFirst = false;
+         } else {
+            out.append(delimiter);
+         }
+         out.append(value);
+      }
+      return out.toString();
+   }
 
+   public static String join(final Object[] values, final CharSequence delimiter) {
+      if (values == null || values.length == 0)
+         return "";
+
+      final StringBuilder out = new StringBuilder();
       for (int i = 0, l = values.length; i < l; i++) {
          if (i > 0) {
             out.append(delimiter);
@@ -44,15 +56,15 @@ public final class StringUtils {
    public static String replaceAll(final String searchIn, final String searchFor, final String replaceWith) {
       final StringBuilder out = new StringBuilder();
 
-      int searchFrom = 0, foundAt = 0;
+      int startAt = 0, foundAt = 0;
       final int searchForLength = searchFor.length();
 
-      while ((foundAt = searchIn.indexOf(searchFor, searchFrom)) >= 0) {
-         out.append(searchIn.substring(searchFrom, foundAt)).append(replaceWith);
-         searchFrom = foundAt + searchForLength;
+      while ((foundAt = searchIn.indexOf(searchFor, startAt)) >= 0) {
+         out.append(searchIn.substring(startAt, foundAt)).append(replaceWith);
+         startAt = foundAt + searchForLength;
       }
 
-      return out.append(searchIn.substring(searchFrom, searchIn.length())).toString();
+      return out.append(searchIn.substring(startAt, searchIn.length())).toString();
    }
 
    public static List<String> split(final String str, final char separator, final int maxParts) {
