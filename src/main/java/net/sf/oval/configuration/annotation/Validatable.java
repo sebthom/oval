@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to apply class-level validation configurations.
+ * Optional annotation to apply class-level validation configurations.
  *
  * @author Sebastian Thomschke
  */
@@ -43,5 +43,4 @@ public @interface Validatable {
     * Only applicable if {@link #inspectInterfaces()} is set to <code>true</code>.
     */
    Class<?>[] includedInterfaces() default {};
-
 }
