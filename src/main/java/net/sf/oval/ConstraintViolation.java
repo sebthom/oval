@@ -76,14 +76,14 @@ public class ConstraintViolation implements Serializable {
    }
 
    /**
-    * @return the causes or null of no causes exists
+    * @return the causes or null if no cause exists
     */
    public ConstraintViolation[] getCauses() {
       return causes == null ? null : causes.clone();
    }
 
    /**
-    * @return Returns the context where the constraint was declared.
+    * @return the context where the constraint was declared.
     *
     * @see net.sf.oval.context.ClassContext
     * @see net.sf.oval.context.FieldContext
@@ -104,7 +104,7 @@ public class ConstraintViolation implements Serializable {
    }
 
    /**
-    * @return Returns the context where the constraint violation occurred.
+    * @return the context where the constraint violation occurred.
     *
     * @see net.sf.oval.context.ClassContext
     * @see net.sf.oval.context.FieldContext
@@ -122,7 +122,7 @@ public class ConstraintViolation implements Serializable {
    }
 
    /**
-    * @return Returns the value that was validated.
+    * @return the value that was validated.
     */
    public Object getInvalidValue() {
       return invalidValue;
@@ -143,8 +143,6 @@ public class ConstraintViolation implements Serializable {
    }
 
    /**
-    * Returns the message variables provided by the corresponding check.
-    *
     * @return an unmodifiable map holding the message variables provided by the corresponding check.
     */
    public Map<String, ? extends Serializable> getMessageVariables() {
@@ -160,7 +158,7 @@ public class ConstraintViolation implements Serializable {
    }
 
    /**
-    * see http://java.sun.com/developer/technicalArticles/ALT/serialization/
+    * @see Serializable
     */
    private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
       in.defaultReadObject();
@@ -178,13 +176,15 @@ public class ConstraintViolation implements Serializable {
    }
 
    /**
-    * see http://java.sun.com/developer/technicalArticles/ALT/serialization/
+    * @see Serializable
     */
    private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
       out.defaultWriteObject();
+
       if (validatedObject instanceof Serializable) {
          // indicate validatedObject implements Serializable
          out.writeBoolean(true);
+
          out.writeObject(validatedObject);
       } else {
          LOG.warn("Field 'validatedObject' not serialized because the field value object " + validatedObject + " of type " + invalidValue.getClass()
@@ -197,11 +197,11 @@ public class ConstraintViolation implements Serializable {
       if (invalidValue instanceof Serializable) {
          // indicate value implements Serializable
          out.writeBoolean(true);
+
          out.writeObject(invalidValue);
       } else {
-         final String warning = //
-            "Field 'invalidValue' could not be serialized because the field value object {1} does not implement java.io.Serializable.";
-         LOG.warn(warning, invalidValue);
+         LOG.warn("Field 'invalidValue' could not be serialized because the field value object {1} does not implement java.io.Serializable.", invalidValue);
+
          // indicate value does not implement Serializable
          out.writeBoolean(false);
       }
