@@ -792,20 +792,20 @@ public class Validator implements IValidator {
 
       final Class<?> compileTimeType = context.getCompileTimeType();
 
-      final boolean isCollection = valueToValidate != null ? valueToValidate instanceof Collection<?> : Collection.class.isAssignableFrom(compileTimeType);
-      final boolean isMap = !isCollection && //
+      final boolean isIterable = valueToValidate != null ? valueToValidate instanceof Iterable<?> : Iterable.class.isAssignableFrom(compileTimeType);
+      final boolean isMap = !isIterable && //
          (valueToValidate != null ? valueToValidate instanceof Map<?, ?> : Map.class.isAssignableFrom(compileTimeType));
-      final boolean isArray = !isCollection && !isMap && //
+      final boolean isArray = !isIterable && !isMap && //
          (valueToValidate != null ? valueToValidate.getClass().isArray() : compileTimeType.isArray());
-      final boolean isContainer = isCollection || isMap || isArray;
+      final boolean isContainer = isIterable || isMap || isArray;
 
       final ConstraintTarget[] targets = check.getAppliesTo();
 
       if (isContainer && valueToValidate != null) {
-         if (isCollection) {
+         if (isIterable) {
             if (ArrayUtils.containsSame(targets, ConstraintTarget.VALUES) //
                && (!isContainerValue || ArrayUtils.containsSame(targets, ConstraintTarget.RECURSIVE))) {
-               for (final Object item : (Collection<?>) valueToValidate) {
+               for (final Object item : (Iterable<?>) valueToValidate) {
                   checkConstraint(check, validatedObject, item, context, cycle, true);
                }
             }
