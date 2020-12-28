@@ -25,7 +25,7 @@ import net.sf.oval.internal.util.Invocable;
  * @author Sebastian Thomschke
  */
 public class GuardInterceptor implements MethodInterceptor, ConstructorInterceptor {
-   protected static final class MethodInvocable implements Invocable {
+   protected static final class MethodInvocable implements Invocable<Object, Throwable> {
       private final MethodInvocation methodInvocation;
 
       protected MethodInvocable(final MethodInvocation methodInvocation) {
@@ -59,16 +59,12 @@ public class GuardInterceptor implements MethodInterceptor, ConstructorIntercept
       final Object target = constructorInvocation.getThis();
 
       // pre conditions
-      {
-         guard.guardConstructorPre(target, ctor, args);
-      }
+      guard.guardConstructorPre(target, ctor, args);
 
       final Object result = constructorInvocation.proceed();
 
       // post conditions
-      {
-         guard.guardConstructorPost(target, ctor, args);
-      }
+      guard.guardConstructorPost(target, ctor, args);
 
       return result;
    }

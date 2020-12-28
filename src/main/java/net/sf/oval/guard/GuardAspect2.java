@@ -38,7 +38,7 @@ import net.sf.oval.internal.util.Invocable;
  */
 @Aspect
 public abstract class GuardAspect2 extends ApiUsageAuditor2 {
-   private static final class ProceedInvocable implements Invocable {
+   private static final class ProceedInvocable implements Invocable<Object, Throwable> {
       final ProceedingJoinPoint thisJoinPoint;
 
       protected ProceedInvocable(final ProceedingJoinPoint thisJoinPoint) {
