@@ -9,19 +9,23 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.lang.annotation.Annotation;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.Check;
 import net.sf.oval.internal.util.ReflectionUtils;
 
 /**
  * @author Sebastian Thomschke
  */
-public class ConstraintViolationMessagesTest extends TestCase {
+public class ConstraintViolationMessagesTest {
 
+   @Test
    @SuppressWarnings("unchecked")
    public void testMessages() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       final ResourceBundle bundle = ResourceBundle.getBundle("net.sf.oval.Messages");
@@ -34,13 +38,13 @@ public class ConstraintViolationMessagesTest extends TestCase {
 
             // check that the default message defined on the annotation is the same as the key read from the bundle
             final String annotationMessage = (String) ReflectionUtils.getMethod(annotationClass, "message").getDefaultValue();
-            assertEquals(key, annotationMessage);
+            assertThat(annotationMessage).isEqualTo(key);
             final String annotationErrorCode = (String) ReflectionUtils.getMethod(annotationClass, "errorCode").getDefaultValue();
-            assertEquals(className, annotationErrorCode);
+            assertThat(annotationErrorCode).isEqualTo(className);
 
             // check that the message key returned by the check instance is the same as the key read from the bundle
             final Check check = (Check) Class.forName(className + "Check").newInstance();
-            assertEquals(key, check.getMessage());
+            assertThat(check.getMessage()).isEqualTo(key);
          } else if (key.endsWith(".parameter")) {
             final String className = key.substring(0, key.length() - 10);
             Class.forName(className);

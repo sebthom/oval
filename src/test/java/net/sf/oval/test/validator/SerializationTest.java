@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,7 +19,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.Length;
@@ -25,7 +28,8 @@ import net.sf.oval.constraint.Length;
 /**
  * @author Sebastian Thomschke
  */
-public class SerializationTest extends TestCase {
+public class SerializationTest {
+
    protected static class Person implements Serializable {
       private static final long serialVersionUID = 1L;
 
@@ -33,13 +37,14 @@ public class SerializationTest extends TestCase {
       public String firstName;
    }
 
+   @Test
    public void testSerialization() throws IOException, ClassNotFoundException {
       final Validator validator = new Validator();
 
       final Person p = new Person();
       p.firstName = "123456";
       final List<ConstraintViolation> violations = validator.validate(p);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
 
       // serialize the violations
       final ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -51,6 +56,6 @@ public class SerializationTest extends TestCase {
       // deserialize the violations
       final ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
       final ObjectInputStream ois = new ObjectInputStream(bis);
-      assertTrue(ois.readObject() instanceof List);
+      assertThat(ois.readObject() instanceof List).isTrue();
    }
 }

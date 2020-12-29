@@ -9,7 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import javax.validation.ConstraintViolationException;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.AssertFieldConstraints;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
@@ -19,12 +24,10 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class InheritanceTest extends TestCase {
+public class InheritanceTest {
+
    @Guarded
    public static class Entity extends SuperEntity {
-      /**
-       * @param name the name to set
-       */
       public void setName2(@AssertFieldConstraints final String name) {
          this.name = name;
       }
@@ -38,16 +41,10 @@ public class InheritanceTest extends TestCase {
    public static class EntityWithInterface implements EntityInterface {
       protected String name = "";
 
-      /**
-       * @return the name
-       */
       public String getName() {
          return name;
       }
 
-      /**
-       * @param name the name to set
-       */
       @Override
       public void setName(final String name) {
          this.name = name;
@@ -58,16 +55,10 @@ public class InheritanceTest extends TestCase {
    public static class EntityWithInterfaceButUnapplied implements EntityInterface {
       protected String name = "";
 
-      /**
-       * @return the name
-       */
       public String getName() {
          return name;
       }
 
-      /**
-       * @param name the name to set
-       */
       @Override
       public void setName(final String name) {
          this.name = name;
@@ -79,21 +70,16 @@ public class InheritanceTest extends TestCase {
       @NotNull
       protected String name = "";
 
-      /**
-       * @return the name
-       */
       public String getName() {
          return name;
       }
 
-      /**
-       * @param name the name to set
-       */
       public void setName(final String name) {
          this.name = name;
       }
    }
 
+   @Test
    public void testInheritance() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -102,19 +88,20 @@ public class InheritanceTest extends TestCase {
 
       try {
          e.setName(null);
-         fail("ConstraintViolationException should have been thrown");
+         failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
       } catch (final ConstraintsViolatedException ex) {
          // expected
       }
 
       try {
          e.setName2(null);
-         fail("ConstraintViolationException should have been thrown");
+         failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
       } catch (final ConstraintsViolatedException ex) {
          // expected
       }
    }
 
+   @Test
    public void testInterface() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -123,12 +110,13 @@ public class InheritanceTest extends TestCase {
 
       try {
          e.setName(null);
-         fail("ConstraintViolationException should have been thrown");
+         failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
       } catch (final ConstraintsViolatedException ex) {
          // expected
       }
    }
 
+   @Test
    public void testInterfaceNotApplied() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);

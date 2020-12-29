@@ -9,14 +9,18 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-import net.sf.oval.Check;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.pojo.elements.ClassConfiguration;
@@ -33,7 +37,6 @@ import net.sf.oval.constraint.LengthCheck;
 import net.sf.oval.constraint.MatchPatternCheck;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.exception.ConstraintsViolatedException;
-import net.sf.oval.exception.ValidationFailedException;
 import net.sf.oval.guard.ConstraintsViolatedAdapter;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
@@ -42,21 +45,19 @@ import net.sf.oval.localization.locale.ThreadLocalLocaleProvider;
 /**
  * @author Sebastian Thomschke
  */
-public class XMLConfigurationTest extends TestCase {
+public class XMLConfigurationTest {
+
    @Guarded
    public static class User {
       // added @Length to test if overwrite=true works
       @Length(min = 10, max = 10)
       protected String userId;
-
       protected String managerId;
-
       protected String firstName;
-
       protected String lastName;
 
       public User() {
-         // do nothing
+         // nothing to do
       }
 
       public User(final String userId, final String managerId, @SuppressWarnings("unused") final int somethingElse) {
@@ -64,16 +65,10 @@ public class XMLConfigurationTest extends TestCase {
          this.managerId = managerId;
       }
 
-      /**
-       * @return the managerId
-       */
       public String getManagerId() {
          return managerId;
       }
 
-      /**
-       * @param managerId the managerId to set
-       */
       public void setManagerId(final String managerId) {
          this.managerId = managerId;
       }
@@ -90,9 +85,11 @@ public class XMLConfigurationTest extends TestCase {
          fail("ConstraintViolationException expected");
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertEquals(2, violations.length);
-         assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) parameter 0 (userId) is null", violations[0].getMessage());
-         assertEquals(User.class.getName() + "(class java.lang.String,class java.lang.String,int) parameter 1 (managerId) is null", violations[1].getMessage());
+         assertThat(violations).hasSize(2);
+         assertThat(violations[0].getMessage()).isEqualTo(User.class.getName()
+            + "(class java.lang.String,class java.lang.String,int) parameter 0 (userId) is null");
+         assertThat(violations[1].getMessage()).isEqualTo(User.class.getName()
+            + "(class java.lang.String,class java.lang.String,int) parameter 1 (managerId) is null");
       }
 
       listener.clear();
@@ -102,8 +99,8 @@ public class XMLConfigurationTest extends TestCase {
          fail("ConstraintViolationException expected");
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertEquals(1, violations.length);
-         assertEquals(User.class.getName() + ".setManagerId(class java.lang.String) parameter 0 (managerId) is null", violations[0].getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo(User.class.getName() + ".setManagerId(class java.lang.String) parameter 0 (managerId) is null");
       }
 
       listener.clear();
@@ -113,37 +110,34 @@ public class XMLConfigurationTest extends TestCase {
          fail("ConstraintViolationException expected");
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertEquals(1, violations.length);
-         assertEquals(User.class.getName() + ".getManagerId() is null", violations[0].getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo(User.class.getName() + ".getManagerId() is null");
       }
    }
 
-   @Override
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       ((ThreadLocalLocaleProvider) Validator.getLocaleProvider()).setLocale(Locale.ENGLISH);
    }
 
-   @Override
-   protected void tearDown() throws Exception {
+   @After
+   public void tearDown() throws Exception {
       ((ThreadLocalLocaleProvider) Validator.getLocaleProvider()).setLocale(null);
    }
 
+   @Test
    public void testImportedFile() {
-      try {
-         final XMLConfigurer x = new XMLConfigurer();
-         x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
+      final XMLConfigurer x = new XMLConfigurer();
+      x.fromXML(XMLConfigurationTest.class.getResourceAsStream("XMLConfigurationTest.xml"));
 
-         final Guard guard = new Guard(x);
-         guard.setInvariantsEnabled(false);
-         TestGuardAspect.aspectOf().setGuard(guard);
+      final Guard guard = new Guard(x);
+      guard.setInvariantsEnabled(false);
+      TestGuardAspect.aspectOf().setGuard(guard);
 
-         validateUser();
-      } catch (final ValidationFailedException ex) {
-         ex.getCause().printStackTrace();
-         throw ex;
-      }
+      validateUser();
    }
 
+   @Test
    public void testSerializedObjectConfiguration() {
       final XMLConfigurer x = new XMLConfigurer();
 
@@ -156,7 +150,7 @@ public class XMLConfigurationTest extends TestCase {
          constraintSetsConfig.add(csf);
 
          csf.id = "user.userid";
-         csf.checks = new ArrayList<Check>();
+         csf.checks = new ArrayList<>();
          final NotNullCheck nnc = new NotNullCheck();
          nnc.setMessage("{context} is null");
          csf.checks.add(nnc);
@@ -172,13 +166,13 @@ public class XMLConfigurationTest extends TestCase {
          classConfigs.add(cf);
          cf.type = User.class;
 
-         cf.fieldConfigurations = new HashSet<FieldConfiguration>();
+         cf.fieldConfigurations = new HashSet<>();
          {
             final FieldConfiguration fc = new FieldConfiguration();
             cf.fieldConfigurations.add(fc);
 
             fc.name = "firstName";
-            fc.checks = new ArrayList<Check>();
+            fc.checks = new ArrayList<>();
             final LengthCheck lc = new LengthCheck();
             lc.setMessage("{context} is not between {min} and {max} characters long");
             lc.setMax(3);
@@ -189,7 +183,7 @@ public class XMLConfigurationTest extends TestCase {
             cf.fieldConfigurations.add(fc);
 
             fc.name = "lastName";
-            fc.checks = new ArrayList<Check>();
+            fc.checks = new ArrayList<>();
             final LengthCheck lc = new LengthCheck();
             lc.setMessage("{context} is not between {min} and {max} characters long");
             lc.setMax(5);
@@ -201,29 +195,29 @@ public class XMLConfigurationTest extends TestCase {
             cf.fieldConfigurations.add(fc);
 
             fc.name = "userId";
-            fc.checks = new ArrayList<Check>();
+            fc.checks = new ArrayList<>();
             final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
             acsc.setId("user.userid");
             fc.checks.add(acsc);
          }
 
-         cf.constructorConfigurations = new HashSet<ConstructorConfiguration>();
+         cf.constructorConfigurations = new HashSet<>();
          {
             final ConstructorConfiguration cc = new ConstructorConfiguration();
             cf.constructorConfigurations.add(cc);
-            cc.parameterConfigurations = new ArrayList<ParameterConfiguration>();
+            cc.parameterConfigurations = new ArrayList<>();
 
             final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
             acsc.setId("user.userid");
 
             final ParameterConfiguration pc1 = new ParameterConfiguration();
             pc1.type = String.class;
-            pc1.checks = new ArrayList<Check>();
+            pc1.checks = new ArrayList<>();
             pc1.checks.add(acsc);
             cc.parameterConfigurations.add(pc1);
             final ParameterConfiguration pc2 = new ParameterConfiguration();
             pc2.type = String.class;
-            pc2.checks = new ArrayList<Check>();
+            pc2.checks = new ArrayList<>();
             pc2.checks.add(acsc);
             cc.parameterConfigurations.add(pc2);
             final ParameterConfiguration pc3 = new ParameterConfiguration();
@@ -231,7 +225,7 @@ public class XMLConfigurationTest extends TestCase {
             cc.parameterConfigurations.add(pc3);
          }
 
-         cf.methodConfigurations = new HashSet<MethodConfiguration>();
+         cf.methodConfigurations = new HashSet<>();
          {
             final AssertConstraintSetCheck acsc = new AssertConstraintSetCheck();
             acsc.setId("user.userid");
@@ -240,16 +234,16 @@ public class XMLConfigurationTest extends TestCase {
             cf.methodConfigurations.add(mc);
             mc.name = "getManagerId";
             mc.returnValueConfiguration = new MethodReturnValueConfiguration();
-            mc.returnValueConfiguration.checks = new ArrayList<Check>();
+            mc.returnValueConfiguration.checks = new ArrayList<>();
             mc.returnValueConfiguration.checks.add(acsc);
 
             mc = new MethodConfiguration();
             cf.methodConfigurations.add(mc);
             mc.name = "setManagerId";
-            mc.parameterConfigurations = new ArrayList<ParameterConfiguration>();
+            mc.parameterConfigurations = new ArrayList<>();
             final ParameterConfiguration pc1 = new ParameterConfiguration();
             pc1.type = String.class;
-            pc1.checks = new ArrayList<Check>();
+            pc1.checks = new ArrayList<>();
             pc1.checks.add(acsc);
             mc.parameterConfigurations.add(pc1);
          }

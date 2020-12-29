@@ -9,32 +9,36 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.Assert;
 
 /**
- * JSR223 integration tst
+ * JSR223 integration test
  *
  * @author Sebastian Thomschke
  */
-public class AssertScriptEngineJavascriptTest extends TestCase {
+public class AssertGroovyViaScriptEngineTest {
+
    @Assert( //
       expr = "_this.firstName!=null && _this.lastName!=null && (_this.firstName.length() + _this.lastName.length() > 9)", //
-      lang = "groovy", //
+      lang = "Groovy", //
       errorCode = "C0" //
    )
-   public static class Person {
-      @Assert(expr = "_value!=null", lang = "groovy", errorCode = "C1")
+   protected static class Person {
+      @Assert(expr = "_value!=null", lang = "Groovy", errorCode = "C1")
       public String firstName;
 
-      @Assert(expr = "_value!=null", lang = "groovy", errorCode = "C2")
+      @Assert(expr = "_value!=null", lang = "Groovy", errorCode = "C2")
       public String lastName;
 
-      @Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "groovy", errorCode = "C3")
+      @Assert(expr = "_value!=null && _value.length()>0 && _value.length()<7", lang = "Groovy", errorCode = "C3")
       public String zipCode;
    }
 
@@ -66,6 +70,7 @@ public class AssertScriptEngineJavascriptTest extends TestCase {
       }
    }
 
+   @Test
    public void testConcurrency() throws InterruptedException {
       final Validator validator = new Validator();
 
@@ -78,41 +83,42 @@ public class AssertScriptEngineJavascriptTest extends TestCase {
       thread2.start();
       thread1.join();
       thread2.join();
-      assertFalse(failed[0]);
+      assertThat(failed[0]).isFalse();
    }
 
-   public void testJavaScriptExpression() {
+   @Test
+   public void testGroovyExpression() {
       final Validator validator = new Validator();
 
       // test not null
       final Person p = new Person();
       List<ConstraintViolation> violations = validator.validate(p);
-      assertEquals(violations.size(), 4);
+      assertThat(violations).hasSize(4);
 
       // test max length
       p.firstName = "Mike";
       p.lastName = "Mahoney";
-      p.zipCode = "1234567";
+      p.zipCode = "1234567"; // too long
       violations = validator.validate(p);
-      assertEquals(violations.size(), 1);
-      assertEquals(violations.get(0).getErrorCode(), "C3");
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getErrorCode()).isEqualTo("C3");
 
       // test not empty
       p.zipCode = "";
       violations = validator.validate(p);
-      assertEquals(violations.size(), 1);
-      assertEquals(violations.get(0).getErrorCode(), "C3");
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getErrorCode()).isEqualTo("C3");
 
       // test ok
       p.zipCode = "wqeew";
       violations = validator.validate(p);
-      assertEquals(violations.size(), 0);
+      assertThat(violations).isEmpty();
 
       // test object-level constraint
       p.firstName = "12345";
       p.lastName = "1234";
       violations = validator.validate(p);
-      assertEquals(violations.size(), 1);
-      assertEquals(violations.get(0).getErrorCode(), "C0");
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getErrorCode()).isEqualTo("C0");
    }
 }

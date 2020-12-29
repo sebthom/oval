@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.AssertFieldConstraints;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
@@ -23,7 +26,7 @@ import net.sf.oval.guard.ProbeModeListener;
 /**
  * @author Sebastian Thomschke
  */
-public class ProbeModeTest extends TestCase {
+public class ProbeModeTest {
 
    @Guarded
    protected static class Person {
@@ -64,6 +67,7 @@ public class ProbeModeTest extends TestCase {
       }
    }
 
+   @Test
    public void testProbeModeWithIllegalValues() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -76,19 +80,20 @@ public class ProbeModeTest extends TestCase {
       p.setZipCode("abcde");
       final ProbeModeListener result = guard.disableProbeMode(p);
 
-      assertEquals("", p.getFirstName());
-      assertEquals("", p.getLastName());
-      assertEquals("1", p.getZipCode());
-      assertEquals(3, result.getConstraintsViolatedExceptions().size());
-      assertEquals(3, result.getConstraintViolations().size());
+      assertThat(p.getFirstName()).isEmpty();
+      assertThat(p.getLastName()).isEmpty();
+      assertThat(p.getZipCode()).isEqualTo("1");
+      assertThat(result.getConstraintsViolatedExceptions()).hasSize(3);
+      assertThat(result.getConstraintViolations()).hasSize(3);
       try {
          result.commit();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          // expected
       }
    }
 
+   @Test
    public void testProbeModeWithValidValues() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -102,16 +107,16 @@ public class ProbeModeTest extends TestCase {
 
       final ProbeModeListener result = guard.disableProbeMode(p);
 
-      assertEquals("", p.getFirstName());
-      assertEquals("", p.getLastName());
-      assertEquals("1", p.getZipCode());
-      assertEquals(0, result.getConstraintsViolatedExceptions().size());
-      assertEquals(0, result.getConstraintViolations().size());
+      assertThat(p.getFirstName()).isEmpty();
+      assertThat(p.getLastName()).isEmpty();
+      assertThat(p.getZipCode()).isEqualTo("1");
+      assertThat(result.getConstraintsViolatedExceptions()).isEmpty();
+      assertThat(result.getConstraintViolations()).isEmpty();
 
       result.commit();
 
-      assertEquals("John", p.getFirstName());
-      assertEquals("Doe", p.getLastName());
-      assertEquals("12345", p.getZipCode());
+      assertThat(p.getFirstName()).isEqualTo("John");
+      assertThat(p.getLastName()).isEqualTo("Doe");
+      assertThat(p.getZipCode()).isEqualTo("12345");
    }
 }

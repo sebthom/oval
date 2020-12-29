@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.AssertFieldConstraints;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
@@ -19,7 +22,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class StaticMethodsTest extends TestCase {
+public class StaticMethodsTest {
+
    @Guarded
    private static class TestEntity {
 
@@ -39,6 +43,7 @@ public class StaticMethodsTest extends TestCase {
       }
    }
 
+   @Test
    public void testPostValidateThis() throws Exception {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -47,16 +52,17 @@ public class StaticMethodsTest extends TestCase {
 
       try {
          TestEntity.doSomethingPost();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(1, ex.getConstraintViolations().length);
-         assertEquals("NULL", ex.getConstraintViolations()[0].getMessage());
+         assertThat(ex.getConstraintViolations()).hasSize(1);
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("NULL");
       }
 
       TestEntity.value = "";
       TestEntity.doSomethingPost();
    }
 
+   @Test
    public void testPreValidateThis() throws Exception {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -65,26 +71,27 @@ public class StaticMethodsTest extends TestCase {
 
       try {
          TestEntity.doSomethingPre();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(1, ex.getConstraintViolations().length);
-         assertEquals("NULL", ex.getConstraintViolations()[0].getMessage());
+         assertThat(ex.getConstraintViolations()).hasSize(1);
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("NULL");
       }
 
       TestEntity.value = "";
       TestEntity.doSomethingPre();
    }
 
+   @Test
    public void testSetterValidation() throws Exception {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
 
       try {
          TestEntity.setValue(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(1, ex.getConstraintViolations().length);
-         assertEquals("NULL", ex.getConstraintViolations()[0].getMessage());
+         assertThat(ex.getConstraintViolations()).hasSize(1);
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("NULL");
       }
    }
 }

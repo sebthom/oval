@@ -9,22 +9,28 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.AssertFalseCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AssertFalseTest extends AbstractContraintsTest {
+
+   @Test
    public void testAssertFalse() {
       final AssertFalseCheck check = new AssertFalseCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
-      assertTrue(check.isSatisfied(null, false, null, null));
-      assertFalse(check.isSatisfied(null, true, null, null));
-      assertTrue(check.isSatisfied(null, Boolean.FALSE, null, null));
-      assertFalse(check.isSatisfied(null, Boolean.TRUE, null, null));
-      assertFalse(check.isSatisfied(null, "true", null, null));
-      assertTrue(check.isSatisfied(null, "bla", null, null));
+      assertThat(check.isSatisfied(null, false, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, true, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, Boolean.FALSE, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, Boolean.TRUE, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "true", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "bla", null, null)).isTrue();
    }
 }

@@ -9,21 +9,27 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotNullCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class NotNullTest extends AbstractContraintsTest {
+
+   @Test
    public void testNotNull() {
       final NotNullCheck check = new NotNullCheck();
       super.testCheck(check);
-      assertFalse(check.isSatisfied(null, null, null, null));
-      assertTrue(check.isSatisfied(null, "bla", null, null));
-      assertTrue(check.isSatisfied(null, true, null, null));
-      assertTrue(check.isSatisfied(null, 1, null, null));
-      assertTrue(check.isSatisfied(null, "", null, null));
-      assertTrue(check.isSatisfied(null, ' ', null, null));
-      assertTrue(check.isSatisfied(null, " ", null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "bla", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, true, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, 1, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, ' ', null, null)).isTrue();
+      assertThat(check.isSatisfied(null, " ", null, null)).isTrue();
    }
 }

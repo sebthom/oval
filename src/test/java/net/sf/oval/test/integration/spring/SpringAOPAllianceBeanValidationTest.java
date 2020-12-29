@@ -9,12 +9,14 @@
  *********************************************************************/
 package net.sf.oval.test.integration.spring;
 
+import static org.assertj.core.api.Assertions.*;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.junit.Test;
 import org.springframework.aop.framework.ProxyFactory;
 
-import junit.framework.TestCase;
 import net.sf.oval.configuration.annotation.BeanValidationAnnotationsConfigurer;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
@@ -25,7 +27,8 @@ import net.sf.oval.guard.SuppressOValWarnings;
 /**
  * @author Sebastian Thomschke
  */
-public class SpringAOPAllianceBeanValidationTest extends TestCase {
+public class SpringAOPAllianceBeanValidationTest {
+
    public interface TestServiceInterface {
       @Size(max = 5, message = "MAX_LENGTH")
       String getSomething(@NotNull(message = "NOT_NULL") String input);
@@ -53,6 +56,7 @@ public class SpringAOPAllianceBeanValidationTest extends TestCase {
       }
    }
 
+   @Test
    public void testCGLibProxying() {
       {
          final ProxyFactory prFactory = new ProxyFactory(new TestServiceWithoutInterface());
@@ -62,16 +66,16 @@ public class SpringAOPAllianceBeanValidationTest extends TestCase {
 
          try {
             testServiceWithoutInterface.getSomething(null);
-            fail();
+            failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
          } catch (final ConstraintsViolatedException ex) {
-            assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+            assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("NOT_NULL");
          }
 
          try {
             testServiceWithoutInterface.getSomething("123456");
-            fail();
+            failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
          } catch (final ConstraintsViolatedException ex) {
-            assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+            assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("MAX_LENGTH");
          }
       }
 
@@ -83,20 +87,21 @@ public class SpringAOPAllianceBeanValidationTest extends TestCase {
 
          try {
             testServiceWithInterface.getSomething(null);
-            fail();
+            failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
          } catch (final ConstraintsViolatedException ex) {
-            assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+            assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("NOT_NULL");
          }
 
          try {
             testServiceWithInterface.getSomething("123456");
-            fail();
+            failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
          } catch (final ConstraintsViolatedException ex) {
-            assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+            assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("MAX_LENGTH");
          }
       }
    }
 
+   @Test
    public void testJDKProxying() {
       final ProxyFactory prFactory = new ProxyFactory(new TestServiceWithInterface());
       prFactory.setProxyTargetClass(false);
@@ -105,16 +110,16 @@ public class SpringAOPAllianceBeanValidationTest extends TestCase {
 
       try {
          testServiceWithInterface.getSomething(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals("NOT_NULL", ex.getConstraintViolations()[0].getMessage());
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("NOT_NULL");
       }
 
       try {
          testServiceWithInterface.getSomething("123456");
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals("MAX_LENGTH", ex.getConstraintViolations()[0].getMessage());
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("MAX_LENGTH");
       }
    }
 }

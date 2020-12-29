@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.lang.reflect.InvocationTargetException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.exception.ExceptionTranslatorJDKExceptionsImpl;
@@ -19,10 +22,10 @@ import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
- *
  * @author Sebastian Thomschke
  */
-public class ExceptionTranslatorTest extends TestCase {
+public class ExceptionTranslatorTest {
+
    @Guarded
    public static final class TestEntity {
       public void setName(@SuppressWarnings("unused") @NotNull(message = "NULL") final String name) {
@@ -34,17 +37,18 @@ public class ExceptionTranslatorTest extends TestCase {
       }
    }
 
+   @Test
    public void testExceptionTranslator() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
 
-      assertNull(guard.getExceptionTranslator());
+      assertThat(guard.getExceptionTranslator()).isNull();
 
       try {
          final TestEntity t = new TestEntity();
          t.setName(null);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getMessage(), "NULL");
+         assertThat(ex.getMessage()).isEqualTo("NULL");
       }
 
       try {
@@ -53,14 +57,14 @@ public class ExceptionTranslatorTest extends TestCase {
          guard.setExceptionTranslator(new ExceptionTranslatorJDKExceptionsImpl());
          try {
             t.setName(null);
-            fail();
+            failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
          } catch (final IllegalArgumentException ex) {
-            assertEquals(ex.getMessage(), "NULL");
+            assertThat(ex.getMessage()).isEqualTo("NULL");
          }
 
          try {
             t.throwCheckedException();
-            fail();
+            failBecauseExceptionWasNotThrown(InvocationTargetException.class);
          } catch (final InvocationTargetException ex) {
             // expected
          }

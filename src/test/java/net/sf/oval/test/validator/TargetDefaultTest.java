@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
@@ -25,7 +28,7 @@ import net.sf.oval.exception.ValidationFailedException;
 /**
  * @author Sebastian Thomschke
  */
-public class TargetDefaultTest extends TestCase {
+public class TargetDefaultTest {
 
    static class Level1 {
       @MinSize(value = 4, target = "level3.array", message = "LEVEL3_ARRAY_TOO_SMALL")
@@ -52,42 +55,43 @@ public class TargetDefaultTest extends TestCase {
       List<List<String>> list;
    }
 
+   @Test
    public void testTarget() {
       final Validator v = new Validator();
       List<ConstraintViolation> violations;
 
       final Level1 lv1 = new Level1();
-      assertEquals(0, v.validate(lv1).size());
+      assertThat(v.validate(lv1)).isEmpty();
 
       lv1.level2a = new Level2();
       lv1.level2b = new Level2();
-      assertEquals(0, v.validate(lv1).size());
+      assertThat(v.validate(lv1)).isEmpty();
 
       lv1.level2a.level3 = new Level3();
       violations = v.validate(lv1);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
       lv1.level2a.level3.name = "foo";
 
       lv1.level2a.level3.array = new String[] {};
       violations = v.validate(lv1);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
       ConstraintViolation violation = violations.get(0);
-      assertTrue(violation.getContext() instanceof FieldContext);
-      assertEquals("LEVEL3_ARRAY_TOO_SMALL", violation.getMessage());
+      assertThat(violation.getContext()).isInstanceOf(FieldContext.class);
+      assertThat(violation.getMessage()).isEqualTo("LEVEL3_ARRAY_TOO_SMALL");
 
       lv1.level2a.level3.array = new String[] {"123", "1234", "1234", "1234"};
       violations = v.validate(lv1);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
       violation = violations.get(0);
-      assertTrue(violation.getContext() instanceof FieldContext);
-      assertEquals("LEVEL3_ARRAY_ITEM_TOO_SMALL", violation.getMessage());
+      assertThat(violation.getContext()).isInstanceOf(FieldContext.class);
+      assertThat(violation.getMessage()).isEqualTo("LEVEL3_ARRAY_ITEM_TOO_SMALL");
 
       try {
          lv1.level2b.level3 = new Level3();
          v.validate(lv1);
-         fail();
+         failBecauseExceptionWasNotThrown(ValidationFailedException.class);
       } catch (final ValidationFailedException ex) {
-         assertTrue(ex.getCause() instanceof InvalidConfigurationException);
+         assertThat(ex.getCause()).isInstanceOf(InvalidConfigurationException.class);
       }
    }
 }

@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.Length;
@@ -22,7 +25,7 @@ import net.sf.oval.constraint.NotNull;
 /**
  * @author Sebastian Thomschke
  */
-public class FieldConstraintsValidationTest extends TestCase {
+public class FieldConstraintsValidationTest {
    protected static class Person {
       @NotNull
       public String firstName;
@@ -39,32 +42,33 @@ public class FieldConstraintsValidationTest extends TestCase {
 
    private static final String PATTERN_ZIP_CODE = "^[0-9]*$";
 
+   @Test
    public void testFieldValidation() {
       final Validator validator = new Validator();
 
       // test @NotNull
       final Person p = new Person();
       List<ConstraintViolation> violations = validator.validate(p);
-      assertEquals(violations.size(), 3);
+      assertThat(violations).hasSize(3);
 
       // test @Length(max=)
       p.firstName = "Mike";
       p.lastName = "Mahoney";
       p.zipCode = "1234567";
       violations = validator.validate(p);
-      assertEquals(violations.size(), 1);
-      assertEquals(violations.get(0).getMessage(), "LENGTH");
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo("LENGTH");
 
       // test @NotEmpty
       p.zipCode = "";
       violations = validator.validate(p);
-      assertEquals(violations.size(), 1);
-      assertEquals(violations.get(0).getMessage(), "NOT_EMPTY");
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo("NOT_EMPTY");
 
       // test @RegEx
       p.zipCode = "dffd34";
       violations = validator.validate(p);
-      assertEquals(violations.size(), 1);
-      assertEquals(violations.get(0).getMessage(), "MATCH_PATTERN");
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo("MATCH_PATTERN");
    }
 }

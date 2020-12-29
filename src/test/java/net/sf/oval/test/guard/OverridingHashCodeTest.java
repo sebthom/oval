@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
@@ -18,7 +21,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class OverridingHashCodeTest extends TestCase {
+public class OverridingHashCodeTest {
+
    @Guarded
    public static class Entity {
 
@@ -37,12 +41,13 @@ public class OverridingHashCodeTest extends TestCase {
       }
    }
 
+   @Test
    public void testGuarding() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
       try {
          new Entity().setFoo(null);
-         fail("Violation expected");
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          // expected
       }

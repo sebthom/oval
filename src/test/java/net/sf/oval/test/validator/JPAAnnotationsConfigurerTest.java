@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +22,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.JPAAnnotationsConfigurer;
@@ -29,7 +32,8 @@ import net.sf.oval.configuration.annotation.JPAAnnotationsConfigurer;
  * @author Sebastian Thomschke
  *
  */
-public class JPAAnnotationsConfigurerTest extends TestCase {
+public class JPAAnnotationsConfigurerTest {
+
    @Entity
    protected static class TestEntity {
       // -> @NotNull
@@ -59,6 +63,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
       }
    }
 
+   @Test
    public void testJPAAnnotationsConfigurer() {
       final Validator v = new Validator(new JPAAnnotationsConfigurer());
       List<ConstraintViolation> violations;
@@ -70,10 +75,10 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
          // code is null
          // description is null
          // ref1 is null
-         assertEquals(3, violations.size());
-         assertNull(violations.get(0).getInvalidValue());
-         assertNull(violations.get(1).getInvalidValue());
-         assertNull(violations.get(2).getInvalidValue());
+         assertThat(violations).hasSize(3);
+         assertThat(violations.get(0).getInvalidValue()).isNull();
+         assertThat(violations.get(1).getInvalidValue()).isNull();
+         assertThat(violations.get(2).getInvalidValue()).isNull();
       }
 
       {
@@ -83,7 +88,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
 
          violations = v.validate(entity);
          // ref1 is invalid
-         assertEquals(1, violations.size());
+         assertThat(violations).hasSize(1);
       }
 
       {
@@ -92,7 +97,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
          entity.ref1.ref1 = entity;
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
       }
 
       {
@@ -100,7 +105,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
 
          violations = v.validate(entity);
          // ref2 is invalid
-         assertEquals(1, violations.size());
+         assertThat(violations).hasSize(1);
       }
 
       {
@@ -109,7 +114,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
          entity.ref2.ref1 = entity;
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
       }
 
       // Column length test
@@ -117,7 +122,7 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
          entity.code = "12345";
          violations = v.validate(entity);
          // code is too long
-         assertEquals(1, violations.size());
+         assertThat(violations).hasSize(1);
 
          entity.code = "";
       }
@@ -129,14 +134,14 @@ public class JPAAnnotationsConfigurerTest extends TestCase {
          entity.refs.add(d);
 
          violations = v.validate(entity);
-         assertEquals(1, violations.size());
+         assertThat(violations).hasSize(1);
 
          d.code = "";
          d.description = "";
          d.ref1 = entity;
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
       }
    }
 }

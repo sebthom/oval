@@ -9,38 +9,44 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.HasSubstringCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class HasSubStringTest extends AbstractContraintsTest {
+
+   @Test
    public void testHasSubString() {
       final HasSubstringCheck check = new HasSubstringCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       check.setSubstring("TeSt");
-      assertEquals("TeSt", check.getSubstring());
+      assertThat(check.getSubstring()).isEqualTo("TeSt");
 
       check.setIgnoreCase(false);
-      assertFalse(check.isIgnoreCase());
+      assertThat(check.isIgnoreCase()).isFalse();
 
-      assertFalse(check.isSatisfied(null, "bla", null, null));
-      assertFalse(check.isSatisfied(null, "test", null, null));
-      assertTrue(check.isSatisfied(null, "TeSt", null, null));
-      assertTrue(check.isSatisfied(null, "aaaTeStaaaa", null, null));
-      assertTrue(check.isSatisfied(null, "TeStaaaa", null, null));
-      assertTrue(check.isSatisfied(null, "aaaTeSt", null, null));
+      assertThat(check.isSatisfied(null, "bla", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "test", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "TeSt", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "aaaTeStaaaa", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "TeStaaaa", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "aaaTeSt", null, null)).isTrue();
 
       check.setIgnoreCase(true);
-      assertTrue(check.isIgnoreCase());
+      assertThat(check.isIgnoreCase()).isTrue();
 
-      assertFalse(check.isSatisfied(null, "bla", null, null));
-      assertTrue(check.isSatisfied(null, "test", null, null));
-      assertTrue(check.isSatisfied(null, "TEst", null, null));
-      assertTrue(check.isSatisfied(null, "aaaTesTaaaa", null, null));
-      assertTrue(check.isSatisfied(null, "TEstaaaa", null, null));
-      assertTrue(check.isSatisfied(null, "aaatESt", null, null));
+      assertThat(check.isSatisfied(null, "bla", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "test", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "TEst", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "aaaTesTaaaa", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "TEstaaaa", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "aaatESt", null, null)).isTrue();
    }
 }

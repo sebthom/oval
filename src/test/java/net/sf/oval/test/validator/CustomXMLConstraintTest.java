@@ -9,17 +9,20 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.xml.XMLConfigurer;
 
 /**
  * @author Sebastian Thomschke
  */
-public class CustomXMLConstraintTest extends TestCase {
+public class CustomXMLConstraintTest {
    public static class Entity {
       private String message;
 
@@ -28,16 +31,17 @@ public class CustomXMLConstraintTest extends TestCase {
       }
    }
 
+   @Test
    public void testCustomXMLConstraint() throws IOException {
       try (InputStream is = CustomXMLConstraintTest.class.getResourceAsStream("CustomXMLConstraintTest.xml")) {
          final Validator validator = new Validator(new XMLConfigurer(is));
 
          final Entity e = new Entity();
-         assertEquals(1, validator.validate(e).size());
+         assertThat(validator.validate(e)).hasSize(1);
          e.message = "123";
-         assertEquals(1, validator.validate(e).size());
+         assertThat(validator.validate(e)).hasSize(1);
          e.message = "12345";
-         assertEquals(0, validator.validate(e).size());
+         assertThat(validator.validate(e)).isEmpty();
       }
    }
 }

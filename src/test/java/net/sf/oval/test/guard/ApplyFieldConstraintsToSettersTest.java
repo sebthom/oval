@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.AssertTrue;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.MatchPattern;
@@ -22,7 +25,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class ApplyFieldConstraintsToSettersTest extends TestCase {
+public class ApplyFieldConstraintsToSettersTest {
+
    @Guarded(applyFieldConstraintsToSetters = true)
    protected static class Person {
       @AssertTrue(message = "ASSERT_TRUE")
@@ -77,6 +81,7 @@ public class ApplyFieldConstraintsToSettersTest extends TestCase {
     * by default constraints specified for a field are also used for validating
     * method parameters of the corresponding setter methods
     */
+   @Test
    public void testSetterValidation() {
       final Person p = new Person();
 
@@ -92,30 +97,30 @@ public class ApplyFieldConstraintsToSettersTest extends TestCase {
       p.setFirstName("Mike");
       p.setLastName("Mahoney");
       p.setZipCode("1234567");
-      assertEquals(1, va.getConstraintsViolatedExceptions().size());
-      assertEquals(1, va.getConstraintViolations().size());
-      assertEquals("LENGTH", va.getConstraintViolations().get(0).getMessage());
+      assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+      assertThat(va.getConstraintViolations()).hasSize(1);
+      assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("LENGTH");
       va.clear();
 
       // test @NotEmpty
       p.setZipCode("");
-      assertEquals(1, va.getConstraintsViolatedExceptions().size());
-      assertEquals(1, va.getConstraintViolations().size());
-      assertEquals("NOT_EMPTY", va.getConstraintViolations().get(0).getMessage());
+      assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+      assertThat(va.getConstraintViolations()).hasSize(1);
+      assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("NOT_EMPTY");
       va.clear();
 
       // test @RegEx
       p.setZipCode("dffd34");
-      assertEquals(1, va.getConstraintsViolatedExceptions().size());
-      assertEquals(1, va.getConstraintViolations().size());
-      assertEquals("REG_EX", va.getConstraintViolations().get(0).getMessage());
+      assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+      assertThat(va.getConstraintViolations()).hasSize(1);
+      assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("REG_EX");
       va.clear();
 
       // test @AssertTrue
       p.setValid(false);
-      assertEquals(1, va.getConstraintsViolatedExceptions().size());
-      assertEquals(1, va.getConstraintViolations().size());
-      assertEquals("ASSERT_TRUE", va.getConstraintViolations().get(0).getMessage());
+      assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+      assertThat(va.getConstraintViolations()).hasSize(1);
+      assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("ASSERT_TRUE");
       va.clear();
    }
 }

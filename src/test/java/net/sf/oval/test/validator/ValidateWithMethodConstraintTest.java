@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.ValidateWithMethod;
@@ -19,7 +22,8 @@ import net.sf.oval.constraint.ValidateWithMethod;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidateWithMethodConstraintTest extends TestCase {
+public class ValidateWithMethodConstraintTest {
+
    protected static class BaseEntity {
       protected boolean isNameValid(final String name) {
          if (name == null)
@@ -37,6 +41,7 @@ public class ValidateWithMethodConstraintTest extends TestCase {
       public String name;
    }
 
+   @Test
    public void testCheckByMethod() {
       final Validator validator = new Validator();
 
@@ -45,18 +50,18 @@ public class ValidateWithMethodConstraintTest extends TestCase {
       List<ConstraintViolation> violations;
 
       violations = validator.validate(t);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
 
       t.name = "";
       violations = validator.validate(t);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
 
       t.name = "12345";
       violations = validator.validate(t);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
 
       t.name = "1234";
       violations = validator.validate(t);
-      assertEquals(0, violations.size());
+      assertThat(violations).isEmpty();
    }
 }

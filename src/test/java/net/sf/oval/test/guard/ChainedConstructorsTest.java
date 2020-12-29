@@ -9,7 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import javax.validation.ConstraintViolationException;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.Guarded;
 
@@ -17,7 +22,8 @@ import net.sf.oval.guard.Guarded;
  * @author Sebastian Thomschke
  */
 @SuppressWarnings("unused")
-public class ChainedConstructorsTest extends TestCase {
+public class ChainedConstructorsTest {
+
    @Guarded
    public static final class Entity {
       public Entity(@NotNull final Object param) {
@@ -29,11 +35,13 @@ public class ChainedConstructorsTest extends TestCase {
       }
    }
 
+   @Test
    public void testConstructorChaining() {
       try {
          new Entity(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintViolationException.class);
       } catch (final Exception ex) {
+         ex.printStackTrace();
          // TODO: currently fails with an NPE instead of a ConstraintViolationException https://sourceforge.net/p/oval/bugs/83/
       }
    }

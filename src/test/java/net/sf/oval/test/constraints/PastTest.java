@@ -9,8 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.text.DateFormat;
 import java.util.Calendar;
+
+import org.junit.Test;
 
 import net.sf.oval.constraint.PastCheck;
 
@@ -19,25 +23,27 @@ import net.sf.oval.constraint.PastCheck;
  */
 public class PastTest extends AbstractContraintsTest {
 
+   @Test
    public void testPast() {
       final PastCheck isInPast = new PastCheck();
       super.testCheck(isInPast);
-      assertTrue(isInPast.isSatisfied(null, null, null, null));
+      assertThat(isInPast.isSatisfied(null, null, null, null)).isTrue();
 
       final Calendar cal = Calendar.getInstance();
       cal.roll(Calendar.YEAR, -1);
-      assertTrue(isInPast.isSatisfied(null, cal, null, null));
-      assertTrue(isInPast.isSatisfied(null, cal.getTime(), null, null));
-      assertTrue(isInPast.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+      assertThat(isInPast.isSatisfied(null, cal, null, null)).isTrue();
+      assertThat(isInPast.isSatisfied(null, cal.getTime(), null, null)).isTrue();
+      assertThat(isInPast.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null)).isTrue();
 
       cal.roll(Calendar.YEAR, 2);
-      assertFalse(isInPast.isSatisfied(null, cal, null, null));
-      assertFalse(isInPast.isSatisfied(null, cal.getTime(), null, null));
-      assertFalse(isInPast.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+      assertThat(isInPast.isSatisfied(null, cal, null, null)).isFalse();
+      assertThat(isInPast.isSatisfied(null, cal.getTime(), null, null)).isFalse();
+      assertThat(isInPast.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null)).isFalse();
 
-      assertFalse(isInPast.isSatisfied(null, "bla", null, null));
+      assertThat(isInPast.isSatisfied(null, "bla", null, null)).isFalse();
    }
 
+   @Test
    public void testTolerance() {
       final PastCheck isInPast = new PastCheck();
 
@@ -45,12 +51,12 @@ public class PastTest extends AbstractContraintsTest {
       cal.add(Calendar.MILLISECOND, 2000); // roll() does not work with milliseconds
 
       isInPast.setTolerance(0);
-      assertFalse(isInPast.isSatisfied(null, cal, null, null));
+      assertThat(isInPast.isSatisfied(null, cal, null, null)).isFalse();
 
       isInPast.setTolerance(1000);
-      assertFalse(isInPast.isSatisfied(null, cal, null, null));
+      assertThat(isInPast.isSatisfied(null, cal, null, null)).isFalse();
 
       isInPast.setTolerance(5000);
-      assertTrue(isInPast.isSatisfied(null, cal, null, null));
+      assertThat(isInPast.isSatisfied(null, cal, null, null)).isTrue();
    }
 }

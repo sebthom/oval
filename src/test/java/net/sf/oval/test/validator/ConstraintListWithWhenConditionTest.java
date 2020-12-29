@@ -9,10 +9,13 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.NotNull;
@@ -20,7 +23,8 @@ import net.sf.oval.constraint.NotNull;
 /**
  * @author Sebastian Thomschke
  */
-public class ConstraintListWithWhenConditionTest extends TestCase {
+public class ConstraintListWithWhenConditionTest {
+
    static class Account {
       boolean isActive = false;
 
@@ -48,107 +52,112 @@ public class ConstraintListWithWhenConditionTest extends TestCase {
       Map<String, String> map;
    }
 
+   @Test
    public void testValidateAccount() throws Exception {
       final Validator validator = new Validator();
 
       final Account account = new Account();
 
-      assertTrue(validator.validate(account).isEmpty());
+      assertThat(validator.validate(account).isEmpty()).isTrue();
 
       account.isActive = true;
-      assertEquals(1, validator.validate(account).size());
-      assertEquals(NotNull.class.getName() + ".violated", validator.validate(account).get(0).getMessageTemplate());
+      assertThat(validator.validate(account)).hasSize(1);
+      assertThat(validator.validate(account).get(0).getMessageTemplate()).isEqualTo(NotNull.class.getName() + ".violated");
    }
 
+   @Test
    public void testValidateEntity1() throws Exception {
       final Validator validator = new Validator();
 
       final Entity1 entity = new Entity1();
 
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map = new HashMap<>();
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("foo", null);
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
 
       entity.map.put("foo", "bar");
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("bar", null);
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
 
       entity.map.put(null, "foobar");
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
    }
 
+   @Test
    public void testValidateEntity2() throws Exception {
       final Validator validator = new Validator();
 
       final Entity2 entity = new Entity2();
 
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map = new HashMap<>();
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("foo", null);
-      assertEquals(0, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).isEmpty();
 
       entity.map.put("foo", "bar");
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("bar", null);
-      assertEquals(0, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).isEmpty();
 
       entity.map.put(null, "foobar");
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
    }
 
+   @Test
    public void testValidateEntity3() throws Exception {
       final Validator validator = new Validator();
 
       final Entity3 entity = new Entity3();
 
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map = new HashMap<>();
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("foo", null);
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
 
       entity.map.put("foo", "bar");
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("bar", null);
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
 
       entity.map.put(null, "foobar");
-      assertEquals(2, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(2);
    }
 
+   @Test
    public void testValidateEntity4() throws Exception {
       final Validator validator = new Validator();
 
       final Entity4 entity = new Entity4();
 
-      assertEquals(1, validator.validate(entity).size());
+      assertThat(validator.validate(entity)).hasSize(1);
 
       entity.map = new HashMap<>();
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("foo", null);
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("foo", "bar");
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put("bar", null);
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
 
       entity.map.put(null, "foobar");
-      assertTrue(validator.validate(entity).isEmpty());
+      assertThat(validator.validate(entity).isEmpty()).isTrue();
    }
 }

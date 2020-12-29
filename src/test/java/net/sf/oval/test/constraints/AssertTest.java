@@ -9,52 +9,63 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.AssertCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class AssertTest extends AbstractContraintsTest {
+
    private void testAssert(final String language, final String expr1, final String expr2) {
       final AssertCheck check = new AssertCheck();
       super.testCheck(check);
 
       check.setLang(language);
-      assertEquals(check.getLang(), language);
+      assertThat(language).isEqualTo(check.getLang());
 
       check.setExpr(expr1);
-      assertEquals(check.getExpr(), expr1);
-      assertFalse(check.isSatisfied(this, null, null, validator));
-      assertTrue(check.isSatisfied(this, "", null, validator));
+      assertThat(expr1).isEqualTo(check.getExpr());
+      assertThat(check.isSatisfied(this, null, null, validator)).isFalse();
+      assertThat(check.isSatisfied(this, "", null, validator)).isTrue();
 
       check.setExpr(expr2);
-      assertEquals(check.getExpr(), expr2);
-      assertFalse(check.isSatisfied(null, null, null, validator));
-      assertTrue(check.isSatisfied(this, null, null, validator));
+      assertThat(expr2).isEqualTo(check.getExpr());
+      assertThat(check.isSatisfied(null, null, null, validator)).isFalse();
+      assertThat(check.isSatisfied(this, null, null, validator)).isTrue();
    }
 
+   @Test
    public void testAssertBeanshell() {
       testAssert("bsh", "_value!=null", "_this!=null");
       testAssert("beanshell", "_value!=null", "_this!=null");
    }
 
+   @Test
    public void testAssertGroovy() {
       testAssert("groovy", "_value!=null", "_this!=null");
    }
 
+   @Test
    public void testAssertJavascript() {
       testAssert("js", "_value!=null", "_this!=null");
       testAssert("javascript", "_value!=null", "_this!=null");
    }
 
+   @Test
    public void testAssertMVEL() {
       testAssert("mvel", "_value!=null", "_this!=null");
    }
 
+   @Test
    public void testAssertOGNL() {
       testAssert("ognl", "_value!=null", "_this!=null");
    }
 
+   @Test
    public void testAssertRuby() {
       testAssert("ruby", "_value!=nil", "_this!=nil");
    }

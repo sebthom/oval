@@ -9,10 +9,13 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.constraint.Assert;
 import net.sf.oval.exception.ConstraintsViolatedException;
 import net.sf.oval.guard.Guard;
@@ -23,7 +26,8 @@ import net.sf.oval.guard.Pre;
 /**
  * @author Sebastian Thomschke
  */
-public class PrePostRubyTest extends TestCase {
+public class PrePostRubyTest {
+
    @Guarded
    public static class TestTransaction {
       protected Date date;
@@ -31,9 +35,6 @@ public class PrePostRubyTest extends TestCase {
       protected BigDecimal value;
       protected boolean buggyMode = false;
 
-      /**
-       * @return the value
-       */
       public BigDecimal getValue() {
          return value;
       }
@@ -65,6 +66,7 @@ public class PrePostRubyTest extends TestCase {
       }
    }
 
+   @Test
    public void test1Pre() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -73,22 +75,23 @@ public class PrePostRubyTest extends TestCase {
 
       try {
          t.increase(BigDecimal.valueOf(1));
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("PRE");
       }
 
       t.value = BigDecimal.valueOf(2);
       try {
          t.increase(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getConstraintViolations()[0].getMessage(), "ASSERT");
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("ASSERT");
       }
 
       t.increase(BigDecimal.valueOf(1));
    }
 
+   @Test
    public void test2Post() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -98,15 +101,16 @@ public class PrePostRubyTest extends TestCase {
       t.buggyMode = true;
       try {
          t.increase(BigDecimal.valueOf(1));
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("POST");
       }
       t.buggyMode = false;
 
       t.increase(BigDecimal.valueOf(1));
    }
 
+   @Test
    public void test3CircularConditions() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -115,25 +119,25 @@ public class PrePostRubyTest extends TestCase {
       try {
          // test circular pre-condition
          t.getValuePre();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getConstraintViolations()[0].getMessage(), "PRE");
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("PRE");
       }
 
       try {
          // test circular post-condition
          t.getValuePost();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("POST");
       }
 
       try {
          // test circular post-condition
          t.getValuePostWithOld();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
-         assertEquals(ex.getConstraintViolations()[0].getMessage(), "POST");
+         assertThat(ex.getConstraintViolations()[0].getMessage()).isEqualTo("POST");
       }
 
       t.value = BigDecimal.valueOf(0);

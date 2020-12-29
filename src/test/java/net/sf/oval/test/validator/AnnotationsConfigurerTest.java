@@ -9,7 +9,8 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AnnotationsConfigurer;
@@ -33,7 +35,8 @@ import net.sf.oval.constraint.Size;
 /**
  * @author Sebastian Thomschke
  */
-public class AnnotationsConfigurerTest extends TestCase {
+public class AnnotationsConfigurerTest {
+
    protected interface TestEntityInterface {
       @IsInvariant
       @NotNull(message = "VALUE_NOT_NULL")
@@ -84,6 +87,7 @@ public class AnnotationsConfigurerTest extends TestCase {
       }
    }
 
+   @Test
    public void testBeanValidationAnnotationsConfigurer() {
       final Validator v = new Validator(new AnnotationsConfigurer());
       List<ConstraintViolation> violations;
@@ -96,7 +100,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          // description is empty
          // parent is null
          // value not null
-         assertEquals(4, violations.size());
+         assertThat(violations).hasSize(4);
 
          final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage(), violations.get(2).getMessage(), violations.get(3).getMessage()};
          Arrays.sort(msgs);
@@ -111,7 +115,7 @@ public class AnnotationsConfigurerTest extends TestCase {
 
          violations = v.validate(entity);
          // parent is invalid
-         assertEquals(1, violations.size());
+         assertThat(violations).hasSize(1);
       }
 
       {
@@ -121,7 +125,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.parent.value = "";
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
       }
 
       {
@@ -130,8 +134,8 @@ public class AnnotationsConfigurerTest extends TestCase {
 
          violations = v.validate(entity);
          // sibling is invalid
-         assertEquals(1, violations.size());
-         assertEquals(true, violations.get(0).getMessage().contains("sibling"));
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getMessage()).contains("sibling");
       }
 
       {
@@ -140,7 +144,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.sibling.parent = entity;
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
       }
 
       // Size test
@@ -148,7 +152,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.code = "12345";
          violations = v.validate(entity);
          // code is too long
-         assertEquals(1, violations.size());
+         assertThat(violations).hasSize(1);
          entity.code = "";
       }
 
@@ -159,8 +163,8 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.children.add(d);
 
          violations = v.validate(entity);
-         assertEquals(1, violations.size());
-         assertEquals("net.sf.oval.constraint.AssertValid", violations.get(0).getErrorCode());
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getErrorCode()).isEqualTo("net.sf.oval.constraint.AssertValid");
 
          d.code = "";
          d.description.add("");
@@ -168,7 +172,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          d.value = "";
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
       }
 
       // No null in field collection test
@@ -176,13 +180,13 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.children = new ArrayList<>();
 
          violations = v.validate(entity);
-         assertEquals(0, violations.size());
+         assertThat(violations).isEmpty();
 
          entity.children.add(null);
 
          violations = v.validate(entity);
-         assertEquals(1, violations.size());
-         assertEquals("CHILDREN_ELEMENT_NOT_NULL", violations.get(0).getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getMessage()).isEqualTo("CHILDREN_ELEMENT_NOT_NULL");
       }
 
       // No null in field map test
@@ -192,7 +196,7 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.props.put("1", null);
 
          violations = v.validate(entity);
-         assertEquals(2, violations.size());
+         assertThat(violations).hasSize(2);
          final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage()};
          Arrays.sort(msgs);
          assertArrayEquals(new String[] {"KEY_NOT_NULL", "VALUE_NOT_NULL"}, msgs);
@@ -207,8 +211,8 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.description.add(null);
 
          violations = v.validate(entity);
-         assertEquals(1, violations.size());
-         assertEquals("DESCRIPTION_ELEMENT_NOT_NULL", violations.get(0).getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getMessage()).isEqualTo("DESCRIPTION_ELEMENT_NOT_NULL");
 
          entity.description.clear();
          entity.description.add("");
@@ -219,8 +223,8 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.value = null;
 
          violations = v.validate(entity);
-         assertEquals(1, violations.size());
-         assertEquals("VALUE_NOT_NULL", violations.get(0).getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getMessage()).isEqualTo("VALUE_NOT_NULL");
 
          entity.value = "";
       }
@@ -230,8 +234,8 @@ public class AnnotationsConfigurerTest extends TestCase {
          entity.allValues.add(null);
 
          violations = v.validate(entity);
-         assertEquals(1, violations.size());
-         assertEquals("ALL_VALUES_NOT_NULL", violations.get(0).getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getMessage()).isEqualTo("ALL_VALUES_NOT_NULL");
 
          entity.allValues.clear();
       }

@@ -9,15 +9,18 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
  * @author Sebastian Thomschke
- *
  */
-public class OverridingEqualsTest extends TestCase {
+public class OverridingEqualsTest {
+
    @Guarded
    public static class Entity {
       protected int foo;
@@ -41,6 +44,7 @@ public class OverridingEqualsTest extends TestCase {
       }
    }
 
+   @Test
    public void testGuarding() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -50,6 +54,6 @@ public class OverridingEqualsTest extends TestCase {
       final Entity a2 = new Entity();
       a2.foo = 2;
 
-      assertEquals(a1, a2);
+      assertThat(a2).isEqualTo(a1);
    }
 }

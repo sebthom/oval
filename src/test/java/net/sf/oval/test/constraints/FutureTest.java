@@ -9,8 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.text.DateFormat;
 import java.util.Calendar;
+
+import org.junit.Test;
 
 import net.sf.oval.constraint.FutureCheck;
 
@@ -19,26 +23,28 @@ import net.sf.oval.constraint.FutureCheck;
  */
 public class FutureTest extends AbstractContraintsTest {
 
+   @Test
    public void testFuture() {
       final FutureCheck isInFuture = new FutureCheck();
       super.testCheck(isInFuture);
 
-      assertTrue(isInFuture.isSatisfied(null, null, null, null));
+      assertThat(isInFuture.isSatisfied(null, null, null, null)).isTrue();
 
       final Calendar cal = Calendar.getInstance();
       cal.roll(Calendar.YEAR, 1);
-      assertTrue(isInFuture.isSatisfied(null, cal, null, null));
-      assertTrue(isInFuture.isSatisfied(null, cal.getTime(), null, null));
-      assertTrue(isInFuture.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+      assertThat(isInFuture.isSatisfied(null, cal, null, null)).isTrue();
+      assertThat(isInFuture.isSatisfied(null, cal.getTime(), null, null)).isTrue();
+      assertThat(isInFuture.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null)).isTrue();
 
       cal.roll(Calendar.YEAR, -2);
-      assertFalse(isInFuture.isSatisfied(null, cal, null, null));
-      assertFalse(isInFuture.isSatisfied(null, cal.getTime(), null, null));
-      assertFalse(isInFuture.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null));
+      assertThat(isInFuture.isSatisfied(null, cal, null, null)).isFalse();
+      assertThat(isInFuture.isSatisfied(null, cal.getTime(), null, null)).isFalse();
+      assertThat(isInFuture.isSatisfied(null, DateFormat.getDateTimeInstance().format(cal.getTime()), null, null)).isFalse();
 
-      assertFalse(isInFuture.isSatisfied(null, "bla", null, null));
+      assertThat(isInFuture.isSatisfied(null, "bla", null, null)).isFalse();
    }
 
+   @Test
    public void testTolerance() {
       final FutureCheck isInFuture = new FutureCheck();
 
@@ -46,12 +52,12 @@ public class FutureTest extends AbstractContraintsTest {
       cal.add(Calendar.MILLISECOND, -2000); // roll() does not work with milliseconds
 
       isInFuture.setTolerance(0);
-      assertFalse(isInFuture.isSatisfied(null, cal, null, null));
+      assertThat(isInFuture.isSatisfied(null, cal, null, null)).isFalse();
 
       isInFuture.setTolerance(1000);
-      assertFalse(isInFuture.isSatisfied(null, cal, null, null));
+      assertThat(isInFuture.isSatisfied(null, cal, null, null)).isFalse();
 
       isInFuture.setTolerance(5000);
-      assertTrue(isInFuture.isSatisfied(null, cal, null, null));
+      assertThat(isInFuture.isSatisfied(null, cal, null, null)).isTrue();
    }
 }

@@ -9,25 +9,31 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.LengthCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class LengthTest extends AbstractContraintsTest {
+
+   @Test
    public void testLength() {
       final LengthCheck check = new LengthCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       check.setMax(5);
       check.setMin(3);
-      assertEquals(5, check.getMax());
-      assertEquals(3, check.getMin());
+      assertThat(check.getMax()).isEqualTo(5);
+      assertThat(check.getMin()).isEqualTo(3);
 
-      assertTrue(check.isSatisfied(null, "1234", null, null));
-      assertFalse(check.isSatisfied(null, "12", null, null));
-      assertFalse(check.isSatisfied(null, "", null, null));
-      assertFalse(check.isSatisfied(null, "123456", null, null));
+      assertThat(check.isSatisfied(null, "1234", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "12", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "123456", null, null)).isFalse();
    }
 }

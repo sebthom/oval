@@ -9,26 +9,32 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotEqualCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class NotEqualTest extends AbstractContraintsTest {
+
+   @Test
    public void testNotEqual() {
       final NotEqualCheck check = new NotEqualCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       check.setTestString("TEST");
       check.setIgnoreCase(false);
-      assertTrue(check.isSatisfied(null, 10, null, null));
-      assertTrue(check.isSatisfied(null, "", null, null));
-      assertTrue(check.isSatisfied(null, "test", null, null));
-      assertFalse(check.isSatisfied(null, "TEST", null, null));
+      assertThat(check.isSatisfied(null, 10, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "test", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "TEST", null, null)).isFalse();
 
       check.setIgnoreCase(true);
-      assertFalse(check.isSatisfied(null, "test", null, null));
-      assertFalse(check.isSatisfied(null, "TEST", null, null));
+      assertThat(check.isSatisfied(null, "test", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "TEST", null, null)).isFalse();
    }
 }

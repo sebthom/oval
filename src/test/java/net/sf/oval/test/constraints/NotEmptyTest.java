@@ -9,22 +9,28 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotEmptyCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class NotEmptyTest extends AbstractContraintsTest {
+
+   @Test
    public void testNotEmpty() {
       final NotEmptyCheck check = new NotEmptyCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
-      assertTrue(check.isSatisfied(null, "bla", null, null));
-      assertTrue(check.isSatisfied(null, true, null, null));
-      assertTrue(check.isSatisfied(null, 1, null, null));
-      assertFalse(check.isSatisfied(null, "", null, null));
-      assertTrue(check.isSatisfied(null, ' ', null, null));
-      assertTrue(check.isSatisfied(null, " ", null, null));
+      assertThat(check.isSatisfied(null, "bla", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, true, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, 1, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, ' ', null, null)).isTrue();
+      assertThat(check.isSatisfied(null, " ", null, null)).isTrue();
    }
 }

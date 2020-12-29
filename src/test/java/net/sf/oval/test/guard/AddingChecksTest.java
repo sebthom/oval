@@ -9,25 +9,27 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraint.NotNullCheck;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.MethodParameterContext;
 import net.sf.oval.exception.ConstraintsViolatedException;
-import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.guard.Guard;
 import net.sf.oval.guard.Guarded;
 
 /**
  * @author Sebastian Thomschke
  */
-public class AddingChecksTest extends TestCase {
+public class AddingChecksTest {
    @Guarded
    protected static class TestEntity1 {
       protected String name;
@@ -36,9 +38,6 @@ public class AddingChecksTest extends TestCase {
          this.name = name;
       }
 
-      /**
-       * @param name the name to set
-       */
       public void setName(final String name) {
          this.name = name;
       }
@@ -52,9 +51,6 @@ public class AddingChecksTest extends TestCase {
          this.name = name;
       }
 
-      /**
-       * @param name the name to set
-       */
       public void setName(final String name) {
          this.name = name;
       }
@@ -68,74 +64,21 @@ public class AddingChecksTest extends TestCase {
          this.name = name;
       }
 
-      /**
-       * @param name the name to set
-       */
       public void setName(final String name) {
          this.name = name;
       }
    }
 
    /**
-    * try to programmatically add a NotNull constraint to the setter parameter
-    */
-   public void addConstraintToMethodParameter() {
-      final Guard guard = TestGuardAspect.aspectOf().getGuard();
-
-      try {
-         final Method setter = TestEntity1.class.getDeclaredMethod("setName", new Class<?>[] {String.class});
-         final NotNullCheck notNullCheck = new NotNullCheck();
-         notNullCheck.setMessage("NOT_NULL");
-
-         // testing without constraint
-         try {
-            final TestEntity1 entity = new TestEntity1("blabla");
-            entity.setName(null);
-         } catch (final ConstraintsViolatedException e) {
-            fail();
-         }
-
-         // adding a constraint
-         guard.addChecks(setter, 0, notNullCheck);
-         try {
-            final TestEntity1 entity = new TestEntity1("blabla");
-            entity.setName(null);
-            fail();
-         } catch (final ConstraintsViolatedException e) {
-            final ConstraintViolation[] violations = e.getConstraintViolations();
-            assertEquals(violations.length, 1);
-            assertTrue(violations[0].getContext() instanceof MethodParameterContext);
-            assertEquals(violations[0].getMessage(), "NOT_NULL");
-         }
-
-         // removing the constraint
-         guard.removeChecks(setter, 0, notNullCheck);
-         try {
-            final TestEntity1 entity = new TestEntity1("blabla");
-            entity.setName(null);
-         } catch (final ConstraintsViolatedException e) {
-            fail();
-         }
-      } catch (final InvalidConfigurationException e) {
-         fail();
-      } catch (final SecurityException e) {
-         e.printStackTrace();
-         fail();
-      } catch (final NoSuchMethodException e) {
-         e.printStackTrace();
-         fail();
-      }
-   }
-
-   /**
     * try to programmatically add a NotNull constraint to the constructor parameter
     */
+   @Test
    @SuppressWarnings("unused")
    public void testAddConstraintToConstructorParameter() throws Exception {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
 
-      final Constructor<TestEntity2> constructor = TestEntity2.class.getDeclaredConstructor(new Class<?>[] {String.class});
+      final Constructor<TestEntity2> constructor = TestEntity2.class.getDeclaredConstructor(String.class);
       final NotNullCheck notNullCheck = new NotNullCheck();
       notNullCheck.setMessage("NOT_NULL");
 
@@ -146,12 +89,12 @@ public class AddingChecksTest extends TestCase {
       guard.addChecks(constructor, 0, notNullCheck);
       try {
          new TestEntity2(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertEquals(violations.length, 1);
-         assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
-         assertEquals(violations[0].getMessage(), "NOT_NULL");
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getContext()).isInstanceOf(ConstructorParameterContext.class);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
       }
 
       // removing the constraint
@@ -163,12 +106,13 @@ public class AddingChecksTest extends TestCase {
    /**
     * programmatically add a NotNull constraint to the name field
     */
+   @Test
    public void testAddConstraintToField() throws Exception {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
 
       final TestEntity3 entity = new TestEntity3(null);
-      assertEquals(0, guard.validate(entity).size());
+      assertThat(guard.validate(entity)).isEmpty();
 
       final Field field = TestEntity3.class.getDeclaredField("name");
       final NotNullCheck notNullCheck = new NotNullCheck();
@@ -177,7 +121,7 @@ public class AddingChecksTest extends TestCase {
       // testing without constraint
       {
          final List<ConstraintViolation> violations = guard.validate(entity);
-         assertEquals(violations.size(), 0);
+         assertThat(violations).isEmpty();
       }
 
       // adding a constraint
@@ -185,8 +129,8 @@ public class AddingChecksTest extends TestCase {
          guard.addChecks(field, notNullCheck);
 
          final List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getGuard().validate(entity);
-         assertEquals(violations.size(), 1);
-         assertEquals(violations.get(0).getMessage(), "NOT_NULL");
+         assertThat(violations).hasSize(1);
+         assertThat(violations.get(0).getMessage()).isEqualTo("NOT_NULL");
       }
 
       // removing the constraint
@@ -194,7 +138,45 @@ public class AddingChecksTest extends TestCase {
          guard.removeChecks(field, notNullCheck);
 
          final List<ConstraintViolation> violations = TestGuardAspect.aspectOf().getGuard().validate(entity);
-         assertEquals(violations.size(), 0);
+         assertThat(violations).isEmpty();
+      }
+   }
+
+   /**
+    * try to programmatically add a NotNull constraint to the setter parameter
+    */
+   @Test
+   public void testAddConstraintToMethodParameter() throws NoSuchMethodException, SecurityException {
+      final Guard guard = TestGuardAspect.aspectOf().getGuard();
+
+      final Method setter = TestEntity1.class.getDeclaredMethod("setName", String.class);
+      final NotNullCheck notNullCheck = new NotNullCheck();
+      notNullCheck.setMessage("NOT_NULL");
+
+      // testing without constraint
+      {
+         final TestEntity1 entity = new TestEntity1("blabla");
+         entity.setName(null);
+      }
+
+      // adding a constraint
+      guard.addChecks(setter, 0, notNullCheck);
+      try {
+         final TestEntity1 entity = new TestEntity1("blabla");
+         entity.setName(null);
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
+      } catch (final ConstraintsViolatedException e) {
+         final ConstraintViolation[] violations = e.getConstraintViolations();
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getContext()).isInstanceOf(MethodParameterContext.class);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+      }
+
+      // removing the constraint
+      guard.removeChecks(setter, 0, notNullCheck);
+      {
+         final TestEntity1 entity = new TestEntity1("blabla");
+         entity.setName(null);
       }
    }
 }

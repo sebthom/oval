@@ -9,6 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.InstanceOfCheck;
 
 /**
@@ -31,24 +35,25 @@ public class InstanceOfTest extends AbstractContraintsTest {
       //
    }
 
+   @Test
    public void testInstanceOf() {
       final InstanceOfCheck check = new InstanceOfCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       check.setTypes(InterfaceA.class);
-      assertEquals(InterfaceA.class, check.getTypes()[0]);
+      assertThat(check.getTypes()[0]).isEqualTo(InterfaceA.class);
 
-      assertTrue(check.isSatisfied(null, new ClassA(), null, null));
-      assertTrue(check.isSatisfied(null, new ClassB(), null, null));
-      assertFalse(check.isSatisfied(null, "bla", null, null));
+      assertThat(check.isSatisfied(null, new ClassA(), null, null)).isTrue();
+      assertThat(check.isSatisfied(null, new ClassB(), null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "bla", null, null)).isFalse();
 
       check.setTypes(InterfaceA.class, InterfaceB.class);
-      assertEquals(InterfaceA.class, check.getTypes()[0]);
-      assertEquals(InterfaceB.class, check.getTypes()[1]);
+      assertThat(check.getTypes()[0]).isEqualTo(InterfaceA.class);
+      assertThat(check.getTypes()[1]).isEqualTo(InterfaceB.class);
 
-      assertFalse(check.isSatisfied(null, new ClassA(), null, null));
-      assertTrue(check.isSatisfied(null, new ClassB(), null, null));
-      assertFalse(check.isSatisfied(null, "bla", null, null));
+      assertThat(check.isSatisfied(null, new ClassA(), null, null)).isFalse();
+      assertThat(check.isSatisfied(null, new ClassB(), null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "bla", null, null)).isFalse();
    }
 }

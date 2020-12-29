@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.Validator;
 import net.sf.oval.localization.context.ResourceBundleValidationContextRenderer;
 import net.sf.oval.localization.context.ToStringValidationContextRenderer;
@@ -19,17 +22,19 @@ import net.sf.oval.localization.value.ToStringMessageValueFormatter;
 /**
  * @author Sebastian Thomschke
  */
-public class DefaultInstancesTest extends TestCase {
-   public void testDefaultInstancesNotNull() {
-      assertNotNull(ResourceBundleMessageResolver.INSTANCE);
-      assertNotNull(ResourceBundleValidationContextRenderer.INSTANCE);
-      assertNotNull(ToStringMessageValueFormatter.INSTANCE);
-      assertNotNull(ToStringValidationContextRenderer.INSTANCE);
+public class DefaultInstancesTest {
 
-      assertNotNull(Validator.getCollectionFactory());
-      assertNotNull(Validator.getContextRenderer());
-      assertNotNull(Validator.getLoggerFactory());
-      assertNotNull(Validator.getMessageResolver());
-      assertNotNull(Validator.getMessageValueFormatter());
+   @Test
+   public void testDefaultInstancesNotNull() {
+      assertThat(ResourceBundleMessageResolver.INSTANCE).isNotNull();
+      assertThat(ResourceBundleValidationContextRenderer.INSTANCE).isNotNull();
+      assertThat(ToStringMessageValueFormatter.INSTANCE).isNotNull();
+      assertThat(ToStringValidationContextRenderer.INSTANCE).isNotNull();
+
+      assertThat(Validator.getCollectionFactory()).isNotNull();
+      assertThat(Validator.getContextRenderer()).isNotNull();
+      assertThat(Validator.getLoggerFactory()).isNotNull();
+      assertThat(Validator.getMessageResolver()).isNotNull();
+      assertThat(Validator.getMessageValueFormatter()).isNotNull();
    }
 }

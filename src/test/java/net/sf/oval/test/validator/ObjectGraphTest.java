@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.AssertValid;
@@ -20,7 +23,8 @@ import net.sf.oval.constraint.NotNull;
 /**
  * @author Sebastian Thomschke
  */
-public class ObjectGraphTest extends TestCase {
+public class ObjectGraphTest {
+
    protected static class ClassA {
       @AssertValid
       ClassB classB;
@@ -42,6 +46,7 @@ public class ObjectGraphTest extends TestCase {
       String name;
    }
 
+   @Test
    public void testObjectGraph() {
       final ClassA classA = new ClassA();
       classA.classB = new ClassB();
@@ -51,7 +56,7 @@ public class ObjectGraphTest extends TestCase {
 
       final Validator validator = new Validator();
       final List<ConstraintViolation> violations = validator.validate(classA);
-      assertEquals(1, violations.size());
+      assertThat(violations).hasSize(1);
    }
 
 }

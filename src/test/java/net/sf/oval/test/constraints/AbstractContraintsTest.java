@@ -9,14 +9,15 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
 import net.sf.oval.Check;
 import net.sf.oval.Validator;
 
 /**
  * @author Sebastian Thomschke
  */
-public abstract class AbstractContraintsTest extends TestCase {
+public abstract class AbstractContraintsTest {
    protected final Validator validator = new Validator();
 
    /**
@@ -24,14 +25,14 @@ public abstract class AbstractContraintsTest extends TestCase {
     */
    protected void testCheck(final Check check) {
       check.setMessage("XYZ");
-      assertEquals("XYZ", check.getMessage());
+      assertThat(check.getMessage()).isEqualTo("XYZ");
 
       check.setProfiles("p1");
-      assertNotNull(check.getProfiles());
-      assertEquals(1, check.getProfiles().length);
-      assertEquals("p1", check.getProfiles()[0]);
+      assertThat(check.getProfiles()).isNotNull();
+      assertThat(check.getProfiles()).hasSize(1);
+      assertThat(check.getProfiles()[0]).isEqualTo("p1");
 
       check.setProfiles((String[]) null);
-      assertTrue(check.getProfiles() == null || check.getProfiles().length == 0);
+      assertThat(check.getProfiles() == null || check.getProfiles().length == 0).isTrue();
    }
 }

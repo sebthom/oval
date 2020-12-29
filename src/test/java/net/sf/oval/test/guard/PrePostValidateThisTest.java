@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraint.MaxLength;
 import net.sf.oval.constraint.NotNull;
@@ -24,7 +27,7 @@ import net.sf.oval.guard.PreValidateThis;
 /**
  * @author Sebastian Thomschke
  */
-public class PrePostValidateThisTest extends TestCase {
+public class PrePostValidateThisTest {
 
    @Guarded(applyFieldConstraintsToSetters = true, checkInvariants = false)
    public static class TestEntity {
@@ -64,79 +67,81 @@ public class PrePostValidateThisTest extends TestCase {
       }
    }
 
+   @Test
    @SuppressWarnings("unused")
    public void testConstructorValidation() {
       try {
          new TestEntity(null, false);
-
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
-         assertEquals("NOT_NULL", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof FieldContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+         assertThat(violations[0].getContext()).isInstanceOf(FieldContext.class);
       }
 
       new TestEntity("as-long-as-I-want-if_limit-is-not-enabled", false);
       new TestEntity("OK", true);
       try {
          new TestEntity("too-long-when-limit-is-enabled", true);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
-         assertEquals("TOO_LONG", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof FieldContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo("TOO_LONG");
+         assertThat(violations[0].getContext()).isInstanceOf(FieldContext.class);
       }
    }
 
+   @Test
    public void testMethodValidation() {
       final TestEntity t = new TestEntity();
 
       try {
          t.getName();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertTrue(violations.length > 0);
-         assertEquals("NOT_NULL", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof FieldContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations.length > 0).isTrue();
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+         assertThat(violations[0].getContext()).isInstanceOf(FieldContext.class);
       }
 
       t.setName("the name");
-      assertNotNull(t.getName());
+      assertThat(t.getName()).isNotNull();
 
       try {
          t.setName(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertTrue(violations.length > 0);
-         assertEquals("NOT_NULL", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof MethodParameterContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations.length > 0).isTrue();
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+         assertThat(violations[0].getContext()).isInstanceOf(MethodParameterContext.class);
       }
 
-      assertNotNull(t.getName());
+      assertThat(t.getName()).isNotNull();
 
       t.setNameWithPostValidation("as-long-as-I-want-if_limit-is-not-enabled");
       t.limitLength = true;
       t.setNameWithPostValidation("OK");
       try {
          t.setNameWithPostValidation("too-long-when-limit-is-enabled");
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
-         assertEquals("TOO_LONG", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof FieldContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo("TOO_LONG");
+         assertThat(violations[0].getContext()).isInstanceOf(FieldContext.class);
       }
    }
 
+   @Test
    public void testMethodValidationInProbeMode() {
       final TestEntity t = new TestEntity();
 
@@ -147,30 +152,30 @@ public class PrePostValidateThisTest extends TestCase {
 
       // test non-getter precondition failed
       t.getName();
-      assertEquals(1, va.getConstraintsViolatedExceptions().size());
-      assertEquals(1, va.getConstraintViolations().size());
-      assertEquals("NOT_NULL", va.getConstraintViolations().get(0).getMessage());
+      assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+      assertThat(va.getConstraintViolations()).hasSize(1);
+      assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("NOT_NULL");
       va.clear();
 
       t.setName(null);
-      assertEquals(1, va.getConstraintsViolatedExceptions().size());
-      assertEquals(1, va.getConstraintViolations().size());
-      assertEquals("NOT_NULL", va.getConstraintViolations().get(0).getMessage());
+      assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+      assertThat(va.getConstraintViolations()).hasSize(1);
+      assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("NOT_NULL");
       va.clear();
 
       // test post-condition ignored even if pre-conditions satisfied
       t.setNameWithPostValidation(null);
-      assertEquals(0, va.getConstraintsViolatedExceptions().size());
+      assertThat(va.getConstraintsViolatedExceptions()).isEmpty();
 
       // test setter
       t.setName("the name");
-      assertEquals(0, va.getConstraintsViolatedExceptions().size());
-      assertEquals(0, va.getConstraintViolations().size());
+      assertThat(va.getConstraintsViolatedExceptions()).isEmpty();
+      assertThat(va.getConstraintViolations()).isEmpty();
 
       // test getter returns null because we are in probe mode
       t.name = "the name";
-      assertNull(t.getName());
-      assertEquals(0, va.getConstraintsViolatedExceptions().size());
-      assertEquals(0, va.getConstraintViolations().size());
+      assertThat(t.getName()).isNull();
+      assertThat(va.getConstraintsViolatedExceptions()).isEmpty();
+      assertThat(va.getConstraintViolations()).isEmpty();
    }
 }

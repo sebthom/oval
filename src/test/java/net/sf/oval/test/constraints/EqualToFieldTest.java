@@ -9,6 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.EqualToFieldCheck;
 
 /**
@@ -34,10 +38,11 @@ public class EqualToFieldTest extends AbstractContraintsTest {
 
    }
 
+   @Test
    public void testEqualToField() {
       final EqualToFieldCheck check = new EqualToFieldCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       final EnrichedEntity entity = new EnrichedEntity();
       entity.password1 = "secret";
@@ -46,9 +51,9 @@ public class EqualToFieldTest extends AbstractContraintsTest {
       check.setFieldName("password1");
       check.setUseGetter(false);
 
-      assertFalse(check.isSatisfied(entity, entity.password1Repeated, null, null));
+      assertThat(check.isSatisfied(entity, entity.password1Repeated, null, null)).isFalse();
       entity.password1Repeated = "secret";
-      assertTrue(check.isSatisfied(entity, entity.password1Repeated, null, null));
+      assertThat(check.isSatisfied(entity, entity.password1Repeated, null, null)).isTrue();
 
       entity.password2DifferentName = "secret";
       entity.password2Repeated = "zecret";
@@ -56,9 +61,9 @@ public class EqualToFieldTest extends AbstractContraintsTest {
       check.setFieldName("password2");
       check.setUseGetter(true);
 
-      assertFalse(check.isSatisfied(entity, entity.password2Repeated, null, null));
+      assertThat(check.isSatisfied(entity, entity.password2Repeated, null, null)).isFalse();
       entity.password2Repeated = "secret";
-      assertTrue(check.isSatisfied(entity, entity.password2Repeated, null, null));
+      assertThat(check.isSatisfied(entity, entity.password2Repeated, null, null)).isTrue();
 
    }
 }

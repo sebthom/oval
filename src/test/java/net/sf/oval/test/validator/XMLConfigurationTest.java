@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,9 +24,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.junit.Test;
+
 import com.thoughtworks.xstream.io.StreamException;
 
-import junit.framework.TestCase;
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
@@ -47,24 +50,17 @@ import net.sf.oval.constraint.ValidateWithMethodCheck;
 /**
  * @author Sebastian Thomschke
  */
-public class XMLConfigurationTest extends TestCase {
+public class XMLConfigurationTest {
 
    public static class User {
       // added @Length to test if overwrite=true works
       @Length(min = 10, max = 10)
       protected String userId;
-
       protected String managerId;
-
       protected String firstName;
-
       protected String lastName;
-
       protected String homepage;
 
-      /**
-       * @return the managerId
-       */
       public String getManagerId() {
          return managerId;
       }
@@ -227,36 +223,41 @@ public class XMLConfigurationTest extends TestCase {
       validateUser(new Validator(x));
    }
 
+   @Test
    public void testVulnerability_ExternalEntityReferences() {
       final XMLConfigurer x1 = new XMLConfigurer();
       try {
          x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_Vulnerability_ExternalEntityReferences.xml"));
-         fail();
+         failBecauseExceptionWasNotThrown(StreamException.class);
       } catch (final StreamException ex) {
          final String msg = ex.getCause().getMessage();
-         assertTrue(msg.contains("External Entity: Failed to read external document 'XMLConfigurationTest1.inc.xml', "
-            + "because 'file' access is not allowed due to restriction set by the accessExternalDTD property.") || //
-            msg.contains("DOCTYPE is disallowed when the feature \"http://apache.org/xml/features/disallow-doctype-decl\" set to true."));
+         assertThat(msg).satisfiesAnyOf( //
+            m -> assertThat(m).contains("External Entity: Failed to read external document 'XMLConfigurationTest1.inc.xml', "
+               + "because 'file' access is not allowed due to restriction set by the accessExternalDTD property."), //
+            m -> assertThat(m).contains("DOCTYPE is disallowed when the feature \"http://apache.org/xml/features/disallow-doctype-decl\" set to true.") //
+         );
       }
    }
 
+   @Test
    public void testVulnerability_NonXmlFile() {
       final XMLConfigurer x1 = new XMLConfigurer();
       try {
          x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_Vulnerability_NonXmlFile.xml"));
-         fail();
+         failBecauseExceptionWasNotThrown(StreamException.class);
       } catch (final StreamException ex) {
-         assertTrue(ex.getCause().getMessage().contains("Referencing entity [file:///C:/Windows/System32/drivers/etc/hosts] is not allowed"));
+         assertThat(ex.getCause().getMessage()).contains("Referencing entity [file:///C:/Windows/System32/drivers/etc/hosts] is not allowed");
       }
    }
 
+   @Test
    public void testVulnerability_RecursiveInclude() {
       final XMLConfigurer x1 = new XMLConfigurer();
       try {
          x1.fromXML(new File("src/test/resources/net/sf/oval/test/validator/XMLConfigurationTest_Vulnerability_RecursiveInclude.xml"));
-         fail();
+         failBecauseExceptionWasNotThrown(StreamException.class);
       } catch (final StreamException ex) {
-         assertTrue(ex.getCause().getMessage().contains("Recursive include detected"));
+         assertThat(ex.getCause().getMessage()).contains("Recursive include detected");
       }
    }
 
@@ -272,13 +273,13 @@ public class XMLConfigurationTest extends TestCase {
        */
       usr.firstName = "123456";
       List<ConstraintViolation> violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".firstName cannot be longer than 3 characters", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".firstName cannot be longer than 3 characters");
 
       usr.firstName = "";
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".firstName must be longer than 2 characters", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".firstName must be longer than 2 characters");
 
       usr.firstName = "123";
 
@@ -287,8 +288,8 @@ public class XMLConfigurationTest extends TestCase {
        */
       usr.lastName = "123456";
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".lastName is not between 1 and 5 characters long", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".lastName is not between 1 and 5 characters long");
 
       usr.lastName = "1";
 
@@ -297,13 +298,13 @@ public class XMLConfigurationTest extends TestCase {
        */
       usr.userId = null;
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".userId is null", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".userId is null");
 
       usr.userId = "%$$e3";
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".userId does not match the pattern ^[a-z0-9]{8}$", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".userId does not match the pattern ^[a-z0-9]{8}$");
       usr.userId = "12345678";
 
       /*
@@ -311,13 +312,13 @@ public class XMLConfigurationTest extends TestCase {
        */
       usr.managerId = null;
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".getManagerId() is null", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".getManagerId() is null");
 
       usr.managerId = "%$$e3";
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo(User.class.getName() + ".getManagerId() does not match the pattern ^[a-z0-9]{8}$");
 
       /*
        * check object constraints
@@ -328,7 +329,7 @@ public class XMLConfigurationTest extends TestCase {
       usr.lastName = "abc";
       usr.firstName = "abc";
       violations = validator.validate(usr);
-      assertEquals(1, violations.size());
-      assertEquals("firstName and lastName must not be the same", violations.get(0).getMessage());
+      assertThat(violations).hasSize(1);
+      assertThat(violations.get(0).getMessage()).isEqualTo("firstName and lastName must not be the same");
    }
 }

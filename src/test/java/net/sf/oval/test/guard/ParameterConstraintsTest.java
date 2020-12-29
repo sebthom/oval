@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.NotNull;
@@ -25,7 +28,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class ParameterConstraintsTest extends TestCase {
+public class ParameterConstraintsTest {
+
    @Guarded
    public static class TestEntity {
       @NotNull(message = "NOT_NULL")
@@ -50,6 +54,7 @@ public class ParameterConstraintsTest extends TestCase {
       }
    }
 
+   @Test
    @SuppressWarnings("unused")
    public void testConstructorParameterConstraints() {
       final Guard guard = new Guard();
@@ -61,13 +66,13 @@ public class ParameterConstraintsTest extends TestCase {
        */
       try {
          new TestEntity(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
-         assertEquals("NOT_NULL", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof ConstructorParameterContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+         assertThat(violations[0].getContext()).isInstanceOf(ConstructorParameterContext.class);
       }
 
       new TestEntity("test");
@@ -78,16 +83,17 @@ public class ParameterConstraintsTest extends TestCase {
        */
       try {
          new TestEntity(null, 100);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
-         assertEquals("NOT_NULL", violations[0].getMessage());
-         assertTrue(violations[0].getContext() instanceof FieldContext);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+         assertThat(violations[0].getContext()).isInstanceOf(FieldContext.class);
       }
    }
 
+   @Test
    public void testMethodParameters() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -95,26 +101,27 @@ public class ParameterConstraintsTest extends TestCase {
       try {
          final TestEntity t1 = new TestEntity("");
          t1.setName(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertTrue(violations.length > 0);
-         assertEquals("NOT_NULL", violations[0].getMessage());
+         assertThat(violations).isNotNull();
+         assertThat(violations.length > 0).isTrue();
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
       }
 
       try {
          final TestEntity t1 = new TestEntity("");
          t1.setName("12345678");
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
          final ConstraintViolation[] violations = e.getConstraintViolations();
-         assertNotNull(violations);
-         assertTrue(violations.length > 0);
-         assertEquals("LENGTH", violations[0].getMessage());
+         assertThat(violations).isNotNull();
+         assertThat(violations.length > 0).isTrue();
+         assertThat(violations[0].getMessage()).isEqualTo("LENGTH");
       }
    }
 
+   @Test
    public void testMethodParametersInProbeMode() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -129,9 +136,9 @@ public class ParameterConstraintsTest extends TestCase {
       entity.setName(null);
       entity.setName("12345678");
       final List<ConstraintViolation> violations = va.getConstraintViolations();
-      assertEquals(2, violations.size());
-      assertEquals("NOT_NULL", violations.get(0).getMessage());
-      assertEquals("LENGTH", violations.get(1).getMessage());
+      assertThat(violations).hasSize(2);
+      assertThat(violations.get(0).getMessage()).isEqualTo("NOT_NULL");
+      assertThat(violations.get(1).getMessage()).isEqualTo("LENGTH");
 
       guard.removeListener(va, entity);
    }

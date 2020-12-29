@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.constraint.Range;
@@ -20,7 +23,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class CustomConstraintMessageTest extends TestCase {
+public class CustomConstraintMessageTest {
+
    @Guarded(applyFieldConstraintsToSetters = true)
    protected static class TestEntity {
       @Range(min = 2, max = 4, message = "An amount of {invalidValue} in not in the allowed range ({min}-{max})")
@@ -29,30 +33,18 @@ public class CustomConstraintMessageTest extends TestCase {
       @NotNull(message = CUSTOM_ERROR_MESSAGE)
       private String name = "";
 
-      /**
-       * @return the amount
-       */
       public int getAmount() {
          return amount;
       }
 
-      /**
-       * @return the name
-       */
       public String getName() {
          return name;
       }
 
-      /**
-       * @param amount the amount to set
-       */
       public void setAmount(final int amount) {
          this.amount = amount;
       }
 
-      /**
-       * @param name the name to set
-       */
       public void setName(final String name) {
          this.name = name;
       }
@@ -64,6 +56,7 @@ public class CustomConstraintMessageTest extends TestCase {
    /**
     * check that custom messages are used correctly
     */
+   @Test
    public void testCustomConstraintMessage() {
       final Guard guard = new Guard();
       TestGuardAspect.aspectOf().setGuard(guard);
@@ -72,11 +65,11 @@ public class CustomConstraintMessageTest extends TestCase {
 
       try {
          e.setName(null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
 
          if (!CUSTOM_ERROR_MESSAGE.equals(violations[0].getMessage())) {
             fail("The returned error message <" + violations[0].getMessage() + "> does not equal the specified custom error message <" + CUSTOM_ERROR_MESSAGE
@@ -86,11 +79,11 @@ public class CustomConstraintMessageTest extends TestCase {
 
       try {
          e.setAmount(5);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertNotNull(violations);
-         assertEquals(1, violations.length);
+         assertThat(violations).isNotNull();
+         assertThat(violations).hasSize(1);
 
          if (!EXPECTED_RANGE_MESSAGE.equals(violations[0].getMessage())) {
             fail("The returned error message <" + violations[0].getMessage() + "> does not equal the specified custom error message <" + EXPECTED_RANGE_MESSAGE

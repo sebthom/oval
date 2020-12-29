@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.AbstractCheck;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
@@ -21,7 +24,7 @@ import net.sf.oval.context.OValContext;
 /**
  * @author Sebastian Thomschke
  */
-public class CustomConstraintViolationsTest extends TestCase {
+public class CustomConstraintViolationsTest {
    public static class CustomCheck extends AbstractCheck {
       private static final long serialVersionUID = 1L;
 
@@ -47,10 +50,11 @@ public class CustomConstraintViolationsTest extends TestCase {
       String message;
    }
 
+   @Test
    public void testMessages() {
       final Validator val = new Validator();
       val.addChecks(Entity.class, new CustomCheck());
       final List<ConstraintViolation> violations = val.validate(new Entity());
-      assertEquals(2, violations.size());
+      assertThat(violations).hasSize(2);
    }
 }

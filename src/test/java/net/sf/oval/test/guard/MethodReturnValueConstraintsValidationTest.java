@@ -9,7 +9,10 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.Assert;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.exception.ConstraintsViolatedException;
@@ -19,7 +22,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class MethodReturnValueConstraintsValidationTest extends TestCase {
+public class MethodReturnValueConstraintsValidationTest {
+
    @Guarded
    public static class TestEntity {
       protected String name = "";
@@ -35,6 +39,7 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase {
       }
    }
 
+   @Test
    public void testMethodReturnValueConstraintValidation() {
       final Guard guard = new Guard();
 
@@ -45,20 +50,20 @@ public class MethodReturnValueConstraintsValidationTest extends TestCase {
       try {
          t.name = null;
          t.getName();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
-         assertEquals(1, e.getConstraintViolations().length);
-         assertEquals("NOT_NULL", e.getConstraintViolations()[0].getMessage());
+         assertThat(e.getConstraintViolations()).hasSize(1);
+         assertThat(e.getConstraintViolations()[0].getMessage()).isEqualTo("NOT_NULL");
       }
 
       t.name = "testtest";
 
       try {
          t.getName();
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException e) {
-         assertEquals(1, e.getConstraintViolations().length);
-         assertEquals("LENGTH", e.getConstraintViolations()[0].getMessage());
+         assertThat(e.getConstraintViolations()).hasSize(1);
+         assertThat(e.getConstraintViolations()[0].getMessage()).isEqualTo("LENGTH");
       }
    }
 }

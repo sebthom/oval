@@ -9,10 +9,13 @@
  *********************************************************************/
 package net.sf.oval.test.guard;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintSet;
 import net.sf.oval.constraint.AssertConstraintSet;
@@ -27,7 +30,8 @@ import net.sf.oval.guard.Guarded;
 /**
  * @author Sebastian Thomschke
  */
-public class ConstraintSetTest extends TestCase {
+public class ConstraintSetTest {
+
    @Guarded
    protected static class Person {
       private String zipCode;
@@ -41,6 +45,7 @@ public class ConstraintSetTest extends TestCase {
       }
    }
 
+   @Test
    public void testConstraintSetValidation() {
       final ConstraintSet constraintSet = new ConstraintSet("zipCode");
       final List<Check> checks = new ArrayList<>();
@@ -79,23 +84,23 @@ public class ConstraintSetTest extends TestCase {
 
          // test @Length(max=)
          p.setZipCode("1234567");
-         assertEquals(va.getConstraintsViolatedExceptions().size(), 1);
-         assertEquals(va.getConstraintViolations().size(), 1);
-         assertEquals(va.getConstraintViolations().get(0).getMessage(), "LENGTH");
+         assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+         assertThat(va.getConstraintViolations()).hasSize(1);
+         assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("LENGTH");
          va.clear();
 
          // test @NotEmpty
          p.setZipCode("");
-         assertEquals(va.getConstraintsViolatedExceptions().size(), 1);
-         assertEquals(va.getConstraintViolations().size(), 1);
-         assertEquals(va.getConstraintViolations().get(0).getMessage(), "NOT_EMPTY");
+         assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+         assertThat(va.getConstraintViolations()).hasSize(1);
+         assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("NOT_EMPTY");
          va.clear();
 
          // test @MatchPattern
          p.setZipCode("dffd34");
-         assertEquals(va.getConstraintsViolatedExceptions().size(), 1);
-         assertEquals(va.getConstraintViolations().size(), 1);
-         assertEquals(va.getConstraintViolations().get(0).getMessage(), "MATCH_PATTERN");
+         assertThat(va.getConstraintsViolatedExceptions()).hasSize(1);
+         assertThat(va.getConstraintViolations()).hasSize(1);
+         assertThat(va.getConstraintViolations().get(0).getMessage()).isEqualTo("MATCH_PATTERN");
          va.clear();
       }
 

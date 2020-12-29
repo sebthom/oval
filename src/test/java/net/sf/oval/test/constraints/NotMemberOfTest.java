@@ -9,31 +9,37 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.NotMemberOfCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class NotMemberOfTest extends AbstractContraintsTest {
+
+   @Test
    public void testNotMemberOf() {
       final NotMemberOfCheck check = new NotMemberOfCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       check.setMembers("10", "false", "TRUE");
       check.setIgnoreCase(false);
-      assertFalse(check.isSatisfied(null, 10, null, null));
-      assertFalse(check.isSatisfied(null, "10", null, null));
-      assertTrue(check.isSatisfied(null, 10.0, null, null));
-      assertFalse(check.isSatisfied(null, "false", null, null));
-      assertFalse(check.isSatisfied(null, false, null, null));
-      assertFalse(check.isSatisfied(null, "TRUE", null, null));
-      assertTrue(check.isSatisfied(null, true, null, null));
+      assertThat(check.isSatisfied(null, 10, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "10", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, 10.0, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "false", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, false, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "TRUE", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, true, null, null)).isTrue();
 
       check.setIgnoreCase(true);
-      assertFalse(check.isSatisfied(null, "FALSE", null, null));
-      assertFalse(check.isSatisfied(null, false, null, null));
-      assertFalse(check.isSatisfied(null, "true", null, null));
-      assertFalse(check.isSatisfied(null, true, null, null));
+      assertThat(check.isSatisfied(null, "FALSE", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, false, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "true", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, true, null, null)).isFalse();
    }
 }

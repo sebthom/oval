@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.oval.test.validator;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.lang.reflect.Field;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
 import net.sf.oval.constraint.NotNull;
@@ -20,7 +23,7 @@ import net.sf.oval.exception.ConstraintsViolatedException;
 /**
  * @author Sebastian Thomschke
  */
-public class ValidatorAssertValidTest extends TestCase {
+public class ValidatorAssertValidTest {
    protected static class TestEntity {
       @NotNull(message = "NOT_NULL")
       public String name;
@@ -29,17 +32,18 @@ public class ValidatorAssertValidTest extends TestCase {
       public Integer value;
    }
 
+   @Test
    public void testValidatorAssert() throws Exception {
       final TestEntity e = new TestEntity();
       final Validator v = new Validator();
       try {
          v.assertValid(e);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertEquals(2, violations.length);
-         assertEquals("NOT_NULL", violations[0].getMessage());
-         assertEquals("NOT_NULL", violations[1].getMessage());
+         assertThat(violations).hasSize(2);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
+         assertThat(violations[1].getMessage()).isEqualTo("NOT_NULL");
       }
 
       e.name = "asdads";
@@ -47,6 +51,7 @@ public class ValidatorAssertValidTest extends TestCase {
       v.assertValid(e);
    }
 
+   @Test
    public void testValidatorAssertField() throws Exception {
       final Field f = TestEntity.class.getField("name");
 
@@ -54,11 +59,11 @@ public class ValidatorAssertValidTest extends TestCase {
       final Validator v = new Validator();
       try {
          v.assertValidFieldValue(e, f, null);
-         fail();
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
-         assertEquals(1, violations.length);
-         assertEquals("NOT_NULL", violations[0].getMessage());
+         assertThat(violations).hasSize(1);
+         assertThat(violations[0].getMessage()).isEqualTo("NOT_NULL");
       }
 
       v.assertValidFieldValue(e, f, "test");

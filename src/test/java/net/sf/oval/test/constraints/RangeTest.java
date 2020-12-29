@@ -9,27 +9,33 @@
  *********************************************************************/
 package net.sf.oval.test.constraints;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.oval.constraint.RangeCheck;
 
 /**
  * @author Sebastian Thomschke
  */
 public class RangeTest extends AbstractContraintsTest {
+
+   @Test
    public void testRange() {
       final RangeCheck check = new RangeCheck();
       super.testCheck(check);
-      assertTrue(check.isSatisfied(null, null, null, null));
+      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
 
       check.setMin(3);
-      assertEquals(3.0, check.getMin());
+      assertThat(check.getMin()).isEqualTo(3.0);
 
-      assertTrue(check.isSatisfied(null, "16", null, null));
+      assertThat(check.isSatisfied(null, "16", null, null)).isTrue();
 
       check.setMax(6);
-      assertEquals(6.0, check.getMax());
+      assertThat(check.getMax()).isEqualTo(6.0);
 
-      assertTrue(check.isSatisfied(null, "4", null, null));
-      assertFalse(check.isSatisfied(null, "16", null, null));
-      assertFalse(check.isSatisfied(null, "2", null, null));
+      assertThat(check.isSatisfied(null, "4", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "16", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "2", null, null)).isFalse();
    }
 }
