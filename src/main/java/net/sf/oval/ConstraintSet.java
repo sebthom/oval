@@ -23,23 +23,14 @@ public class ConstraintSet {
       this.id = id;
    }
 
-   /**
-    * @return the checks
-    */
    public Collection<Check> getChecks() {
       return checks;
    }
 
-   /**
-    * @return the id
-    */
    public String getId() {
       return id;
    }
 
-   /**
-    * @param checks the checks to set
-    */
    public void setChecks(final Collection<Check> checks) {
       this.checks = checks;
    }

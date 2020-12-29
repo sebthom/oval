@@ -84,7 +84,6 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
    }
 
    /**
-    * @param simpleCheckType the simpleCheckType to set
     * @throws IllegalArgumentException if <code>simpleCheckType == null</code>
     */
    public void setSimpleCheck(final Class<? extends SimpleCheck> simpleCheckType) throws ReflectionException, IllegalArgumentException {
@@ -101,7 +100,6 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
    }
 
    /**
-    * @param simpleCheck the simpleCheck to set
     * @throws IllegalArgumentException if <code>simpleCheck == null</code>
     */
    public void setSimpleCheck(final SimpleCheck simpleCheck) throws IllegalArgumentException {

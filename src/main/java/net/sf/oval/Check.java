@@ -74,9 +74,6 @@ public interface Check extends Serializable {
     */
    String[] getProfiles();
 
-   /**
-    * @return the severity
-    */
    int getSeverity();
 
    /**
@@ -126,19 +123,10 @@ public interface Check extends Serializable {
     */
    boolean isSatisfied(Object validatedObject, Object valueToValidate, OValContext context, Validator validator) throws OValException;
 
-   /**
-    * @param target the constraint target to set
-    */
    void setAppliesTo(ConstraintTarget... target);
 
-   /**
-    * @param context the context to set
-    */
    void setContext(OValContext context);
 
-   /**
-    * @param errorCode the error code to set
-    */
    void setErrorCode(String errorCode);
 
    /**
@@ -154,14 +142,8 @@ public interface Check extends Serializable {
     */
    void setMessage(String message);
 
-   /**
-    * @param profiles the profiles to set
-    */
    void setProfiles(String... profiles);
 
-   /**
-    * @param severity the severity to set
-    */
    void setSeverity(int severity);
 
    /**

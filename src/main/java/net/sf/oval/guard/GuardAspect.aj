@@ -21,7 +21,7 @@ import net.sf.oval.internal.Log;
 /**
  * This aspect intercepts calls to constructors and methods annotated with @net.sf.oval.annotations.Guarded
  * for automatic runtime validation of constraints defined for constructor/method parameters and method return values.
- * 
+ *
  * @author Sebastian Thomschke
  */
 public abstract aspect GuardAspect extends ApiUsageAuditor {
@@ -42,9 +42,6 @@ public abstract aspect GuardAspect extends ApiUsageAuditor {
         setGuard(guard);
     }
 
-    /**
-     * @return the guard
-     */
     public Guard getGuard() {
         return guard;
     }

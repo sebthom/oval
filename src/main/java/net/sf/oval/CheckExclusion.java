@@ -62,9 +62,6 @@ public interface CheckExclusion extends Serializable {
     */
    boolean isCheckExcluded(Check check, Object validatedObject, Object valueToValidate, OValContext context, Validator validator) throws OValException;
 
-   /**
-    * @param profiles the profiles to set
-    */
    void setProfiles(String... profiles);
 
    /**
