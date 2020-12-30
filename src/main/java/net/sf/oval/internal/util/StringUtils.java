@@ -19,6 +19,16 @@ import net.sf.oval.Validator;
  */
 public final class StringUtils {
 
+   public static boolean isBlank(final String str) {
+      if (str.isEmpty())
+         return true;
+      for (int i = 0, l = str.length(); i < l; i++) {
+         if (!Character.isWhitespace(str.charAt(i)))
+            return false;
+      }
+      return true;
+   }
+
    public static String join(final Collection<?> values, final char delimiter) {
       if (values == null || values.isEmpty())
          return "";
@@ -80,6 +90,13 @@ public final class StringUtils {
          startAt = foundAt + 1;
       }
       return result;
+   }
+
+   public static String substringBeforeLast(final String str, final char delimiter) {
+      final int pos = str.lastIndexOf(delimiter);
+      if (pos == -1)
+         return str;
+      return str.substring(0, pos);
    }
 
    private StringUtils() {

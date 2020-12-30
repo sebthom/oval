@@ -208,16 +208,28 @@ public class CustomAssertValidTest {
       assertThat(validator.validate(registry)).isEmpty();
 
       registry.personsByCity.put("city1", Arrays.asList(invalidPerson1));
-      assertThat(validator.validate(registry)).hasSize(1);
+      assertThat(validator.validate(registry).stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Registry.class.getName() + ".personsByCity[\"city1\"][0].firstName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city1\"][0].lastName cannot be null" //
+      );
 
       registry.personsByCity.put("city2", Arrays.asList(invalidPerson2));
-      assertThat(validator.validate(registry)).hasSize(2);
+      assertThat(validator.validate(registry).stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Registry.class.getName() + ".personsByCity[\"city1\"][0].firstName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city1\"][0].lastName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city2\"][0].firstName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city2\"][0].lastName cannot be null" //
+      );
 
       registry.personsByCity.clear();
       registry.personsByCity.put("city1", Arrays.asList(invalidPerson1, invalidPerson1, invalidPerson2, invalidPerson2));
       // still only two since invalidAddress1 and invalidAddress2 have already been validated
-      assertThat(validator.validate(registry)).hasSize(2);
-
+      assertThat(validator.validate(registry).stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Registry.class.getName() + ".personsByCity[\"city1\"][0].firstName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city1\"][0].lastName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city1\"][2].firstName cannot be null", //
+         Registry.class.getName() + ".personsByCity[\"city1\"][2].lastName cannot be null" //
+      );
       registry.personsByCity.clear();
 
       // list with an array with empty elements is valid
@@ -231,7 +243,14 @@ public class CustomAssertValidTest {
       assertThat(validator.validate(registry)).isEmpty();
 
       registry.addressClusters.add(new Address[] {invalidAddress1, invalidAddress2, invalidAddress1, invalidAddress2});
-      assertThat(validator.validate(registry)).hasSize(2);
+      assertThat(validator.validate(registry).stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Registry.class.getName() + ".addressClusters[2][0].city cannot be null", //
+         Registry.class.getName() + ".addressClusters[2][0].street cannot be null", //
+         Registry.class.getName() + ".addressClusters[2][0].zipCode cannot be null", //
+         Registry.class.getName() + ".addressClusters[2][1].city cannot be null", //
+         Registry.class.getName() + ".addressClusters[2][1].street cannot be null", //
+         Registry.class.getName() + ".addressClusters[2][1].zipCode cannot be null" //
+      );
 
       registry.addressClusters.clear();
 
@@ -245,7 +264,14 @@ public class CustomAssertValidTest {
 
       registry.addressesByCityAndStreet.get("city1").put("street1", new Address[] {invalidAddress1, invalidAddress1, invalidAddress2, invalidAddress2});
       // still only two since invalidAddress1 and invalidAddress2 have already been validated
-      assertThat(validator.validate(registry)).hasSize(2);
+      assertThat(validator.validate(registry).stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Registry.class.getName() + ".addressesByCityAndStreet[\"city1\"][\"street1\"][0].city cannot be null", //
+         Registry.class.getName() + ".addressesByCityAndStreet[\"city1\"][\"street1\"][0].street cannot be null", //
+         Registry.class.getName() + ".addressesByCityAndStreet[\"city1\"][\"street1\"][0].zipCode cannot be null", //
+         Registry.class.getName() + ".addressesByCityAndStreet[\"city1\"][\"street1\"][2].city cannot be null", //
+         Registry.class.getName() + ".addressesByCityAndStreet[\"city1\"][\"street1\"][2].street cannot be null", //
+         Registry.class.getName() + ".addressesByCityAndStreet[\"city1\"][\"street1\"][2].zipCode cannot be null" //
+      );
    }
 
    @Test
@@ -265,18 +291,32 @@ public class CustomAssertValidTest {
 
       // make the address invalid
       a.zipCode = null;
-      assertThat(validator.validate(a)).hasSize(1);
+      List<ConstraintViolation> violations = validator.validate(a);
+      assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Address.class.getName() + ".zipCode cannot be null" //
+      );
+      assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+         Address.class.getName() + ".zipCode" //
+      );
 
       // associate the invalid address with the person check the person for validity
       p.homeAddress = a;
-      List<ConstraintViolation> violations = validator.validate(p);
-      assertThat(violations).hasSize(1);
-      assertThat(violations.get(0).getMessage()).isEqualTo("ASSERT_VALID");
+      violations = validator.validate(p);
+      assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+         Person.class.getName() + ".homeAddress.zipCode" //
+      );
+      assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Person.class.getName() + ".homeAddress.zipCode cannot be null" //
+      );
 
       // test circular dependencies
       a.contact = p;
       violations = validator.validate(p);
-      assertThat(violations).hasSize(1);
-      assertThat(violations.get(0).getMessage()).isEqualTo("ASSERT_VALID");
+      assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+         Person.class.getName() + ".homeAddress.zipCode" //
+      );
+      assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+         Person.class.getName() + ".homeAddress.zipCode cannot be null" //
+      );
    }
 }

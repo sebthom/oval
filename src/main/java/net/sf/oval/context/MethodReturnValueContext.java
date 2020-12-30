@@ -26,12 +26,22 @@ public class MethodReturnValueContext extends OValContext {
       compileTimeType = method.getReturnType();
    }
 
+   @Override
+   public Class<?> getDeclaringClass() {
+      return method.getDeclaringClass();
+   }
+
    public Method getMethod() {
       return method.getMethod();
    }
 
    @Override
    public String toString() {
-      return method.getDeclaringClass().getName() + "." + method.getName() + "()";
+      return method.getDeclaringClass().getName() + "." + toStringUnqualified();
+   }
+
+   @Override
+   public String toStringUnqualified() {
+      return method.getName() + "()";
    }
 }

@@ -56,7 +56,7 @@ When using [AspectJ](https://www.eclipse.org/aspectj/doc/next/progguide/starting
 
 ## <a name="runtime_dependencies"></a>Runtime Dependencies
 
-OVal requires **Java 6** or later. Java 6 is actually the only hard requirement, depending on the features you want to use additional libraries are required:
+OVal requires **Java 8** or later, which is the only hard requirement, depending on the features you want to use additional libraries are required:
 
 - AspectJ: if you want to use the above mentioned programming by contract features.
 - Apache Commons JEXL: to define constraints via JEXL expressions.
@@ -103,7 +103,7 @@ BusinessObject bo = new BusinessObject(); // name is null
 // collect the constraint violations
 List<ConstraintViolation> violations = validator.validate(bo);
 
-if(violations.size()>0) {
+if(!violations.isEmpty()) {
   LOG.severe("Object " + bo + " is invalid.");
   throw new BussinessException(violations);
 }
@@ -146,7 +146,7 @@ BusinessObject bo = new BusinessObject("blabla");
 // collect the constraint violations
 List<ConstraintViolation> violations = validator.validate(bo);
 
-if(violations.size()>0) {
+if(!violations.isEmpty()) {
   LOG.severe("Object " + bo + " is invalid.");
   throw new BussinessException(violations);
 }
@@ -849,8 +849,8 @@ public Person createPerson(PersonInputForm inputForm) throws ConstraintsViolated
   // disable the probe mode in the current thread for the person object
   ProbeModeListener result = guard.disableProbeMode(person);
 
-  // check if any constraint violations occured
-  if(result.getConstraintViolations().size() > 0) {
+  // check if any constraint violations occurred
+  if(!result.getConstraintViolations().isEmpty()) {
      // report the collected constraint violations to the UI layer
      throw new ConstraintsViolatedException(result.getConstraintViolations());
   } else {

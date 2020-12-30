@@ -7,21 +7,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *********************************************************************/
-package net.sf.oval.localization.context;
-
-import net.sf.oval.context.OValContext;
+package net.sf.oval.context;
 
 /**
  * @author Sebastian Thomschke
- *
- * @deprecated use {@link DefaultOValContextRenderer}
+ * @since 3.1
  */
-@Deprecated
-public class ToStringValidationContextRenderer implements OValContextRenderer {
-   public static final ToStringValidationContextRenderer INSTANCE = new ToStringValidationContextRenderer();
+public class ObjectGraphNavigationContext extends OValContext {
+   private static final long serialVersionUID = 1L;
+
+   private final String path;
+
+   public ObjectGraphNavigationContext(final String path) {
+      this.path = path;
+   }
+
+   public String getPath() {
+      return path;
+   }
 
    @Override
-   public String render(final OValContext context) {
-      return context.toString();
+   public String toString() {
+      return path;
    }
 }

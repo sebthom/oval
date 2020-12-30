@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.oval.internal.util;
 
+import java.util.Collection;
+
 /**
  * @author Sebastian Thomschke
  */
@@ -21,10 +23,19 @@ public final class Assert {
       return ex;
    }
 
-   public static void argumentNotEmpty(final String name, final String value) throws IllegalArgumentException {
+   public static void argumentNotBlank(final String name, final String value) throws IllegalArgumentException {
       if (value == null)
          throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
       if (value.length() == 0)
+         throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be empty"));
+      if (StringUtils.isBlank(value))
+         throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be blank"));
+   }
+
+   public static <T> void argumentNotEmpty(final String name, final Collection<T> value) throws IllegalArgumentException {
+      if (value == null)
+         throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be null"));
+      if (value.isEmpty())
          throw _adjustStacktrace(new IllegalArgumentException("[" + name + "] must not be empty"));
    }
 

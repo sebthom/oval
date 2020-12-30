@@ -42,6 +42,7 @@ import net.sf.oval.internal.Log;
 import net.sf.oval.internal.ParameterChecks;
 import net.sf.oval.internal.util.ArrayUtils;
 import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.CollectionUtils;
 import net.sf.oval.internal.util.ConcurrentMultiValueMap;
 import net.sf.oval.internal.util.IdentityHashSet;
 import net.sf.oval.internal.util.Invocable;
@@ -462,7 +463,7 @@ public class Guard extends Validator {
 
       // check invariants
       if (isInvariantsEnabled && cc.isCheckInvariants || cc.methodsWithCheckInvariantsPost.contains(ctor)) {
-         final ValidationCycle cycle = new ValidationCycle(null);
+         final ValidationCycle cycle = new ValidationCycle(guardedObject, null);
          currentValidationCycles.get().add(cycle);
          try {
             validateInvariants(guardedObject, cycle);
@@ -533,7 +534,7 @@ public class Guard extends Validator {
          guardedObject = method.getDeclaringClass();
       }
 
-      final ValidationCycle cycle = new ValidationCycle(null);
+      final ValidationCycle cycle = new ValidationCycle(guardedObject, null);
       currentValidationCycles.get().add(cycle);
 
       try {
@@ -695,7 +696,7 @@ public class Guard extends Validator {
          guardedObject = method.getDeclaringClass();
       }
 
-      final ValidationCycle cycle = new ValidationCycle(null);
+      final ValidationCycle cycle = new ValidationCycle(guardedObject, null);
       currentValidationCycles.get().add(cycle);
       try {
          // check invariants
@@ -1025,7 +1026,7 @@ public class Guard extends Validator {
    protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject, final Constructor<?> constructor,
       final Object[] argsToValidate) throws ValidationFailedException {
 
-      final ValidationCycle cycle = new ValidationCycle(null);
+      final ValidationCycle cycle = new ValidationCycle(validatedObject, null);
       currentValidationCycles.get().add(cycle);
       try {
          final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -1137,6 +1138,7 @@ public class Guard extends Validator {
          final boolean hasParameters = parameterNames.length > 0;
 
          final MethodExitContext context = ContextCache.getMethodExitContext(method);
+         cycle.contextPath.add(context);
 
          for (final PostCheck check : postChecks) {
             if (!isAnyProfileEnabled(check.getProfiles(), null)) {
@@ -1161,14 +1163,16 @@ public class Guard extends Validator {
                if (!eng.evaluateAsBoolean(check.getExpr(), values)) {
                   final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
                   messageVariables.put("expression", check.getExpr());
-                  final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
+                  final String errorMessage = renderMessage(cycle.contextPath, null, check.getMessage(), messageVariables);
 
-                  cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+                  cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, cycle.contextPath));
                }
             } catch (final OValException ex) {
                throw new ValidationFailedException("Executing " + check + " failed. Method: " + method + " Validated object: " + validatedObject, ex);
             }
          }
+
+         CollectionUtils.removeLast(cycle.contextPath, context);
       } catch (final ValidationFailedException ex) {
          throw ex;
       } catch (final OValException ex) {
@@ -1203,7 +1207,7 @@ public class Guard extends Validator {
          final boolean hasParameters = parameterNames.length > 0;
 
          final MethodEntryContext context = ContextCache.getMethodEntryContext(method);
-
+         cycle.contextPath.add(context);
          for (final PreCheck check : preChecks) {
             if (!isAnyProfileEnabled(check.getProfiles(), null)) {
                continue;
@@ -1224,10 +1228,11 @@ public class Guard extends Validator {
             if (!eng.evaluateAsBoolean(check.getExpr(), values)) {
                final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
                messageVariables.put("expression", check.getExpr());
-               final String errorMessage = renderMessage(context, null, check.getMessage(), messageVariables);
-               cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, context));
+               final String errorMessage = renderMessage(cycle.contextPath, null, check.getMessage(), messageVariables);
+               cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, cycle.contextPath));
             }
          }
+         CollectionUtils.removeLast(cycle.contextPath, context);
       } catch (final OValException ex) {
          throw new ValidationFailedException("Method pre conditions validation failed. Method: " + method + " Validated object: " + validatedObject, ex);
       } finally {

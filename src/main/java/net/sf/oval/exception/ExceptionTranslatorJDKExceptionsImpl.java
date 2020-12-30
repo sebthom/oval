@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.oval.exception;
 
+import java.util.ListIterator;
+
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.context.ConstructorParameterContext;
 import net.sf.oval.context.FieldContext;
@@ -38,31 +40,32 @@ public class ExceptionTranslatorJDKExceptionsImpl implements ExceptionTranslator
       if (ex instanceof ConstraintsViolatedException) {
          final ConstraintsViolatedException cex = (ConstraintsViolatedException) ex;
          final ConstraintViolation cv = cex.getConstraintViolations()[0];
-         final OValContext ctx = cv.getContext();
+         final ListIterator<OValContext> listIterator = cv.getContextPath().listIterator(cv.getContextPath().size());
+         OValContext ctx = null;
+         while (listIterator.hasPrevious()) {
+            ctx = listIterator.previous();
+            // translate exceptions for preconditions to IllegalArgumentExceptions
+            if (ctx instanceof MethodParameterContext || ctx instanceof ConstructorParameterContext || ctx instanceof MethodEntryContext) {
+               final IllegalArgumentException iaex = new IllegalArgumentException(cv.getMessage(), ex.getCause());
+               iaex.setStackTrace(ex.getStackTrace());
+               LOG.debug("Translated Exception {1} to {2}", ex, iaex);
+               return iaex;
+            }
 
-         // translate exceptions for preconditions to IllegalArgumentExceptions
-         if (ctx instanceof MethodParameterContext || ctx instanceof ConstructorParameterContext || ctx instanceof MethodEntryContext) {
-            final IllegalArgumentException iaex = new IllegalArgumentException(cv.getMessage(), ex.getCause());
-            iaex.setStackTrace(ex.getStackTrace());
-            LOG.debug("Translated Exception {1} to {2}", ex, iaex);
-            return iaex;
-         }
-
-         // translate invariant exceptions to IllegalStateExceptions
-         if (ctx instanceof FieldContext || ctx instanceof MethodReturnValueContext) {
-            final IllegalStateException ise = new IllegalStateException(cv.getMessage(), ex.getCause());
-            ise.setStackTrace(ex.getStackTrace());
-            LOG.debug("Translated Exception {1} to {2}", ex, ise);
-            return ise;
+            // translate invariant exceptions to IllegalStateExceptions
+            if (ctx instanceof FieldContext || ctx instanceof MethodReturnValueContext) {
+               final IllegalStateException ise = new IllegalStateException(cv.getMessage(), ex.getCause());
+               ise.setStackTrace(ex.getStackTrace());
+               LOG.debug("Translated Exception {1} to {2}", ex, ise);
+               return ise;
+            }
          }
       }
 
       // translate all other messages to runtime exceptions
-      {
-         final RuntimeException rex = new RuntimeException(ex.getMessage(), ex.getCause());
-         rex.setStackTrace(ex.getStackTrace());
-         LOG.debug("Translated Exception {1} to {2}", ex, rex);
-         return rex;
-      }
+      final RuntimeException rex = new RuntimeException(ex.getMessage(), ex.getCause());
+      rex.setStackTrace(ex.getStackTrace());
+      LOG.debug("Translated Exception {1} to {2}", ex, rex);
+      return rex;
    }
 }

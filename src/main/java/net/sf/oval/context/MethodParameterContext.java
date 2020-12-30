@@ -32,6 +32,11 @@ public class MethodParameterContext extends OValContext {
       compileTimeType = method.getParameterTypes()[parameterIndex];
    }
 
+   @Override
+   public Class<?> getDeclaringClass() {
+      return method.getDeclaringClass();
+   }
+
    public Method getMethod() {
       return method.getMethod();
    }
@@ -46,7 +51,12 @@ public class MethodParameterContext extends OValContext {
 
    @Override
    public String toString() {
-      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ',') + ") " //
+      return method.getDeclaringClass().getName() + "." + toStringUnqualified();
+   }
+
+   @Override
+   public String toStringUnqualified() {
+      return method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ',') + ") " //
          + Validator.getMessageResolver().getMessage("net.sf.oval.context.MethodParameterContext.parameter") + " " //
          + parameterIndex //
          + (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName + ")");

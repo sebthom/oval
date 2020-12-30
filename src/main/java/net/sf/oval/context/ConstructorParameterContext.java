@@ -36,6 +36,11 @@ public class ConstructorParameterContext extends OValContext {
       return constructor.getConstructor();
    }
 
+   @Override
+   public Class<?> getDeclaringClass() {
+      return constructor.getDeclaringClass();
+   }
+
    public int getParameterIndex() {
       return parameterIndex;
    }
@@ -46,7 +51,12 @@ public class ConstructorParameterContext extends OValContext {
 
    @Override
    public String toString() {
-      return constructor.getDeclaringClass().getName() + "(" + StringUtils.join(constructor.getParameterTypes(), ',') + ") " //
+      return constructor.getDeclaringClass().getName() + "." + toStringUnqualified();
+   }
+
+   @Override
+   public String toStringUnqualified() {
+      return "<init>(" + StringUtils.join(constructor.getParameterTypes(), ',') + ") " //
          + Validator.getMessageResolver().getMessage("net.sf.oval.context.ConstructorParameterContext.parameter") + " " //
          + parameterIndex //
          + (parameterName == null || parameterName.length() == 0 ? "" : " (" + parameterName + ")");

@@ -9,38 +9,26 @@
  *********************************************************************/
 package net.sf.oval.context;
 
-import java.io.Serializable;
-
 /**
- * The root class of the validation context classes.
- *
  * @author Sebastian Thomschke
+ * @since 3.1
  */
-public abstract class OValContext implements Serializable {
+public class IterableElementContext extends OValContext {
    private static final long serialVersionUID = 1L;
 
-   protected Class<?> compileTimeType;
+   private final int elementIndex;
 
-   /**
-    * May return null if not applicable.
-    */
-   public Class<?> getCompileTimeType() {
-      return compileTimeType;
+   public IterableElementContext(final Class<?> compileTimeType, final int elementIndex) {
+      this.compileTimeType = compileTimeType;
+      this.elementIndex = elementIndex;
    }
 
-   /**
-    * May return null if not applicable.
-    *
-    * @since 3.1
-    */
-   public Class<?> getDeclaringClass() {
-      return null;
+   public int getElementIndex() {
+      return elementIndex;
    }
 
-   /**
-    * @since 3.1
-    */
-   public String toStringUnqualified() {
-      return toString();
+   @Override
+   public String toString() {
+      return "[" + elementIndex + "]";
    }
 }

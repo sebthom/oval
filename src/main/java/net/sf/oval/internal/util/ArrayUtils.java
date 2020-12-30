@@ -12,6 +12,7 @@ package net.sf.oval.internal.util;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import net.sf.oval.Validator;
 
@@ -126,6 +127,74 @@ public final class ArrayUtils {
          if (t == theItem)
             return true;
       return false;
+   }
+
+   public static void iterate(final Object array, final BiConsumer<Integer, Object> onElement) {
+      if (array instanceof Object[]) {
+         final Object[] arrayCasted = (Object[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof byte[]) {
+         final byte[] arrayCasted = (byte[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof char[]) {
+         final char[] arrayCasted = (char[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof short[]) {
+         final short[] arrayCasted = (short[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof int[]) {
+         final int[] arrayCasted = (int[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof long[]) {
+         final long[] arrayCasted = (long[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof double[]) {
+         final double[] arrayCasted = (double[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof float[]) {
+         final float[] arrayCasted = (float[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+      if (array instanceof boolean[]) {
+         final boolean[] arrayCasted = (boolean[]) array;
+         for (int i = 0, l = arrayCasted.length; i < l; i++) {
+            onElement.accept(i, arrayCasted[i]);
+         }
+         return;
+      }
+
+      throw new IllegalArgumentException("Argument [array] must be an array");
    }
 
    private ArrayUtils() {

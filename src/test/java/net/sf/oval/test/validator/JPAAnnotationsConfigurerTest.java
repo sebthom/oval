@@ -88,7 +88,12 @@ public class JPAAnnotationsConfigurerTest {
 
          violations = v.validate(entity);
          // ref1 is invalid
-         assertThat(violations).hasSize(1);
+         System.out.println(violations);
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            TestEntity.class.getName() + ".ref1.ref1 cannot be null", //
+            TestEntity.class.getName() + ".ref1.code cannot be null", //
+            TestEntity.class.getName() + ".ref1.getDescription() cannot be null" //
+         );
       }
 
       {
@@ -105,7 +110,11 @@ public class JPAAnnotationsConfigurerTest {
 
          violations = v.validate(entity);
          // ref2 is invalid
-         assertThat(violations).hasSize(1);
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            TestEntity.class.getName() + ".ref2.ref1 cannot be null", //
+            TestEntity.class.getName() + ".ref2.code cannot be null", //
+            TestEntity.class.getName() + ".ref2.getDescription() cannot be null" //
+         );
       }
 
       {
@@ -134,7 +143,11 @@ public class JPAAnnotationsConfigurerTest {
          entity.refs.add(d);
 
          violations = v.validate(entity);
-         assertThat(violations).hasSize(1);
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            TestEntity.class.getName() + ".refs[0].ref1 cannot be null", //
+            TestEntity.class.getName() + ".refs[0].code cannot be null", //
+            TestEntity.class.getName() + ".refs[0].getDescription() cannot be null" //
+         );
 
          d.code = "";
          d.description = "";

@@ -26,12 +26,22 @@ public class MethodExitContext extends OValContext {
       this.method = new SerializableMethod(method);
    }
 
+   @Override
+   public Class<?> getDeclaringClass() {
+      return method.getDeclaringClass();
+   }
+
    public Method getMethod() {
       return method.getMethod();
    }
 
    @Override
    public String toString() {
-      return method.getDeclaringClass().getName() + "." + method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ',') + ")";
+      return method.getDeclaringClass().getName() + "." + toStringUnqualified();
+   }
+
+   @Override
+   public String toStringUnqualified() {
+      return method.getName() + "(" + StringUtils.join(method.getParameterTypes(), ',') + ")";
    }
 }

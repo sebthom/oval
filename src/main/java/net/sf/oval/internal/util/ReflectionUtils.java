@@ -18,7 +18,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.ReflectPermission;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
@@ -363,6 +365,34 @@ public final class ReflectionUtils {
          return null;
 
       return getSetterRecursive(superclazz, propertyName);
+   }
+
+   public static Class<?> getTypeArgument(final Field field, final int typeIndex) {
+      final Type genericType = field.getGenericType();
+      if (genericType instanceof ParameterizedType) {
+         final ParameterizedType parameterizedType = (ParameterizedType) genericType;
+         final Type[] typeArgs = parameterizedType.getActualTypeArguments();
+         if (typeArgs.length > typeIndex) {
+            final Type t = typeArgs[typeIndex];
+            if (t instanceof Class)
+               return (Class<?>) t;
+         }
+      }
+      return null;
+   }
+
+   public static Class<?> getTypeArgument(final Method method, final int parameterIndex, final int typeIndex) {
+      final Type genericType = method.getGenericParameterTypes()[parameterIndex];
+      if (genericType instanceof ParameterizedType) {
+         final ParameterizedType parameterizedType = (ParameterizedType) genericType;
+         final Type[] typeArgs = parameterizedType.getActualTypeArguments();
+         if (typeArgs.length > typeIndex) {
+            final Type t = typeArgs[typeIndex];
+            if (t instanceof Class)
+               return (Class<?>) t;
+         }
+      }
+      return null;
    }
 
    public static String guessFieldName(final Method getter) {

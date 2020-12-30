@@ -88,6 +88,7 @@ public class DateRangeTest extends AbstractContraintsTest {
       check.setFormat("yyyy-MM-dd HH:mm:ss");
 
       final Date now = new Date();
+
       check.setMin("now");
       assertThat(check.isSatisfied(null, now, null, null)).isTrue();
 

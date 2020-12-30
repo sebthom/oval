@@ -26,6 +26,14 @@ public class ClassContext extends OValContext {
       return clazz;
    }
 
+   /**
+    * @since 3.1
+    */
+   @Override
+   public Class<?> getDeclaringClass() {
+      return clazz;
+   }
+
    @Override
    public String toString() {
       return clazz.getName();

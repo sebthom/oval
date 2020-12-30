@@ -87,9 +87,9 @@ public class XMLConfigurationTest {
          final ConstraintViolation[] violations = ex.getConstraintViolations();
          assertThat(violations).hasSize(2);
          assertThat(violations[0].getMessage()).isEqualTo(User.class.getName()
-            + "(class java.lang.String,class java.lang.String,int) parameter 0 (userId) is null");
+            + ".<init>(class java.lang.String,class java.lang.String,int) parameter 0 (userId) is null");
          assertThat(violations[1].getMessage()).isEqualTo(User.class.getName()
-            + "(class java.lang.String,class java.lang.String,int) parameter 1 (managerId) is null");
+            + ".<init>(class java.lang.String,class java.lang.String,int) parameter 1 (managerId) is null");
       }
 
       listener.clear();

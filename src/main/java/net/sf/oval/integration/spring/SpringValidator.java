@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.oval.integration.spring;
 
+import java.util.ListIterator;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -57,11 +59,22 @@ public class SpringValidator implements org.springframework.validation.Validator
    public void validate(final Object objectToValidate, final Errors errors) {
       try {
          for (final ConstraintViolation violation : validator.validate(objectToValidate)) {
-            final OValContext ctx = violation.getContext();
             final String errorCode = violation.getErrorCode();
             final String errorMessage = violation.getMessage();
 
-            if (ctx instanceof FieldContext) {
+            final ListIterator<OValContext> listIterator = violation.getContextPath().listIterator(violation.getContextPath().size());
+            OValContext ctx = null;
+            boolean hasFieldContext = false;
+            while (listIterator.hasPrevious()) {
+               ctx = listIterator.previous();
+               if (ctx instanceof FieldContext) {
+                  hasFieldContext = true;
+                  break;
+               }
+            }
+
+            if (hasFieldContext) {
+               @SuppressWarnings("null")
                final String fieldName = ((FieldContext) ctx).getField().getName();
                errors.rejectValue(fieldName, errorCode, errorMessage);
             } else {

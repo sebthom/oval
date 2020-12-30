@@ -71,14 +71,19 @@ public @interface AssertValid {
 
    /**
     * error code passed to the ConstraintViolation object
+    *
+    * @deprecated not used anymore
     */
+   @Deprecated
    String errorCode() default "net.sf.oval.constraint.AssertValid";
 
    /**
     * message to be used for the ContraintsViolatedException
     *
     * @see ConstraintViolation
+    * @deprecated not used anymore
     */
+   @Deprecated
    String message() default "net.sf.oval.constraint.AssertValid.violated";
 
    /**
@@ -88,7 +93,10 @@ public @interface AssertValid {
 
    /**
     * severity passed to the ConstraintViolation object
+    *
+    * @deprecated not used anymore
     */
+   @Deprecated
    int severity() default 0;
 
    /**
@@ -115,5 +123,4 @@ public @interface AssertValid {
     * or the validated bean for object level constraints)
     */
    String when() default "";
-
 }

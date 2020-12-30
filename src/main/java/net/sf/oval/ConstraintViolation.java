@@ -11,11 +11,19 @@ package net.sf.oval;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
+import net.sf.oval.context.IterableElementContext;
+import net.sf.oval.context.MapKeyContext;
+import net.sf.oval.context.MapValueContext;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.Log;
+import net.sf.oval.internal.util.Assert;
+import net.sf.oval.internal.util.CollectionUtils;
+import net.sf.oval.localization.context.DefaultOValContextRenderer;
 
 /**
  * An instance of this class provides detailed information about a single constraint
@@ -28,25 +36,45 @@ public class ConstraintViolation implements Serializable {
 
    private static final long serialVersionUID = 1L;
 
+   @Deprecated
    private final ConstraintViolation[] causes;
    private final OValContext checkDeclaringContext;
    private final String checkName;
-   private final OValContext context;
    private final String errorCode;
+   private final int severity;
+
+   private transient Object validatedObject;
+
    private transient Object invalidValue;
+   private final List<OValContext> contextPath;
+
    private final String message;
    private final String messageTemplate;
    private final Map<String, ? extends Serializable> messageVariables;
 
-   private final int severity;
-   private transient Object validatedObject;
-
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context) {
-      this(check, message, validatedObject, invalidValue, context, (ConstraintViolation[]) null);
+   /**
+    * @since 3.1
+    */
+   public ConstraintViolation( //
+      final Check check, //
+      final String message, //
+      final Object validatedObject, //
+      final Object invalidValue, //
+      final List<OValContext> invalidValuePath //
+   ) {
+      this(check, message, validatedObject, invalidValue, invalidValuePath, (ConstraintViolation[]) null);
    }
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context,
-      final ConstraintViolation... causes) {
+   private ConstraintViolation( //
+      final Check check, //
+      final String message, //
+      final Object validatedObject, //
+      final Object invalidValue, //
+      final List<OValContext> invalidValuePath, //
+      final ConstraintViolation... causes//
+   ) {
+      Assert.argumentNotEmpty("invalidValuePath", invalidValuePath);
+
       checkName = check.getClass().getName();
       checkDeclaringContext = check.getContext();
       errorCode = check.getErrorCode();
@@ -56,28 +84,53 @@ public class ConstraintViolation implements Serializable {
       severity = check.getSeverity();
       this.validatedObject = validatedObject;
       this.invalidValue = invalidValue;
-      this.context = context;
+      contextPath = CollectionUtils.clone(invalidValuePath);
       this.causes = causes != null && causes.length == 0 ? null : causes;
    }
 
-   public ConstraintViolation(final Check check, final String message, final Object validatedObject, final Object invalidValue, final OValContext context,
-      final List<ConstraintViolation> causes) {
-      checkName = check.getClass().getName();
-      checkDeclaringContext = check.getContext();
-      errorCode = check.getErrorCode();
-      this.message = message;
-      messageTemplate = check.getMessage();
-      messageVariables = check.getMessageVariables();
-      severity = check.getSeverity();
-      this.validatedObject = validatedObject;
-      this.invalidValue = invalidValue;
-      this.context = context;
-      this.causes = causes == null || causes.isEmpty() ? null : causes.toArray(new ConstraintViolation[causes.size()]);
+   @Deprecated
+   public ConstraintViolation(//
+      final Check check, //
+      final String message, //
+      final Object validatedObject, //
+      final Object invalidValue, //
+      final OValContext context //
+   ) {
+      this(check, message, validatedObject, invalidValue, Arrays.asList(context), (ConstraintViolation[]) null);
+   }
+
+   @Deprecated
+   public ConstraintViolation(//
+      final Check check, //
+      final String message, //
+      final Object validatedObject, //
+      final Object invalidValue, //
+      final OValContext context, //
+      final ConstraintViolation... causes//
+   ) {
+      this(check, message, validatedObject, invalidValue, Arrays.asList(context), causes);
+   }
+
+   @Deprecated
+   public ConstraintViolation(//
+      final Check check, //
+      final String message, //
+      final Object validatedObject, //
+      final Object invalidValue, //
+      final OValContext context, //
+      final List<ConstraintViolation> causes//
+   ) {
+      this(check, message, validatedObject, invalidValue, Arrays.asList(context), //
+         causes == null || causes.isEmpty() ? null : causes.toArray(new ConstraintViolation[causes.size()]) //
+      );
    }
 
    /**
     * @return the causes or null if no cause exists
+    *
+    * @deprecated use {@link #getContextPath()}
     */
+   @Deprecated
    public ConstraintViolation[] getCauses() {
       return causes == null ? null : causes.clone();
    }
@@ -108,13 +161,42 @@ public class ConstraintViolation implements Serializable {
     *
     * @see net.sf.oval.context.ClassContext
     * @see net.sf.oval.context.FieldContext
-    * @see net.sf.oval.context.MethodEntryContext
-    * @see net.sf.oval.context.MethodExitContext
-    * @see net.sf.oval.context.MethodParameterContext
+    * @see net.sf.oval.context.MethodReturnValueContext
+    *
+    * @deprecated use {@link #getContextPath()}
+    */
+   @Deprecated
+   public OValContext getContext() {
+      final ListIterator<OValContext> listIterator = contextPath.listIterator(contextPath.size());
+      OValContext ctx = null;
+      while (listIterator.hasPrevious()) {
+         ctx = listIterator.previous();
+         if (!(ctx instanceof IterableElementContext || ctx instanceof MapKeyContext || ctx instanceof MapValueContext)) {
+            break;
+         }
+      }
+      return ctx;
+   }
+
+   /**
+    * @return the context path to the invalid value
+    *
+    * @see net.sf.oval.context.ClassContext
+    * @see net.sf.oval.context.FieldContext
+    * @see net.sf.oval.context.IterableElementContext
+    * @see net.sf.oval.context.MapKeyContext
+    * @see net.sf.oval.context.MapValueContext
     * @see net.sf.oval.context.MethodReturnValueContext
     */
-   public OValContext getContext() {
-      return context;
+   public List<OValContext> getContextPath() {
+      return contextPath;
+   }
+
+   /**
+    * @return a string representation of the context path to the invalid value
+    */
+   public String getContextPathAsString() {
+      return DefaultOValContextRenderer.INSTANCE.render(contextPath);
    }
 
    public String getErrorCode() {

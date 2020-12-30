@@ -100,11 +100,18 @@ public class AnnotationsConfigurerTest {
          // description is empty
          // parent is null
          // value not null
-         assertThat(violations).hasSize(4);
-
-         final String[] msgs = {violations.get(0).getMessage(), violations.get(1).getMessage(), violations.get(2).getMessage(), violations.get(3).getMessage()};
-         Arrays.sort(msgs);
-         assertArrayEquals(new String[] {"CODE_NOT_NULL", "DESCRIPTION_NOT_EMPTY", "PARENT_NOT_NULL", "VALUE_NOT_NULL"}, msgs);
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            "CODE_NOT_NULL", //
+            "DESCRIPTION_NOT_EMPTY", //
+            "PARENT_NOT_NULL", //
+            "VALUE_NOT_NULL" //
+         );
+         assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+            TestEntity.class.getName() + ".code", //
+            TestEntity.class.getName() + ".getDescription()", //
+            TestEntity.class.getName() + ".parent", //
+            TestEntity.class.getName() + ".getValue()" //
+         );
       }
 
       {
@@ -115,7 +122,18 @@ public class AnnotationsConfigurerTest {
 
          violations = v.validate(entity);
          // parent is invalid
-         assertThat(violations).hasSize(1);
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            "CODE_NOT_NULL", //
+            "DESCRIPTION_NOT_EMPTY", //
+            "PARENT_NOT_NULL", //
+            "VALUE_NOT_NULL" //
+         );
+         assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+            TestEntity.class.getName() + ".parent.code", //
+            TestEntity.class.getName() + ".parent.getDescription()", //
+            TestEntity.class.getName() + ".parent.parent", //
+            TestEntity.class.getName() + ".parent.getValue()" //
+         );
       }
 
       {
@@ -134,8 +152,16 @@ public class AnnotationsConfigurerTest {
 
          violations = v.validate(entity);
          // sibling is invalid
-         assertThat(violations).hasSize(1);
-         assertThat(violations.get(0).getMessage()).contains("sibling");
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            "CODE_NOT_NULL", //
+            "DESCRIPTION_NOT_EMPTY", //
+            "PARENT_NOT_NULL" //
+         );
+         assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+            TestEntity.class.getName() + ".sibling.code", //
+            TestEntity.class.getName() + ".sibling.getDescription()", //
+            TestEntity.class.getName() + ".sibling.parent" //
+         );
       }
 
       {
@@ -163,8 +189,24 @@ public class AnnotationsConfigurerTest {
          entity.children.add(d);
 
          violations = v.validate(entity);
-         assertThat(violations).hasSize(1);
-         assertThat(violations.get(0).getErrorCode()).isEqualTo("net.sf.oval.constraint.AssertValid");
+         assertThat(violations.stream().map(ConstraintViolation::getMessage)).containsOnly( //
+            "CODE_NOT_NULL", //
+            "DESCRIPTION_NOT_EMPTY", //
+            "PARENT_NOT_NULL", //
+            "VALUE_NOT_NULL" //
+         );
+         assertThat(violations.stream().map(ConstraintViolation::getContextPathAsString)).containsOnly( //
+            TestEntity.class.getName() + ".children[0].code", //
+            TestEntity.class.getName() + ".children[0].getDescription()", //
+            TestEntity.class.getName() + ".children[0].parent", //
+            TestEntity.class.getName() + ".children[0].getValue()" //
+         );
+         assertThat(violations.stream().map(ConstraintViolation::getErrorCode)).containsOnly( //
+            NotNull.class.getName(), //
+            NotNull.class.getName(), //
+            NotNull.class.getName(), //
+            NotEmpty.class.getName() //
+         );
 
          d.code = "";
          d.description.add("");

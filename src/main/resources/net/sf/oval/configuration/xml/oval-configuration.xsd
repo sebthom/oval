@@ -557,11 +557,6 @@ SPDX-License-Identifier: EPL-2.0
       </annotation>
       <complexContent>
          <extension base="tns:Constraint">
-            <attribute name="requireValidElements" type="boolean" use="optional">
-               <annotation>
-                  <documentation>deprecated, use appliesTo</documentation>
-               </annotation>
-            </attribute>
          </extension>
       </complexContent>
    </complexType>

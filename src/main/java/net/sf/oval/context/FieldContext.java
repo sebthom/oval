@@ -33,12 +33,22 @@ public class FieldContext extends OValContext {
       compileTimeType = field.getType();
    }
 
+   @Override
+   public Class<?> getDeclaringClass() {
+      return field.getDeclaringClass();
+   }
+
    public Field getField() {
       return field.getField();
    }
 
    @Override
    public String toString() {
-      return field.getDeclaringClass().getName() + '.' + field.getName();
+      return field.getDeclaringClass().getName() + '.' + toStringUnqualified();
+   }
+
+   @Override
+   public String toStringUnqualified() {
+      return field.getName();
    }
 }

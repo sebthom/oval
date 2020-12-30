@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * support recursive validation of classes implementing `java.lang.Iterable`, not only `java.util.Collection`.
+* method `ConstraintViolation.getContextPath()`
+* method `ConstraintViolation.getContextPathAsString()`
+
+### Changed
+* deprecated
+  * method `ConstraintViolation.getCauses()`
+  * method `ConstraintViolation.getContext()`
+  * property `AssertValid.errorCode()`
+  * property `AssertValid.message()`
+  * property `AssertValid.severity()()`
+  * class `ToStringValidationContextRenderer`
 
 ## [3.0.0] - 2020-12-28
 
