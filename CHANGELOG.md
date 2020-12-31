@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * class `ValidationCycle`
 * support recursive validation of classes implementing `java.lang.Iterable`, not only `java.util.Collection`.
-* method `ConstraintViolation.getContextPath()`
+* [github Issues #88](https://github.com/sebthom/oval/issues/88) method `ConstraintViolation.getContextPath()`
 * method `ConstraintViolation.getContextPathAsString()`
 
 ### Changed
