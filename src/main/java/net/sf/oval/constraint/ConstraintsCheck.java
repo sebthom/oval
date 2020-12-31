@@ -14,9 +14,8 @@ import java.util.List;
 
 import net.sf.oval.Check;
 import net.sf.oval.ConstraintTarget;
-import net.sf.oval.Validator;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 
 /**
  * Internal check holding multiple check instances of the same type, e.g. used for @Assert.List(...)
@@ -37,12 +36,11 @@ public class ConstraintsCheck extends AbstractAnnotationCheck<Annotation> {
    /**
     * <b>This method is not used.</b><br>
     * The validation of this special constraint is directly performed by the Validator class
-    * 
+    *
     * @throws UnsupportedOperationException always thrown if this method is invoked
     */
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-      throws UnsupportedOperationException {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 }

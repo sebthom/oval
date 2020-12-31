@@ -24,10 +24,10 @@ public class NoSelfReferenceTest extends AbstractContraintsTest {
    public void testNoSelfReference() {
       final NoSelfReferenceCheck check = new NoSelfReferenceCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
-      assertThat(check.isSatisfied(this, null, null, null)).isTrue();
-      assertThat(check.isSatisfied(this, this, null, null)).isFalse();
-      assertThat(check.isSatisfied(this, "bla", null, null)).isTrue();
+      assertThat(check.isSatisfied(this, null, null)).isTrue();
+      assertThat(check.isSatisfied(this, this, null)).isFalse();
+      assertThat(check.isSatisfied(this, "bla", null)).isTrue();
    }
 }

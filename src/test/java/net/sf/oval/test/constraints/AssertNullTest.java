@@ -24,12 +24,12 @@ public class AssertNullTest extends AbstractContraintsTest {
    public void testNotNull() {
       final AssertNullCheck check = new AssertNullCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "bla", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, true, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, 1, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, ' ', null, null)).isFalse();
-      assertThat(check.isSatisfied(null, " ", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "bla", null)).isFalse();
+      assertThat(check.isSatisfied(null, true, null)).isFalse();
+      assertThat(check.isSatisfied(null, 1, null)).isFalse();
+      assertThat(check.isSatisfied(null, "", null)).isFalse();
+      assertThat(check.isSatisfied(null, ' ', null)).isFalse();
+      assertThat(check.isSatisfied(null, " ", null)).isFalse();
    }
 }

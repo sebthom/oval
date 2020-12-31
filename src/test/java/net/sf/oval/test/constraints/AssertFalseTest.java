@@ -24,13 +24,13 @@ public class AssertFalseTest extends AbstractContraintsTest {
    public void testAssertFalse() {
       final AssertFalseCheck check = new AssertFalseCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
-      assertThat(check.isSatisfied(null, false, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, true, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, Boolean.FALSE, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, Boolean.TRUE, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "true", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "bla", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, false, null)).isTrue();
+      assertThat(check.isSatisfied(null, true, null)).isFalse();
+      assertThat(check.isSatisfied(null, Boolean.FALSE, null)).isTrue();
+      assertThat(check.isSatisfied(null, Boolean.TRUE, null)).isFalse();
+      assertThat(check.isSatisfied(null, "true", null)).isFalse();
+      assertThat(check.isSatisfied(null, "bla", null)).isTrue();
    }
 }

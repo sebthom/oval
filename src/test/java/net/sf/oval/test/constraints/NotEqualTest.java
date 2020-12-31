@@ -24,17 +24,17 @@ public class NotEqualTest extends AbstractContraintsTest {
    public void testNotEqual() {
       final NotEqualCheck check = new NotEqualCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       check.setTestString("TEST");
       check.setIgnoreCase(false);
-      assertThat(check.isSatisfied(null, 10, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "test", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "TEST", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, 10, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null)).isTrue();
+      assertThat(check.isSatisfied(null, "test", null)).isTrue();
+      assertThat(check.isSatisfied(null, "TEST", null)).isFalse();
 
       check.setIgnoreCase(true);
-      assertThat(check.isSatisfied(null, "test", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "TEST", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "test", null)).isFalse();
+      assertThat(check.isSatisfied(null, "TEST", null)).isFalse();
    }
 }

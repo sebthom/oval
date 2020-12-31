@@ -144,7 +144,7 @@ public abstract class AbstractCheck implements Check {
    }
 
    @Override
-   public boolean isActive(final Object validatedObject, final Object valueToValidate, final Validator validator) {
+   public boolean isActive(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) {
       if (when == null)
          return true;
 
@@ -157,7 +157,7 @@ public abstract class AbstractCheck implements Check {
       values.put("_value", valueToValidate);
       values.put("_this", validatedObject);
 
-      final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
+      final ExpressionLanguage el = cycle.getValidator().getExpressionLanguageRegistry().getExpressionLanguage(whenLang);
       return el.evaluateAsBoolean(whenFormula, values);
    }
 

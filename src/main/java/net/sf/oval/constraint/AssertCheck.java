@@ -13,9 +13,8 @@ import static net.sf.oval.Validator.*;
 
 import java.util.Map;
 
-import net.sf.oval.Validator;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.ExpressionEvaluationException;
 import net.sf.oval.exception.ExpressionLanguageNotAvailableException;
 import net.sf.oval.expression.ExpressionLanguage;
@@ -59,13 +58,13 @@ public class AssertCheck extends AbstractAnnotationCheck<Assert> {
    }
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-      throws ExpressionEvaluationException, ExpressionLanguageNotAvailableException {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws ExpressionEvaluationException,
+      ExpressionLanguageNotAvailableException {
       final Map<String, Object> values = getCollectionFactory().createMap();
       values.put("_value", valueToValidate);
       values.put("_this", validatedObject);
 
-      final ExpressionLanguage el = validator.getExpressionLanguageRegistry().getExpressionLanguage(lang);
+      final ExpressionLanguage el = cycle.getValidator().getExpressionLanguageRegistry().getExpressionLanguage(lang);
       return el.evaluateAsBoolean(expr, values);
    }
 

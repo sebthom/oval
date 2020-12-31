@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
 import net.sf.oval.Validator;
+import net.sf.oval.localization.context.DefaultOValContextRenderer;
 import net.sf.oval.localization.context.ResourceBundleValidationContextRenderer;
-import net.sf.oval.localization.context.ToStringValidationContextRenderer;
 import net.sf.oval.localization.message.ResourceBundleMessageResolver;
 import net.sf.oval.localization.value.ToStringMessageValueFormatter;
 
@@ -26,10 +26,10 @@ public class DefaultInstancesTest {
 
    @Test
    public void testDefaultInstancesNotNull() {
+      assertThat(DefaultOValContextRenderer.INSTANCE).isNotNull();
       assertThat(ResourceBundleMessageResolver.INSTANCE).isNotNull();
       assertThat(ResourceBundleValidationContextRenderer.INSTANCE).isNotNull();
       assertThat(ToStringMessageValueFormatter.INSTANCE).isNotNull();
-      assertThat(ToStringValidationContextRenderer.INSTANCE).isNotNull();
 
       assertThat(Validator.getCollectionFactory()).isNotNull();
       assertThat(Validator.getContextRenderer()).isNotNull();

@@ -15,9 +15,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import net.sf.oval.Validator;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.FieldNotFoundException;
 import net.sf.oval.exception.InvokingMethodFailedException;
 import net.sf.oval.exception.MethodNotFoundException;
@@ -62,7 +61,7 @@ public class NotEqualToFieldCheck extends AbstractAnnotationCheck<NotEqualToFiel
    }
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) {
       if (valueToValidate == null)
          return true;
 

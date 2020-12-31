@@ -19,9 +19,8 @@ import java.util.Date;
 import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
-import net.sf.oval.Validator;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.internal.Log;
 
@@ -192,7 +191,7 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
    }
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) {
       if (valueToValidate == null)
          return true;
 

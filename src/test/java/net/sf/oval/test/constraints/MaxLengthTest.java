@@ -24,14 +24,14 @@ public class MaxLengthTest extends AbstractContraintsTest {
    public void testMaxLength() {
       final MaxLengthCheck check = new MaxLengthCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       check.setMax(5);
       assertThat(check.getMax()).isEqualTo(5);
 
-      assertThat(check.isSatisfied(null, "1234", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "12", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "123456", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "1234", null)).isTrue();
+      assertThat(check.isSatisfied(null, "12", null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null)).isTrue();
+      assertThat(check.isSatisfied(null, "123456", null)).isFalse();
    }
 }

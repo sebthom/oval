@@ -62,7 +62,7 @@ public class Guard extends Validator {
       protected final Method method;
       protected final Object[] args;
       protected final ClassChecks cc;
-      protected final ValidationCycle cycle;
+      protected final InternalValidationCycle cycle;
       protected final Map<PostCheck, Object> postCheckOldValues;
       protected final Object guardedObject;
 
@@ -73,7 +73,7 @@ public class Guard extends Validator {
          final ClassChecks cc, //
          final boolean checkInvariants, //
          final Map<PostCheck, Object> postCheckOldValues, //
-         final ValidationCycle cycle //
+         final InternalValidationCycle cycle //
       ) {
          this.guardedObject = guardedObject;
          this.method = method;
@@ -157,7 +157,7 @@ public class Guard extends Validator {
    }
 
    private void _validateParameterChecks(final ParameterChecks checks, final Object validatedObject, final Object valueToValidate, final OValContext context,
-      final ValidationCycle cycle) {
+      final InternalValidationCycle cycle) {
       // determine the active exclusions based on the active profiles
       final List<CheckExclusion> activeExclusions = checks.hasExclusions() ? _getActiveExclusions(checks.checkExclusions) : null;
 
@@ -463,7 +463,7 @@ public class Guard extends Validator {
 
       // check invariants
       if (isInvariantsEnabled && cc.isCheckInvariants || cc.methodsWithCheckInvariantsPost.contains(ctor)) {
-         final ValidationCycle cycle = new ValidationCycle(guardedObject, null);
+         final InternalValidationCycle cycle = new InternalValidationCycle(guardedObject, null);
          currentValidationCycles.get().add(cycle);
          try {
             validateInvariants(guardedObject, cycle);
@@ -534,7 +534,7 @@ public class Guard extends Validator {
          guardedObject = method.getDeclaringClass();
       }
 
-      final ValidationCycle cycle = new ValidationCycle(guardedObject, null);
+      final InternalValidationCycle cycle = new InternalValidationCycle(guardedObject, null);
       currentValidationCycles.get().add(cycle);
 
       try {
@@ -696,7 +696,7 @@ public class Guard extends Validator {
          guardedObject = method.getDeclaringClass();
       }
 
-      final ValidationCycle cycle = new ValidationCycle(guardedObject, null);
+      final InternalValidationCycle cycle = new InternalValidationCycle(guardedObject, null);
       currentValidationCycles.get().add(cycle);
       try {
          // check invariants
@@ -1026,7 +1026,7 @@ public class Guard extends Validator {
    protected List<ConstraintViolation> validateConstructorParameters(final Object validatedObject, final Constructor<?> constructor,
       final Object[] argsToValidate) throws ValidationFailedException {
 
-      final ValidationCycle cycle = new ValidationCycle(validatedObject, null);
+      final InternalValidationCycle cycle = new InternalValidationCycle(validatedObject, null);
       currentValidationCycles.get().add(cycle);
       try {
          final ClassChecks cc = getClassChecks(constructor.getDeclaringClass());
@@ -1044,7 +1044,6 @@ public class Guard extends Validator {
             if (checks != null && checks.hasChecks()) {
                final Object valueToValidate = argsToValidate[i];
                final ConstructorParameterContext context = new ConstructorParameterContext(constructor, i, parameterNames[i]);
-
                _validateParameterChecks(checks, validatedObject, valueToValidate, context, cycle);
             }
          }
@@ -1058,9 +1057,10 @@ public class Guard extends Validator {
    }
 
    @Override
-   protected void validateInvariants(final Object guardedObject, final ValidationCycle cycle) throws IllegalArgumentException, ValidationFailedException {
+   protected void validateInvariants(final Object guardedObject, final InternalValidationCycle cycle) throws IllegalArgumentException,
+      ValidationFailedException {
 
-      final List<ValidationCycle> validationCycles = currentValidationCycles.get();
+      final List<InternalValidationCycle> validationCycles = currentValidationCycles.get();
       if (validationCycles.size() > 1 && validationCycles.get(validationCycles.size() - 2).validatedObjects.contains(guardedObject))
          // to prevent StackOverflowError
          return;
@@ -1075,9 +1075,23 @@ public class Guard extends Validator {
    }
 
    /**
+    * Only kept to ensure compatibility with ValidationPlugin of Play Framework 1.x:
+    * https://github.com/playframework/play1/blob/master/framework/src/play/data/validation/ValidationPlugin.java
+    *
+    * @deprecated use {@link #validateMethodParameters(Object, Method, Object[], InternalValidationCycle)}
+    */
+   @Deprecated
+   protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final List<ConstraintViolation> violations)
+      throws ValidationFailedException {
+      final InternalValidationCycle cycle = new InternalValidationCycle(validatedObject, null);
+      cycle.violations = violations;
+      validateMethodParameters(validatedObject, method, args, cycle);
+   }
+
+   /**
     * Validates the pre conditions for a method call.
     */
-   protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final ValidationCycle cycle)
+   protected void validateMethodParameters(final Object validatedObject, final Method method, final Object[] args, final InternalValidationCycle cycle)
       throws ValidationFailedException {
 
       final IdentityHashSet<Object> validatedObjects = cycle.validatedObjects;
@@ -1101,7 +1115,6 @@ public class Guard extends Validator {
                if (checks != null && !checks.checks.isEmpty()) {
                   final Object valueToValidate = args[i];
                   final MethodParameterContext context = new MethodParameterContext(method, i, parameterNames[i]);
-
                   _validateParameterChecks(checks, validatedObject, valueToValidate, context, cycle);
                }
             }
@@ -1117,7 +1130,7 @@ public class Guard extends Validator {
     * Validates the post conditions for a method call.
     */
    protected void validateMethodPost(final Object validatedObject, final Method method, final Object[] args, final Object returnValue,
-      final Map<PostCheck, Object> oldValues, final ValidationCycle cycle) throws ValidationFailedException {
+      final Map<PostCheck, Object> oldValues, final InternalValidationCycle cycle) throws ValidationFailedException {
       final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
       /*
@@ -1164,8 +1177,7 @@ public class Guard extends Validator {
                   final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
                   messageVariables.put("expression", check.getExpr());
                   final String errorMessage = renderMessage(cycle.contextPath, null, check.getMessage(), messageVariables);
-
-                  cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, cycle.contextPath));
+                  cycle.addConstraintViolation(check, errorMessage, null);
                }
             } catch (final OValException ex) {
                throw new ValidationFailedException("Executing " + check + " failed. Method: " + method + " Validated object: " + validatedObject, ex);
@@ -1183,9 +1195,23 @@ public class Guard extends Validator {
    }
 
    /**
+    * Only kept to ensure compatibility with ValidationPlugin of Play Framework 1.x:
+    * https://github.com/playframework/play1/blob/master/framework/src/play/data/validation/ValidationPlugin.java
+    *
+    * @deprecated use {@link #validateMethodPre(Object, Method, Object[], InternalValidationCycle)}
+    */
+   @Deprecated
+   protected void validateMethodPre(final Object validatedObject, final Method method, final Object[] args, final List<ConstraintViolation> violations)
+      throws ValidationFailedException {
+      final InternalValidationCycle cycle = new InternalValidationCycle(validatedObject, null);
+      cycle.violations = violations;
+      validateMethodPre(validatedObject, method, args, cycle);
+   }
+
+   /**
     * Validates the @Pre conditions for a method call.
     */
-   protected void validateMethodPre(final Object validatedObject, final Method method, final Object[] args, final ValidationCycle cycle)
+   protected void validateMethodPre(final Object validatedObject, final Method method, final Object[] args, final InternalValidationCycle cycle)
       throws ValidationFailedException {
       final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 
@@ -1229,7 +1255,7 @@ public class Guard extends Validator {
                final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
                messageVariables.put("expression", check.getExpr());
                final String errorMessage = renderMessage(cycle.contextPath, null, check.getMessage(), messageVariables);
-               cycle.addViolation(new ConstraintViolation(check, errorMessage, validatedObject, null, cycle.contextPath));
+               cycle.addConstraintViolation(check, errorMessage, null);
             }
          }
          CollectionUtils.removeLast(cycle.contextPath, context);
@@ -1243,7 +1269,7 @@ public class Guard extends Validator {
    /**
     * Validates the return value checks for a method call.
     */
-   protected void validateMethodReturnValue(final Object validatedObject, final Method method, final Object returnValue, final ValidationCycle cycle)
+   protected void validateMethodReturnValue(final Object validatedObject, final Method method, final Object returnValue, final InternalValidationCycle cycle)
       throws ValidationFailedException {
       final String key = System.identityHashCode(validatedObject) + " " + System.identityHashCode(method);
 

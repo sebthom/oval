@@ -11,9 +11,15 @@ package net.sf.oval.test.constraints;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.Test;
 
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ValidationCycle;
+import net.sf.oval.Validator;
 import net.sf.oval.constraint.AssertCheck;
+import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -28,14 +34,35 @@ public class AssertTest extends AbstractContraintsTest {
       assertThat(language).isEqualTo(check.getLang());
 
       check.setExpr(expr1);
+      final ValidationCycle cycle = new ValidationCycle() {
+         @Override
+         public void addConstraintViolation(final ConstraintViolation violation) {
+            throw new UnsupportedOperationException();
+         }
+
+         @Override
+         public List<OValContext> getContextPath() {
+            return null;
+         }
+
+         @Override
+         public Object getRootObject() {
+            return AssertTest.this;
+         }
+
+         @Override
+         public Validator getValidator() {
+            return validator;
+         }
+      };
       assertThat(expr1).isEqualTo(check.getExpr());
-      assertThat(check.isSatisfied(this, null, null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "", null, validator)).isTrue();
+      assertThat(check.isSatisfied(this, null, cycle)).isFalse();
+      assertThat(check.isSatisfied(this, "", cycle)).isTrue();
 
       check.setExpr(expr2);
       assertThat(expr2).isEqualTo(check.getExpr());
-      assertThat(check.isSatisfied(null, null, null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, null, null, validator)).isTrue();
+      assertThat(check.isSatisfied(null, null, cycle)).isFalse();
+      assertThat(check.isSatisfied(this, null, cycle)).isTrue();
    }
 
    @Test

@@ -11,15 +11,16 @@ package net.sf.oval.test.validator;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
 import net.sf.oval.AbstractCheck;
 import net.sf.oval.ConstraintViolation;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.Validator;
 import net.sf.oval.context.FieldContext;
-import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -29,16 +30,16 @@ public class CustomConstraintViolationsTest {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+      public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) {
          final Entity entity = (Entity) validatedObject;
          if (entity.message == null) {
-            validator.reportConstraintViolation(new ConstraintViolation(this, "message cannot be null", validatedObject, null, new FieldContext(Entity.class,
-               "message")));
+            cycle.addConstraintViolation(new ConstraintViolation(this, "message cannot be null", validatedObject, null, Arrays.asList(new FieldContext(
+               Entity.class, "message"))));
          }
 
          if (entity.name == null) {
-            validator.reportConstraintViolation(new ConstraintViolation(this, "name cannot be null", validatedObject, null, new FieldContext(Entity.class,
-               "name")));
+            cycle.addConstraintViolation(new ConstraintViolation(this, "name cannot be null", validatedObject, null, Arrays.asList(new FieldContext(
+               Entity.class, "name"))));
          }
 
          return true;

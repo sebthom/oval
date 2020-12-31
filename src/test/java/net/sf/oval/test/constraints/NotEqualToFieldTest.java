@@ -42,7 +42,7 @@ public class NotEqualToFieldTest extends AbstractContraintsTest {
    public void testEqualToField() {
       final NotEqualToFieldCheck check = new NotEqualToFieldCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       final EnrichedEntity entity = new EnrichedEntity();
       entity.password1 = "secret";
@@ -51,9 +51,9 @@ public class NotEqualToFieldTest extends AbstractContraintsTest {
       check.setFieldName("password1");
       check.setUseGetter(false);
 
-      assertThat(check.isSatisfied(entity, entity.password1Alternative, null, null)).isTrue();
+      assertThat(check.isSatisfied(entity, entity.password1Alternative, null)).isTrue();
       entity.password1Alternative = "secret";
-      assertThat(check.isSatisfied(entity, entity.password1Alternative, null, null)).isFalse();
+      assertThat(check.isSatisfied(entity, entity.password1Alternative, null)).isFalse();
 
       entity.password2WhatEver = "secret";
       entity.password2Alternative = "zecret";
@@ -61,8 +61,8 @@ public class NotEqualToFieldTest extends AbstractContraintsTest {
       check.setFieldName("password2");
       check.setUseGetter(true);
 
-      assertThat(check.isSatisfied(entity, entity.password2Alternative, null, null)).isTrue();
+      assertThat(check.isSatisfied(entity, entity.password2Alternative, null)).isTrue();
       entity.password2Alternative = "secret";
-      assertThat(check.isSatisfied(entity, entity.password2Alternative, null, null)).isFalse();
+      assertThat(check.isSatisfied(entity, entity.password2Alternative, null)).isFalse();
    }
 }

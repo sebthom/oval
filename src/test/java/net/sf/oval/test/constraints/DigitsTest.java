@@ -29,62 +29,62 @@ public class DigitsTest extends AbstractContraintsTest {
       check.setMaxFraction(2);
       check.setMaxInteger(2);
 
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
-      assertThat(check.isSatisfied(null, 0, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 0.0, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 0.00, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 0.000, null, null)).isTrue(); // returns true since it equals 0.0d
-      assertThat(check.isSatisfied(null, 0.001, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, 000.0, null, null)).isTrue(); // returns true since it equals 0.0d
-      assertThat(check.isSatisfied(null, 12, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 123, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, 12.12, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 12.123, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, 123.12, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, 0, null)).isTrue();
+      assertThat(check.isSatisfied(null, 0.0, null)).isTrue();
+      assertThat(check.isSatisfied(null, 0.00, null)).isTrue();
+      assertThat(check.isSatisfied(null, 0.000, null)).isTrue(); // returns true since it equals 0.0d
+      assertThat(check.isSatisfied(null, 0.001, null)).isFalse();
+      assertThat(check.isSatisfied(null, 000.0, null)).isTrue(); // returns true since it equals 0.0d
+      assertThat(check.isSatisfied(null, 12, null)).isTrue();
+      assertThat(check.isSatisfied(null, 123, null)).isFalse();
+      assertThat(check.isSatisfied(null, 12.12, null)).isTrue();
+      assertThat(check.isSatisfied(null, 12.123, null)).isFalse();
+      assertThat(check.isSatisfied(null, 123.12, null)).isFalse();
 
-      assertThat(check.isSatisfied(null, "0", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "0.0", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "0.00", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "0.000", null, null)).isFalse(); // returns false since BigDecimal keeps the fraction
-      assertThat(check.isSatisfied(null, "0.001", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "0", null)).isTrue();
+      assertThat(check.isSatisfied(null, "0.0", null)).isTrue();
+      assertThat(check.isSatisfied(null, "0.00", null)).isTrue();
+      assertThat(check.isSatisfied(null, "0.000", null)).isFalse(); // returns false since BigDecimal keeps the fraction
+      assertThat(check.isSatisfied(null, "0.001", null)).isFalse();
 
       // TODO returns true since it is automatically converted into a BigDecimal("0.0") => should return false in case of pure strings?
-      assertThat(check.isSatisfied(null, "000.0", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "000.0", null)).isTrue();
 
-      assertThat(check.isSatisfied(null, "12", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "123", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "12.12", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "12.123", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "123.12", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "12", null)).isTrue();
+      assertThat(check.isSatisfied(null, "123", null)).isFalse();
+      assertThat(check.isSatisfied(null, "12.12", null)).isTrue();
+      assertThat(check.isSatisfied(null, "12.123", null)).isFalse();
+      assertThat(check.isSatisfied(null, "123.12", null)).isFalse();
 
-      assertThat(check.isSatisfied(null, new BigDecimal("0"), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal("0.0"), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal("0.00"), null, null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("0"), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("0.0"), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("0.00"), null)).isTrue();
 
       // TODO returns false since BigDecimal keeps the fraction => should this return true for BigDecimals ?
-      assertThat(check.isSatisfied(null, new BigDecimal("0.000"), null, null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("0.000"), null)).isFalse();
 
-      assertThat(check.isSatisfied(null, new BigDecimal("0.001"), null, null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("0.001"), null)).isFalse();
 
       // returns true since it is automatically converted into a BigDecimal("0.0")
-      assertThat(check.isSatisfied(null, new BigDecimal("000.0"), null, null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("000.0"), null)).isTrue();
 
-      assertThat(check.isSatisfied(null, new BigDecimal("12"), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal("123"), null, null)).isFalse();
-      assertThat(check.isSatisfied(null, new BigDecimal("12.12"), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal("12.123"), null, null)).isFalse();
-      assertThat(check.isSatisfied(null, new BigDecimal("123.12"), null, null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("12"), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("123"), null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("12.12"), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("12.123"), null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("123.12"), null)).isFalse();
 
       check.setMaxInteger(13);
       check.setMaxFraction(13);
-      assertThat(check.isSatisfied(null, 1_234_567_890_123L, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 12_345_678_901_234L, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "1234567890123", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "12345678901234", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, new BigDecimal("1234567890123"), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal("12345678901234"), null, null)).isFalse();
-      assertThat(check.isSatisfied(null, new BigDecimal("1234567890123.1234567890123"), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal("12345678901234.12345678901234"), null, null)).isFalse();
+      assertThat(check.isSatisfied(null, 1_234_567_890_123L, null)).isTrue();
+      assertThat(check.isSatisfied(null, 12_345_678_901_234L, null)).isFalse();
+      assertThat(check.isSatisfied(null, "1234567890123", null)).isTrue();
+      assertThat(check.isSatisfied(null, "12345678901234", null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("1234567890123"), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("12345678901234"), null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal("1234567890123.1234567890123"), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal("12345678901234.12345678901234"), null)).isFalse();
    }
 }

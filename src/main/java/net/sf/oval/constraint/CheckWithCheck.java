@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
@@ -70,12 +71,11 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
    }
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-      throws ReflectionException {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws ReflectionException {
       if (valueToValidate == null && ignoreIfNull)
          return true;
 
-      return simpleCheck.isSatisfied(validatedObject, valueToValidate, context, validator);
+      return simpleCheck.isSatisfied(validatedObject, valueToValidate, cycle.getContext(), cycle.getValidator());
    }
 
    public void setIgnoreIfNull(final boolean ignoreIfNull) {

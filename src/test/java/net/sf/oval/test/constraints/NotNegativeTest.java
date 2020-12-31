@@ -26,22 +26,22 @@ public class NotNegativeTest extends AbstractContraintsTest {
    public void testNotNegative() {
       final NotNegativeCheck check = new NotNegativeCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
-      assertThat(check.isSatisfied(null, 0, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 0.0, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 1, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 1.0, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "0", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "0.0", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "1", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "1.0", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "-1", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "-1.0", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, false, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, true, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, new BigDecimal(-1), null, null)).isFalse();
-      assertThat(check.isSatisfied(null, new BigDecimal(0), null, null)).isTrue();
-      assertThat(check.isSatisfied(null, new BigDecimal(1), null, null)).isTrue();
+      assertThat(check.isSatisfied(null, 0, null)).isTrue();
+      assertThat(check.isSatisfied(null, 0.0, null)).isTrue();
+      assertThat(check.isSatisfied(null, 1, null)).isTrue();
+      assertThat(check.isSatisfied(null, 1.0, null)).isTrue();
+      assertThat(check.isSatisfied(null, "0", null)).isTrue();
+      assertThat(check.isSatisfied(null, "0.0", null)).isTrue();
+      assertThat(check.isSatisfied(null, "1", null)).isTrue();
+      assertThat(check.isSatisfied(null, "1.0", null)).isTrue();
+      assertThat(check.isSatisfied(null, "-1", null)).isFalse();
+      assertThat(check.isSatisfied(null, "-1.0", null)).isFalse();
+      assertThat(check.isSatisfied(null, false, null)).isFalse();
+      assertThat(check.isSatisfied(null, true, null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal(-1), null)).isFalse();
+      assertThat(check.isSatisfied(null, new BigDecimal(0), null)).isTrue();
+      assertThat(check.isSatisfied(null, new BigDecimal(1), null)).isTrue();
    }
 }

@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 import net.sf.oval.internal.util.StringUtils;
 
 /**
@@ -72,7 +72,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf> {
    }
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) {
       if (valueToValidate == null)
          return true;
 

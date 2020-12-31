@@ -24,16 +24,16 @@ public class LengthTest extends AbstractContraintsTest {
    public void testLength() {
       final LengthCheck check = new LengthCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       check.setMax(5);
       check.setMin(3);
       assertThat(check.getMax()).isEqualTo(5);
       assertThat(check.getMin()).isEqualTo(3);
 
-      assertThat(check.isSatisfied(null, "1234", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "12", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "123456", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "1234", null)).isTrue();
+      assertThat(check.isSatisfied(null, "12", null)).isFalse();
+      assertThat(check.isSatisfied(null, "", null)).isFalse();
+      assertThat(check.isSatisfied(null, "123456", null)).isFalse();
    }
 }

@@ -28,19 +28,19 @@ public class NotMatchPatternTest extends AbstractContraintsTest {
       super.testCheck(check);
 
       check.setPattern("\\d+", 0);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "1234", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "12.34", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "12,34", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "foo", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null)).isTrue();
+      assertThat(check.isSatisfied(null, "1234", null)).isFalse();
+      assertThat(check.isSatisfied(null, "12.34", null)).isTrue();
+      assertThat(check.isSatisfied(null, "12,34", null)).isTrue();
+      assertThat(check.isSatisfied(null, "foo", null)).isTrue();
 
       check.setPatterns(Pattern.compile("[123]+", 0), Pattern.compile("[abc]+", 0));
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "12", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "abc", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "45", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "de", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null)).isTrue();
+      assertThat(check.isSatisfied(null, "12", null)).isFalse();
+      assertThat(check.isSatisfied(null, "abc", null)).isFalse();
+      assertThat(check.isSatisfied(null, "45", null)).isTrue();
+      assertThat(check.isSatisfied(null, "de", null)).isTrue();
    }
 }

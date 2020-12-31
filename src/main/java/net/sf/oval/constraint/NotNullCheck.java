@@ -9,9 +9,8 @@
  *********************************************************************/
 package net.sf.oval.constraint;
 
-import net.sf.oval.Validator;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -20,7 +19,7 @@ public class NotNullCheck extends AbstractAnnotationCheck<NotNull> {
    private static final long serialVersionUID = 1L;
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator) {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) {
       return valueToValidate != null;
    }
 }

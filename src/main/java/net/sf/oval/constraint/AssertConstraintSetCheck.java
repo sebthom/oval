@@ -9,9 +9,8 @@
  *********************************************************************/
 package net.sf.oval.constraint;
 
-import net.sf.oval.Validator;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 
 /**
  * @author Sebastian Thomschke
@@ -53,8 +52,7 @@ public class AssertConstraintSetCheck extends AbstractAnnotationCheck<AssertCons
     * @throws UnsupportedOperationException always thrown if this method is invoked
     */
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-      throws UnsupportedOperationException {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 

@@ -42,7 +42,7 @@ public class EqualToFieldTest extends AbstractContraintsTest {
    public void testEqualToField() {
       final EqualToFieldCheck check = new EqualToFieldCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       final EnrichedEntity entity = new EnrichedEntity();
       entity.password1 = "secret";
@@ -51,9 +51,9 @@ public class EqualToFieldTest extends AbstractContraintsTest {
       check.setFieldName("password1");
       check.setUseGetter(false);
 
-      assertThat(check.isSatisfied(entity, entity.password1Repeated, null, null)).isFalse();
+      assertThat(check.isSatisfied(entity, entity.password1Repeated, null)).isFalse();
       entity.password1Repeated = "secret";
-      assertThat(check.isSatisfied(entity, entity.password1Repeated, null, null)).isTrue();
+      assertThat(check.isSatisfied(entity, entity.password1Repeated, null)).isTrue();
 
       entity.password2DifferentName = "secret";
       entity.password2Repeated = "zecret";
@@ -61,9 +61,9 @@ public class EqualToFieldTest extends AbstractContraintsTest {
       check.setFieldName("password2");
       check.setUseGetter(true);
 
-      assertThat(check.isSatisfied(entity, entity.password2Repeated, null, null)).isFalse();
+      assertThat(check.isSatisfied(entity, entity.password2Repeated, null)).isFalse();
       entity.password2Repeated = "secret";
-      assertThat(check.isSatisfied(entity, entity.password2Repeated, null, null)).isTrue();
+      assertThat(check.isSatisfied(entity, entity.password2Repeated, null)).isTrue();
 
    }
 }

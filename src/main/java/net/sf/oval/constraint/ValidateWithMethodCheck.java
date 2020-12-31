@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import net.sf.oval.ConstraintTarget;
+import net.sf.oval.ValidationCycle;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
-import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.InvalidConfigurationException;
 import net.sf.oval.exception.ReflectionException;
 import net.sf.oval.internal.util.ReflectionUtils;
@@ -74,8 +74,7 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
    }
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final OValContext context, final Validator validator)
-      throws ReflectionException {
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws ReflectionException {
       if (valueToValidate == null && ignoreIfNull)
          return true;
 

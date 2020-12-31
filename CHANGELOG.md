@@ -8,7 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [3.1.0] - 2020-12-31
+
+### Fixed
+* restore binary compatibility with ValidationPlugin of Play Framework 1.x
+
 ### Added
+* class `ValidationCycle`
 * support recursive validation of classes implementing `java.lang.Iterable`, not only `java.util.Collection`.
 * method `ConstraintViolation.getContextPath()`
 * method `ConstraintViolation.getContextPathAsString()`
@@ -21,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * property `AssertValid.message()`
   * property `AssertValid.severity()()`
   * class `ToStringValidationContextRenderer`
+
 
 ## [3.0.0] - 2020-12-28
 

@@ -24,18 +24,18 @@ public class RangeTest extends AbstractContraintsTest {
    public void testRange() {
       final RangeCheck check = new RangeCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       check.setMin(3);
       assertThat(check.getMin()).isEqualTo(3.0);
 
-      assertThat(check.isSatisfied(null, "16", null, null)).isTrue();
+      assertThat(check.isSatisfied(null, "16", null)).isTrue();
 
       check.setMax(6);
       assertThat(check.getMax()).isEqualTo(6.0);
 
-      assertThat(check.isSatisfied(null, "4", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "16", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "2", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "4", null)).isTrue();
+      assertThat(check.isSatisfied(null, "16", null)).isFalse();
+      assertThat(check.isSatisfied(null, "2", null)).isFalse();
    }
 }

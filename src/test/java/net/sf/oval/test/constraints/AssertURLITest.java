@@ -44,29 +44,29 @@ public class AssertURLITest extends AbstractContraintsTest {
       assertThat(check.isConnect()).isTrue();
 
       check.setConnect(false);
-      assertThat(check.isSatisfied(this, null, null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "http", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "https", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "ftp", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "http://www.google.com", null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "httpa://www.google.com", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "https://www.google.com", null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "httPs://www.google.com", null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/README.mirrors.txt", null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "ptth://www.google.com", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "http://www.g[oogle.com", null, validator)).isFalse();
+      assertThat(check.isSatisfied(this, null, null)).isTrue();
+      assertThat(check.isSatisfied(this, "http", null)).isFalse();
+      assertThat(check.isSatisfied(this, "https", null)).isFalse();
+      assertThat(check.isSatisfied(this, "ftp", null)).isFalse();
+      assertThat(check.isSatisfied(this, "http://www.google.com", null)).isTrue();
+      assertThat(check.isSatisfied(this, "httpa://www.google.com", null)).isFalse();
+      assertThat(check.isSatisfied(this, "https://www.google.com", null)).isTrue();
+      assertThat(check.isSatisfied(this, "httPs://www.google.com", null)).isTrue();
+      assertThat(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/README.mirrors.txt", null)).isTrue();
+      assertThat(check.isSatisfied(this, "ptth://www.google.com", null)).isFalse();
+      assertThat(check.isSatisfied(this, "http://www.g[oogle.com", null)).isFalse();
 
       check.setConnect(true);
-      assertThat(check.isSatisfied(this, null, null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "http", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "https", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "ftp", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "http://www.google.com", null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "https://www.google.com", null, validator)).isTrue();
-      assertThat(check.isSatisfied(this, "http://127.0.0.1:34343", null, validator)).isFalse();
-      assertThat(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/foo.html", null, validator)).isFalse();
+      assertThat(check.isSatisfied(this, null, null)).isTrue();
+      assertThat(check.isSatisfied(this, "http", null)).isFalse();
+      assertThat(check.isSatisfied(this, "https", null)).isFalse();
+      assertThat(check.isSatisfied(this, "ftp", null)).isFalse();
+      assertThat(check.isSatisfied(this, "http://www.google.com", null)).isTrue();
+      assertThat(check.isSatisfied(this, "https://www.google.com", null)).isTrue();
+      assertThat(check.isSatisfied(this, "http://127.0.0.1:34343", null)).isFalse();
+      assertThat(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/foo.html", null)).isFalse();
       if (!System.getenv().containsKey("TRAVIS")) {
-         assertThat(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/README.mirrors.txt", null, validator)).isTrue();
+         assertThat(check.isSatisfied(this, "ftp://ftp.uni-erlangen.de/debian/README.mirrors.txt", null)).isTrue();
       }
 
       check.setPermittedURISchemes((URIScheme[]) null);

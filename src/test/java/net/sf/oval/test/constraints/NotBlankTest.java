@@ -24,14 +24,14 @@ public class NotBlankTest extends AbstractContraintsTest {
    public void testNotBlank() {
       final NotBlankCheck check = new NotBlankCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
-      assertThat(check.isSatisfied(null, "bla", null, null)).isTrue();
-      assertThat(check.isSatisfied(null, true, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, 1, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, ' ', null, null)).isFalse();
-      assertThat(check.isSatisfied(null, " ", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "                  ", null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "bla", null)).isTrue();
+      assertThat(check.isSatisfied(null, true, null)).isTrue();
+      assertThat(check.isSatisfied(null, 1, null)).isTrue();
+      assertThat(check.isSatisfied(null, "", null)).isFalse();
+      assertThat(check.isSatisfied(null, ' ', null)).isFalse();
+      assertThat(check.isSatisfied(null, " ", null)).isFalse();
+      assertThat(check.isSatisfied(null, "                  ", null)).isFalse();
    }
 }

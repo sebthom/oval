@@ -24,22 +24,22 @@ public class NotMemberOfTest extends AbstractContraintsTest {
    public void testNotMemberOf() {
       final NotMemberOfCheck check = new NotMemberOfCheck();
       super.testCheck(check);
-      assertThat(check.isSatisfied(null, null, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       check.setMembers("10", "false", "TRUE");
       check.setIgnoreCase(false);
-      assertThat(check.isSatisfied(null, 10, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "10", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, 10.0, null, null)).isTrue();
-      assertThat(check.isSatisfied(null, "false", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, false, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "TRUE", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, true, null, null)).isTrue();
+      assertThat(check.isSatisfied(null, 10, null)).isFalse();
+      assertThat(check.isSatisfied(null, "10", null)).isFalse();
+      assertThat(check.isSatisfied(null, 10.0, null)).isTrue();
+      assertThat(check.isSatisfied(null, "false", null)).isFalse();
+      assertThat(check.isSatisfied(null, false, null)).isFalse();
+      assertThat(check.isSatisfied(null, "TRUE", null)).isFalse();
+      assertThat(check.isSatisfied(null, true, null)).isTrue();
 
       check.setIgnoreCase(true);
-      assertThat(check.isSatisfied(null, "FALSE", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, false, null, null)).isFalse();
-      assertThat(check.isSatisfied(null, "true", null, null)).isFalse();
-      assertThat(check.isSatisfied(null, true, null, null)).isFalse();
+      assertThat(check.isSatisfied(null, "FALSE", null)).isFalse();
+      assertThat(check.isSatisfied(null, false, null)).isFalse();
+      assertThat(check.isSatisfied(null, "true", null)).isFalse();
+      assertThat(check.isSatisfied(null, true, null)).isFalse();
    }
 }
