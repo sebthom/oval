@@ -796,10 +796,8 @@ public class Validator implements IValidator {
 
       int contextPathElementsAdded = 0;
 
-      // TODO if (check instanceof AssertValidCheck || CollectionUtils.getLast(cycle.contextPath) != context) {
       cycle.contextPath.add(context);
       contextPathElementsAdded++;
-      //}
 
       // only process the target expression if we are not already on a value inside the container object (collection, array, map)
       if (!isContainerValue) {
