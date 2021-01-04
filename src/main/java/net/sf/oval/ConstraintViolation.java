@@ -88,6 +88,9 @@ public class ConstraintViolation implements Serializable {
       this.causes = causes != null && causes.length == 0 ? null : causes;
    }
 
+   /**
+    * @deprecated use {@link #ConstraintViolation(Check, String, Object, Object, List)}
+    */
    @Deprecated
    public ConstraintViolation(//
       final Check check, //
@@ -99,6 +102,9 @@ public class ConstraintViolation implements Serializable {
       this(check, message, validatedObject, invalidValue, Arrays.asList(context), (ConstraintViolation[]) null);
    }
 
+   /**
+    * @deprecated use {@link #ConstraintViolation(Check, String, Object, Object, List)}
+    */
    @Deprecated
    public ConstraintViolation(//
       final Check check, //
@@ -111,6 +117,9 @@ public class ConstraintViolation implements Serializable {
       this(check, message, validatedObject, invalidValue, Arrays.asList(context), causes);
    }
 
+   /**
+    * @deprecated use {@link #ConstraintViolation(Check, String, Object, Object, List)}
+    */
    @Deprecated
    public ConstraintViolation(//
       final Check check, //
