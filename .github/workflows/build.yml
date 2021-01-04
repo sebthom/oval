@@ -1,10 +1,13 @@
-name: Maven Publish
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+name: Build
 
 on:
   push:
     paths-ignore:
     - '**/*.md'
   pull_request:
+  workflow_dispatch:
+    # https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
 
 jobs:
   build:
@@ -67,7 +70,7 @@ jobs:
         JAVA_VERSION: ${{ matrix.java }}
         MAY_CREATE_RELEASE: ${{ matrix.may_create_release }}
       run: |
-        if [ "${{github.ref}}" = "refs/heads/master" ]; then
+        if [ "${{ github.ref }}" = "refs/heads/master" ]; then
           export GITHUB_API_KEY="${{ secrets.GH_API_TOKEN }}"
         else
           export GITHUB_API_KEY="${{ github.token }}" # ${{ github.token }} only has read access
@@ -76,3 +79,14 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         bash .ci/build.sh
+
+    - name: Publish test coverage to codeclimate.com
+      uses: paambaati/codeclimate-action@v2.7.5 # https://github.com/paambaati/codeclimate-action
+      if: ${{ matrix.may_create_release }}
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
+        JACOCO_SOURCE_PATH: "${{ github.workspace }}/src/main/java"
+      with:
+        coverageLocations:  |
+          ${{ github.workspace }}/target/site/jacoco/jacoco.xml:jacoco
+          ${{ github.workspace }}/target/site/jacoco-it/jacoco.xml:jacoco
