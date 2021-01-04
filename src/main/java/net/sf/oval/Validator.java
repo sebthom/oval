@@ -106,6 +106,8 @@ import net.sf.oval.ogn.ObjectGraphNavigatorRegistry;
  */
 public class Validator implements IValidator {
 
+   protected static final Check[] EMPTY_CHECKS = {};
+
    protected static final class DelegatingParameterNameResolver implements ParameterNameResolver {
       private ParameterNameResolver delegate;
 
@@ -1064,7 +1066,7 @@ public class Validator implements IValidator {
 
       final ClassChecks cc = getClassChecks(clazz);
       final Set<Check> checks = cc.checksForObject;
-      return checks == null ? null : checks.toArray(new Check[checks.size()]);
+      return checks == null ? EMPTY_CHECKS : checks.toArray(new Check[checks.size()]);
    }
 
    /**
@@ -1078,7 +1080,7 @@ public class Validator implements IValidator {
 
       final ClassChecks cc = getClassChecks(field.getDeclaringClass());
       final Set<Check> checks = cc.checksForFields.get(field);
-      return checks == null ? null : checks.toArray(new Check[checks.size()]);
+      return checks == null ? EMPTY_CHECKS : checks.toArray(new Check[checks.size()]);
    }
 
    /**
@@ -1092,7 +1094,7 @@ public class Validator implements IValidator {
 
       final ClassChecks cc = getClassChecks(method.getDeclaringClass());
       final Set<Check> checks = cc.checksForMethodReturnValues.get(method);
-      return checks == null ? null : checks.toArray(new Check[checks.size()]);
+      return checks == null ? EMPTY_CHECKS : checks.toArray(new Check[checks.size()]);
    }
 
    /**

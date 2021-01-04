@@ -54,6 +54,10 @@ import net.sf.oval.internal.util.ReflectionUtils;
  * @author Sebastian Thomschke
  */
 public class Guard extends Validator {
+
+   protected static final PreCheck[] EMPTY_PRE_CHECKS = {};
+   protected static final PostCheck[] EMPTY_POST_CHECKS = {};
+
    /**
     * <b>Note:</b> Only required until AspectJ allows throwing of checked exceptions
     */
@@ -413,10 +417,10 @@ public class Guard extends Validator {
 
       final Map<Integer, ParameterChecks> checks = cc.checksForMethodParameters.get(method);
       if (checks == null)
-         return null;
+         return EMPTY_CHECKS;
 
       final ParameterChecks paramChecks = checks.get(paramIndex);
-      return paramChecks == null ? null : paramChecks.checks.toArray(new Check[checks.size()]);
+      return paramChecks == null ? EMPTY_CHECKS : paramChecks.checks.toArray(new Check[checks.size()]);
    }
 
    /**
@@ -430,7 +434,7 @@ public class Guard extends Validator {
       final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
       final Set<PostCheck> checks = cc.checksForMethodsPostExcecution.get(method);
-      return checks == null ? null : checks.toArray(new PostCheck[checks.size()]);
+      return checks == null ? EMPTY_POST_CHECKS : checks.toArray(new PostCheck[checks.size()]);
    }
 
    /**
@@ -444,7 +448,7 @@ public class Guard extends Validator {
       final ClassChecks cc = getClassChecks(method.getDeclaringClass());
 
       final Set<PreCheck> checks = cc.checksForMethodsPreExecution.get(method);
-      return checks == null ? null : checks.toArray(new PreCheck[checks.size()]);
+      return checks == null ? EMPTY_PRE_CHECKS : checks.toArray(new PreCheck[checks.size()]);
    }
 
    public ParameterNameResolver getParameterNameResolver() {
