@@ -36,17 +36,15 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern> {
 
       setMatchAll(constraintAnnotation.matchAll());
 
-      synchronized (patterns) {
-         patterns.clear();
-         final String[] stringPatterns = constraintAnnotation.pattern();
-         final int[] f = constraintAnnotation.flags();
-         for (int i = 0, l = stringPatterns.length; i < l; i++) {
-            final int flag = f.length > i ? f[i] : 0;
-            final Pattern p = Pattern.compile(stringPatterns[i], flag);
-            patterns.add(p);
-         }
-         requireMessageVariablesRecreation();
+      patterns.clear();
+      final String[] stringPatterns = constraintAnnotation.pattern();
+      final int[] f = constraintAnnotation.flags();
+      for (int i = 0, l = stringPatterns.length; i < l; i++) {
+         final int flag = f.length > i ? f[i] : 0;
+         final Pattern p = Pattern.compile(stringPatterns[i], flag);
+         patterns.add(p);
       }
+      requireMessageVariablesRecreation();
    }
 
    @Override
@@ -62,9 +60,7 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern> {
    }
 
    public Pattern[] getPatterns() {
-      synchronized (patterns) {
-         return patterns.toArray(new Pattern[patterns.size()]);
-      }
+      return patterns.toArray(new Pattern[patterns.size()]);
    }
 
    public boolean isMatchAll() {
@@ -94,34 +90,26 @@ public class MatchPatternCheck extends AbstractAnnotationCheck<MatchPattern> {
    }
 
    public void setPattern(final Pattern pattern) {
-      synchronized (patterns) {
-         patterns.clear();
-         patterns.add(pattern);
-      }
+      patterns.clear();
+      patterns.add(pattern);
       requireMessageVariablesRecreation();
    }
 
    public void setPattern(final String pattern, final int flags) {
-      synchronized (patterns) {
-         patterns.clear();
-         patterns.add(Pattern.compile(pattern, flags));
-      }
+      patterns.clear();
+      patterns.add(Pattern.compile(pattern, flags));
       requireMessageVariablesRecreation();
    }
 
    public void setPatterns(final Collection<Pattern> patterns) {
-      synchronized (this.patterns) {
-         this.patterns.clear();
-         this.patterns.addAll(patterns);
-      }
+      this.patterns.clear();
+      this.patterns.addAll(patterns);
       requireMessageVariablesRecreation();
    }
 
    public void setPatterns(final Pattern... patterns) {
-      synchronized (this.patterns) {
-         this.patterns.clear();
-         Collections.addAll(this.patterns, patterns);
-      }
+      this.patterns.clear();
+      Collections.addAll(this.patterns, patterns);
       requireMessageVariablesRecreation();
    }
 }

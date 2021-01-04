@@ -206,19 +206,17 @@ public abstract class AbstractCheck implements Check {
 
    @Override
    public void setWhen(final String when) {
-      synchronized (this) {
-         if (when == null || when.length() == 0) {
-            this.when = null;
-            whenFormula = null;
-            whenLang = null;
-         } else {
-            final List<String> parts = StringUtils.split(when, ':', 2);
-            if (parts.size() < 2)
-               throw new IllegalArgumentException("[when] is missing the scripting language declaration");
-            this.when = when;
-            whenLang = parts.get(0);
-            whenFormula = parts.get(1);
-         }
+      if (when == null || when.length() == 0) {
+         this.when = null;
+         whenFormula = null;
+         whenLang = null;
+      } else {
+         final List<String> parts = StringUtils.split(when, ':', 2);
+         if (parts.size() < 2)
+            throw new IllegalArgumentException("[when] is missing the scripting language declaration");
+         this.when = when;
+         whenLang = parts.get(0);
+         whenFormula = parts.get(1);
       }
    }
 }

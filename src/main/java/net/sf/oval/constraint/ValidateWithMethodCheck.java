@@ -93,17 +93,13 @@ public class ValidateWithMethodCheck extends AbstractAnnotationCheck<ValidateWit
 
    public void setMethodName(final String methodName) {
       this.methodName = methodName;
-      synchronized (validationMethodsByClass) {
-         validationMethodsByClass.clear();
-      }
+      validationMethodsByClass.clear();
       requireMessageVariablesRecreation();
    }
 
    public void setParameterType(final Class<?> parameterType) {
       this.parameterType = parameterType;
-      synchronized (validationMethodsByClass) {
-         validationMethodsByClass.clear();
-      }
+      validationMethodsByClass.clear();
       requireMessageVariablesRecreation();
    }
 }
