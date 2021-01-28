@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+### Changed
+* Updated tested optional dependencies
+  * MVEL 2.4.12.Final
+  * Spring Framework 5.3.3
+
+
 ## [3.1.0] - 2020-12-31
 
 ### Fixed

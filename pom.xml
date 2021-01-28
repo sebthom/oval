@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2005-2021 by Sebastian Thomschke and contributors.
@@ -79,6 +81,8 @@
 
       <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
       <spring.version>5.3.3</spring.version>
+
+      <license.excludedGroups>org.jruby</license.excludedGroups>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
             def setProjectProp = { String name, String value ->
@@ -526,7 +530,7 @@
       <dependency>
          <groupId>org.assertj</groupId>
          <artifactId>assertj-core</artifactId>
-         <version>3.18.1</version>
+         <version>3.19.0</version>
          <scope>test</scope>
       </dependency>
    </dependencies>

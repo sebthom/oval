@@ -9,6 +9,7 @@
 
 1. [What is it?](#what-is-it)
 1. [Java Compatibility](#compatibility)
+1. [Binaries](#binaries)
 1. [User Guide](#user-guide)
 1. [Articles about OVal](#articles-about-oval)
 1. [Projects using OVal](#projects-using-oval)
