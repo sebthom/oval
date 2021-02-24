@@ -9,12 +9,12 @@
    <parent>
       <groupId>com.vegardit.maven</groupId>
       <artifactId>vegardit-maven-parent</artifactId>
-      <version>2.4.25</version>
+      <version>RELEASE</version>
    </parent>
 
    <groupId>net.sf.oval</groupId>
    <artifactId>oval</artifactId>
-   <version>3.1.1</version>
+   <version>3.1.2-SNAPSHOT</version>
    <packaging>jar</packaging>
 
 
@@ -68,7 +68,7 @@
       <url>https://github.com/sebthom/oval</url>
       <connection>scm:git:https://github.com/sebthom/oval.git</connection>
       <developerConnection>scm:git:https://github.com/sebthom/oval.git</developerConnection>
-      <tag>3.1.1</tag>
+      <tag>HEAD</tag>
    </scm>
 
 
