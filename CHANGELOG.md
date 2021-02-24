@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [3.1.1] - 2021-02-24
+
 ### Changed
-* Updated tested optional dependencies
-  * MVEL 2.4.12.Final
-  * Spring Framework 5.3.3
+- publish to Maven Central instead of Bintray because of its [termination](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)
+- Updated tested optional dependencies
+  - JRuby 9.2.15.0
+  - MVEL 2.4.12.Final
+  - Spring Framework 5.3.4
 
 
 ## [3.1.0] - 2020-12-31

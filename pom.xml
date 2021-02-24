@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2005-2021 by Sebastian Thomschke and contributors.
-
-   This program and the accompanying materials are made
-   available under the terms of the Eclipse Public License 2.0
-   which is available at https://www.eclipse.org/legal/epl-2.0/
-
    SPDX-License-Identifier: EPL-2.0
    -->
-
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -71,7 +65,30 @@
    </contributors>
 
 
+   <scm>
+      <!-- http://maven.apache.org/scm/git.html -->
+      <url>https://github.com/sebthom/oval</url>
+      <connection>scm:git:https://github.com/sebthom/oval.git</connection>
+      <developerConnection>scm:git:https://github.com/sebthom/oval.git</developerConnection>
+      <tag>HEAD</tag>
+   </scm>
+
+
+   <issueManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/oval/issues</url>
+   </issueManagement>
+
+
+   <ciManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/oval/actions</url>
+   </ciManagement>
+
+
    <properties>
+      <nexus-staging-maven-plugin.autoReleaseAfterClose>false</nexus-staging-maven-plugin.autoReleaseAfterClose>
+
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
 
       <java.version>8</java.version>
@@ -85,59 +102,29 @@
       <license.excludedGroups>org.jruby</license.excludedGroups>
 
       <groovy.script.locateAspectJCompiler><![CDATA[
-            def setProjectProp = { String name, String value ->
-                project.properties[name] = value
-                log.info("Set project property [$name] '${project.properties[name]}'");
-            }
+         def setProjectProp = { String name, String value ->
+            project.properties[name] = value
+            log.info("Set project property [$name] '${project.properties[name]}'")
+         }
 
-            /*
-             * loading/locating eclipse Java compiler artifact
-             */
-            def artifactResolver = session.lookup("org.apache.maven.artifact.resolver.ArtifactResolver");
-            def artifactFactory = session.lookup("org.apache.maven.artifact.factory.ArtifactFactory");
-            def ajcArtifactMeta = artifactFactory.createArtifactWithClassifier("org.aspectj", "aspectjtools", project.properties["aspectj.version"], "jar", null);
-            def ajcArtifact = artifactResolver.resolve(
-                new org.apache.maven.artifact.resolver.ArtifactResolutionRequest()
-                .setArtifact(ajcArtifactMeta)
-                .setLocalRepository(session.localRepository)
-                .setRemoteRepositories(project.remoteArtifactRepositories)
-            ).artifacts[0];
-            setProjectProp("custom.ajcJarPath", ajcArtifact.file.absolutePath);
-        ]]></groovy.script.locateAspectJCompiler>
+         /*
+          * loading/locating eclipse Java compiler artifact
+          */
+         def artifactResolver = session.lookup("org.apache.maven.artifact.resolver.ArtifactResolver")
+         def artifactFactory = session.lookup("org.apache.maven.artifact.factory.ArtifactFactory")
+         def ajcArtifactMeta = artifactFactory.createArtifactWithClassifier("org.aspectj", "aspectjtools", project.properties["aspectj.version"], "jar", null)
+         def ajcArtifact = artifactResolver.resolve(
+            new org.apache.maven.artifact.resolver.ArtifactResolutionRequest()
+            .setArtifact(ajcArtifactMeta)
+            .setLocalRepository(session.localRepository)
+            .setRemoteRepositories(project.remoteArtifactRepositories)
+         ).artifacts[0]
+         setProjectProp("custom.ajcJarPath", ajcArtifact.file.absolutePath)
+      ]]></groovy.script.locateAspectJCompiler>
 
       <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
       <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
    </properties>
-
-
-   <scm>
-      <!-- http://maven.apache.org/scm/git.html -->
-      <url>https://github.com/sebthom/oval</url>
-      <connection>scm:git:https://github.com/sebthom/oval.git</connection>
-      <developerConnection>scm:git:https://github.com/sebthom/oval.git</developerConnection>
-      <tag>HEAD</tag>
-   </scm>
-
-
-   <distributionManagement>
-      <downloadUrl>https://jcenter.bintray.com/</downloadUrl>
-      <repository>
-         <id>bintray-release-uploads</id>
-         <url>https://api.bintray.com/maven/sebthom/maven/oval/;publish=1</url>
-      </repository>
-   </distributionManagement>
-
-
-   <ciManagement>
-      <system>github.com</system>
-      <url>https://github.com/sebthom/oval/actions</url>
-   </ciManagement>
-
-
-   <issueManagement>
-      <system>github.com</system>
-      <url>https://github.com/sebthom/oval/issues</url>
-   </issueManagement>
 
 
    <build>
@@ -219,43 +206,35 @@
                      <goal>exec</goal>
                   </goals>
                   <phase>compile</phase>
+                  <inherited>false</inherited>
                   <configuration>
                      <skip>${custom.noJavaArtefact}</skip>
                      <executable>java</executable>
                      <classpathScope>compile</classpathScope>
-                     <arguments>
-                        <argument>-cp</argument>
-                        <argument>${custom.ajcJarPath}</argument>
-                        <argument>org.aspectj.tools.ajbrowser.Main</argument>
+                     <commandlineArgs>
+                        -cp "${custom.ajcJarPath}"
+                        org.aspectj.tools.ajbrowser.Main
 
                         <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <!-- ajc compatible ecj options -->
-                        <argument>${custom.compileBootClasspathOption}</argument>
-                        <argument>${custom.compileBootClasspath}</argument>
-                        <argument>-encoding</argument>
-                        <argument>${project.build.sourceEncoding}</argument>
-                        <argument>-g</argument> <!-- include debug info -->
-                        <argument>-parameters</argument> <!-- preserve information about the formal parameters -->
-                        <argument>-O</argument> <!-- optimize for execution time -->
-                        <argument>-time</argument> <!-- display speed information. -->
-                        <argument>-showversion</argument> <!-- display the build number of the compiler -->
-                        <argument>-d</argument>
-                        <argument>${project.build.outputDirectory}</argument>
-                        <argument>-source</argument>
-                        <argument>${java.version}</argument>
-                        <argument>-target</argument>
-                        <argument>${java.version}</argument>
-                        <argument>-cp</argument>
-                        <argument>${custom.compileClasspathElements}</argument> <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
+                        -encoding ${project.build.sourceEncoding}
+                        ${custom.compileBootClasspathOption} "${custom.compileBootClasspath}"
+                        -g <!-- include debug info -->
+                        -parameters <!-- generate method parameters attribute -->
+                        -O <!-- optimize for execution time -->
+                        -time <!-- display speed information. -->
+                        -showversion <!-- display the build number of the compiler -->
+                        -d "${project.build.outputDirectory}"
+                        -source ${java.version}
+                        -target ${java.version}
+                        -cp "${custom.compileClasspathElements}" <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
 
                         <!-- ajc specific options -->
-                        <argument>-outxml</argument> <!-- generate META-INF/aop.xml -->
-                        <argument>-XnoInline</argument> <!-- do not inline around advice  -->
-                        <argument>-showWeaveInfo</argument>
-                        <argument>-sourceroots</argument>
-                        <argument>${project.build.sourceDirectory}</argument>
-
-                     </arguments>
+                        -outxml <!-- generate META-INF/aop.xml -->
+                        -XnoInline <!-- do not inline around advice  -->
+                        -showWeaveInfo
+                        -sourceroots ${custom.ecjSourcePaths}
+                     </commandlineArgs>
                   </configuration>
                </execution>
                <execution>
@@ -264,42 +243,36 @@
                      <goal>exec</goal>
                   </goals>
                   <phase>test-compile</phase>
+                  <inherited>false</inherited>
                   <configuration>
                      <skip>${custom.noJavaArtefact}</skip>
                      <executable>java</executable>
-                     <classpathScope>compile</classpathScope>
-                     <arguments>
-                        <argument>-cp</argument>
-                        <argument>${custom.ajcJarPath}</argument>
-                        <argument>org.aspectj.tools.ajbrowser.Main</argument>
+                     <classpathScope>test</classpathScope>
+                     <commandlineArgs>
+                        -cp "${custom.ajcJarPath}"
+                        org.aspectj.tools.ajbrowser.Main
 
                         <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
                         <!-- ajc compatible ecj options -->
-                        <argument>${custom.testCompileBootClasspathOption}</argument>
-                        <argument>${custom.testCompileBootClasspath}</argument>
-                        <argument>-encoding</argument>
-                        <argument>${project.build.sourceEncoding}</argument>
-                        <argument>-g</argument> <!-- include debug info -->
-                        <argument>-parameters</argument> <!-- preserve information about the formal parameters -->
-                        <argument>-O</argument> <!-- optimize for execution time -->
-                        <argument>-time</argument> <!-- display speed information. -->
-                        <argument>-showversion</argument> <!-- display the build number of the compiler -->
-                        <argument>-d</argument>
-                        <argument>${project.build.testOutputDirectory}</argument>
-                        <argument>-source</argument>
-                        <argument>${java.version.unit-tests}</argument>
-                        <argument>-target</argument>
-                        <argument>${java.version.unit-tests}</argument>
-                        <argument>-cp</argument>
-                        <argument>${custom.testClasspathElements}</argument> <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
+                        ${custom.testCompileBootClasspathOption} "${custom.testCompileBootClasspath}"
+                        -encoding ${project.build.sourceEncoding}
+                        -g <!-- include debug info -->
+                        -parameters <!-- generate method parameters attribute -->
+                        -O <!-- optimize for execution time -->
+                        -genericsignature <!-- generate generic signature for lambda expressions -->
+                        -time <!-- display speed information. -->
+                        -showversion <!-- display the build number of the compiler -->
+                        -d "${project.build.testOutputDirectory}"
+                        -source ${java.version.unit-tests}
+                        -target ${java.version.unit-tests}
+                        -cp "${custom.testClasspathElements}" <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
 
                         <!-- ajc specific options -->
-                        <argument>-outxml</argument> <!-- generate META-INF/aop.xml -->
-                        <argument>-XnoInline</argument> <!-- do not inline around advice  -->
-                        <argument>-showWeaveInfo</argument>
-                        <argument>-sourceroots</argument>
-                        <argument>${project.build.testSourceDirectory}</argument>
-                     </arguments>
+                        -outxml <!-- generate META-INF/aop.xml -->
+                        -XnoInline <!-- do not inline around advice  -->
+                        -showWeaveInfo
+                        -sourceroots ${custom.ecjTestSourcePaths}
+                     </commandlineArgs>
                   </configuration>
                </execution>
             </executions>
@@ -427,7 +400,7 @@
       <dependency>
          <groupId>org.jruby</groupId>
          <artifactId>jruby</artifactId>
-         <version>9.2.14.0</version>
+         <version>9.2.15.0</version>
          <optional>true</optional>
       </dependency>
       <dependency>
