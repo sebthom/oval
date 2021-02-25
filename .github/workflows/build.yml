@@ -8,6 +8,11 @@ on:
   pull_request:
   workflow_dispatch:
     # https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
+    inputs:
+      additional_maven_args:
+        description: 'Additional Maven Args'
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -65,8 +70,10 @@ jobs:
       env:
         DEPLOY_SNAPSHOTS_TO_GITHUB_BRANCH: true
         GITHUB_USER: ${{ github.actor }}
-        BINTRAY_USER: sebthom
-        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+        SIGN_KEY: ${{ secrets.GPG_SIGN_KEY }}
+        SIGN_KEY_PASS: ${{ secrets.GPG_SIGN_KEY_PWD }}
+        SONATYPE_OSSRH_USER: ${{ secrets.SONATYPE_OSSRH_USER }}
+        SONATYPE_OSSRH_USER_TOKEN: ${{ secrets.SONATYPE_OSSRH_USER_TOKEN }}
         JAVA_VERSION: ${{ matrix.java }}
         MAY_CREATE_RELEASE: ${{ matrix.may_create_release }}
       run: |
@@ -78,7 +85,7 @@ jobs:
         # https://github.community/t/github-actions-bot-email-address/17204
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        bash .ci/build.sh
+        bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }}
 
     - name: Publish test coverage to codeclimate.com
       uses: paambaati/codeclimate-action@v2.7.5 # https://github.com/paambaati/codeclimate-action

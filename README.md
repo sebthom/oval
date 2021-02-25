@@ -6,6 +6,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2178a43bf71aaf2622e6/test_coverage)](https://codeclimate.com/github/sebthom/oval/test_coverage)
 [![Changelog](https://img.shields.io/badge/changelog-blue)](CHANGELOG.md)
 [![Bintray](https://img.shields.io/bintray/v/sebthom/maven/oval?label=jcenter.bintray)](https://bintray.com/sebthom/maven/oval/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/net.sf.oval/oval)](https://search.maven.org/artifact/net.sf.oval/oval)
 
 1. [What is it?](#what-is-it)
 1. [Java Compatibility](#compatibility)
@@ -33,34 +34,12 @@ Besides field/property validation OVal implements [Programming by Contract](http
 
 OVal 1.x requires Java 5 or newer
 
-OVal 2.x requires Java 8 or newer
+OVal 2.0 or higher requires Java 8 or newer
+
 
 ## <a name="binaries"></a>Binaries
 
-Binaries are available via the [Bintray JCenter](https://bintray.com/bintray/jcenter) Maven repository.
-
-You need to add this repository to your Maven `settings.xml`:
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <profiles>
-    <profile>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <name>bintray</name>
-          <url>https://jcenter.bintray.com</url>
-          <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-  <activeProfiles>
-    <activeProfile>bintray</activeProfile>
-  </activeProfiles>
-</settings>
-```
+Releases of this project are available at https://search.maven.org/artifact/net.sf.oval/oval
 
 Then you can add OVal as a dependency to your `pom.xml`:
 
