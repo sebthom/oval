@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2005-2021 by Sebastian Thomschke and contributors.
@@ -12,12 +10,12 @@
    <parent>
       <groupId>com.vegardit.maven</groupId>
       <artifactId>vegardit-maven-parent</artifactId>
-      <version>RELEASE</version>
+      <version>2.4.26</version>
    </parent>
 
    <groupId>net.sf.oval</groupId>
    <artifactId>oval</artifactId>
-   <version>3.1.1-SNAPSHOT</version>
+   <version>3.1.1</version>
    <packaging>jar</packaging>
 
 
@@ -71,7 +69,7 @@
       <url>https://github.com/sebthom/oval</url>
       <connection>scm:git:https://github.com/sebthom/oval.git</connection>
       <developerConnection>scm:git:https://github.com/sebthom/oval.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>3.1.1</tag>
    </scm>
 
 
