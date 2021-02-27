@@ -397,7 +397,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [net.sf Issue 2799870] Wrong escaped unicode sequences in Messages_de.properties
 
 
-### [1.32] - 2009-05-10
+### [1.32] - 2009-07-08
 
 ### Added and Improvements
 * added Brazilian Portuguese translation of the constraint violation messages [net.sf Issue2593104] (thanks to Leonardo Pinto)
@@ -416,7 +416,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * NPE in JDK Logger implementation (thanks to Carsten Siedentop)
 
 
-## [1.31] - 2008-21-27
+## [1.31] - 2009-01-09
 
 ### Added
 * added support for multi-valued constraints
