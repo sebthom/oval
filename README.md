@@ -41,7 +41,7 @@ OVal 2.0 or higher requires Java 8 or newer
 
 Releases of this project are available at https://search.maven.org/artifact/net.sf.oval/oval
 
-Then you can add OVal as a dependency to your `pom.xml`:
+You can add OVal as a dependency to your `pom.xml`:
 
 ```xml
 <dependency>
