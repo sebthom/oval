@@ -8,6 +8,7 @@ import static net.sf.oval.Validator.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
@@ -53,11 +54,14 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf> {
    }
 
    private List<String> getMembersLowerCase() {
+      List<String> membersLowerCase = this.membersLowerCase;
       if (membersLowerCase == null) {
          membersLowerCase = getCollectionFactory().createList(members.size());
+         final Locale locale = Validator.getLocaleProvider().getLocale();
          for (final String val : members) {
-            membersLowerCase.add(val.toLowerCase(Validator.getLocaleProvider().getLocale()));
+            membersLowerCase.add(val.toLowerCase(locale));
          }
+         this.membersLowerCase = membersLowerCase;
       }
       return membersLowerCase;
    }
