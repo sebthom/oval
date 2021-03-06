@@ -24,7 +24,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf> {
    private static final long serialVersionUID = 1L;
 
    private boolean ignoreCase;
-   private List<String> members;
+   private final List<String> members = getCollectionFactory().createList(2);
    private transient List<String> membersLowerCase;
 
    @Override
@@ -48,9 +48,7 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf> {
    }
 
    public List<String> getMembers() {
-      final List<String> v = getCollectionFactory().createList();
-      v.addAll(members);
-      return v;
+      return getCollectionFactory().createList(members);
    }
 
    private List<String> getMembersLowerCase() {
@@ -87,14 +85,14 @@ public class NotMemberOfCheck extends AbstractAnnotationCheck<NotMemberOf> {
    }
 
    public void setMembers(final List<String> members) {
-      this.members = getCollectionFactory().createList();
+      this.members.clear();
       this.members.addAll(members);
       membersLowerCase = null;
       requireMessageVariablesRecreation();
    }
 
    public void setMembers(final String... members) {
-      this.members = getCollectionFactory().createList();
+      this.members.clear();
       Collections.addAll(this.members, members);
       membersLowerCase = null;
       requireMessageVariablesRecreation();

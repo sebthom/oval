@@ -96,15 +96,23 @@ public final class ArrayUtils {
     * In contrast to {@link java.util.Arrays#asList} this method returns a modifiable list.
     */
    public static <T> List<T> asList(final T[] array) {
-      final List<T> result = Validator.getCollectionFactory().createList(array.length);
-      Collections.addAll(result, array);
-      return result;
+      if (array == null)
+         return null;
+      if (array.length == 0)
+         return Validator.getCollectionFactory().createList();
+      final List<T> list = Validator.getCollectionFactory().createList(array.length);
+      Collections.addAll(list, array);
+      return list;
    }
 
    public static <T> Set<T> asSet(final T[] array) {
-      final Set<T> result = Validator.getCollectionFactory().createSet(array.length);
-      Collections.addAll(result, array);
-      return result;
+      if (array == null)
+         return null;
+      if (array.length == 0)
+         return Validator.getCollectionFactory().createSet();
+      final Set<T> set = Validator.getCollectionFactory().createSet(array.length);
+      Collections.addAll(set, array);
+      return set;
    }
 
    public static <T> boolean containsEqual(final T[] theArray, final T theItem) {
