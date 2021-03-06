@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2] - 2021-03-06
+
+### Fixed
+- [github Issues #102](https://github.com/sebthom/oval/issues/102) java.lang.ArrayIndexOutOfBoundsException race condition in @MemberOf and @NotMemberOf check
+
+### Changed
+- Updated tested optional dependencies
+  - guice 5.0.1
+  - JRuby 9.2.16.0
+
 
 ## [3.1.1] - 2021-02-25
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2010-2021 by Sebastian Thomschke and others.
+# Copyright 2010-2021 by Sebastian Thomschke and contributors.
 # SPDX-License-Identifier: EPL-2.0
 #
 # @author Sebastian Thomschke, https://sebthom.de/
@@ -116,8 +116,9 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} && ${MAY_CREATE_RELE
       git checkout ${GIT_BRANCH}
    fi
 
+   export DEPLOY_RELEASES_TO_MAVEN_CENTRAL=true
+
    mvn $MAVEN_CLI_OPTS "$@" \
-      -Pmaven-central-release \
       -DskipTests=${SKIP_TESTS} \
       -DskipITs=${SKIP_TESTS} \
       -DdryRun=${DRY_RUN} \
