@@ -4,6 +4,7 @@
  */
 package net.sf.oval.collection;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,14 @@ public interface CollectionFactory {
     */
    <ValueType> List<ValueType> createList(int initialCapacity);
 
+   default <ValueType> List<ValueType> createList(final Collection<ValueType> initialElements) {
+      if (initialElements == null || initialElements.isEmpty())
+         return createList();
+      final List<ValueType> list = createList(initialElements.size());
+      list.addAll(initialElements);
+      return list;
+   }
+
    /**
     * Instantiate a HashMap like map object
     *
@@ -68,4 +77,12 @@ public interface CollectionFactory {
     * @return a new set
     */
    <ValueType> Set<ValueType> createSet(int initialCapacity);
+
+   default <ValueType> Set<ValueType> createSet(final Collection<ValueType> initialElements) {
+      if (initialElements == null || initialElements.isEmpty())
+         return createSet();
+      final Set<ValueType> set = createSet(initialElements.size());
+      set.addAll(initialElements);
+      return set;
+   }
 }

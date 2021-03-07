@@ -8,8 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2] - 2021-03-06
+
+### Fixed
+- [github Issues #102](https://github.com/sebthom/oval/issues/102) java.lang.ArrayIndexOutOfBoundsException race condition in @MemberOf and @NotMemberOf check
 
 ## [3.1.1] - 2021-02-24
+
+### Changed
+- Updated tested optional dependencies
+  - guice 5.0.1
+  - JRuby 9.2.16.0
+
+
+## [3.1.1] - 2021-02-25
 
 ### Changed
 - publish to Maven Central instead of Bintray because of its [termination](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)
@@ -397,7 +409,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [net.sf Issue 2799870] Wrong escaped unicode sequences in Messages_de.properties
 
 
-### [1.32] - 2009-05-10
+### [1.32] - 2009-07-08
 
 ### Added and Improvements
 * added Brazilian Portuguese translation of the constraint violation messages [net.sf Issue2593104] (thanks to Leonardo Pinto)
@@ -416,7 +428,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * NPE in JDK Logger implementation (thanks to Carsten Siedentop)
 
 
-## [1.31] - 2008-21-27
+## [1.31] - 2009-01-09
 
 ### Added
 * added support for multi-valued constraints

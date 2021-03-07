@@ -38,9 +38,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
       public BundlesAndKeys(final BundlesAndKeys copyFrom) {
          bundlesOfLocales = getCollectionFactory().createMap(copyFrom.bundlesOfLocales.size());
          for (final Entry<Locale, Set<ResourceBundle>> entry : copyFrom.bundlesOfLocales.entrySet()) {
-            final Set<ResourceBundle> keys = getCollectionFactory().createSet();
-            keys.addAll(entry.getValue());
-            bundlesOfLocales.put(entry.getKey(), keys);
+            bundlesOfLocales.put(entry.getKey(), getCollectionFactory().createSet(entry.getValue()));
          }
 
          keysOfBundles = getCollectionFactory().createMap(copyFrom.keysOfBundles.size());

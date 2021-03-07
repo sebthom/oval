@@ -67,6 +67,7 @@ jobs:
         key: ${{ runner.os }}-mvnbin-${{ hashFiles('.ci/build.sh') }}
  
     - name: Build with Maven
+      id: maven-build
       env:
         DEPLOY_SNAPSHOTS_TO_GITHUB_BRANCH: true
         GITHUB_USER: ${{ github.actor }}
@@ -87,9 +88,13 @@ jobs:
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }}
 
+        if ls */target/site/jacoco/jacoco.xml >/dev/null 2>&1; then
+          echo '::set-output name=has_jacoco_results::true'
+        fi
+
     - name: Publish test coverage to codeclimate.com
       uses: paambaati/codeclimate-action@v2.7.5 # https://github.com/paambaati/codeclimate-action
-      if: ${{ matrix.may_create_release }}
+      if: matrix.may_create_release && steps.maven-build.outputs.has_jacoco_results
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
         JACOCO_SOURCE_PATH: "${{ github.workspace }}/src/main/java"

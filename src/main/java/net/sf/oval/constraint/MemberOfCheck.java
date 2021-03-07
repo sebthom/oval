@@ -8,6 +8,7 @@ import static net.sf.oval.Validator.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sf.oval.ConstraintTarget;
@@ -23,7 +24,7 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf> {
    private static final long serialVersionUID = 1L;
 
    private boolean ignoreCase;
-   private List<String> members;
+   private final List<String> members = getCollectionFactory().createList(2);
    private transient List<String> membersLowerCase;
 
    @Override
@@ -47,17 +48,18 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf> {
    }
 
    public List<String> getMembers() {
-      final List<String> v = getCollectionFactory().createList();
-      v.addAll(members);
-      return v;
+      return getCollectionFactory().createList(members);
    }
 
    private List<String> getMembersLowerCase() {
+      List<String> membersLowerCase = this.membersLowerCase;
       if (membersLowerCase == null) {
          membersLowerCase = getCollectionFactory().createList(members.size());
+         final Locale locale = Validator.getLocaleProvider().getLocale();
          for (final String val : members) {
-            membersLowerCase.add(val.toLowerCase(Validator.getLocaleProvider().getLocale()));
+            membersLowerCase.add(val.toLowerCase(locale));
          }
+         this.membersLowerCase = membersLowerCase;
       }
       return membersLowerCase;
    }
@@ -83,14 +85,14 @@ public class MemberOfCheck extends AbstractAnnotationCheck<MemberOf> {
    }
 
    public void setMembers(final List<String> members) {
-      this.members = getCollectionFactory().createList();
+      this.members.clear();
       this.members.addAll(members);
       membersLowerCase = null;
       requireMessageVariablesRecreation();
    }
 
    public void setMembers(final String... members) {
-      this.members = getCollectionFactory().createList();
+      this.members.clear();
       Collections.addAll(this.members, members);
       membersLowerCase = null;
       requireMessageVariablesRecreation();
