@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- [github PR #104](https://github.com/sebthom/oval/pull/104) add @MemberOfEnum (thanks to https://github.com/shank3)
+
+
 ## [3.1.2] - 2021-03-06
 
 ### Fixed

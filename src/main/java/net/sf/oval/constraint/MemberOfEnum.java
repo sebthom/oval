@@ -15,7 +15,7 @@ import net.sf.oval.ConstraintViolation;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Check if the string representation is contained in the given
+ * Check if the string representation is contained in the given enum.
  *
  * <br>
  * <br>
@@ -36,6 +36,8 @@ public @interface MemberOfEnum {
     */
    String errorCode() default "net.sf.oval.constraint.MemberOfEnum";
 
+   boolean ignoreCase() default false;
+
    /**
     * message to be used for the ContraintsViolatedException
     *
@@ -44,13 +46,12 @@ public @interface MemberOfEnum {
    String message() default "net.sf.oval.constraint.MemberOfEnum.violated";
 
    /**
-    * The Spec Enum
-    */
-   Class<? extends Enum> value();
-
-   /**
     * The associated constraint profiles.
     */
    String[] profiles() default {};
 
+   /**
+    * The Spec Enum
+    */
+   Class<? extends Enum<?>> value();
 }

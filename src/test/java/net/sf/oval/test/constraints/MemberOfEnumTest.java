@@ -4,7 +4,7 @@
  */
 package net.sf.oval.test.constraints;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class MemberOfEnumTest extends AbstractContraintsTest {
    static class TestDTO {
 
       @MemberOfEnum(CountryEnum.class)
-      private String country;
+      private final String country;
 
       TestDTO(final String country) {
          this.country = country;
@@ -27,7 +27,9 @@ public class MemberOfEnumTest extends AbstractContraintsTest {
    }
 
    enum CountryEnum {
-      China, USA, Japan;
+      China,
+      USA,
+      Japan;
    }
 
    @Test
@@ -39,6 +41,23 @@ public class MemberOfEnumTest extends AbstractContraintsTest {
       assertThat(check.isSatisfied(null, null, null)).isTrue();
 
       assertThat(check.isSatisfied(null, "China", null)).isTrue();
+      assertThat(check.isSatisfied(null, "china", null)).isFalse();
+      assertThat(check.isSatisfied(null, "non-exists", null)).isFalse();
+
+      assertThat(check.getMessageVariables()).containsKeys("members");
+   }
+
+   @Test
+   public void testMemberOfIgnoreCase() {
+      final MemberOfEnumCheck check = new MemberOfEnumCheck();
+      check.setIgnoreCase(true);
+      super.testCheck(check);
+
+      check.setConstraintEnum(CountryEnum.class);
+      assertThat(check.isSatisfied(null, null, null)).isTrue();
+
+      assertThat(check.isSatisfied(null, "China", null)).isTrue();
+      assertThat(check.isSatisfied(null, "china", null)).isTrue();
       assertThat(check.isSatisfied(null, "non-exists", null)).isFalse();
 
       assertThat(check.getMessageVariables()).containsKeys("members");

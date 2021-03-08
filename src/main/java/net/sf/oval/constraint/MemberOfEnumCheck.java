@@ -4,10 +4,12 @@
  */
 package net.sf.oval.constraint;
 
-import static net.sf.oval.Validator.getCollectionFactory;
+import static net.sf.oval.Validator.*;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
@@ -19,30 +21,17 @@ import net.sf.oval.internal.util.StringUtils;
  */
 public class MemberOfEnumCheck extends AbstractAnnotationCheck<MemberOfEnum> {
 
-   private Class<? extends Enum> constraintEnum;
+   private static final long serialVersionUID = 1L;
 
-   public void setConstraintEnum(final Class<? extends Enum> constraintEnum) {
-      this.constraintEnum = constraintEnum;
-      requireMessageVariablesRecreation();
-   }
-
-   @Override
-   public void configure(final MemberOfEnum memberOfEnum) {
-      super.configure(memberOfEnum);
-      setConstraintEnum(memberOfEnum.value());
-   }
+   private Class<? extends Enum<?>> constraintEnum;
+   private Set<String> enumValues = Collections.emptySet();
+   private boolean ignoreCase;
 
    @Override
-   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws OValException {
-      if (Objects.isNull(valueToValidate)) {
-         return true;
-      }
-      try {
-         Enum.valueOf(constraintEnum, valueToValidate.toString());
-         return true;
-      } catch (final IllegalArgumentException e) {
-         return false;
-      }
+   public void configure(final MemberOfEnum constraintAnnotation) {
+      super.configure(constraintAnnotation);
+      setConstraintEnum(constraintAnnotation.value());
+      setIgnoreCase(constraintAnnotation.ignoreCase());
    }
 
    @Override
@@ -50,5 +39,44 @@ public class MemberOfEnumCheck extends AbstractAnnotationCheck<MemberOfEnum> {
       final Map<String, String> messageVariables = getCollectionFactory().createMap(2);
       messageVariables.put("members", StringUtils.join(constraintEnum.getEnumConstants(), ','));
       return messageVariables;
+   }
+
+   public Class<? extends Enum<?>> getConstraintEnum() {
+      return constraintEnum;
+   }
+
+   public boolean isIgnoreCase() {
+      return ignoreCase;
+   }
+
+   @Override
+   public boolean isSatisfied(final Object validatedObject, final Object valueToValidate, final ValidationCycle cycle) throws OValException {
+      if (Objects.isNull(valueToValidate))
+         return true;
+
+      if (ignoreCase)
+         return enumValues.contains(valueToValidate.toString().toLowerCase());
+      return enumValues.contains(valueToValidate.toString());
+   }
+
+   public void setConstraintEnum(final Class<? extends Enum<?>> constraintEnum) {
+      this.constraintEnum = constraintEnum;
+
+      final Object[] enumValues = constraintEnum.getEnumConstants();
+      final Set<String> enumValuesSet = getCollectionFactory().createSet(enumValues.length);
+      for (final Object enumValue : enumValues) {
+         if (ignoreCase) {
+            enumValuesSet.add(enumValue.toString().toLowerCase());
+         } else {
+            enumValuesSet.add(enumValue.toString());
+         }
+      }
+      this.enumValues = enumValuesSet;
+
+      requireMessageVariablesRecreation();
+   }
+
+   public void setIgnoreCase(final boolean ignoreCase) {
+      this.ignoreCase = ignoreCase;
    }
 }
