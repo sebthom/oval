@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [3.1.2] - 2021-03-11
+
 ### Added
 - [github PR #104](https://github.com/sebthom/oval/pull/104) add @MemberOfEnum (thanks to https://github.com/shank3)
-
-
-## [3.1.2] - 2021-03-06
 
 ### Fixed
 - [github Issues #102](https://github.com/sebthom/oval/issues/102) java.lang.ArrayIndexOutOfBoundsException race condition in @MemberOf and @NotMemberOf check
