@@ -10,6 +10,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.time.Duration;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ConstraintViolation;
@@ -93,6 +94,14 @@ public @interface DateRange {
    String max() default "";
 
    /**
+    * The upper date compared against now. Lower priority than max()
+    *
+    * a text string such as PnDTnHnMn.nS will parse by Duration.parse()
+    * @see Duration#parse
+    */
+   String plusNow() default "";
+
+   /**
     * message to be used for the ContraintsViolatedException
     *
     * @see ConstraintViolation
@@ -111,6 +120,14 @@ public @interface DateRange {
     * </ul>
     */
    String min() default "";
+
+   /**
+    * The lower date compared against now. Lower priority than min()
+    *
+    * a text string such as PnDTnHnMn.nS will parse by Duration.parse()
+    * @see Duration#parse
+    */
+   String minusNow() default "";
 
    /**
     * The associated constraint profiles.

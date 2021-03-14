@@ -7,6 +7,9 @@ package net.sf.oval.test.constraints;
 import static org.assertj.core.api.Assertions.*;
 
 import java.text.DateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -116,4 +119,33 @@ public class DateRangeTest extends AbstractContraintsTest {
       check.setTolerance(0);
       assertThat(check.isSatisfied(null, new Date(System.currentTimeMillis() - 2000), null)).isFalse();
    }
+
+   @Test
+   public void testPlusNow() {
+      final DateRangeCheck check = new DateRangeCheck();
+      check.setPlusNow("P2d");
+      assertThat(check.isSatisfied(null, new Date(), null)).isTrue();
+      final Date valueToValidate = Date.from(Instant.now().plus(49, ChronoUnit.HOURS));
+      assertThat(check.isSatisfied(null, valueToValidate, null)).isFalse();
+      check.setTolerance(Duration.ofHours(1).toMillis());
+      assertThat(check.isSatisfied(null, valueToValidate, null)).isTrue();
+
+      check.setMax("tomorrow");
+      assertThat(check.isSatisfied(null, valueToValidate, null)).isFalse();
+   }
+
+   @Test
+   public void testMinusNow() {
+      final DateRangeCheck check = new DateRangeCheck();
+      check.setMinusNow("PT6H");
+      assertThat(check.isSatisfied(null, new Date(), null)).isTrue();
+      final Date valueToValidate = Date.from(Instant.now().minus(7, ChronoUnit.HOURS));
+      assertThat(check.isSatisfied(null, valueToValidate, null)).isFalse();
+      check.setTolerance(Duration.ofHours(2).toMillis());
+      assertThat(check.isSatisfied(null, valueToValidate, null)).isTrue();
+
+      check.setMin("yesterday");
+      assertThat(check.isSatisfied(null, valueToValidate, null)).isTrue();
+   }
+
 }

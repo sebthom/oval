@@ -9,9 +9,13 @@ import static net.sf.oval.Validator.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ValidationCycle;
@@ -30,6 +34,8 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
    private String format;
    private String max;
    private String min;
+   private String plusNow;
+   private String minusNow;
 
    private transient Long maxMillis;
    private transient Long minMillis;
@@ -68,59 +74,67 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
 
    private long getMaxMillis() throws InvalidConfigurationException {
       if (maxMillis == null) {
-         if (max == null || max.length() == 0)
-            return Long.MAX_VALUE;
-
-         switch (max) {
-            case "now":
-               return System.currentTimeMillis() + tolerance;
-            case "today": {
-               final Calendar cal = Calendar.getInstance();
-               cal.set(Calendar.HOUR_OF_DAY, 0);
-               cal.set(Calendar.MINUTE, 0);
-               cal.set(Calendar.SECOND, 0);
-               cal.set(Calendar.MILLISECOND, 0);
-               cal.add(Calendar.DAY_OF_YEAR, 1);
-               cal.add(Calendar.MILLISECOND, -1);
-               return cal.getTimeInMillis() + tolerance;
-            }
-            case "tomorrow": {
-               final Calendar cal = Calendar.getInstance();
-               cal.set(Calendar.HOUR_OF_DAY, 0);
-               cal.set(Calendar.MINUTE, 0);
-               cal.set(Calendar.SECOND, 0);
-               cal.set(Calendar.MILLISECOND, 0);
-               cal.add(Calendar.DAY_OF_YEAR, 2);
-               cal.add(Calendar.MILLISECOND, -1);
-               return cal.getTimeInMillis() + tolerance;
-            }
-            case "yesterday": {
-               final Calendar cal = Calendar.getInstance();
-               cal.set(Calendar.HOUR_OF_DAY, 0);
-               cal.set(Calendar.MINUTE, 0);
-               cal.set(Calendar.SECOND, 0);
-               cal.set(Calendar.MILLISECOND, 0);
-               cal.add(Calendar.MILLISECOND, -1);
-               return cal.getTimeInMillis() + tolerance;
-            }
-            default:
-               if (format != null && format.length() > 0) {
-                  final SimpleDateFormat sdf = new SimpleDateFormat(format);
-                  try {
-                     maxMillis = sdf.parse(max).getTime() + tolerance;
-                  } catch (final ParseException e) {
-                     throw new InvalidConfigurationException("Unable to parse the max Date String", e);
-                  }
-               } else {
-                  try {
-                     maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime() + tolerance;
-                  } catch (final ParseException e) {
-                     throw new InvalidConfigurationException("Unable to parse the max Date String", e);
-                  }
+         if (max != null && max.length() > 0) {
+            switch (max) {
+               case "now":
+                  return System.currentTimeMillis() + tolerance;
+               case "today": {
+                  final Calendar cal = Calendar.getInstance();
+                  cal.set(Calendar.HOUR_OF_DAY, 0);
+                  cal.set(Calendar.MINUTE, 0);
+                  cal.set(Calendar.SECOND, 0);
+                  cal.set(Calendar.MILLISECOND, 0);
+                  cal.add(Calendar.DAY_OF_YEAR, 1);
+                  cal.add(Calendar.MILLISECOND, -1);
+                  return cal.getTimeInMillis() + tolerance;
                }
+               case "tomorrow": {
+                  final Calendar cal = Calendar.getInstance();
+                  cal.set(Calendar.HOUR_OF_DAY, 0);
+                  cal.set(Calendar.MINUTE, 0);
+                  cal.set(Calendar.SECOND, 0);
+                  cal.set(Calendar.MILLISECOND, 0);
+                  cal.add(Calendar.DAY_OF_YEAR, 2);
+                  cal.add(Calendar.MILLISECOND, -1);
+                  return cal.getTimeInMillis() + tolerance;
+               }
+               case "yesterday": {
+                  final Calendar cal = Calendar.getInstance();
+                  cal.set(Calendar.HOUR_OF_DAY, 0);
+                  cal.set(Calendar.MINUTE, 0);
+                  cal.set(Calendar.SECOND, 0);
+                  cal.set(Calendar.MILLISECOND, 0);
+                  cal.add(Calendar.MILLISECOND, -1);
+                  return cal.getTimeInMillis() + tolerance;
+               }
+               default:
+                  if (format != null && format.length() > 0) {
+                     final SimpleDateFormat sdf = new SimpleDateFormat(format);
+                     try {
+                        maxMillis = sdf.parse(max).getTime() + tolerance;
+                     } catch (final ParseException e) {
+                        throw new InvalidConfigurationException("Unable to parse the max Date String", e);
+                     }
+                  } else {
+                     try {
+                        maxMillis = DateFormat.getDateTimeInstance().parse(max).getTime() + tolerance;
+                     } catch (final ParseException e) {
+                        throw new InvalidConfigurationException("Unable to parse the max Date String", e);
+                     }
+                  }
+            }
+         }
+         if (Objects.isNull(maxMillis) && Objects.nonNull(plusNow) && plusNow.length() > 0) {
+            final Duration duration;
+            try {
+               duration = Duration.parse(plusNow);
+            } catch (final DateTimeParseException e) {
+               throw new InvalidConfigurationException("Unable to parse the plusNow String", e);
+            }
+            return Instant.now().plus(duration).toEpochMilli() + tolerance;
          }
       }
-      return maxMillis;
+      return Objects.nonNull(maxMillis) ? maxMillis : Long.MAX_VALUE;
    }
 
    public String getMin() {
@@ -129,56 +143,64 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
 
    private long getMinMillis() throws InvalidConfigurationException {
       if (minMillis == null) {
-         if (min == null || min.length() == 0)
-            return 0L;
-
-         switch (min) {
-            case "now":
-               return System.currentTimeMillis() - tolerance;
-            case "today": {
-               final Calendar cal = Calendar.getInstance();
-               cal.set(Calendar.HOUR_OF_DAY, 0);
-               cal.set(Calendar.MINUTE, 0);
-               cal.set(Calendar.SECOND, 0);
-               cal.set(Calendar.MILLISECOND, 0);
-               return cal.getTimeInMillis() - tolerance;
-            }
-            case "tomorrow": {
-               final Calendar cal = Calendar.getInstance();
-               cal.set(Calendar.HOUR_OF_DAY, 0);
-               cal.set(Calendar.MINUTE, 0);
-               cal.set(Calendar.SECOND, 0);
-               cal.set(Calendar.MILLISECOND, 0);
-               cal.add(Calendar.DAY_OF_YEAR, 1);
-               return cal.getTimeInMillis() - tolerance;
-            }
-            case "yesterday": {
-               final Calendar cal = Calendar.getInstance();
-               cal.set(Calendar.HOUR_OF_DAY, 0);
-               cal.set(Calendar.MINUTE, 0);
-               cal.set(Calendar.SECOND, 0);
-               cal.set(Calendar.MILLISECOND, 0);
-               cal.add(Calendar.DAY_OF_YEAR, -1);
-               return cal.getTimeInMillis() - tolerance;
-            }
-            default:
-               if (format != null && format.length() > 0) {
-                  final SimpleDateFormat sdf = new SimpleDateFormat(format);
-                  try {
-                     minMillis = sdf.parse(min).getTime() - tolerance;
-                  } catch (final ParseException e) {
-                     throw new InvalidConfigurationException("Unable to parse the min Date String", e);
-                  }
-               } else {
-                  try {
-                     minMillis = DateFormat.getDateTimeInstance().parse(min).getTime() - tolerance;
-                  } catch (final ParseException e) {
-                     throw new InvalidConfigurationException("Unable to parse the min Date String", e);
-                  }
+         if (min != null && min.length() > 0) {
+            switch (min) {
+               case "now":
+                  return System.currentTimeMillis() - tolerance;
+               case "today": {
+                  final Calendar cal = Calendar.getInstance();
+                  cal.set(Calendar.HOUR_OF_DAY, 0);
+                  cal.set(Calendar.MINUTE, 0);
+                  cal.set(Calendar.SECOND, 0);
+                  cal.set(Calendar.MILLISECOND, 0);
+                  return cal.getTimeInMillis() - tolerance;
                }
+               case "tomorrow": {
+                  final Calendar cal = Calendar.getInstance();
+                  cal.set(Calendar.HOUR_OF_DAY, 0);
+                  cal.set(Calendar.MINUTE, 0);
+                  cal.set(Calendar.SECOND, 0);
+                  cal.set(Calendar.MILLISECOND, 0);
+                  cal.add(Calendar.DAY_OF_YEAR, 1);
+                  return cal.getTimeInMillis() - tolerance;
+               }
+               case "yesterday": {
+                  final Calendar cal = Calendar.getInstance();
+                  cal.set(Calendar.HOUR_OF_DAY, 0);
+                  cal.set(Calendar.MINUTE, 0);
+                  cal.set(Calendar.SECOND, 0);
+                  cal.set(Calendar.MILLISECOND, 0);
+                  cal.add(Calendar.DAY_OF_YEAR, -1);
+                  return cal.getTimeInMillis() - tolerance;
+               }
+               default:
+                  if (format != null && format.length() > 0) {
+                     final SimpleDateFormat sdf = new SimpleDateFormat(format);
+                     try {
+                        minMillis = sdf.parse(min).getTime() - tolerance;
+                     } catch (final ParseException e) {
+                        throw new InvalidConfigurationException("Unable to parse the min Date String", e);
+                     }
+                  } else {
+                     try {
+                        minMillis = DateFormat.getDateTimeInstance().parse(min).getTime() - tolerance;
+                     } catch (final ParseException e) {
+                        throw new InvalidConfigurationException("Unable to parse the min Date String", e);
+                     }
+                  }
+            }
+         }
+         if (Objects.isNull(minMillis) && Objects.nonNull(minusNow) && minusNow.length() > 0) {
+            final Duration duration;
+            try {
+               duration = Duration.parse(minusNow);
+            } catch (final DateTimeParseException e) {
+               throw new InvalidConfigurationException("Unable to parse the minusNow String", e);
+            }
+            return Instant.now().minus(duration).toEpochMilli() - tolerance;
          }
       }
-      return minMillis;
+      return Objects.nonNull(minMillis) ? minMillis : 0L;
    }
 
    public long getTolerance() {
@@ -242,5 +264,25 @@ public class DateRangeCheck extends AbstractAnnotationCheck<DateRange> {
       this.tolerance = tolerance;
       minMillis = null;
       maxMillis = null;
+   }
+
+   public String getPlusNow() {
+      return plusNow;
+   }
+
+   public void setPlusNow(final String plusNow) {
+      this.plusNow = plusNow;
+      maxMillis = null;
+      requireMessageVariablesRecreation();
+   }
+
+   public String getMinusNow() {
+      return minusNow;
+   }
+
+   public void setMinusNow(final String minusNow) {
+      this.minusNow = minusNow;
+      minMillis = null;
+      requireMessageVariablesRecreation();
    }
 }
