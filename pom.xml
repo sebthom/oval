@@ -391,7 +391,7 @@
       <dependency>
          <groupId>ognl</groupId>
          <artifactId>ognl</artifactId>
-         <version>3.2.18</version>
+         <version>3.2.19</version>
          <optional>true</optional>
       </dependency>
       <dependency>
