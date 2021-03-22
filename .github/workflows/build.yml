@@ -94,7 +94,7 @@ jobs:
 
     - name: Publish test coverage to codeclimate.com
       uses: paambaati/codeclimate-action@v2.7.5 # https://github.com/paambaati/codeclimate-action
-      if: matrix.may_create_release && steps.maven-build.outputs.has_jacoco_results
+      if: github.ref == 'refs/heads/master' && matrix.may_create_release && steps.maven-build.outputs.has_jacoco_results
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
         JACOCO_SOURCE_PATH: "${{ github.workspace }}/src/main/java"
