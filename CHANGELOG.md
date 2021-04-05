@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+### Changed
+- Updated tested optional dependencies
+  - jruby from 9.2.16.0 to 9.2.17.0
+  - ognl from 3.2.18 to 3.2.19
+  - spring.version from 5.3.4 to 5.3.5
+  - xstream from 1.4.15 to 1.4.16
+
+
 ## [3.1.2] - 2021-03-11
 
 ### Added
