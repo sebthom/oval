@@ -89,7 +89,7 @@ There exist some articles and blog entries talking about and/or referencing OVal
     Translation\]](https://translate.google.com/translate?sl=es&tl=en&u=https%3A%2F%2Funpocodejava.com%2F2010%2F05%2F07%2Fvalidaciones-hibernate-validator-vs-oval%2F)
 
 - Enkel validering av Java-objekter med OVal (2010) \
-  <http://open.bekk.no/enkel-validering-av-java-objekter-med-oval>
+  <https://blogg.bekk.no/enkel-validering-av-java-objekter-med-oval-2054b67c7774>
 
 - Oval Validation Framework (2010) \
   <http://vathzala.blogspot.de/2010/03/oval-validation-framework.html>
@@ -102,9 +102,9 @@ There exist some articles and blog entries talking about and/or referencing OVal
     Translation\]](https://translate.google.com/translate?hl=&sl=es&tl=en&u=https%3A%2F%2Fdosideas.com%2Fnoticias%2Fjava%2F562-diseno-por-contrato-con-oval-y-spring)
 
 - An Aspect-Oriented Infrastructure for Design by Contract in Java \
-  <https://www.semanticscholar.org/paper/An-Aspect-Oriented-Infrastructure-for-Design-by-in-Agostinho/0afb0c0a025b3deb6bb8565ce966bc7ef02e01e5>
+  <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.131.4053&rep=rep1&type=pdf>
 
-- OVal Blog Entry Series at the "JEE, BPEL, SOA" blog (2008) \
+- OVal Blog Entry Series at the "JEE, BPEL, SOA" blog (2008)
   - [JSR 303 and OVal Validation
   Framework](https://lukaszbudnik.blogspot.com/2008/12/jsr-303-and-oval-validation-framework.html)
   - [OVal and
@@ -127,35 +127,38 @@ There exist some articles and blog entries talking about and/or referencing OVal
 - In pursuit of code quality: Defensive programming with AOP (2007) \
   <http://www.ibm.com/developerworks/library/j-cq01307/>
 
-- OVal e la validazione degli oggetti in Java (2006) \
-  <http://www.keepintech.it/2006/12/22/oval-e-la-validazione-degli-oggetti-in-java/>
-
 - Limiting conditional complexity with AOP (2006)\
   <https://nofluffjuststuff.com/blog/paul_duvall/2006/12/limiting_conditional_complexity_with_aop>
 
 ## <a name="projects-using-oval"></a>Projects using OVal
 
-- Arena Persistence <http://arena-pers.uqbar.org/>
-- Jadira Framework <http://jadira.sourceforge.net/>
-- Omniproperties - a lightweight configuration utility <https://github.com/siemens/omniproperties>
-- fustewa - A full web stack based on Spring <https://github.com/opensource21/fuwesta>
-- eSciDoc <https://www.escidoc.org/>
-- SaferJava <http://code.google.com/p/saferjava/>
-- JProvocateur <http://www.jprovocateur.org/>
-- NexOpen <https://sourceforge.net/projects/nexopen/>
+Active:
 - gdv.xport <https://github.com/oboehm/gdv.xport>
-- suz-lab-gae <http://code.google.com/p/suz-lab-gae/>
-- Cubby Simple Web Application Framework <http://cubby.seasar.org/20x/cubby-oval/index.html>
+- eSciDoc <https://www.escidoc.org/>
 - Metawidget <https://github.com/metawidget/metawidget>
-- Struts 2 OVal Plug-in <http://cwiki.apache.org/confluence/display/S2PLUGINS/OVal+Plugin>
-- Play! Framework 1.x <http://www.playframework.org/>
-- Cayenne annotations <http://sourceforge.net/projects/cayannotations/>
-- jsfatwork <http://code.google.com/p/jsfatwork/>
-- mtn4java <http://www.mvnrepository.com/artifact/org.criticalsection.mtn4java/mtn4java/>
-- Polyforms <http://code.google.com/p/polyforms/>
-- rsser <http://code.google.com/p/rsser/>
-- saetc <http://code.google.com/p/saetc/>
-- ultimate-roundtrip <http://code.google.com/p/ultimate-roundtrip/>
+- Play! Framework 1.x <https://github.com/playframework/play1>
+- Struts 2 OVal Plug-in
+  - Documentation: <https://cwiki.apache.org/confluence/display/WW/OVal+Plugin>
+  - Source: <https://github.com/apache/struts/tree/master/plugins/oval>
+
+Inactive:
+- Jadira Framework (2018)
+  - <http://jadira.sourceforge.net/>
+  - <https://github.com/JadiraOrg/jadira>
+- fustewa (2017) - A full web stack based on Spring <https://github.com/opensource21/fuwesta>
+- Omniproperties (2016) - a lightweight configuration utility <https://github.com/siemens/omniproperties>
+- Arena Persistence (2016) <http://arena-pers.uqbar.org/>
+- NexOpen (2014) <https://sourceforge.net/projects/nexopen/>
+- JProvocateur (2012) <https://sourceforge.net/projects/jprovocateur/>
+- Cubby (2010) - Simple Web Application Framework <http://cubby.seasar.org/20x/cubby-oval/index.html>
+- Cayenne annotations (2007) <http://sourceforge.net/projects/cayannotations/>
+- jsfatwork <https://code.google.com/archive/p/jsfatwork/>
+- Polyforms <https://code.google.com/archive/p/polyforms/>
+- rsser <https://code.google.com/archive/p/rsser/>
+- saetc <https://code.google.com/archive/p/saetc/>
+- SaferJava <https://code.google.com/archive/p/saferjava/>
+- suz-lab-gae <https://code.google.com/archive/p/suz-lab-gae/>
+- ultimate-roundtrip <https://code.google.com/archive/p/ultimate-roundtrip/>
 
 
 ## <a name="license"></a>License
