@@ -41,7 +41,7 @@ public class CustomConstraintViolationsTest {
       }
    }
 
-   public final class Entity {
+   public static final class Entity {
       String name;
       String message;
    }

@@ -118,9 +118,6 @@
          ).artifacts[0]
          setProjectProp("custom.ajcJarPath", ajcArtifact.file.absolutePath)
       ]]></groovy.script.locateAspectJCompiler>
-
-      <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
-      <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
    </properties>
 
 

@@ -4,7 +4,7 @@
  */
 package net.sf.oval.test.constraints;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -65,7 +65,6 @@ public class RelativeDateRangeTest extends AbstractContraintsTest {
       final RelativeDateRangeCheck check = new RelativeDateRangeCheck();
       check.setFormat("yyyy-MM-dd HH:mm:ss");
 
-      final Date now = new Date();
       check.setPlus("PT3S");
       assertThat(check.isSatisfied(null, new Date(System.currentTimeMillis() + 4000), null)).isFalse();
       assertThat(check.isSatisfied(null, new Date(System.currentTimeMillis() - 4000), null)).isTrue();

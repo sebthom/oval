@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 /**
  * Before the annotated method is executed all field and getter constraints
  * (invariants) of this object are validated.
- * 
+ *
  * If constraint violations occur, the annotated method will not be executed
  * instead it will throw a ConstraintsViolatedException exception.<br>
  *

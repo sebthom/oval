@@ -74,7 +74,7 @@ public final class StringUtils {
          startAt = foundAt + searchForLength;
       }
 
-      return out.append(searchIn.substring(startAt, searchIn.length())).toString();
+      return out.append(searchIn.substring(startAt)).toString();
    }
 
    public static List<String> split(final String str, final char separator, final int maxParts) {
@@ -83,7 +83,7 @@ public final class StringUtils {
       while (true) {
          final int foundAt = str.indexOf(separator, startAt);
          if (foundAt == -1 || result.size() == maxParts - 1) {
-            result.add(str.substring(startAt, str.length()));
+            result.add(str.substring(startAt));
             break;
          }
          result.add(str.substring(startAt, foundAt));

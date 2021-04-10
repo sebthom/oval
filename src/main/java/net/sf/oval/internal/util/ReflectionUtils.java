@@ -542,7 +542,6 @@ public final class ReflectionUtils {
             return true;
          } catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
             LOG.debug("Setting {1} failed on {2} failed.", propertyName, target, ex);
-            return false;
          }
       }
       return false;
