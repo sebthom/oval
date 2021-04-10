@@ -42,6 +42,7 @@ public class ExceptionTranslatorTest {
       try {
          final TestEntity t = new TestEntity();
          t.setName(null);
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          assertThat(ex.getMessage()).isEqualTo("NULL");
       }

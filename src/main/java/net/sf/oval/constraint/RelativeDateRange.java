@@ -17,7 +17,7 @@ import net.sf.oval.configuration.annotation.Constraint;
 import net.sf.oval.configuration.annotation.Constraints;
 
 /**
- * Check if the date is within the a relative date range.
+ * Check if the date is within the a given date/time range relative to now.
  *
  * <br>
  * <b>Note:</b> This constraint is also satisfied when the value to validate is null, therefore you might also need to specified @NotNull
@@ -36,7 +36,7 @@ public @interface RelativeDateRange {
    @Constraints
    public @interface List {
       /**
-       * The DateRange constraints.
+       * The RelativeDateRange constraints.
        */
       RelativeDateRange[] value();
 
@@ -83,9 +83,9 @@ public @interface RelativeDateRange {
     * If not specified then no upper boundary check is performed.<br>
     *
     * Base on the ISO-8601 duration format.
-    * @see java.time.Duration#parse(CharSequence s)
     *
-    *    Examples:
+    * Examples:
+    *
     * <pre>
     *    "PT20.345S" -- parses as "20.345 seconds"
     *    "PT15M"     -- parses as "15 minutes" (where a minute is 60 seconds)
@@ -96,6 +96,8 @@ public @interface RelativeDateRange {
     *    "-P6H3M"    -- parses as "-6 hours and -3 minutes"
     *    "-P-6H+3M"  -- parses as "+6 hours and -3 minutes"
     * </pre>
+    *
+    * @see java.time.Duration#parse(CharSequence s)
     */
    String plus() default "";
 
@@ -111,9 +113,9 @@ public @interface RelativeDateRange {
     * If not specified then no lower boundary check is performed.<br>
     *
     * Base on the ISO-8601 duration format.
-    * @see java.time.Duration#parse(CharSequence s)
     *
-    *    Examples:
+    * Examples:
+    *
     * <pre>
     *    "PT20.345S" -- parses as "20.345 seconds"
     *    "PT15M"     -- parses as "15 minutes" (where a minute is 60 seconds)
@@ -124,6 +126,8 @@ public @interface RelativeDateRange {
     *    "-P6H3M"    -- parses as "-6 hours and -3 minutes"
     *    "-P-6H+3M"  -- parses as "+6 hours and -3 minutes"
     * </pre>
+    *
+    * @see java.time.Duration#parse(CharSequence s)
     */
    String minus() default "";
 

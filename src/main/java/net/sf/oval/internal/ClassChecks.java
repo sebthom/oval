@@ -35,8 +35,8 @@ import net.sf.oval.internal.util.ReflectionUtils;
  */
 public final class ClassChecks {
    private static final String GUARDING_MAY_NOT_BE_ACTIVATED_MESSAGE = //
-      " Class does not implement IsGuarded interface. This indicates, " + //
-         "that constraints guarding may not activated for this class.";
+      " Class does not implement IsGuarded interface. This indicates, " //
+         + "that constraints guarding may not activated for this class.";
 
    private static final Log LOG = Log.getLog(ClassChecks.class);
 

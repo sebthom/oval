@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  * <br>
  * If constraint violations occur, the annotated method will not be executed
  * instead it will throw a ConstraintsViolatedException exception.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented
@@ -47,7 +47,7 @@ public @interface Pre {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see net.sf.oval.exception.ConstraintsViolatedException
     */
    String message() default "net.sf.oval.guard.Pre.violated";

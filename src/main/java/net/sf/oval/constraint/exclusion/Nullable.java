@@ -14,7 +14,7 @@ import net.sf.oval.configuration.annotation.Exclusion;
 
 /**
  * Allows a value to be nullable.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented

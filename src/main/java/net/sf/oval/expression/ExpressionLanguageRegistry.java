@@ -60,7 +60,6 @@ public class ExpressionLanguageRegistry {
    }
 
    /**
-    *
     * @param languageId the id of the language, cannot be null
     *
     * @throws IllegalArgumentException if <code>languageName == null</code>
@@ -81,7 +80,6 @@ public class ExpressionLanguageRegistry {
    }
 
    /**
-    *
     * @param languageId the expression language identifier
     * @param impl the expression language implementation
     * @throws IllegalArgumentException if <code>languageId == null || expressionLanguage == null</code>

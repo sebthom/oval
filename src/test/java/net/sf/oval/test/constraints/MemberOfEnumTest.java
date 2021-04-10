@@ -29,7 +29,7 @@ public class MemberOfEnumTest extends AbstractContraintsTest {
    enum CountryEnum {
       China,
       USA,
-      Japan;
+      Japan
    }
 
    @Test

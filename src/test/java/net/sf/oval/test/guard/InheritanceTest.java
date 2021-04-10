@@ -118,10 +118,7 @@ public class InheritanceTest {
 
       final EntityWithInterfaceButUnapplied e = new EntityWithInterfaceButUnapplied();
 
-      try {
-         e.setName(null);
-      } catch (final ConstraintsViolatedException ex) {
-         fail("ConstraintViolationException should not have been thrown");
-      }
+      // should not throw ConstraintsViolatedException
+      e.setName(null);
    }
 }

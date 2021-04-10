@@ -6,7 +6,7 @@ package net.sf.oval.exception;
 
 /**
  * The root exception of all custom exceptions thrown by OVal
- * 
+ *
  * @author Sebastian Thomschke
  */
 public class OValException extends RuntimeException {

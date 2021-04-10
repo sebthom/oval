@@ -219,9 +219,9 @@ public class JPAAnnotationsConfigurer implements Configurer {
       }
 
       // add Length check based on Column.length parameter, but only:
-      if (!fieldOrMethod.isAnnotationPresent(Lob.class) && // if @Lob is not present
-         !fieldOrMethod.isAnnotationPresent(Enumerated.class) && // if @Enumerated is not present
-         !fieldOrMethod.isAnnotationPresent(Length.class) // if an explicit @Length constraint is not present
+      if (!fieldOrMethod.isAnnotationPresent(Lob.class) // if @Lob is not present
+         && !fieldOrMethod.isAnnotationPresent(Enumerated.class) // if @Enumerated is not present
+         && !fieldOrMethod.isAnnotationPresent(Length.class) // if an explicit @Length constraint is not present
       ) {
          final LengthCheck lengthCheck = new LengthCheck();
          lengthCheck.setMax(annotation.length());

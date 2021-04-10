@@ -17,13 +17,12 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
 import net.sf.oval.ConstraintTarget;
 import net.sf.oval.ValidationCycle;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.internal.Log;
-
+import net.sf.oval.internal.util.StringUtils;
 
 /**
  * @author shank3
@@ -65,6 +64,14 @@ public class RelativeDateRangeCheck extends AbstractAnnotationCheck<RelativeDate
       return format;
    }
 
+   public String getMinus() {
+      return minus;
+   }
+
+   public String getPlus() {
+      return plus;
+   }
+
    public long getTolerance() {
       return tolerance;
    }
@@ -74,10 +81,11 @@ public class RelativeDateRangeCheck extends AbstractAnnotationCheck<RelativeDate
       if (valueToValidate == null)
          return true;
 
-      if ((Objects.isNull(plus) || plus.isEmpty()) && (Objects.isNull(minus) || minus.isEmpty())) {
-         LOG.debug("none relative date range was configured.");
+      if (StringUtils.isEmpty(plus) && StringUtils.isEmpty(minus)) {
+         LOG.debug("No relative date range was configured.");
          return true;
       }
+
       final ZonedDateTime now = ZonedDateTime.now();
       ZonedDateTime target = null;
 
@@ -96,10 +104,9 @@ public class RelativeDateRangeCheck extends AbstractAnnotationCheck<RelativeDate
          // see if we can extract a date based on the object's String representation
          final String stringValue = valueToValidate.toString();
          try {
-            if (Objects.nonNull(format)) {
+            if (format != null) {
                try {
-                  final TemporalAccessor parse = DateTimeFormatter.ofPattern(format)
-                        .parseBest(stringValue, ZonedDateTime::from, LocalDateTime::from);
+                  final TemporalAccessor parse = DateTimeFormatter.ofPattern(format).parseBest(stringValue, ZonedDateTime::from, LocalDateTime::from);
                   if (parse instanceof ZonedDateTime) {
                      target = (ZonedDateTime) parse;
                   } else {
@@ -110,7 +117,7 @@ public class RelativeDateRangeCheck extends AbstractAnnotationCheck<RelativeDate
                }
             }
 
-            if (Objects.isNull(target)) {
+            if (target == null) {
                target = ZonedDateTime.parse(stringValue);
             }
          } catch (final DateTimeParseException ex) {
@@ -119,12 +126,12 @@ public class RelativeDateRangeCheck extends AbstractAnnotationCheck<RelativeDate
          }
       }
       boolean inRange = true;
-      if (Objects.nonNull(minus) && !minus.isEmpty()) {
-         final ZonedDateTime min = now.minus(Duration.parse(this.minus));
+      if (!StringUtils.isEmpty(minus)) {
+         final ZonedDateTime min = now.minus(Duration.parse(minus));
          inRange = min.isBefore(target) || Math.abs(min.toEpochSecond() - target.toEpochSecond()) <= tolerance;
       }
-      if (inRange && Objects.nonNull(plus) && !plus.isEmpty()) {
-         final ZonedDateTime max = now.plus(Duration.parse(this.plus));
+      if (inRange && !StringUtils.isEmpty(plus)) {
+         final ZonedDateTime max = now.plus(Duration.parse(plus));
          inRange = max.isAfter(target) || Math.abs(max.toEpochSecond() - target.toEpochSecond()) <= tolerance;
       }
       return inRange;
@@ -135,21 +142,13 @@ public class RelativeDateRangeCheck extends AbstractAnnotationCheck<RelativeDate
       requireMessageVariablesRecreation();
    }
 
-   public String getPlus() {
-      return plus;
+   public void setMinus(final String minus) {
+      this.minus = minus;
+      requireMessageVariablesRecreation();
    }
 
    public void setPlus(final String plus) {
       this.plus = plus;
-      requireMessageVariablesRecreation();
-   }
-
-   public String getMinus() {
-      return minus;
-   }
-
-   public void setMinus(final String minus) {
-      this.minus = minus;
       requireMessageVariablesRecreation();
    }
 

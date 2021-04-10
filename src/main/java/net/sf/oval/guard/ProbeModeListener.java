@@ -12,7 +12,6 @@ import net.sf.oval.exception.InvokingMethodFailedException;
 import net.sf.oval.internal.util.MethodInvocationCommand;
 
 /**
- *
  * @author Sebastian Thomschke
  */
 public class ProbeModeListener extends ConstraintsViolatedAdapter {

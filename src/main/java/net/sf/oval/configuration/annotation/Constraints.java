@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotations tagged with this annotation represent multi-valued constraints.
- * 
+ *
  * @author Sebastian Thomschke
  */
 @Documented

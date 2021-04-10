@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+### Added
+- [github PR #110](https://github.com/sebthom/oval/pull/110) new constraint @RelativeDateRange (thanks to https://github.com/shank3)
+
 ### Changed
 - Updated tested optional dependencies
   - jruby from 9.2.16.0 to 9.2.17.0

@@ -47,7 +47,6 @@ public abstract class AbstractCheck implements Check {
    }
 
    /**
-    *
     * @return the default behavior when the constraint is validated for a array/map/collection reference.
     */
    protected ConstraintTarget[] getAppliesToDefault() {

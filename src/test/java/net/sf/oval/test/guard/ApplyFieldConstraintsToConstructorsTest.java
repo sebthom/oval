@@ -66,6 +66,7 @@ public class ApplyFieldConstraintsToConstructorsTest {
 
       try {
          new Person(false, null, null, null);
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          assertThat(ex.getConstraintViolations()).hasSize(4);
       }

@@ -413,7 +413,6 @@ public final class ReflectionUtils {
    }
 
    /**
-    *
     * @param method the method to invoke
     * @param obj the object on which to invoke the method
     * @param args the method arguments

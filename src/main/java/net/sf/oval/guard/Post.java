@@ -45,7 +45,7 @@ public @interface Post {
 
    /**
     * message to be used for the ContraintsViolatedException
-    * 
+    *
     * @see net.sf.oval.exception.ConstraintsViolatedException
     */
    String message() default "net.sf.oval.guard.Post.violated";

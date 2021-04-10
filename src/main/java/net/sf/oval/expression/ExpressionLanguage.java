@@ -14,7 +14,7 @@ import net.sf.oval.exception.ExpressionEvaluationException;
 public interface ExpressionLanguage {
    /**
     * Evaluates the given expression.
-    * 
+    *
     * @param expression the expression to evaluate
     * @param values context values passed to the interpreter
     * @return the result of the expression evaluation

@@ -62,6 +62,7 @@ public class NullableTest {
 
       try {
          t.setParam1(null);
+         failBecauseExceptionWasNotThrown(ConstraintsViolatedException.class);
       } catch (final ConstraintsViolatedException ex) {
          // nothing
       }

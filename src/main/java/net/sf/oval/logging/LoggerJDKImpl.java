@@ -85,9 +85,9 @@ public class LoggerJDKImpl implements Logger {
    }
 
    private void log(final Level level, final String msg, final Throwable t) {
-      final LogRecord record = new LogRecord(level, msg);
-      record.setLoggerName(name);
-      record.setThrown(t);
+      final LogRecord entry = new LogRecord(level, msg);
+      entry.setLoggerName(name);
+      entry.setThrown(t);
 
       /* java.lang.Throwable
        *    at net.sf.oval.logging.LoggerJDKImpl.log(LoggerJDKImpl.java:123)
@@ -96,10 +96,10 @@ public class LoggerJDKImpl implements Logger {
        */
       final int offset = 2;
       final StackTraceElement[] steArray = new Throwable().getStackTrace();
-      record.setSourceClassName(steArray[offset].getClassName());
-      record.setSourceMethodName(steArray[offset].getMethodName());
+      entry.setSourceClassName(steArray[offset].getClassName());
+      entry.setSourceMethodName(steArray[offset].getMethodName());
 
-      jdkLogger.log(record);
+      jdkLogger.log(entry);
    }
 
    @Override

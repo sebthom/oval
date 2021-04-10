@@ -181,16 +181,16 @@ public class Validator implements IValidator {
 
    private static CollectionFactory _createDefaultCollectionFactory() {
       // if Javolution collection classes are found use them by default
-      if (ReflectionUtils.isClassPresent("javolution.util.FastMap") && //
-         ReflectionUtils.isClassPresent("javolution.util.FastSet") && //
-         ReflectionUtils.isClassPresent("javolution.util.FastTable")) {
+      if (ReflectionUtils.isClassPresent("javolution.util.FastMap") //
+         && ReflectionUtils.isClassPresent("javolution.util.FastSet") //
+         && ReflectionUtils.isClassPresent("javolution.util.FastTable")) {
          LOG.info("javolution.util collection classes are available.");
          return new CollectionFactoryJavolutionImpl();
       }
 
       // else if Trove collection classes are found use them by default
-      if (ReflectionUtils.isClassPresent("gnu.trove.map.hash.THashMap") && //
-         ReflectionUtils.isClassPresent("gnu.trove.set.hash.THashSet")) {
+      if (ReflectionUtils.isClassPresent("gnu.trove.map.hash.THashMap") //
+         && ReflectionUtils.isClassPresent("gnu.trove.set.hash.THashSet")) {
          LOG.info("gnu.trove collection classes are available.");
          return new CollectionFactoryTroveImpl();
       }
@@ -837,12 +837,20 @@ public class Validator implements IValidator {
 
       final Class<?> compileTimeType = context.getCompileTimeType();
 
-      final boolean isIterable = valueToValidate != null ? valueToValidate instanceof Iterable<?>
-         : compileTimeType != null && Iterable.class.isAssignableFrom(compileTimeType);
-      final boolean isMap = !isIterable && //
-         (valueToValidate != null ? valueToValidate instanceof Map<?, ?> : compileTimeType != null && Map.class.isAssignableFrom(compileTimeType));
-      final boolean isArray = !isIterable && !isMap && //
-         (valueToValidate != null ? valueToValidate.getClass().isArray() : compileTimeType != null && compileTimeType.isArray());
+      final boolean isIterable = valueToValidate == null //
+         ? compileTimeType != null && Iterable.class.isAssignableFrom(compileTimeType)
+         : valueToValidate instanceof Iterable<?>;
+      final boolean isMap = !isIterable //
+         && (valueToValidate == null //
+            ? compileTimeType != null && Map.class.isAssignableFrom(compileTimeType)
+            : valueToValidate instanceof Map<?, ?> //
+         );
+      final boolean isArray = !isIterable //
+         && !isMap //
+         && (valueToValidate == null //
+            ? compileTimeType != null && compileTimeType.isArray()
+            : valueToValidate.getClass().isArray() //
+         );
       final boolean isContainer = isIterable || isMap || isArray;
 
       final ConstraintTarget[] targets = check.getAppliesTo();

@@ -15,13 +15,18 @@ import net.sf.oval.Validator;
 public final class StringUtils {
 
    public static boolean isBlank(final String str) {
-      if (str.isEmpty())
+      if (isEmpty(str))
          return true;
+
       for (int i = 0, l = str.length(); i < l; i++) {
          if (!Character.isWhitespace(str.charAt(i)))
             return false;
       }
       return true;
+   }
+
+   public static boolean isEmpty(final String str) {
+      return str == null || str.length() == 0;
    }
 
    public static String join(final Collection<?> values, final char delimiter) {
