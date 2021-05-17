@@ -5,7 +5,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2178a43bf71aaf2622e6/maintainability)](https://codeclimate.com/github/sebthom/oval/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2178a43bf71aaf2622e6/test_coverage)](https://codeclimate.com/github/sebthom/oval/test_coverage)
 [![Changelog](https://img.shields.io/badge/changelog-blue)](CHANGELOG.md)
-[![Bintray](https://img.shields.io/bintray/v/sebthom/maven/oval?label=jcenter.bintray)](https://bintray.com/sebthom/maven/oval/_latestVersion)
 [![Maven Central](https://img.shields.io/maven-central/v/net.sf.oval/oval)](https://search.maven.org/artifact/net.sf.oval/oval)
 
 1. [What is it?](#what-is-it)
