@@ -38,8 +38,9 @@ if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
    echo "# Installing Maven version $MAVEN_VERSION...               #"
    echo "###################################################"
    mkdir -p $HOME/.m2/bin/
-   wget --quiet https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz -O /tmp/maven.tar.gz
-   tar xfz /tmp/maven.tar.gz -C $HOME/.m2/bin/
+   maven_download_url="https://repo1.maven.org/maven2/org/apache/maven/apache-maven/${MAVEN_VERSION}/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
+   echo "Downloading [$maven_download_url]..."
+   curl -fsSL $maven_download_url | tar zxv -C $HOME/.m2/bin/
 fi
 export M2_HOME=$HOME/.m2/bin/apache-maven-$MAVEN_VERSION
 export PATH=$M2_HOME/bin:$PATH
@@ -80,11 +81,11 @@ echo "###################################################"
 echo "# Determining current Maven project version...    #"
 echo "###################################################"
 # https://stackoverflow.com/questions/3545292/how-to-get-maven-project-version-to-the-bash-command-line
-projectVersion="$(mvn -s .ci/maven_settings.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
+projectVersion="$(mvn -s .ci/maven-settings.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
 echo "  -> Current Version: $projectVersion"
 
 
-MAVEN_CLI_OPTS="-e -U --batch-mode --show-version --no-transfer-progress -s .ci/maven_settings.xml -t .ci/maven_toolchains.xml"
+MAVEN_CLI_OPTS="-e -U --batch-mode --show-version --no-transfer-progress -s .ci/maven-settings.xml -t .ci/maven-toolchains.xml"
 
 # change <properties><java.version>XYZ</java.version></properties> value
 sed -i -E "s/(<java.version>).*(<\/java.version>)/\1${JAVA_VERSION}\2/" pom.xml
@@ -108,8 +109,8 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} && ${MAY_CREATE_RELE
    echo "  ->               Is Dry-Run: ${DRY_RUN}"
 
    # workaround for "No toolchain found with specification [version:1.8, vendor:default]" during release builds
-   cp -f .ci/maven_settings.xml $HOME/.m2/settings.xml
-   cp -f .ci/maven_toolchains.xml $HOME/.m2/toolchains.xml
+   cp -f .ci/maven-settings.xml $HOME/.m2/settings.xml
+   cp -f .ci/maven-toolchains.xml $HOME/.m2/toolchains.xml
 
    if [[ "$TRAVIS" == "true" ]]; then
       # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release on Travis CI
