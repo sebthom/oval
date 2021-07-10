@@ -91,7 +91,7 @@
       <java.version>8</java.version>
 
       <!-- https://search.maven.org/artifact/org.aspectj/aspectjrt -->
-      <aspectj.version>1.9.6</aspectj.version>
+      <aspectj.version>1.9.7</aspectj.version>
 
       <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
       <spring.version>5.3.7</spring.version>
@@ -369,7 +369,7 @@
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-api</artifactId>
-         <version>1.7.30</version>
+         <version>1.7.31</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -453,7 +453,7 @@
       <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-jexl3</artifactId>
-         <version>3.1</version>
+         <version>3.2.1</version>
          <optional>true</optional>
       </dependency>
       <dependency>
