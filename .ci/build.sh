@@ -134,7 +134,7 @@ else
    echo "###################################################"
    echo "# Building Maven Project...                       #"
    echo "###################################################"
-   if [[ ${GIT_BRANCH} == "master" && ${MAY_CREATE_RELEASE:-false} == "true" ]]; then
+   if [[ ${MAY_CREATE_RELEASE:-false} == "true" ]]; then
       mavenGoal="deploy"
    else
       mavenGoal="verify"
