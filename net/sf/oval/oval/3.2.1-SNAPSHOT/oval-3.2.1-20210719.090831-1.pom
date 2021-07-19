@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <!--
+   Copyright 2005-2021 by Sebastian Thomschke and contributors.
+   SPDX-License-Identifier: EPL-2.0
+   -->
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>com.vegardit.maven</groupId>
+      <artifactId>vegardit-maven-parent</artifactId>
+      <version>RELEASE</version>
+   </parent>
+
+   <groupId>net.sf.oval</groupId>
+   <artifactId>oval</artifactId>
+   <version>3.2.1-SNAPSHOT</version>
+   <packaging>jar</packaging>
+
+
+   <name>OVal</name>
+   <description>OVal is a pragmatic and extensible validation framework for Java objects.</description>
+   <url>https://oval.sf.net</url>
+   <inceptionYear>2005</inceptionYear>
+
+
+   <licenses>
+      <license>
+         <name>Eclipse Public License 2.0</name>
+         <distribution>repo</distribution>
+         <url>https://spdx.org/licenses/EPL-2.0</url>
+      </license>
+   </licenses>
+
+
+   <developers>
+      <developer>
+         <id>sebthom</id>
+         <name>Sebastian Thomschke</name>
+         <email>sebthom at users.sourceforge.net</email>
+         <url>https://sebthom.de/</url>
+         <roles>
+            <role>lead</role>
+            <role>developer</role>
+         </roles>
+         <timezone>Europe/Berlin</timezone>
+      </developer>
+   </developers>
+   <contributors>
+      <contributor>
+         <name>Holger Riegel</name>
+         <roles>
+            <role>Set up initial Maven project layout of version 1.0</role>
+         </roles>
+      </contributor>
+      <contributor>
+         <name>Mirko Humbert</name>
+         <url>http://www.mirkohumbert.ch/</url>
+         <roles>
+            <role>Designer of the OVal logo</role>
+         </roles>
+      </contributor>
+   </contributors>
+
+
+   <scm>
+      <!-- http://maven.apache.org/scm/git.html -->
+      <url>https://github.com/sebthom/oval</url>
+      <connection>scm:git:https://github.com/sebthom/oval.git</connection>
+      <developerConnection>scm:git:https://github.com/sebthom/oval.git</developerConnection>
+      <tag>HEAD</tag>
+   </scm>
+
+
+   <issueManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/oval/issues</url>
+   </issueManagement>
+
+
+   <ciManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/oval/actions</url>
+   </ciManagement>
+
+
+   <properties>
+      <skip.japicmp.cmp>true</skip.japicmp.cmp>
+
+      <java.version>8</java.version>
+
+      <!-- https://search.maven.org/artifact/org.aspectj/aspectjrt -->
+      <aspectj.version>1.9.7</aspectj.version>
+
+      <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
+      <spring.version>5.3.9</spring.version>
+
+      <license.excludedGroups>org.jruby</license.excludedGroups>
+
+      <groovy.script.locateAspectJCompiler><![CDATA[
+         def setProjectProp = { String name, String value ->
+            project.properties[name] = value
+            log.info("Set project property [$name] '${project.properties[name]}'")
+         }
+
+         /*
+          * loading/locating eclipse Java compiler artifact
+          */
+         def artifactResolver = session.lookup("org.apache.maven.artifact.resolver.ArtifactResolver")
+         def artifactFactory = session.lookup("org.apache.maven.artifact.factory.ArtifactFactory")
+         def ajcArtifactMeta = artifactFactory.createArtifactWithClassifier("org.aspectj", "aspectjtools", project.properties["aspectj.version"], "jar", null)
+         def ajcArtifact = artifactResolver.resolve(
+            new org.apache.maven.artifact.resolver.ArtifactResolutionRequest()
+            .setArtifact(ajcArtifactMeta)
+            .setLocalRepository(session.localRepository)
+            .setRemoteRepositories(project.remoteArtifactRepositories)
+         ).artifacts[0]
+         setProjectProp("custom.ajcJarPath", ajcArtifact.file.absolutePath)
+      ]]></groovy.script.locateAspectJCompiler>
+   </properties>
+
+
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>ban-duplicate-classes@validate</id>
+                  <configuration>
+                     <rules>
+                        <banDuplicateClasses>
+                           <ignoreClasses>
+                              <ignoreClass>org.aopalliance.*</ignoreClass>
+                              <ignoreClass>org.xmlpull.v1.*</ignoreClass>
+                              <ignoreClass>org.osgi.service.log.*</ignoreClass>
+                           </ignoreClasses>
+                        </banDuplicateClasses>
+                     </rules>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>locateAspectJCompiler@initialize</id>
+                  <phase>initialize</phase>
+                  <goals>
+                     <goal>execute</goal>
+                  </goals>
+                  <configuration>
+                     <scripts>
+                        <script>${groovy.script.locateAspectJCompiler}</script>
+                     </scripts>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>native2ascii-maven-plugin</artifactId>
+            <version>2.0.1</version>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>resources</goal>
+                  </goals>
+                  <phase>process-resources</phase>
+                  <configuration>
+                     <srcDir>${project.basedir}/src/main/resources</srcDir>
+                     <targetDir>${project.build.directory}/classes</targetDir>
+                     <includes>
+                        <include>**/*.properties</include>
+                     </includes>
+                     <excludes>
+                        <exclude>**/Messages_de.properties</exclude>
+                     </excludes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <!--
+               Overriding the ecj compile executions defined in the parent project with ajc compiler calls.
+               Not using aspectj-maven-plugin or plexus-compiler-aspectj which are not toolchain aware.
+            -->
+            <executions>
+               <execution>
+                  <id>ecj@compile</id>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <phase>compile</phase>
+                  <inherited>false</inherited>
+                  <configuration>
+                     <skip>${custom.noJavaArtefact}</skip>
+                     <executable>java</executable>
+                     <classpathScope>compile</classpathScope>
+                     <commandlineArgs>
+                        -cp "${custom.ajcJarPath}"
+                        org.aspectj.tools.ajbrowser.Main
+
+                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
+                        <!-- ajc compatible ecj options -->
+                        -encoding ${project.build.sourceEncoding}
+                        ${custom.compileBootClasspathOption} "${custom.compileBootClasspath}"
+                        -g <!-- include debug info -->
+                        -parameters <!-- generate method parameters attribute -->
+                        -O <!-- optimize for execution time -->
+                        -time <!-- display speed information. -->
+                        -showversion <!-- display the build number of the compiler -->
+                        -d "${project.build.outputDirectory}"
+                        -source ${java.version}
+                        -target ${java.version}
+                        -cp "${custom.compileClasspathElements}" <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
+
+                        <!-- ajc specific options -->
+                        -outxml <!-- generate META-INF/aop.xml -->
+                        -XnoInline <!-- do not inline around advice  -->
+                        -showWeaveInfo
+                        -sourceroots ${custom.ecjSourcePaths}
+                     </commandlineArgs>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>ecj@test-compile</id>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <phase>test-compile</phase>
+                  <inherited>false</inherited>
+                  <configuration>
+                     <skip>${custom.noJavaArtefact}</skip>
+                     <executable>java</executable>
+                     <classpathScope>test</classpathScope>
+                     <commandlineArgs>
+                        -cp "${custom.ajcJarPath}"
+                        org.aspectj.tools.ajbrowser.Main
+
+                        <!-- https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html -->
+                        <!-- ajc compatible ecj options -->
+                        ${custom.testCompileBootClasspathOption} "${custom.testCompileBootClasspath}"
+                        -encoding ${project.build.sourceEncoding}
+                        -g <!-- include debug info -->
+                        -parameters <!-- generate method parameters attribute -->
+                        -O <!-- optimize for execution time -->
+                        -genericsignature <!-- generate generic signature for lambda expressions -->
+                        -time <!-- display speed information. -->
+                        -showversion <!-- display the build number of the compiler -->
+                        -d "${project.build.testOutputDirectory}"
+                        -source ${java.version.unit-tests}
+                        -target ${java.version.unit-tests}
+                        -cp "${custom.testClasspathElements}" <!-- <classpath /> doesn't work here as it misses runtime dependencies -->
+
+                        <!-- ajc specific options -->
+                        -outxml <!-- generate META-INF/aop.xml -->
+                        -XnoInline <!-- do not inline around advice  -->
+                        -showWeaveInfo
+                        -sourceroots ${custom.ecjTestSourcePaths}
+                     </commandlineArgs>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>add-license-file-to-jar</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>add-resource</goal>
+                  </goals>
+                  <configuration>
+                     <resources>
+                        <resource>
+                           <directory>./</directory>
+                           <targetPath>META-INF</targetPath>
+                           <includes>
+                              <include>LICENSE.txt</include>
+                           </includes>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+
+
+      <pluginManagement>
+         <plugins>
+
+            <plugin>
+               <!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
+               <artifactId>maven-surefire-plugin</artifactId>
+               <configuration>
+                  <excludes>
+                     <exclude>**/*ITest.java</exclude>
+                     <exclude>**/TestGuardAspect*</exclude>
+                     <exclude>**/Abstract*</exclude>
+                  </excludes>
+               </configuration>
+            </plugin>
+
+            <plugin>
+               <artifactId>maven-javadoc-plugin</artifactId>
+               <configuration>
+                  <stylesheetfile>${project.basedir}/src/site/javadoc/oval-javadoc.css</stylesheetfile>
+                  <stylesheet>maven</stylesheet>
+                  <destDir>api</destDir>
+               </configuration>
+            </plugin>
+
+            <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+            <plugin>
+               <groupId>org.eclipse.m2e</groupId>
+               <artifactId>lifecycle-mapping</artifactId>
+               <version>1.0.0</version>
+               <configuration>
+                  <lifecycleMappingMetadata>
+                     <pluginExecutions>
+                        <pluginExecution>
+                           <pluginExecutionFilter>
+                              <groupId>org.codehaus.mojo</groupId>
+                              <artifactId>native2ascii-maven-plugin</artifactId>
+                              <versionRange>[0.0,)</versionRange>
+                              <goals>
+                                 <goal>native2ascii</goal>
+                              </goals>
+                           </pluginExecutionFilter>
+                           <action>
+                              <ignore/>
+                           </action>
+                        </pluginExecution>
+                     </pluginExecutions>
+                  </lifecycleMappingMetadata>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
+
+   <dependencies>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <version>1.2</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>1.7.31</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <version>1.4.17</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- https://github.com/beanshell/beanshell -->
+         <groupId>org.apache-extras.beanshell</groupId>
+         <artifactId>bsh</artifactId>
+         <version>2.0b6</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>ognl</groupId>
+         <artifactId>ognl</artifactId>
+         <version>3.2.21</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.jruby</groupId>
+         <artifactId>jruby</artifactId>
+         <version>9.2.19.0</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.mozilla</groupId>
+         <artifactId>rhino</artifactId>
+         <version>1.7.13</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>commons-jxpath</groupId>
+         <artifactId>commons-jxpath</artifactId>
+         <version>1.3</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.javolution</groupId>
+         <artifactId>javolution-core-java</artifactId>
+         <version>6.0.0</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>com.google.inject</groupId>
+         <artifactId>guice</artifactId>
+         <version>5.0.1</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-aop</artifactId>
+         <version>${spring.version}</version>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <groupId>org.springframework</groupId>
+               <artifactId>spring-jcl</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>aopalliance</groupId>
+         <artifactId>aopalliance</artifactId>
+         <version>1.0</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.codehaus.groovy</groupId>
+         <artifactId>groovy-jsr223</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-jexl3</artifactId>
+         <version>3.2.1</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.mvel</groupId>
+         <artifactId>mvel2</artifactId>
+         <version>2.4.12.Final</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.paranamer</groupId>
+         <artifactId>paranamer</artifactId>
+         <version>2.8</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+         <version>1.0.2</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>net.sf.trove4j</groupId>
+         <artifactId>core</artifactId>
+         <version>3.1.0</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+         <version>2.0.1.Final</version>
+         <optional>true</optional>
+      </dependency>
+
+      <!-- test dependencies -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.13.2</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.assertj</groupId>
+         <artifactId>assertj-core</artifactId>
+         <version>3.20.2</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+
+</project>
