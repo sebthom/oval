@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [3.2.1] - 2021-09-09
+
 ### Changed
 - Updated tested optional dependencies
   - aspectjrt from 1.9.6 to 1.9.7
   - commons-jexl3 from 3.1 to 3.2.1
   - jruby from 9.2.17.0 to 9.2.19.0
-  - slf4j-api from 1.7.30 to 1.7.31
-  - spring.version from 5.3.6 to 5.3.8
+  - slf4j-api from 1.7.30 to 1.7.32
+  - spring.version from 5.3.6 to 5.3.9
+  - xstream from 1.4.17 to 1.4.18
+
 
 ## [3.2.0] - 2021-05-17
 
