@@ -31,7 +31,7 @@ fi
 echo "  -> GIT Branch: $GIT_BRANCH"; echo
 
 
-MAVEN_VERSION=3.8.1 # https://maven.apache.org/download.cgi
+MAVEN_VERSION=3.8.2 # https://maven.apache.org/download.cgi
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
    echo
    echo "###################################################"
