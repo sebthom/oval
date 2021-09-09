@@ -1,3 +1,5 @@
+> Development of OVal has been stopped. Please migrate to a [Bean Validation](https://beanvalidation.org/) implementation, such as [Apache BVal](https://bval.apache.org/) or [Hibernate Validator](https://hibernate.org/validator/).
+
 # OVal - the object validation framework for Java
 
 [![Build Status](https://github.com/sebthom/oval/workflows/Build/badge.svg "GitHub Actions")](https://github.com/sebthom/oval/actions?query=workflow%3A%22Build%22)
